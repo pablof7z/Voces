@@ -15,7 +15,7 @@ export function useProfileFollowPacks(profilePubkey: string) {
     '#p': [profilePubkey]
   }];
 
-  const { events } = useSubscribe(filter);
+  const { events } = useSubscribe(profilePubkey ? filter : false, { subId: `profile-packs-${profilePubkey.slice(0, 8)}` });
 
   // Process all events and categorize them
   const { createdPacks, appearsPacks, allPacks } = useMemo(() => {

@@ -1,14 +1,22 @@
-import { useSubscribe, NDKKind } from '@nostr-dev-kit/ndk-hooks';
+import { useSubscribe, NDKKind, NDKEvent } from '@nostr-dev-kit/ndk-hooks';
 import { NoteCard } from './NoteCard';
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 const INITIAL_LOAD = 20;
 const BATCH_SIZE = 10;
 
-export function NoteFeed() {
-  const { events } = useSubscribe([{
+interface NoteFeedProps {
+  events?: NDKEvent[];
+  showDebugInfo?: boolean;
+}
+
+export function NoteFeed({ events: externalEvents, showDebugInfo = true }: NoteFeedProps = {}) {
+  // If no external events provided, use the default subscription
+  const { events: subscribedEvents } = useSubscribe(externalEvents ? false : [{
     kinds: [NDKKind.Text],
   }], { subId: 'note-feed' });
+
+  const events = externalEvents || subscribedEvents;
 
   const [visibleCount, setVisibleCount] = useState(INITIAL_LOAD);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -84,9 +92,11 @@ export function NoteFeed() {
   return (
     <div className="divide-y divide-gray-200 dark:divide-gray-800">
       {/* Show count for debugging - remove in production */}
-      <div className="text-xs text-gray-500 dark:text-gray-400 px-4 py-2 bg-gray-50 dark:bg-gray-900/50">
-        Showing {sortedEvents.length} of {events.length} notes
-      </div>
+      {showDebugInfo && (
+        <div className="text-xs text-gray-500 dark:text-gray-400 px-4 py-2 bg-gray-50 dark:bg-black/50">
+          Showing {sortedEvents.length} of {events.length} notes
+        </div>
+      )}
 
       {sortedEvents.map((event) => (
         <NoteCard key={event.id} event={event} />

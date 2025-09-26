@@ -69,7 +69,7 @@ export function OrderCard({ order }: OrderCardProps) {
 
   return (
     <>
-      <div className="bg-white dark:bg-gray-900 rounded-lg md:rounded-xl border border-gray-200 dark:border-gray-800 p-3 md:p-4 hover:shadow-lg transition-shadow">
+      <div className="bg-white dark:bg-black rounded-lg md:rounded-xl border border-gray-200 dark:border-gray-800 p-3 md:p-4 hover:shadow-lg transition-shadow">
         <div className="flex items-start justify-between mb-2 md:mb-3">
           <div className="flex items-center gap-3">
             {profile?.picture ? (

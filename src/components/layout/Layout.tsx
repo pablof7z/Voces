@@ -41,14 +41,6 @@ export function Layout() {
           </div>
         </header>
 
-        {/* Desktop header */}
-        <header className="hidden md:block sticky top-0 z-40 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
-          <div className="flex items-center justify-between px-6 py-4">
-            <RelaySelector />
-            <div className="flex-1" />
-            <LoginButton />
-          </div>
-        </header>
         
         {/* Page content */}
         <main className="flex-1 pb-20 md:pb-0">

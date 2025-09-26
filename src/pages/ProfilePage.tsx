@@ -5,7 +5,7 @@ import { NoteCard } from '@/features/feed/NoteCard';
 import { useParams } from 'react-router-dom';
 import { ProfileEditor } from '@/features/profile/ProfileEditor';
 import { nip19 } from 'nostr-tools';
-import { FollowPackCard } from '@/features/followPacks/components/FollowPackCard';
+import { PackCard } from '@/features/followPacks/components/PackCard';
 import { useProfileFollowPacks } from '@/features/followPacks/hooks/useProfileFollowPacks';
 import { MediaGrid } from '@/components/media/MediaGrid';
 
@@ -58,7 +58,7 @@ export function ProfilePage() {
     kinds: [NDKKind.Text],
     authors: [targetPubkey],
     limit: 20,
-  }] : []);
+  }] : false, { subId: 'profile-notes' });
 
   // Fetch kind:20, 21, 22 media events for the media tab (NIP-68)
   const { events: mediaEvents } = useSubscribe(targetPubkey && activeTab === 'media' ? [{
@@ -68,7 +68,7 @@ export function ProfilePage() {
       NDKKind.ShortVideo,  // kind:22 - Short video file metadata
     ],
     authors: [targetPubkey],
-  }] : []);
+  }] : false, { subId: 'profile-media' });
 
   const [packFilter, setPackFilter] = useState<'all' | 'created' | 'appears'>('all');
   const { createdPacks, appearsPacks, allPacks } = useProfileFollowPacks(targetPubkey || '');
@@ -83,7 +83,7 @@ export function ProfilePage() {
   return (
     <div className="max-w-2xl mx-auto">
       {/* Profile header */}
-      <div className="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800">
+      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
         {/* Cover image */}
         <div className="h-32 sm:h-48 bg-gradient-to-br from-purple-500 to-pink-500 relative">
           {profile?.banner && (
@@ -96,7 +96,7 @@ export function ProfilePage() {
           {isOwnProfile && (
             <button
               onClick={() => setIsEditingProfile(true)}
-              className="absolute top-4 right-4 p-2 bg-white/90 dark:bg-gray-900/90 hover:bg-white dark:hover:bg-gray-900 rounded-lg transition-colors backdrop-blur-sm"
+              className="absolute top-4 right-4 p-2 bg-white/90 dark:bg-black/90 hover:bg-white dark:hover:bg-gray-900 rounded-lg transition-colors backdrop-blur-sm"
               aria-label="Edit profile"
             >
               <Edit2 className="w-4 h-4" />
@@ -178,7 +178,7 @@ export function ProfilePage() {
       </div>
       
       {/* Tabs */}
-      <div className="sticky top-0 z-30 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+      <div className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
         <div className="flex px-4 sm:px-6 overflow-x-auto">
           <button
             onClick={() => setActiveTab('notes')}
@@ -269,7 +269,7 @@ export function ProfilePage() {
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
               >
-                {isOwnProfile ? 'Created by you' : `Created by @${profile?.name || 'user'}`}
+                {isOwnProfile ? 'by you' : `by @${profile?.name || profile?.displayName || targetPubkey?.slice(0, 8)}`}
               </button>
               <button
                 onClick={() => setPackFilter('appears')}
@@ -279,14 +279,14 @@ export function ProfilePage() {
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
               >
-                {isOwnProfile ? 'Appears on' : `@${profile?.name || 'user'} appears on`}
+                {isOwnProfile ? 'with you' : `with @${profile?.name || profile?.displayName || targetPubkey?.slice(0, 8)}`}
               </button>
             </div>
 
             {packs.length > 0 ? (
               <div className="grid gap-4 md:grid-cols-2">
                 {packs.map((pack) => (
-                  <FollowPackCard key={pack.id} pack={pack} />
+                  <PackCard key={pack.id} pack={pack} variant="compact" />
                 ))}
               </div>
             ) : (

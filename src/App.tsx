@@ -11,16 +11,18 @@ import { TradePage } from './pages/TradePage';
 import { MarketplacePage } from './pages/marketplace/MarketplacePage';
 import { CreateListingPage } from './pages/marketplace/CreateListingPage';
 import { ListingDetailPage } from './pages/marketplace/ListingDetailPage';
-import { FollowPacksPage } from './pages/FollowPacksPage';
+import { FollowPacksPage } from './pages/FollowPacksPageImproved';
 import { FollowPackDetailPage } from './pages/FollowPackDetailPage';
 import { NoteDetailPage } from './pages/NoteDetailPage';
 import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
+import { useAutoLogin } from './features/auth/useAutoLogin';
 
 const queryClient = new QueryClient();
 
 function AppRoutes() {
   const currentUser = useNDKCurrentUser();
-  
+  useAutoLogin();
+
   return (
     <Routes>
       <Route path="/" element={<Layout />}>

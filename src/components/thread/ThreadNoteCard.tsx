@@ -22,11 +22,9 @@ export function ThreadNoteCard({
         <div className="absolute left-[29px] -top-px h-[73px] w-0.5 bg-gray-300 dark:bg-gray-700" />
       )}
 
-      {/* The note itself */}
-      <div className={cn(
-        isMainNote && "ring-2 ring-accent-500/20 dark:ring-accent-400/20"
-      )}>
-        <NoteCard event={event} />
+      {/* The note itself with larger text for main note */}
+      <div className="relative">
+        <NoteCard event={event} isLargeText={isMainNote} />
       </div>
 
       {/* Thread connector line after the note */}

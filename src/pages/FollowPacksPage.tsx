@@ -7,18 +7,22 @@ import { Button } from '@/components/ui/button';
 import { useFollowPacks, useSubscribedFollowPacks } from '@/features/followPacks/hooks/useFollowPacks';
 import { useFollowPacksStore } from '@/stores/followPacksStore';
 import { ProfileAvatar } from '@/features/followPacks/components/ProfileAvatar';
+import { mockFollowPacks } from '@/features/followPacks/mockData';
 
 export function FollowPacksPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const { packs } = useFollowPacks();
   const subscribedPacks = useSubscribedFollowPacks();
 
+  // Use mock data if no packs from relays
+  const displayPacks = packs.length > 0 ? packs : mockFollowPacks as any[];
+
   // Filter packs based on search
-  const filteredPacks = packs.filter(pack => {
+  const filteredPacks = displayPacks.filter(pack => {
     if (!searchQuery) return true;
     const search = searchQuery.toLowerCase();
     return pack.title.toLowerCase().includes(search) ||
-           pack.description.toLowerCase().includes(search);
+           (pack.description && pack.description.toLowerCase().includes(search));
   });
 
   return (

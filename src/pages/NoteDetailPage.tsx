@@ -163,9 +163,9 @@ export function NoteDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-gray-50 dark:bg-black">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+      <header className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center gap-4 px-4 py-3">
           <button
             onClick={() => navigate(-1)}
@@ -210,7 +210,7 @@ export function NoteDetailPage() {
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
                   placeholder={`Reply to ${profile?.name || 'this note'}...`}
-                  className="w-full min-h-[100px] p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-accent-500"
+                  className="w-full min-h-[100px] p-3 bg-gray-50 dark:bg-black border border-gray-200 dark:border-gray-700 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-accent-500"
                   disabled={isSubmitting}
                 />
                 <div className="flex justify-end mt-2">

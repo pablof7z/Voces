@@ -17,7 +17,7 @@ export function ListingCard({ listing }: ListingCardProps) {
 
   return (
     <Link to={`/marketplace/${listing.id}`}>
-      <Card className="hover:shadow-soft-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer h-full overflow-hidden group bg-white dark:bg-gray-900/50 border-gray-100 dark:border-gray-800/50 animate-fade-in">
+      <Card className="hover:shadow-soft-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer h-full overflow-hidden group bg-white dark:bg-black/50 border-gray-100 dark:border-gray-800/50 animate-fade-in">
         {/* Image Section */}
         <div className="aspect-[4/3] relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
           {mainImage ? (

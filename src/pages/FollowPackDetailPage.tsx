@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Users, Heart, UserPlus, UserMinus, Calendar } from 'lucide-react';
 import { useNDKCurrentUser, useSubscribe, NDKKind, useProfileValue, useEvent, NDKFollowPack } from '@nostr-dev-kit/ndk-hooks';
 import { Button } from '@/components/ui/button';
-import { NoteCard } from '@/features/feed/NoteCard';
+import { NoteFeed } from '@/features/feed/NoteFeed';
 import { ProfileAvatar } from '@/features/followPacks/components/ProfileAvatar';
 import { useFollowPacksStore } from '@/stores/followPacksStore';
 import { cn } from '@/lib/utils';
@@ -15,7 +15,7 @@ export function FollowPackDetailPage() {
   const { isSubscribed, subscribeToPack, unsubscribeFromPack, isFavorite, toggleFavorite } = useFollowPacksStore();
 
   // Get the event directly using the bech32 encoded ID
-  const event = useEvent(packId || false, { subId: 'pack'});
+  const event = useEvent(packId || false, { subId: 'pack-detail' });
 
   // Convert to NDKFollowPack
   const pack = useMemo(() => {
@@ -42,7 +42,8 @@ export function FollowPackDetailPage() {
     pubkeys.length > 0 && activeTab === 'feed' ? [{
       kinds: [NDKKind.Text],
       authors: pubkeys,
-    }] : false
+    }] : false,
+    { subId: 'pack-feed' }
   );
 
   const handleSubscribe = () => {
@@ -207,21 +208,7 @@ export function FollowPackDetailPage() {
 
       {/* Content */}
       {activeTab === 'feed' ? (
-        <div>
-          {feedEvents.length > 0 ? (
-            <div className="space-y-4">
-              {feedEvents.map(event => (
-                <NoteCard key={event.id} event={event} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-neutral-400">
-                No recent notes from pack members
-              </p>
-            </div>
-          )}
-        </div>
+        <NoteFeed events={feedEvents} showDebugInfo={false} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {pubkeys.map(pubkey => (

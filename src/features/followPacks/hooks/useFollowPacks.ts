@@ -12,7 +12,7 @@ export function useFollowPacks(pubkey?: string) {
         kinds: NDKFollowPack.kinds
       }];
 
-  const { events } = useSubscribe(filters);
+  const { events } = useSubscribe(filters, { subId: pubkey ? `packs-by-${pubkey.slice(0, 8)}` : 'all-packs' });
 
   // Convert events to NDKFollowPack instances
   const packs = useMemo(() => {

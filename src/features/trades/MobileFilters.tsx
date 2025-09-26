@@ -33,7 +33,7 @@ export function MobileFilters({
   return (
     <>
       {/* Compact Filter Bar */}
-      <div className="flex gap-2 p-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <div className="flex gap-2 p-3 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
         <button
           onClick={() => setShowFilters(true)}
           className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm"
@@ -72,7 +72,7 @@ export function MobileFilters({
 
       {/* Full Screen Filter Modal */}
       {showFilters && (
-        <div className="fixed inset-0 z-50 bg-white dark:bg-gray-900">
+        <div className="fixed inset-0 z-50 bg-white dark:bg-black">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
             <h2 className="text-lg font-semibold">Filters</h2>
@@ -134,7 +134,7 @@ export function MobileFilters({
           </div>
 
           {/* Footer */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+          <div className="absolute bottom-0 left-0 right-0 p-4 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800">
             <div className="flex gap-2">
               <button
                 onClick={() => {

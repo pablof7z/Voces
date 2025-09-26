@@ -96,7 +96,7 @@ export function SettingsPage() {
   const SectionComponent = currentSection?.component;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20 md:pb-0">
+    <div className="min-h-screen bg-gray-50 dark:bg-black pb-20 md:pb-0">
       <div className="max-w-7xl mx-auto px-4 py-4 md:py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

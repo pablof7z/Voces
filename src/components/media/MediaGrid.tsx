@@ -43,7 +43,7 @@ function MediaItem({ event, imeta }: MediaItemProps) {
   return (
     <>
       <div
-        className="group relative aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-900 cursor-pointer"
+        className="group relative aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-black cursor-pointer"
         onClick={() => setShowFullscreen(true)}
       >
         {mediaType === 'image' && (
@@ -67,7 +67,7 @@ function MediaItem({ event, imeta }: MediaItemProps) {
               preload="metadata"
             />
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-16 h-16 bg-white/90 dark:bg-gray-900/90 rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 bg-white/90 dark:bg-black/90 rounded-full flex items-center justify-center">
                 <Play className="w-8 h-8 text-gray-900 dark:text-white ml-1" />
               </div>
             </div>
@@ -139,7 +139,7 @@ function MediaItem({ event, imeta }: MediaItemProps) {
             )}
 
             {mediaType === 'audio' && (
-              <div className="bg-white dark:bg-gray-900 rounded-lg p-8 min-w-[400px]">
+              <div className="bg-white dark:bg-black rounded-lg p-8 min-w-[400px]">
                 <div className="flex items-center gap-4 mb-4">
                   <Music className="w-12 h-12 text-purple-600" />
                   <div>
@@ -152,7 +152,7 @@ function MediaItem({ event, imeta }: MediaItemProps) {
             )}
 
             {mediaType === 'file' && imeta.url && (
-              <div className="bg-white dark:bg-gray-900 rounded-lg p-8">
+              <div className="bg-white dark:bg-black rounded-lg p-8">
                 <FileImage className="w-16 h-16 text-gray-500 mb-4" />
                 <h3 className="font-semibold mb-2">{imeta.url.split('/').pop()}</h3>
                 {fileSize && <p className="text-sm text-gray-500 mb-4">{fileSize} MB</p>}

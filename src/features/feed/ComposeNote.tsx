@@ -48,7 +48,7 @@ export function ComposeNote() {
   const isOverLimit = remainingChars < 0;
 
   return (
-    <div className="bg-white dark:bg-gray-950 rounded-lg">
+    <div className="bg-white dark:bg-black rounded-lg">
       <form onSubmit={handleSubmit}>
         <div className="flex gap-3">
           {/* Avatar */}

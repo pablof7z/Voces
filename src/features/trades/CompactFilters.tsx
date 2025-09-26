@@ -85,7 +85,7 @@ export function CompactFilters({ filters, onFiltersChange }: CompactFiltersProps
   const selectedPayment = paymentMethods.find(p => p.id === filters.paymentMethod);
 
   return (
-    <div className="relative flex items-center gap-2 p-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 overflow-visible">
+    <div className="relative flex items-center gap-2 p-3 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 overflow-visible">
       {/* Order Type Dropdown */}
       <Dropdown
         value={filters.orderType}

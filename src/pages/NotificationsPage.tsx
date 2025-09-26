@@ -4,7 +4,7 @@ export function NotificationsPage() {
   return (
     <div className="max-w-2xl mx-auto">
       {/* Page header */}
-      <div className="sticky top-0 z-30 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+      <div className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
         <div className="px-4 py-3 sm:px-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Notifications</h2>
         </div>

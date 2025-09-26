@@ -29,7 +29,9 @@ export function useListings(options: UseListingsOptions = {}) {
     return [filter];
   }, [category, author, limit]);
 
-  const { events } = useSubscribe(filters);
+  const { events } = useSubscribe(filters, {
+    subId: `listings${author ? `-by-${author.slice(0, 8)}` : ''}${category ? `-${category}` : ''}`
+  });
 
   const listings = useMemo(() => {
     return events

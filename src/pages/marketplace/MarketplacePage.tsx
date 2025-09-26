@@ -93,7 +93,7 @@ export function MarketplacePage() {
                   placeholder="Search listings..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-12 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-gray-200 dark:border-gray-700 rounded-xl text-base focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+                  className="pl-10 h-12 bg-white/80 dark:bg-black/80 backdrop-blur border-gray-200 dark:border-gray-700 rounded-xl text-base focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
                 />
               </div>
             </div>

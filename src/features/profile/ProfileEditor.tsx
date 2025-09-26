@@ -133,9 +133,9 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-950 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-black rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 p-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 p-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold">Edit Profile</h2>
           <button
             onClick={onClose}
@@ -244,7 +244,7 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
           <div>
             <Label htmlFor="about">About</Label>
             <div className="mt-2 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-              <div className="bg-gray-50 dark:bg-gray-900 px-3 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-2">
+              <div className="bg-gray-50 dark:bg-black px-3 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-2">
                 <button
                   type="button"
                   className="px-2 py-1 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
@@ -328,7 +328,7 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 p-4 flex justify-end space-x-3">
+        <div className="sticky bottom-0 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 p-4 flex justify-end space-x-3">
           <button
             onClick={onClose}
             className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"

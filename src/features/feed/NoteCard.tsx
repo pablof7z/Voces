@@ -38,9 +38,10 @@ function formatTimeAgo(timestamp: number): string {
 
 interface NoteCardProps {
   event: NDKEvent;
+  isLargeText?: boolean;
 }
 
-export function NoteCard({ event }: NoteCardProps) {
+export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
   const profile = useProfile(event.pubkey);
   const { ndk } = useNDK();
   const currentUser = useNDKCurrentUser();
@@ -228,7 +229,10 @@ export function NoteCard({ event }: NoteCardProps) {
               >
                 <ContentRenderer
                   content={event.content}
-                  className="text-gray-800 dark:text-gray-200 text-[15px] sm:text-base leading-relaxed"
+                  className={cn(
+                    "text-gray-800 dark:text-gray-200 leading-relaxed",
+                    isLargeText ? "text-lg sm:text-xl" : "text-[15px] sm:text-base"
+                  )}
                 />
                 {/* Gradient fade when collapsed */}
                 {!isExpanded && needsExpansion && (

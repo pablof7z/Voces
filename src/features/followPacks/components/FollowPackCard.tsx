@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Heart, UserPlus, UserMinus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useNDKCurrentUser, NDKFollowPack } from '@nostr-dev-kit/ndk-hooks';
+import { useNDKCurrentUser, NDKFollowPack, useProfileValue } from '@nostr-dev-kit/ndk-hooks';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useFollowPacksStore } from '@/stores/followPacksStore';
@@ -18,9 +18,14 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
   const currentUser = useNDKCurrentUser();
   const { isSubscribed, subscribeToPack, unsubscribeFromPack, toggleFavorite, isFavorite } = useFollowPacksStore();
   const [isExpanded, setIsExpanded] = useState(false);
+  const creatorProfile = useProfileValue(pack.pubkey);
 
   // Get preview pubkeys (first 5 users)
   const previewPubkeys = pack.pubkeys.slice(0, 5);
+
+  // Check if current user is in the pack
+  const currentUserInPack = currentUser && pack.pubkeys.includes(currentUser.pubkey);
+  const isCreator = currentUser && pack.pubkey === currentUser.pubkey;
 
   const subscribed = isSubscribed(pack.id);
   const favorited = isFavorite(pack.id);
@@ -50,7 +55,7 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
   if (variant === 'compact') {
     return (
       <div
-        className="p-4 bg-white dark:bg-gray-950 hover:bg-gray-50 dark:hover:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg transition-colors cursor-pointer"
+        className="p-4 bg-white dark:bg-black hover:bg-gray-50 dark:hover:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg transition-colors cursor-pointer"
         onClick={handleCardClick}
       >
         <div className="flex items-center justify-between">
@@ -62,14 +67,6 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
               {pack.pubkeys.length} members
             </p>
           </div>
-          <Button
-            onClick={handleSubscribe}
-            size="sm"
-            variant={subscribed ? 'outline' : 'primary'}
-            className="ml-4"
-          >
-            {subscribed ? 'Following' : 'Follow'}
-          </Button>
         </div>
       </div>
     );
@@ -77,53 +74,52 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
 
   return (
     <div
-      className="bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+      className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden hover:shadow-md transition-shadow cursor-pointer h-full flex flex-col"
       onClick={handleCardClick}
     >
-      {/* Header */}
-      <div className="p-6">
-        {pack.image && (
-          <div className="mb-4 -mt-6 -mx-6">
-            <img
-              src={pack.image}
-              alt={pack.title}
-              className="w-full h-32 object-cover"
-            />
-          </div>
-        )}
+      {/* Fixed height header image */}
+      {pack.image && (
+        <div className="h-32 bg-gray-100 dark:bg-black">
+          <img
+            src={pack.image}
+            alt={pack.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
 
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              {pack.title}
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              {pack.pubkeys.length} members
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleFavorite}
-              className={cn(
-                "p-2 rounded-lg transition-colors",
-                favorited
-                  ? "bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400"
-                  : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500"
-              )}
-              aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
-            >
-              <Heart className={cn("w-4 h-4", favorited && "fill-current")} />
-            </button>
+      {/* Content area with fixed layout */}
+      <div className="p-6 flex flex-col flex-1">
+        {/* Title and member count - fixed position */}
+        <div className="mb-3">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 truncate">
+            {pack.title}
+          </h3>
+          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <span>{pack.pubkeys.length} members</span>
+            <span>•</span>
+            <span>
+              {isCreator
+                ? 'by you'
+                : currentUserInPack
+                  ? `with you and @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey.slice(0, 8)}`
+                  : `by @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey.slice(0, 8)}`
+              }
+            </span>
           </div>
         </div>
 
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-          {pack.description}
-        </p>
+        {/* Description - fixed height area */}
+        <div className="h-12 mb-4">
+          {pack.description && (
+            <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+              {pack.description}
+            </p>
+          )}
+        </div>
 
-        {/* User avatars preview */}
-        <div className="flex items-center mb-4">
+        {/* User avatars preview - always at bottom */}
+        <div className="mt-auto">
           <div className="flex -space-x-2">
             {previewPubkeys.map((pubkey, index) => (
               <ProfileAvatar
@@ -134,62 +130,29 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
               />
             ))}
             {pack.pubkeys.length > 5 && (
-              <div className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-950 bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300">
+              <div className="w-8 h-8 rounded-full border-2 border-white dark:border-black bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300">
                 +{pack.pubkeys.length - 5}
               </div>
             )}
           </div>
         </div>
 
-        {/* Action buttons */}
-        <div className="flex gap-2">
-          <Button
-            onClick={handleSubscribe}
-            variant={subscribed ? 'outline' : 'primary'}
-            className="flex-1"
-            disabled={!currentUser}
-          >
-            {subscribed ? (
-              <>
-                <UserMinus className="w-4 h-4 mr-2" />
-                Unfollow Pack
-              </>
-            ) : (
-              <>
-                <UserPlus className="w-4 h-4 mr-2" />
-                Follow Pack
-              </>
-            )}
-          </Button>
-        </div>
-
-        {/* Expandable member list */}
-        {pack.pubkeys.length > 5 && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsExpanded(!isExpanded);
-            }}
-            className="text-sm text-purple-600 dark:text-purple-400 hover:underline mt-3 inline-block"
-          >
-            {isExpanded ? 'Show less' : `View all ${pack.pubkeys.length} members`}
-          </button>
-        )}
-
-        {isExpanded && (
-          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
-            <div className="space-y-2 max-h-64 overflow-y-auto">
-              {pack.pubkeys.map((pubkey) => (
-                <ProfileAvatar
-                  key={pubkey}
-                  pubkey={pubkey}
-                  size="md"
-                  showName={true}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Favorite button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleFavorite(e);
+          }}
+          className={cn(
+            "absolute top-4 right-4 p-2 rounded-lg transition-colors bg-white/90 dark:bg-black/90 backdrop-blur-sm",
+            favorited
+              ? "text-red-600 dark:text-red-400"
+              : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500"
+          )}
+          aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
+        >
+          <Heart className={cn("w-4 h-4", favorited && "fill-current")} />
+        </button>
       </div>
     </div>
   );

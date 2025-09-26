@@ -18,10 +18,10 @@ export function ListingDetailPage() {
   const { deleteListing } = useCreateListing();
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { events, eose } = useSubscribe([{
-    ids: id ? [id] : [],
+  const { events, eose } = useSubscribe(id ? [{
+    ids: [id],
     kinds: [CLASSIFIED_LISTING_KIND]
-  }]);
+  }] : false, { subId: 'listing-detail' });
 
   if (!eose && events.length === 0) {
     return (
