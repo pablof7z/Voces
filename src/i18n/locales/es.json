@@ -1,8 +1,11 @@
 {
   "navigation": {
     "feed": "Inicio",
+    "compose": "Redactar",
+    "notifications": "Notificaciones",
     "classifieds": "Clasificados",
-    "trades": "Intercambios",
+    "marketplace": "Mercado",
+    "trades": "Intercambios P2P",
     "followPacks": "Paquetes de Seguimiento",
     "profile": "Perfil",
     "wallet": "Billetera",
@@ -122,7 +125,8 @@
     "send": "Enviar",
     "receive": "Recibir",
     "transactions": "Transacciones",
-    "noTransactions": "No hay transacciones todavía"
+    "noTransactions": "No hay transacciones todavía",
+    "satsAvailable": "sats disponibles"
   },
   "profile": {
     "following": "Siguiendo",

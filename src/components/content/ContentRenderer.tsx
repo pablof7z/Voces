@@ -18,6 +18,10 @@ interface ParsedSegment {
 }
 
 export function ContentRenderer({ content, className = '' }: ContentRendererProps) {
+  // Remove [Image #X] labels from content
+  const cleanedContent = useMemo(() => {
+    return content.replace(/\[Image #\d+\]/gi, '').trim();
+  }, [content]);
 
   const segments = useMemo(() => {
     const parsed: ParsedSegment[] = [];
@@ -41,7 +45,7 @@ export function ContentRenderer({ content, className = '' }: ContentRendererProp
     for (const pattern of patterns) {
       pattern.lastIndex = 0; // Reset regex state
       let match;
-      while ((match = pattern.exec(content)) !== null) {
+      while ((match = pattern.exec(cleanedContent)) !== null) {
         allMatches.push({ match, pattern });
       }
     }
@@ -61,7 +65,7 @@ export function ContentRenderer({ content, className = '' }: ContentRendererProp
       if (matchStart > lastIndex) {
         parsed.push({
           type: 'text',
-          content: content.slice(lastIndex, matchStart),
+          content: cleanedContent.slice(lastIndex, matchStart),
         });
       }
 
@@ -108,7 +112,7 @@ export function ContentRenderer({ content, className = '' }: ContentRendererProp
               data: decoded.data,
             });
           }
-        } catch (e) {
+        } catch (_e) {
           // If decoding fails, treat as text
           parsed.push({
             type: 'text',
@@ -136,15 +140,15 @@ export function ContentRenderer({ content, className = '' }: ContentRendererProp
     }
 
     // Add remaining text
-    if (lastIndex < content.length) {
+    if (lastIndex < cleanedContent.length) {
       parsed.push({
         type: 'text',
-        content: content.slice(lastIndex),
+        content: cleanedContent.slice(lastIndex),
       });
     }
 
     return parsed;
-  }, [content]);
+  }, [cleanedContent]);
 
   return (
     <div className={className}>

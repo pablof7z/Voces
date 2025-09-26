@@ -1,4 +1,5 @@
 import { Globe, CreditCard } from 'lucide-react';
+import { useAvailableCurrencies } from './hooks/useAvailableCurrencies';
 
 interface QuickFiltersProps {
   selectedCurrency: string;
@@ -6,17 +7,6 @@ interface QuickFiltersProps {
   onCurrencyChange: (currency: string) => void;
   onPaymentMethodChange: (method: string) => void;
 }
-
-const popularCurrencies = [
-  { code: 'all', name: 'All', flag: '🌍' },
-  { code: 'USD', name: 'USD', flag: '🇺🇸' },
-  { code: 'EUR', name: 'EUR', flag: '🇪🇺' },
-  { code: 'BRL', name: 'BRL', flag: '🇧🇷' },
-  { code: 'ARS', name: 'ARS', flag: '🇦🇷' },
-  { code: 'GBP', name: 'GBP', flag: '🇬🇧' },
-  { code: 'PLN', name: 'PLN', flag: '🇵🇱' },
-  { code: 'JPY', name: 'JPY', flag: '🇯🇵' },
-];
 
 const popularPaymentMethods = [
   { id: 'all', name: 'All Methods', icon: '💰', countries: [] },
@@ -36,6 +26,8 @@ export function QuickFilters({
   onCurrencyChange,
   onPaymentMethodChange,
 }: QuickFiltersProps) {
+  const { currencies, loading } = useAvailableCurrencies();
+
   return (
     <div className="space-y-4">
       {/* Currency Filter */}
@@ -43,9 +35,12 @@ export function QuickFilters({
         <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           <Globe className="w-4 h-4" />
           <span>Currency</span>
+          {loading && (
+            <span className="text-xs text-gray-500 dark:text-gray-400">(Loading currencies...)</span>
+          )}
         </div>
         <div className="flex flex-wrap gap-2">
-          {popularCurrencies.map((currency) => (
+          {currencies.map((currency) => (
             <button
               key={currency.code}
               onClick={() => onCurrencyChange(currency.code)}
@@ -58,7 +53,7 @@ export function QuickFilters({
               `}
             >
               <span className="text-base">{currency.flag}</span>
-              <span>{currency.name}</span>
+              <span>{currency.code === 'all' ? currency.name : currency.code}</span>
             </button>
           ))}
         </div>
@@ -107,7 +102,7 @@ export function QuickFilters({
           <span>Active filters:</span>
           {selectedCurrency !== 'all' && (
             <span className="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 rounded-full text-xs font-medium">
-              {popularCurrencies.find(c => c.code === selectedCurrency)?.flag} {selectedCurrency}
+              {currencies.find(c => c.code === selectedCurrency)?.flag} {selectedCurrency}
             </span>
           )}
           {selectedPaymentMethod !== 'all' && (

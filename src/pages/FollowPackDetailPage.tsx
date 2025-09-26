@@ -1,11 +1,10 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Users, Heart, UserPlus, UserMinus, Calendar } from 'lucide-react';
-import { useNDKCurrentUser, useSubscribe, NDKKind, useProfile } from '@nostr-dev-kit/ndk-hooks';
+import { useNDKCurrentUser, useSubscribe, NDKKind, useProfileValue, useEvent, NDKFollowPack } from '@nostr-dev-kit/ndk-hooks';
 import { Button } from '@/components/ui/button';
 import { NoteCard } from '@/features/feed/NoteCard';
 import { ProfileAvatar } from '@/features/followPacks/components/ProfileAvatar';
-import { useFollowPacks } from '@/features/followPacks/hooks/useFollowPacks';
 import { useFollowPacksStore } from '@/stores/followPacksStore';
 import { cn } from '@/lib/utils';
 
@@ -13,27 +12,37 @@ export function FollowPackDetailPage() {
   const { packId } = useParams<{ packId: string }>();
   const currentUser = useNDKCurrentUser();
   const [activeTab, setActiveTab] = useState<'feed' | 'members'>('feed');
-  const { packs } = useFollowPacks();
   const { isSubscribed, subscribeToPack, unsubscribeFromPack, isFavorite, toggleFavorite } = useFollowPacksStore();
 
-  // Find the specific pack
+  // Get the event directly using the bech32 encoded ID
+  const event = useEvent(packId || false, { subId: 'pack'});
+
+  // Convert to NDKFollowPack
   const pack = useMemo(() => {
-    return packs.find(p => p.id === packId);
-  }, [packs, packId]);
+    if (!event) return null;
+    return NDKFollowPack.from(event);
+  }, [event]);
+
+  // Extract pubkeys from the pack
+  const pubkeys = useMemo(() => {
+    if (!event) return [];
+    return event.tags
+      .filter(t => t[0] === 'p')
+      .map(t => t[1]);
+  }, [event]);
 
   // Get pack creator profile
-  const creatorProfile = useProfile(pack?.author);
+  const creatorProfile = useProfileValue(pack?.pubkey);
 
   const subscribed = pack ? isSubscribed(pack.id) : false;
   const favorited = pack ? isFavorite(pack.id) : false;
 
   // Subscribe to notes from all pack members
   const { events: feedEvents } = useSubscribe(
-    pack && activeTab === 'feed' ? [{
+    pubkeys.length > 0 && activeTab === 'feed' ? [{
       kinds: [NDKKind.Text],
-      authors: pack.pubkeys,
-      limit: 50
-    }] : []
+      authors: pubkeys,
+    }] : false
   );
 
   const handleSubscribe = () => {
@@ -75,16 +84,28 @@ export function FollowPackDetailPage() {
       </Link>
 
       {/* Pack Header */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 mb-6">
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-white mb-2">
-              {pack.title}
-            </h1>
-            <p className="text-neutral-400">
-              {pack.description || 'A curated list of accounts to follow'}
-            </p>
+      <div className="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden mb-6">
+        {/* Pack Image */}
+        {pack.image && (
+          <div className="h-48 w-full">
+            <img
+              src={pack.image}
+              alt={pack.title}
+              className="w-full h-full object-cover"
+            />
           </div>
+        )}
+
+        <div className="p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-white mb-2">
+                {pack.title}
+              </h1>
+              <p className="text-neutral-400">
+                {pack.description || 'A curated list of accounts to follow'}
+              </p>
+            </div>
           <button
             onClick={handleFavorite}
             className={cn(
@@ -102,7 +123,7 @@ export function FollowPackDetailPage() {
         <div className="flex items-center gap-6 mb-6 text-sm">
           <div className="flex items-center gap-2 text-neutral-400">
             <Users className="w-4 h-4" />
-            <span>{pack.pubkeys.length} members</span>
+            <span>{pubkeys.length} members</span>
           </div>
           {pack.lastUpdated && (
             <div className="flex items-center gap-2 text-neutral-400">
@@ -115,11 +136,11 @@ export function FollowPackDetailPage() {
         {/* Creator */}
         {creatorProfile && (
           <div className="flex items-center gap-3 mb-6 pb-6 border-b border-neutral-800">
-            <ProfileAvatar pubkey={pack.author} size="md" />
+            <ProfileAvatar pubkey={pack.pubkey} size="md" />
             <div>
               <p className="text-sm text-neutral-500">Created by</p>
               <Link
-                to={`/p/${pack.author}`}
+                to={`/p/${pack.pubkey}`}
                 className="font-medium text-white hover:text-purple-400 transition-colors"
               >
                 {creatorProfile.name || 'Anonymous'}
@@ -147,6 +168,7 @@ export function FollowPackDetailPage() {
             </>
           )}
         </Button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -175,7 +197,7 @@ export function FollowPackDetailPage() {
                 : "text-neutral-400 hover:text-neutral-200"
             )}
           >
-            Members ({pack.pubkeys.length})
+            Members ({pubkeys.length})
             {activeTab === 'members' && (
               <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-500" />
             )}
@@ -202,7 +224,7 @@ export function FollowPackDetailPage() {
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {pack.pubkeys.map(pubkey => (
+          {pubkeys.map(pubkey => (
             <MemberCard key={pubkey} pubkey={pubkey} />
           ))}
         </div>
@@ -212,7 +234,7 @@ export function FollowPackDetailPage() {
 }
 
 function MemberCard({ pubkey }: { pubkey: string }) {
-  const profile = useProfile(pubkey);
+  const profile = useProfileValue(pubkey);
 
   return (
     <Link

@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Zap, Send, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export function WalletWidget() {
+  const { t } = useTranslation();
   const [balance] = useState(21000);
 
   return (
@@ -17,7 +19,7 @@ export function WalletWidget() {
             <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
               <Zap className="w-4 h-4 text-white" />
             </div>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Wallet</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('navigation.wallet')}</span>
           </div>
         </div>
 
@@ -25,7 +27,7 @@ export function WalletWidget() {
           <div className="text-2xl font-light text-gray-900 dark:text-gray-100">
             {balance.toLocaleString()}
           </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">sats available</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">{t('wallet.satsAvailable')}</div>
         </div>
 
         <div className="flex gap-2">
@@ -38,7 +40,7 @@ export function WalletWidget() {
             className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-white dark:bg-gray-800 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
             <Send className="w-3 h-3" />
-            Send
+            {t('wallet.send')}
           </button>
           <button
             onClick={(e) => {
@@ -49,7 +51,7 @@ export function WalletWidget() {
             className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-white dark:bg-gray-800 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
             <Download className="w-3 h-3" />
-            Receive
+            {t('wallet.receive')}
           </button>
         </div>
       </motion.div>

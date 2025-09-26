@@ -1,7 +1,7 @@
 import { useEvent, useProfile } from '@nostr-dev-kit/ndk-hooks';
 import { formatDistanceToNow } from 'date-fns';
 import { UserAvatar } from '@/components/ui/UserAvatar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { nip19 } from 'nostr-tools';
 
 interface EmbeddedNoteProps {
@@ -12,7 +12,8 @@ export function EmbeddedNote({ eventId }: EmbeddedNoteProps) {
   const event = useEvent(eventId);
   const loading = !event;
   const error = false;
-  const profile = useProfile(event?.author?.pubkey);
+  const profile = useProfile(event?.pubkey);
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -27,7 +28,7 @@ export function EmbeddedNote({ eventId }: EmbeddedNoteProps) {
     return null;
   }
 
-  const npub = event.author?.npub || (event.pubkey ? nip19.npubEncode(event.pubkey) : '');
+  const npub = event.pubkey ? nip19.npubEncode(event.pubkey) : '';
   const displayName = profile?.name || profile?.displayName || 'Anonymous';
   const handle = profile?.nip05 ? `@${profile.nip05.split('@')[0]}` : `@${npub.slice(5, 12)}`;
 
@@ -35,7 +36,8 @@ export function EmbeddedNote({ eventId }: EmbeddedNoteProps) {
     <div className="my-3 p-4 border border-neutral-200 dark:border-neutral-800 rounded-xl bg-neutral-50 dark:bg-neutral-900/50 hover:bg-neutral-100 dark:hover:bg-neutral-900/70 transition-colors cursor-pointer"
          onClick={(e) => {
            e.stopPropagation();
-           // Navigate to the note detail page when implemented
+           const neventId = event.encode();
+           navigate(`/e/${neventId}`);
          }}>
       <div className="flex items-start gap-3">
         <Link to={`/p/${npub}`} onClick={(e) => e.stopPropagation()}>

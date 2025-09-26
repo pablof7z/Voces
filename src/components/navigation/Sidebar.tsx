@@ -3,24 +3,31 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
 import { useProfile } from '@nostr-dev-kit/ndk-hooks';
+import { useTranslation } from 'react-i18next';
 import { WalletWidget } from '../wallet/WalletWidget';
 import { UserAvatar } from '../ui/UserAvatar';
 
-const navItems = [
-  { path: '/', icon: Home, label: 'Home' },
-  { path: '/compose', icon: Edit3, label: 'Compose' },
-  { path: '/notifications', icon: Bell, label: 'Notifications' },
-  { path: '/profile', icon: User, label: 'Profile' },
-  { path: '/packs', icon: Package, label: 'Follow Packs' },
-  { path: '/marketplace', icon: ShoppingBag, label: 'Marketplace' },
-  { path: '/wallet', icon: Wallet, label: 'Wallet' },
-  { path: '/trades', icon: TrendingUp, label: 'P2P Trades' },
+const navItemsConfig = [
+  { path: '/', icon: Home, key: 'feed' },
+  { path: '/compose', icon: Edit3, key: 'compose' },
+  { path: '/notifications', icon: Bell, key: 'notifications' },
+  { path: '/profile', icon: User, key: 'profile' },
+  { path: '/packs', icon: Package, key: 'followPacks' },
+  { path: '/marketplace', icon: ShoppingBag, key: 'marketplace' },
+  { path: '/wallet', icon: Wallet, key: 'wallet' },
+  { path: '/trades', icon: TrendingUp, key: 'trades' },
 ];
 
 export function Sidebar() {
+  const { t } = useTranslation();
   const location = useLocation();
   const currentUser = useNDKCurrentUser();
   const profile = useProfile(currentUser?.pubkey);
+
+  const navItems = navItemsConfig.map(item => ({
+    ...item,
+    label: item.key === 'compose' ? 'Compose' : t(`navigation.${item.key}`)
+  }));
 
   return (
     <aside className="hidden md:flex md:w-64 lg:w-72 flex-col h-screen fixed left-0 top-0 bg-black border-r border-neutral-800/50">
@@ -80,7 +87,7 @@ export function Sidebar() {
               className="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-400 hover:bg-neutral-900/50 hover:text-neutral-200 transition-colors"
             >
               <Settings className="w-4 h-4" />
-              <span className="text-sm">Settings</span>
+              <span className="text-sm">{t('navigation.settings')}</span>
             </Link>
           </div>
         </div>

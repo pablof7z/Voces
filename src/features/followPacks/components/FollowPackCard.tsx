@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import { Heart, UserPlus, UserMinus } from 'lucide-react';
-import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
+import { useNavigate } from 'react-router-dom';
+import { useNDKCurrentUser, NDKFollowPack } from '@nostr-dev-kit/ndk-hooks';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useFollowPacksStore } from '@/stores/followPacksStore';
 import { ProfileAvatar } from './ProfileAvatar';
-import type { FollowPackWithMetadata } from '../types';
 
 interface FollowPackCardProps {
-  pack: FollowPackWithMetadata;
+  pack: NDKFollowPack;
   onSubscribe?: () => void;
   variant?: 'default' | 'compact';
 }
 
 export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: FollowPackCardProps) {
+  const navigate = useNavigate();
   const currentUser = useNDKCurrentUser();
   const { isSubscribed, subscribeToPack, unsubscribeFromPack, toggleFavorite, isFavorite } = useFollowPacksStore();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -24,7 +25,8 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
   const subscribed = isSubscribed(pack.id);
   const favorited = isFavorite(pack.id);
 
-  const handleSubscribe = async () => {
+  const handleSubscribe = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!currentUser) return;
 
     if (subscribed) {
@@ -35,14 +37,22 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
     }
   };
 
-  const handleFavorite = () => {
+  const handleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!currentUser) return;
     toggleFavorite(pack.id);
   };
 
+  const handleCardClick = () => {
+    navigate(`/packs/${pack.encode()}`);
+  };
+
   if (variant === 'compact') {
     return (
-      <div className="p-4 bg-white dark:bg-gray-950 hover:bg-gray-50 dark:hover:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg transition-colors">
+      <div
+        className="p-4 bg-white dark:bg-gray-950 hover:bg-gray-50 dark:hover:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg transition-colors cursor-pointer"
+        onClick={handleCardClick}
+      >
         <div className="flex items-center justify-between">
           <div className="flex-1 min-w-0">
             <h4 className="font-medium text-gray-900 dark:text-gray-100 truncate">
@@ -66,7 +76,10 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
   }
 
   return (
-    <div className="bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+    <div
+      className="bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+      onClick={handleCardClick}
+    >
       {/* Header */}
       <div className="p-6">
         {pack.image && (
@@ -153,7 +166,10 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
         {/* Expandable member list */}
         {pack.pubkeys.length > 5 && (
           <button
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsExpanded(!isExpanded);
+            }}
             className="text-sm text-purple-600 dark:text-purple-400 hover:underline mt-3 inline-block"
           >
             {isExpanded ? 'Show less' : `View all ${pack.pubkeys.length} members`}

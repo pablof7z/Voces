@@ -1,4 +1,5 @@
 import { DollarSign, CreditCard, TrendingUp } from 'lucide-react';
+import { useAvailableCurrencies } from './hooks/useAvailableCurrencies';
 
 interface TradeFiltersProps {
   filters: {
@@ -11,16 +12,6 @@ interface TradeFiltersProps {
   onChange: (filters: any) => void;
 }
 
-const currencies = [
-  { code: 'all', name: 'All Currencies' },
-  { code: 'USD', name: 'US Dollar' },
-  { code: 'EUR', name: 'Euro' },
-  { code: 'GBP', name: 'British Pound' },
-  { code: 'BRL', name: 'Brazilian Real' },
-  { code: 'ARS', name: 'Argentine Peso' },
-  { code: 'PLN', name: 'Polish Złoty' },
-];
-
 const paymentMethods = [
   { id: 'all', name: 'All Methods' },
   { id: 'Cash', name: 'Cash' },
@@ -32,6 +23,8 @@ const paymentMethods = [
 ];
 
 export function TradeFilters({ filters, onChange }: TradeFiltersProps) {
+  const { currencies } = useAvailableCurrencies();
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       {/* Currency Filter */}
@@ -47,7 +40,7 @@ export function TradeFilters({ filters, onChange }: TradeFiltersProps) {
         >
           {currencies.map((curr) => (
             <option key={curr.code} value={curr.code}>
-              {curr.name}
+              {curr.code === 'all' ? curr.name : `${curr.code} - ${curr.name}`}
             </option>
           ))}
         </select>

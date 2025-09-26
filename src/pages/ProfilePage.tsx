@@ -6,7 +6,8 @@ import { useParams } from 'react-router-dom';
 import { ProfileEditor } from '@/features/profile/ProfileEditor';
 import { nip19 } from 'nostr-tools';
 import { FollowPackCard } from '@/features/followPacks/components/FollowPackCard';
-import { useFollowPacks } from '@/features/followPacks/hooks/useFollowPacks';
+import { useProfileFollowPacks } from '@/features/followPacks/hooks/useProfileFollowPacks';
+import { MediaGrid } from '@/components/media/MediaGrid';
 
 export function ProfilePage() {
   const { identifier } = useParams<{ identifier?: string }>();
@@ -59,7 +60,23 @@ export function ProfilePage() {
     limit: 20,
   }] : []);
 
-  const { packs } = useFollowPacks(targetPubkey);
+  // Fetch kind:20, 21, 22 media events for the media tab (NIP-68)
+  const { events: mediaEvents } = useSubscribe(targetPubkey && activeTab === 'media' ? [{
+    kinds: [
+      NDKKind.Image,       // kind:20 - Image file metadata
+      NDKKind.Video,       // kind:21 - Video file metadata
+      NDKKind.ShortVideo,  // kind:22 - Short video file metadata
+    ],
+    authors: [targetPubkey],
+  }] : []);
+
+  const [packFilter, setPackFilter] = useState<'all' | 'created' | 'appears'>('all');
+  const { createdPacks, appearsPacks, allPacks } = useProfileFollowPacks(targetPubkey || '');
+
+  // Select which packs to show based on filter
+  const packs = packFilter === 'created' ? createdPacks :
+                packFilter === 'appears' ? appearsPacks :
+                allPacks;
 
   if (!targetPubkey) return null;
 
@@ -225,29 +242,64 @@ export function ProfilePage() {
         )}
 
         {activeTab === 'media' && (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            Media coming soon
+          <div className="p-4">
+            <MediaGrid events={mediaEvents} />
           </div>
         )}
 
         {activeTab === 'packs' && (
           <div className="p-4 space-y-4">
+            {/* Filter tabs for follow packs */}
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={() => setPackFilter('all')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  packFilter === 'all'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                }`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => setPackFilter('created')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  packFilter === 'created'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                }`}
+              >
+                {isOwnProfile ? 'Created by you' : `Created by @${profile?.name || 'user'}`}
+              </button>
+              <button
+                onClick={() => setPackFilter('appears')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  packFilter === 'appears'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                }`}
+              >
+                {isOwnProfile ? 'Appears on' : `@${profile?.name || 'user'} appears on`}
+              </button>
+            </div>
+
             {packs.length > 0 ? (
-              <>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                  {isOwnProfile ? 'Your Follow Packs' : 'Follow Packs'}
-                </h3>
-                <div className="grid gap-4 md:grid-cols-2">
-                  {packs.map((pack) => (
-                    <FollowPackCard key={pack.id} pack={pack} />
-                  ))}
-                </div>
-              </>
+              <div className="grid gap-4 md:grid-cols-2">
+                {packs.map((pack) => (
+                  <FollowPackCard key={pack.id} pack={pack} />
+                ))}
+              </div>
             ) : (
               <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                {isOwnProfile
-                  ? "You haven't created any follow packs yet"
-                  : "No follow packs yet"}
+                {packFilter === 'created'
+                  ? (isOwnProfile
+                      ? "You haven't created any follow packs yet"
+                      : `@${profile?.name || 'user'} hasn't created any follow packs yet`)
+                  : packFilter === 'appears'
+                  ? (isOwnProfile
+                      ? "You don't appear on any follow packs yet"
+                      : `@${profile?.name || 'user'} doesn't appear on any follow packs yet`)
+                  : "No follow packs found"}
               </div>
             )}
           </div>

@@ -1,22 +1,29 @@
 import { Home, Store, Wallet, TrendingUp, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
-const navItems = [
-  { path: '/', icon: Home, label: 'Home' },
-  { path: '/marketplace', icon: Store, label: 'Market' },
-  { path: '/wallet', icon: Wallet, label: 'Wallet' },
-  { path: '/trades', icon: TrendingUp, label: 'Trades' },
-  { path: '/profile', icon: User, label: 'Profile' },
+const navItemsConfig = [
+  { path: '/', icon: Home, key: 'feed' },
+  { path: '/marketplace', icon: Store, key: 'marketplace' },
+  { path: '/wallet', icon: Wallet, key: 'wallet' },
+  { path: '/trades', icon: TrendingUp, key: 'trades' },
+  { path: '/profile', icon: User, key: 'profile' },
 ];
 
 export function BottomNav() {
+  const { t } = useTranslation();
   const location = useLocation();
+
+  const navItems = navItemsConfig.map(item => ({
+    ...item,
+    label: t(`navigation.${item.key}`)
+  }));
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 md:hidden z-40">
-      {/* Frosted glass effect with subtle border */}
-      <div className="bg-neutral-50/90 dark:bg-neutral-950/90 backdrop-blur-xl border-t border-neutral-200/20 dark:border-neutral-800/20">
+      {/* Clean bottom nav */}
+      <div className="bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800">
         <div className="flex items-center justify-around h-16 px-3">
           {navItems.map(({ path, icon: Icon, label }) => {
             const isActive = location.pathname === path;
@@ -26,28 +33,23 @@ export function BottomNav() {
                 to={path}
                 className="relative flex flex-col items-center justify-center gap-1 w-full h-full group"
               >
-                {/* Active indicator - minimal and elegant */}
-                {isActive && (
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-12 h-0.5 bg-accent-600 dark:bg-accent-400 rounded-full" />
-                )}
-
                 <div className="relative">
                   <Icon
                     className={cn(
-                      'w-5 h-5 transition-all duration-300',
+                      'w-5 h-5 transition-colors duration-200',
                       isActive
-                        ? 'text-neutral-900 dark:text-neutral-50'
-                        : 'text-neutral-400 dark:text-neutral-600 group-hover:text-neutral-600 dark:group-hover:text-neutral-400'
+                        ? 'text-gray-900 dark:text-white'
+                        : 'text-gray-400 dark:text-gray-500'
                     )}
                     strokeWidth={isActive ? 2 : 1.5}
                   />
                 </div>
 
                 <span className={cn(
-                  'text-2xs font-medium transition-all duration-300',
+                  'text-xs font-medium transition-colors duration-200 mt-0.5',
                   isActive
-                    ? 'text-neutral-900 dark:text-neutral-50'
-                    : 'text-neutral-400 dark:text-neutral-600 group-hover:text-neutral-600 dark:group-hover:text-neutral-400'
+                    ? 'text-gray-900 dark:text-white'
+                    : 'text-gray-500 dark:text-gray-400'
                 )}>
                   {label}
                 </span>

@@ -13,6 +13,7 @@ import { CreateListingPage } from './pages/marketplace/CreateListingPage';
 import { ListingDetailPage } from './pages/marketplace/ListingDetailPage';
 import { FollowPacksPage } from './pages/FollowPacksPage';
 import { FollowPackDetailPage } from './pages/FollowPackDetailPage';
+import { NoteDetailPage } from './pages/NoteDetailPage';
 import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ function AppRoutes() {
         <Route path="notifications" element={currentUser ? <NotificationsPage /> : <Navigate to="/" />} />
         <Route path="profile" element={currentUser ? <ProfilePage /> : <Navigate to="/" />} />
         <Route path="p/:identifier" element={<ProfilePage />} />
+        <Route path="e/:nevent" element={<NoteDetailPage />} />
         <Route path="packs" element={<FollowPacksPage />} />
         <Route path="packs/:packId" element={<FollowPackDetailPage />} />
         <Route path="wallet" element={<WalletPage />} />

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Filter, X } from 'lucide-react';
+import { useAvailableCurrencies } from './hooks/useAvailableCurrencies';
 
 interface MobileFiltersProps {
   selectedCurrency: string;
@@ -7,17 +8,6 @@ interface MobileFiltersProps {
   onCurrencyChange: (currency: string) => void;
   onPaymentMethodChange: (method: string) => void;
 }
-
-const currencies = [
-  { code: 'all', flag: '🌍' },
-  { code: 'USD', flag: '🇺🇸' },
-  { code: 'EUR', flag: '🇪🇺' },
-  { code: 'BRL', flag: '🇧🇷' },
-  { code: 'ARS', flag: '🇦🇷' },
-  { code: 'GBP', flag: '🇬🇧' },
-  { code: 'PLN', flag: '🇵🇱' },
-  { code: 'JPY', flag: '🇯🇵' },
-];
 
 const paymentMethods = [
   { id: 'all', name: 'All', icon: '💰' },
@@ -35,6 +25,7 @@ export function MobileFilters({
   onPaymentMethodChange,
 }: MobileFiltersProps) {
   const [showFilters, setShowFilters] = useState(false);
+  const { currencies } = useAvailableCurrencies();
 
   const selectedCurrencyData = currencies.find(c => c.code === selectedCurrency);
   const selectedPaymentData = paymentMethods.find(p => p.id === selectedPaymentMethod);

@@ -1,40 +1,24 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Package, Search } from 'lucide-react';
+import { NDKFollowPack } from '@nostr-dev-kit/ndk-hooks';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useFollowPacks, useSubscribedFollowPacks } from '@/features/followPacks/hooks/useFollowPacks';
 import { useFollowPacksStore } from '@/stores/followPacksStore';
 import { ProfileAvatar } from '@/features/followPacks/components/ProfileAvatar';
-import { cn } from '@/lib/utils';
 
 export function FollowPacksPage() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const { packs } = useFollowPacks();
   const subscribedPacks = useSubscribedFollowPacks();
 
-  // Filter packs based on search and category
+  // Filter packs based on search
   const filteredPacks = packs.filter(pack => {
-    const matchesSearch = !searchQuery ||
-      pack.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      pack.description.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesCategory = selectedCategory === 'all' || (() => {
-      const searchText = `${pack.title} ${pack.description}`.toLowerCase();
-      switch (selectedCategory) {
-        case 'tech':
-          return /tech|dev|code|program|software/i.test(searchText);
-        case 'bitcoin':
-          return /bitcoin|btc|sats|lightning/i.test(searchText);
-        case 'nostr':
-          return /nostr|relay|nip/i.test(searchText);
-        default:
-          return true;
-      }
-    })();
-
-    return matchesSearch && matchesCategory;
+    if (!searchQuery) return true;
+    const search = searchQuery.toLowerCase();
+    return pack.title.toLowerCase().includes(search) ||
+           pack.description.toLowerCase().includes(search);
   });
 
   return (
@@ -50,8 +34,8 @@ export function FollowPacksPage() {
         </p>
       </div>
 
-      {/* Search and Filters */}
-      <div className="mb-6 space-y-4">
+      {/* Search */}
+      <div className="mb-6">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
           <Input
@@ -61,54 +45,6 @@ export function FollowPacksPage() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 bg-neutral-900 border-neutral-800 text-white placeholder:text-neutral-500"
           />
-        </div>
-
-        {/* Category Pills */}
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setSelectedCategory('all')}
-            className={cn(
-              "px-4 py-2 rounded-full text-sm font-medium transition-colors",
-              selectedCategory === 'all'
-                ? 'bg-purple-600 text-white'
-                : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800'
-            )}
-          >
-            All
-          </button>
-          <button
-            onClick={() => setSelectedCategory('tech')}
-            className={cn(
-              "px-4 py-2 rounded-full text-sm font-medium transition-colors",
-              selectedCategory === 'tech'
-                ? 'bg-purple-600 text-white'
-                : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800'
-            )}
-          >
-            💻 Tech
-          </button>
-          <button
-            onClick={() => setSelectedCategory('bitcoin')}
-            className={cn(
-              "px-4 py-2 rounded-full text-sm font-medium transition-colors",
-              selectedCategory === 'bitcoin'
-                ? 'bg-purple-600 text-white'
-                : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800'
-            )}
-          >
-            ₿ Bitcoin
-          </button>
-          <button
-            onClick={() => setSelectedCategory('nostr')}
-            className={cn(
-              "px-4 py-2 rounded-full text-sm font-medium transition-colors",
-              selectedCategory === 'nostr'
-                ? 'bg-purple-600 text-white'
-                : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800'
-            )}
-          >
-            🟣 Nostr
-          </button>
         </div>
       </div>
 
@@ -148,14 +84,7 @@ export function FollowPacksPage() {
   );
 }
 
-interface Pack {
-  id: string;
-  title: string;
-  description: string;
-  pubkeys: string[];
-}
-
-function PackCard({ pack }: { pack: Pack }) {
+function PackCard({ pack }: { pack: NDKFollowPack }) {
   const { isSubscribed, subscribeToPack, unsubscribeFromPack } = useFollowPacksStore();
   const subscribed = isSubscribed(pack.id);
   const previewPubkeys = pack.pubkeys.slice(0, 4);
@@ -171,59 +100,73 @@ function PackCard({ pack }: { pack: Pack }) {
 
   return (
     <Link
-      to={`/packs/${pack.id}`}
-      className="block bg-neutral-900 border border-neutral-800 rounded-xl p-5 hover:border-neutral-700 transition-colors group"
+      to={`/packs/${pack.encode()}`}
+      className="block bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden hover:border-neutral-700 transition-colors group"
     >
-      {/* Header */}
-      <div className="mb-4">
-        <h3 className="font-semibold text-white group-hover:text-purple-400 transition-colors">
-          {pack.title}
-        </h3>
-        <p className="text-sm text-neutral-500 mt-1">
-          {pack.pubkeys.length} members
-        </p>
-      </div>
-
-      {/* Description */}
-      {pack.description && (
-        <p className="text-sm text-neutral-400 mb-4 line-clamp-2">
-          {pack.description}
-        </p>
+      {/* Image */}
+      {pack.image && (
+        <div className="h-32 w-full">
+          <img
+            src={pack.image}
+            alt={pack.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
       )}
 
-      {/* Member Avatars */}
-      <div className="flex items-center justify-between">
-        <div className="flex -space-x-2">
-          {previewPubkeys.map((pubkey: string, index: number) => (
-            <div
-              key={pubkey}
-              className="relative"
-              style={{ zIndex: 4 - index }}
-            >
-              <ProfileAvatar
-                pubkey={pubkey}
-                size="sm"
-                className="ring-2 ring-neutral-900"
-              />
-            </div>
-          ))}
-          {pack.pubkeys.length > 4 && (
-            <div className="w-8 h-8 rounded-full bg-neutral-800 ring-2 ring-neutral-900 flex items-center justify-center">
-              <span className="text-xs text-neutral-400">
-                +{pack.pubkeys.length - 4}
-              </span>
-            </div>
-          )}
+      {/* Content padding wrapper */}
+      <div className="p-5">
+        {/* Header */}
+        <div className="mb-4">
+          <h3 className="font-semibold text-white group-hover:text-purple-400 transition-colors">
+            {pack.title}
+          </h3>
+          <p className="text-sm text-neutral-500 mt-1">
+            {pack.pubkeys.length} members
+          </p>
         </div>
 
-        <Button
-          onClick={handleSubscribe}
-          size="sm"
-          variant={subscribed ? 'outline' : 'primary'}
-          className="ml-2"
-        >
-          {subscribed ? 'Following' : 'Follow'}
-        </Button>
+        {/* Description */}
+        {pack.description && (
+          <p className="text-sm text-neutral-400 mb-4 line-clamp-2">
+            {pack.description}
+          </p>
+        )}
+
+        {/* Member Avatars */}
+        <div className="flex items-center justify-between">
+          <div className="flex -space-x-2">
+            {previewPubkeys.map((pubkey: string, index: number) => (
+              <div
+                key={pubkey}
+                className="relative"
+                style={{ zIndex: 4 - index }}
+              >
+                <ProfileAvatar
+                  pubkey={pubkey}
+                  size="sm"
+                  className="ring-2 ring-neutral-900"
+                />
+              </div>
+            ))}
+            {pack.pubkeys.length > 4 && (
+              <div className="w-8 h-8 rounded-full bg-neutral-800 ring-2 ring-neutral-900 flex items-center justify-center">
+                <span className="text-xs text-neutral-400">
+                  +{pack.pubkeys.length - 4}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <Button
+            onClick={handleSubscribe}
+            size="sm"
+            variant={subscribed ? 'outline' : 'primary'}
+            className="ml-2"
+          >
+            {subscribed ? 'Following' : 'Follow'}
+          </Button>
+        </div>
       </div>
     </Link>
   );

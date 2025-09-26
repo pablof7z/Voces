@@ -12,16 +12,16 @@ export function Layout() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-black">
       {/* Sidebar for desktop */}
       <Sidebar />
       
       {/* Main content area */}
       <div className="md:ml-64 lg:ml-72 flex flex-col min-h-screen">
         {/* Mobile header */}
-        <header className="md:hidden sticky top-0 z-50 bg-neutral-50/80 dark:bg-neutral-950/80 backdrop-blur-xl border-b border-neutral-200/50 dark:border-neutral-800/30">
-          <div className="flex items-center justify-between px-5 h-14">
-            <h1 className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+        <header className="md:hidden sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800">
+          <div className="flex items-center justify-between px-4 h-14">
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white">
               Voces
             </h1>
             <div className="flex items-center gap-2">
