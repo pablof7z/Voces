@@ -1,0 +1,153 @@
+{
+  "navigation": {
+    "feed": "Inicio",
+    "classifieds": "Clasificados",
+    "trades": "Intercambios",
+    "followPacks": "Paquetes de Seguimiento",
+    "profile": "Perfil",
+    "wallet": "Billetera",
+    "settings": "Configuración"
+  },
+  "auth": {
+    "login": "Iniciar sesión con Nostr",
+    "logout": "Cerrar sesión",
+    "loginSuccess": "Sesión iniciada correctamente",
+    "loginError": "Error al iniciar sesión",
+    "connecting": "Conectando..."
+  },
+  "feed": {
+    "title": "Inicio",
+    "compose": {
+      "placeholder": "¿Qué estás pensando?",
+      "publish": "Publicar",
+      "publishing": "Publicando...",
+      "publishSuccess": "¡Nota publicada!",
+      "publishError": "Error al publicar la nota"
+    },
+    "loading": "Cargando notas...",
+    "empty": "No hay notas para mostrar",
+    "error": "Error al cargar el feed"
+  },
+  "classifieds": {
+    "title": "Clasificados",
+    "description": "Compra, vende e intercambia con la comunidad Nostr",
+    "noListings": "No hay anuncios todavía. ¡Sé el primero en crear uno!",
+    "createListing": "Crear Anuncio",
+    "filters": {
+      "all": "Todos",
+      "selling": "Venta",
+      "buying": "Compra",
+      "services": "Servicios"
+    }
+  },
+  "trades": {
+    "title": "Intercambios",
+    "description": "Intercambios P2P seguros con protección de depósito",
+    "noTrades": "No hay intercambios todavía. ¡Explora los clasificados para empezar!",
+    "browseClassifieds": "Explorar Clasificados",
+    "statuses": {
+      "pending": "Pendiente",
+      "active": "Activo",
+      "completed": "Completado",
+      "disputed": "En disputa"
+    }
+  },
+  "followPacks": {
+    "title": "Paquetes de Seguimiento",
+    "description": "Descubre listas curadas de personas para seguir",
+    "noPacks": "No hay paquetes de seguimiento disponibles aún",
+    "followers": "seguidores"
+  },
+  "settings": {
+    "title": "Configuración",
+    "description": "Gestiona las preferencias y configuración de la aplicación",
+    "sections": {
+      "relays": {
+        "title": "Relés",
+        "description": "Configurar conexiones de relé Nostr",
+        "addRelay": "Agregar Relé",
+        "relayUrl": "URL del Relé",
+        "urlPlaceholder": "wss://relay.ejemplo.com",
+        "permissions": "Permisos",
+        "read": "Lectura",
+        "write": "Escritura",
+        "enabled": "Habilitado",
+        "remove": "Eliminar",
+        "confirmRemove": "¿Estás seguro de que quieres eliminar este relé?",
+        "invalidUrl": "URL de relé inválida",
+        "relayExists": "Este relé ya existe",
+        "connected": "Conectado",
+        "disconnected": "Desconectado",
+        "connecting": "Conectando..."
+      },
+      "appearance": {
+        "title": "Apariencia",
+        "description": "Personaliza el tema y la visualización de la aplicación",
+        "language": "Idioma",
+        "languageDescription": "Elige tu idioma preferido",
+        "theme": "Tema",
+        "themeDescription": "Elige tu tema preferido",
+        "themes": {
+          "light": "Claro",
+          "dark": "Oscuro",
+          "system": "Sistema"
+        }
+      },
+      "notifications": {
+        "title": "Notificaciones",
+        "description": "Controla las preferencias de notificación"
+      },
+      "privacy": {
+        "title": "Privacidad",
+        "description": "Gestiona la configuración de privacidad y seguridad"
+      },
+      "profile": {
+        "title": "Perfil",
+        "description": "Edita tu información de perfil"
+      },
+      "blossom": {
+        "title": "Servidores de Medios",
+        "description": "Configura los servidores de carga de medios Blossom"
+      },
+      "followpacks": {
+        "title": "Paquetes de Seguimiento",
+        "description": "Descubre y gestiona paquetes de seguimiento"
+      }
+    },
+    "comingSoon": "Próximamente..."
+  },
+  "wallet": {
+    "title": "Billetera",
+    "balance": "Saldo",
+    "send": "Enviar",
+    "receive": "Recibir",
+    "transactions": "Transacciones",
+    "noTransactions": "No hay transacciones todavía"
+  },
+  "profile": {
+    "following": "Siguiendo",
+    "followers": "Seguidores",
+    "posts": "Publicaciones",
+    "editProfile": "Editar Perfil",
+    "follow": "Seguir",
+    "unfollow": "Dejar de seguir"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "retry": "Reintentar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "search": "Buscar",
+    "more": "Más",
+    "less": "Menos",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "share": "Compartir",
+    "soon": "Pronto"
+  }
+}

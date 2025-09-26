@@ -1,16 +1,19 @@
 import { useState } from 'react';
-import { useNDK } from '@/contexts/NDKContext';
+import { 
+  useNDKCurrentUser,
+  useNDKSessionLogin,
+  useNDKSessionLogout,
+  NDKNip07Signer,
+  NDKPrivateKeySigner
+} from '@nostr-dev-kit/ndk-hooks';
 import { Button } from '@/components/ui/button';
 import { User, LogOut, Key, Sparkles } from 'lucide-react';
 
 export function LoginButton() {
-  const { 
-    currentUser, 
-    login: loginWithExtension, 
-    loginWithPrivateKey,
-    generateNewIdentity,
-    logout 
-  } = useNDK();
+  const currentUser = useNDKCurrentUser();
+  const login = useNDKSessionLogin();
+  const logout = useNDKSessionLogout();
+  
   const [showOptions, setShowOptions] = useState(false);
   const [nsec, setNsec] = useState('');
   const [showNsecInput, setShowNsecInput] = useState(false);
@@ -19,11 +22,15 @@ export function LoginButton() {
   const handleExtensionLogin = async () => {
     setIsConnecting(true);
     try {
-      await loginWithExtension();
+      if (!window.nostr) {
+        throw new Error('No Nostr extension found. Please install Alby or nos2x.');
+      }
+      const signer = new NDKNip07Signer();
+      await login(signer, true);
       setShowOptions(false);
     } catch (error) {
       console.error('Extension login failed:', error);
-      alert('Extension login failed. Please make sure you have a Nostr extension installed.');
+      alert(error instanceof Error ? error.message : 'Extension login failed');
     } finally {
       setIsConnecting(false);
     }
@@ -33,7 +40,9 @@ export function LoginButton() {
     if (!nsec) return;
     setIsConnecting(true);
     try {
-      await loginWithPrivateKey(nsec);
+      const signer = new NDKPrivateKeySigner(nsec);
+      await login(signer, true);
+      localStorage.setItem('nostr_private_key', nsec);
       setNsec('');
       setShowNsecInput(false);
       setShowOptions(false);
@@ -48,8 +57,12 @@ export function LoginButton() {
   const handleGenerateIdentity = async () => {
     setIsConnecting(true);
     try {
-      const { npub, nsec } = await generateNewIdentity();
-      alert(`New identity created!\nnpub: ${npub}\nnsec: ${nsec}\n\nIMPORTANT: Save your nsec somewhere safe!`);
+      const signer = NDKPrivateKeySigner.generate();
+      await login(signer, true);
+      const privateKey = signer.privateKey!;
+      localStorage.setItem('nostr_private_key', privateKey);
+      const user = await signer.user();
+      alert(`New identity created!\nnpub: ${user.npub}\nnsec: ${privateKey}\n\nIMPORTANT: Save your nsec somewhere safe!`);
       setShowOptions(false);
     } catch (error) {
       console.error('Failed to generate identity:', error);
@@ -59,29 +72,21 @@ export function LoginButton() {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    localStorage.removeItem('nostr_private_key');
+  };
+
   if (currentUser) {
     return (
       <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          {currentUser.profile?.image && (
-            <img
-              src={currentUser.profile.image}
-              alt={currentUser.profile.name || 'User'}
-              className="w-8 h-8 rounded-full"
-            />
-          )}
-          <span className="text-sm font-medium">
-            {currentUser.profile?.name || currentUser.npub.slice(0, 12) + '...'}
-          </span>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={logout}
+        <button
+          onClick={handleLogout}
+          className="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors text-sm font-medium flex items-center gap-2"
         >
-          <LogOut className="w-4 h-4 mr-2" />
-          Logout
-        </Button>
+          <LogOut className="w-4 h-4" />
+          <span className="hidden sm:inline">Logout</span>
+        </button>
       </div>
     );
   }
@@ -157,13 +162,14 @@ export function LoginButton() {
   }
 
   return (
-    <Button
+    <button
       onClick={() => setShowOptions(true)}
       disabled={isConnecting}
-      variant="default"
+      className="px-4 py-2 rounded-lg bg-white hover:bg-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800 text-neutral-900 dark:text-white border border-neutral-200 dark:border-neutral-700 transition-all text-sm font-medium flex items-center gap-2"
     >
-      <User className="w-4 h-4 mr-2" />
-      {isConnecting ? 'Connecting...' : 'Login with Nostr'}
-    </Button>
+      <User className="w-4 h-4" />
+      <span className="hidden sm:inline">{isConnecting ? 'Connecting...' : 'Login'}</span>
+      <span className="sm:hidden">{isConnecting ? '...' : 'Login'}</span>
+    </button>
   );
 }

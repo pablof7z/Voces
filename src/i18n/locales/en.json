@@ -1,0 +1,153 @@
+{
+  "navigation": {
+    "feed": "Feed",
+    "classifieds": "Classifieds",
+    "trades": "Trades",
+    "followPacks": "Follow Packs",
+    "profile": "Profile",
+    "wallet": "Wallet",
+    "settings": "Settings"
+  },
+  "auth": {
+    "login": "Login with Nostr",
+    "logout": "Logout",
+    "loginSuccess": "Successfully logged in",
+    "loginError": "Failed to login",
+    "connecting": "Connecting..."
+  },
+  "feed": {
+    "title": "Feed",
+    "compose": {
+      "placeholder": "What's on your mind?",
+      "publish": "Publish",
+      "publishing": "Publishing...",
+      "publishSuccess": "Note published!",
+      "publishError": "Failed to publish note"
+    },
+    "loading": "Loading notes...",
+    "empty": "No notes to display",
+    "error": "Error loading feed"
+  },
+  "classifieds": {
+    "title": "Classifieds",
+    "description": "Buy, sell, and trade with the Nostr community",
+    "noListings": "No listings yet. Be the first to create one!",
+    "createListing": "Create Listing",
+    "filters": {
+      "all": "All",
+      "selling": "Selling",
+      "buying": "Buying",
+      "services": "Services"
+    }
+  },
+  "trades": {
+    "title": "Trades",
+    "description": "Secure P2P trading with escrow protection",
+    "noTrades": "No trades yet. Browse classifieds to start trading!",
+    "browseClassifieds": "Browse Classifieds",
+    "statuses": {
+      "pending": "Pending",
+      "active": "Active",
+      "completed": "Completed",
+      "disputed": "Disputed"
+    }
+  },
+  "followPacks": {
+    "title": "Follow Packs",
+    "description": "Discover curated lists of people to follow",
+    "noPacks": "No follow packs available yet",
+    "followers": "followers"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your app preferences and configuration",
+    "sections": {
+      "relays": {
+        "title": "Relays",
+        "description": "Configure Nostr relay connections",
+        "addRelay": "Add Relay",
+        "relayUrl": "Relay URL",
+        "urlPlaceholder": "wss://relay.example.com",
+        "permissions": "Permissions",
+        "read": "Read",
+        "write": "Write",
+        "enabled": "Enabled",
+        "remove": "Remove",
+        "confirmRemove": "Are you sure you want to remove this relay?",
+        "invalidUrl": "Invalid relay URL",
+        "relayExists": "This relay already exists",
+        "connected": "Connected",
+        "disconnected": "Disconnected",
+        "connecting": "Connecting..."
+      },
+      "appearance": {
+        "title": "Appearance",
+        "description": "Customize app theme and display",
+        "language": "Language",
+        "languageDescription": "Choose your preferred language",
+        "theme": "Theme",
+        "themeDescription": "Choose your preferred theme",
+        "themes": {
+          "light": "Light",
+          "dark": "Dark",
+          "system": "System"
+        }
+      },
+      "notifications": {
+        "title": "Notifications",
+        "description": "Control notification preferences"
+      },
+      "privacy": {
+        "title": "Privacy",
+        "description": "Manage privacy and security settings"
+      },
+      "profile": {
+        "title": "Profile",
+        "description": "Edit your profile information"
+      },
+      "blossom": {
+        "title": "Media Servers",
+        "description": "Configure Blossom media upload servers"
+      },
+      "followpacks": {
+        "title": "Follow Packs",
+        "description": "Discover and manage follow packs"
+      }
+    },
+    "comingSoon": "Coming soon..."
+  },
+  "wallet": {
+    "title": "Wallet",
+    "balance": "Balance",
+    "send": "Send",
+    "receive": "Receive",
+    "transactions": "Transactions",
+    "noTransactions": "No transactions yet"
+  },
+  "profile": {
+    "following": "Following",
+    "followers": "Followers",
+    "posts": "Posts",
+    "editProfile": "Edit Profile",
+    "follow": "Follow",
+    "unfollow": "Unfollow"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "search": "Search",
+    "more": "More",
+    "less": "Less",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "share": "Share",
+    "soon": "Soon"
+  }
+}

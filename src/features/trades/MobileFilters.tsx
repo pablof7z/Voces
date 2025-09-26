@@ -1,0 +1,169 @@
+import { useState } from 'react';
+import { Filter, X } from 'lucide-react';
+
+interface MobileFiltersProps {
+  selectedCurrency: string;
+  selectedPaymentMethod: string;
+  onCurrencyChange: (currency: string) => void;
+  onPaymentMethodChange: (method: string) => void;
+}
+
+const currencies = [
+  { code: 'all', flag: '🌍' },
+  { code: 'USD', flag: '🇺🇸' },
+  { code: 'EUR', flag: '🇪🇺' },
+  { code: 'BRL', flag: '🇧🇷' },
+  { code: 'ARS', flag: '🇦🇷' },
+  { code: 'GBP', flag: '🇬🇧' },
+  { code: 'PLN', flag: '🇵🇱' },
+  { code: 'JPY', flag: '🇯🇵' },
+];
+
+const paymentMethods = [
+  { id: 'all', name: 'All', icon: '💰' },
+  { id: 'Cash', name: 'Cash', icon: '💵' },
+  { id: 'PIX', name: 'PIX', icon: '🔄' },
+  { id: 'BLIK', name: 'BLIK', icon: '📱' },
+  { id: 'Revolut', name: 'Revolut', icon: '💳' },
+  { id: 'Zelle', name: 'Zelle', icon: '🏦' },
+];
+
+export function MobileFilters({
+  selectedCurrency,
+  selectedPaymentMethod,
+  onCurrencyChange,
+  onPaymentMethodChange,
+}: MobileFiltersProps) {
+  const [showFilters, setShowFilters] = useState(false);
+
+  const selectedCurrencyData = currencies.find(c => c.code === selectedCurrency);
+  const selectedPaymentData = paymentMethods.find(p => p.id === selectedPaymentMethod);
+
+  return (
+    <>
+      {/* Compact Filter Bar */}
+      <div className="flex gap-2 p-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+        <button
+          onClick={() => setShowFilters(true)}
+          className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm"
+        >
+          <Filter className="w-4 h-4" />
+          <span className="font-medium">Filters</span>
+          {(selectedCurrency !== 'all' || selectedPaymentMethod !== 'all') && (
+            <span className="px-2 py-0.5 bg-purple-600 text-white rounded-full text-xs">
+              {[selectedCurrency !== 'all' && selectedCurrency, selectedPaymentMethod !== 'all' && selectedPaymentMethod].filter(Boolean).length}
+            </span>
+          )}
+        </button>
+
+        {selectedCurrency !== 'all' && (
+          <button
+            onClick={() => onCurrencyChange('all')}
+            className="flex items-center gap-1 px-3 py-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-sm"
+          >
+            <span>{selectedCurrencyData?.flag}</span>
+            <span className="font-medium">{selectedCurrency}</span>
+            <X className="w-3 h-3" />
+          </button>
+        )}
+
+        {selectedPaymentMethod !== 'all' && (
+          <button
+            onClick={() => onPaymentMethodChange('all')}
+            className="flex items-center gap-1 px-3 py-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-sm"
+          >
+            <span>{selectedPaymentData?.icon}</span>
+            <span className="font-medium">{selectedPaymentMethod}</span>
+            <X className="w-3 h-3" />
+          </button>
+        )}
+      </div>
+
+      {/* Full Screen Filter Modal */}
+      {showFilters && (
+        <div className="fixed inset-0 z-50 bg-white dark:bg-gray-900">
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
+            <h2 className="text-lg font-semibold">Filters</h2>
+            <button
+              onClick={() => setShowFilters(false)}
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Filter Content */}
+          <div className="p-4 space-y-6 overflow-y-auto max-h-[calc(100vh-140px)]">
+            {/* Currency */}
+            <div>
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Currency</h3>
+              <div className="grid grid-cols-4 gap-2">
+                {currencies.map((currency) => (
+                  <button
+                    key={currency.code}
+                    onClick={() => onCurrencyChange(currency.code)}
+                    className={`
+                      flex flex-col items-center gap-1 p-3 rounded-lg transition-all
+                      ${selectedCurrency === currency.code
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                      }
+                    `}
+                  >
+                    <span className="text-2xl">{currency.flag}</span>
+                    <span className="text-xs font-medium">{currency.code === 'all' ? 'All' : currency.code}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Payment Method */}
+            <div>
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Payment Method</h3>
+              <div className="space-y-2">
+                {paymentMethods.map((method) => (
+                  <button
+                    key={method.id}
+                    onClick={() => onPaymentMethodChange(method.id)}
+                    className={`
+                      w-full flex items-center gap-3 p-3 rounded-lg transition-all
+                      ${selectedPaymentMethod === method.id
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                      }
+                    `}
+                  >
+                    <span className="text-xl">{method.icon}</span>
+                    <span className="font-medium">{method.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  onCurrencyChange('all');
+                  onPaymentMethodChange('all');
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+              >
+                Clear All
+              </button>
+              <button
+                onClick={() => setShowFilters(false)}
+                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
