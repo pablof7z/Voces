@@ -9,7 +9,8 @@
     "followPacks": "Paquetes de Seguimiento",
     "profile": "Perfil",
     "wallet": "Billetera",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "logout": "Cerrar sesión"
   },
   "auth": {
     "login": "Iniciar sesión con Nostr",

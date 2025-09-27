@@ -7,6 +7,7 @@ import { ProfileEditor } from '@/features/profile/ProfileEditor';
 import { PackCard } from '@/features/followPacks/components/PackCard';
 import { useProfileFollowPacks } from '@/features/followPacks/hooks/useProfileFollowPacks';
 import { MediaGrid } from '@/components/media/MediaGrid';
+import { FollowButton } from '@/components/ui/FollowButton';
 
 export function ProfilePage() {
   const { identifier } = useParams<{ identifier?: string }>();
@@ -89,14 +90,19 @@ export function ProfilePage() {
           
           {/* Name and bio */}
           <div className="mb-4">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {profile?.name || 'Anonymous'}
-            </h1>
-            {profile?.nip05 && (
-              <p className="text-gray-500 dark:text-gray-400">
-                @{profile.nip05.split('@')[0]}
-              </p>
-            )}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  {profile?.name || 'Anonymous'}
+                </h1>
+                {profile?.nip05 && (
+                  <p className="text-gray-500 dark:text-gray-400">
+                    @{profile.nip05.split('@')[0]}
+                  </p>
+                )}
+              </div>
+              <FollowButton pubkey={user.pubkey} />
+            </div>
             {profile?.about && (
               <p className="mt-3 text-gray-700 dark:text-gray-300">
                 {profile.about}

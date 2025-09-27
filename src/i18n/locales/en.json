@@ -9,7 +9,8 @@
     "followPacks": "Follow Packs",
     "profile": "Profile",
     "wallet": "Wallet",
-    "settings": "Settings"
+    "settings": "Settings",
+    "logout": "Logout"
   },
   "auth": {
     "login": "Login with Nostr",
