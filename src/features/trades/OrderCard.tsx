@@ -173,10 +173,10 @@ export function OrderCard({ order }: OrderCardProps) {
             <span className="hidden md:inline">{order.type === 'buy' ? 'Sell to User' : 'Buy from User'}</span>
             <span className="md:hidden">{order.type === 'buy' ? 'Sell' : 'Buy'}</span>
           </button>
-          <button className="p-1.5 md:p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+          <button className="p-1.5 md:p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors">
             <MessageSquare className="w-3 h-3 md:w-4 md:h-4" />
           </button>
-          <button className="p-1.5 md:p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors hidden md:block">
+          <button className="p-1.5 md:p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors hidden md:block">
             <Shield className="w-3 h-3 md:w-4 md:h-4" />
           </button>
         </div>

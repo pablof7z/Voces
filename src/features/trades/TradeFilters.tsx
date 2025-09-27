@@ -36,7 +36,7 @@ export function TradeFilters({ filters, onChange }: TradeFiltersProps) {
         <select
           value={filters.currency}
           onChange={(e) => onChange({ ...filters, currency: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
         >
           {currencies.map((curr) => (
             <option key={curr.code} value={curr.code}>
@@ -55,7 +55,7 @@ export function TradeFilters({ filters, onChange }: TradeFiltersProps) {
         <select
           value={filters.paymentMethod}
           onChange={(e) => onChange({ ...filters, paymentMethod: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
         >
           {paymentMethods.map((method) => (
             <option key={method.id} value={method.id}>
@@ -74,7 +74,7 @@ export function TradeFilters({ filters, onChange }: TradeFiltersProps) {
         <select
           value={filters.orderType}
           onChange={(e) => onChange({ ...filters, orderType: e.target.value as 'all' | 'buy' | 'sell' })}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
         >
           <option value="all">All Orders</option>
           <option value="buy">Buy Orders</option>
@@ -92,7 +92,7 @@ export function TradeFilters({ filters, onChange }: TradeFiltersProps) {
             type="number"
             value={filters.minAmount}
             onChange={(e) => onChange({ ...filters, minAmount: parseInt(e.target.value) || 0 })}
-            className="w-full px-2 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm"
+            className="w-full px-2 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white text-sm"
             placeholder="Min"
           />
           <span className="text-gray-500">-</span>
@@ -100,7 +100,7 @@ export function TradeFilters({ filters, onChange }: TradeFiltersProps) {
             type="number"
             value={filters.maxAmount}
             onChange={(e) => onChange({ ...filters, maxAmount: parseInt(e.target.value) || 1000000 })}
-            className="w-full px-2 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm"
+            className="w-full px-2 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white text-sm"
             placeholder="Max"
           />
         </div>

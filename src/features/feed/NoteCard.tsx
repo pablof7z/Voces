@@ -1,4 +1,4 @@
-import { useProfile, useNDK, useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
+import { useProfile, useNDK, useNDKCurrentUser, useEvent } from '@nostr-dev-kit/ndk-hooks';
 import { NDKEvent, NDKKind } from '@nostr-dev-kit/ndk-hooks';
 import { Heart, MessageCircle, Repeat2, Share, MoreHorizontal, Copy, Code2, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
@@ -54,13 +54,36 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
   const [needsExpansion, setNeedsExpansion] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Check if this note is a reply
-  const replyToTag = event.tags.find(tag =>
-    tag[0] === 'e' && (tag[3] === 'reply' || tag[3] === 'root' || !tag[3])
+  // Determine what this note is replying to
+  let replyToEventId: string | undefined;
+
+  // First, check for explicit 'reply' marker
+  const replyTag = event.tags.find(tag =>
+    tag[0] === 'e' && tag[3] === 'reply'
   );
-  const replyToPubkeyTag = event.tags.find(tag => tag[0] === 'p');
-  const replyToPubkey = replyToPubkeyTag?.[1];
-  const replyToProfile = useProfile(replyToPubkey || '');
+
+  if (replyTag) {
+    replyToEventId = replyTag[1];
+  } else {
+    // Check for 'root' marker as fallback
+    const rootTag = event.tags.find(tag =>
+      tag[0] === 'e' && tag[3] === 'root'
+    );
+
+    if (rootTag) {
+      replyToEventId = rootTag[1];
+    } else {
+      // If there's only a single 'e' tag with no marker, it's likely a reply to that event
+      const eTags = event.tags.filter(tag => tag[0] === 'e');
+      if (eTags.length === 1) {
+        replyToEventId = eTags[0][1];
+      }
+    }
+  }
+
+  // Fetch the event being replied to
+  const replyToEvent = useEvent(replyToEventId || '');
+  const replyToProfile = useProfile(replyToEvent?.pubkey || '');
   
   const handleLike = async () => {
     if (!currentUser || !ndk) return;
@@ -142,7 +165,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
   return (
     <>
     <article
-      className="bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-all duration-150 cursor-pointer"
+      className="bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-neutral-900/50 transition-all duration-150 cursor-pointer"
       onClick={handleNoteClick}>
       <div className="px-4 py-3 sm:px-5 sm:py-4 relative">
         {/* Timestamp in top right corner */}
@@ -206,14 +229,14 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
             </div>
 
             {/* Reply indicator */}
-            {replyToTag && replyToPubkey && (
+            {replyToEvent && (
               <div className="flex items-center gap-1 mt-1 text-sm text-gray-500 dark:text-gray-400">
                 <span>Replying to</span>
                 <Link
-                  to={`/p/${nip19.npubEncode(replyToPubkey)}`}
+                  to={`/p/${nip19.npubEncode(replyToEvent.pubkey)}`}
                   className="font-medium hover:underline text-gray-700 dark:text-gray-300"
                 >
-                  @{replyToProfile?.name || replyToProfile?.displayName || `${replyToPubkey?.slice(0, 8)}...`}
+                  @{replyToProfile?.name || replyToProfile?.displayName || `${replyToEvent.pubkey.slice(0, 8)}...`}
                 </Link>
               </div>
             )}
@@ -247,7 +270,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                     e.stopPropagation();
                     setIsExpanded(!isExpanded);
                   }}
-                  className="mt-3 flex items-center gap-1.5 px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium rounded-full hover:bg-gray-800 dark:hover:bg-gray-100 transition-all duration-200"
+                  className="mt-3 flex items-center gap-1.5 px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium rounded-full hover:bg-gray-800 dark:hover:bg-neutral-900 transition-all duration-200"
                 >
                   <span>{isExpanded ? 'Read Less' : 'Read More'}</span>
                   {isExpanded ? (
@@ -338,13 +361,13 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-black rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleCopyId();
                       }}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 rounded-t-lg"
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-neutral-900 flex items-center gap-2 rounded-t-lg"
                     >
                       <Copy className="w-4 h-4" />
                       Copy ID
@@ -354,7 +377,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                         e.stopPropagation();
                         handleViewRaw();
                       }}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 rounded-b-lg"
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-neutral-900 flex items-center gap-2 rounded-b-lg"
                     >
                       <Code2 className="w-4 h-4" />
                       View Raw Event
@@ -376,12 +399,12 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
           onClick={() => setShowRawEvent(false)}
         />
         <div className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-2xl md:w-full z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl h-full md:h-auto max-h-[80vh] flex flex-col">
+          <div className="bg-white dark:bg-black rounded-lg shadow-xl h-full md:h-auto max-h-[80vh] flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold">Raw Event</h3>
               <button
                 onClick={() => setShowRawEvent(false)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-900"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

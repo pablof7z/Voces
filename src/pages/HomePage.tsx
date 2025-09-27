@@ -1,9 +1,10 @@
 import { NoteFeed } from '@/features/feed/NoteFeed';
 import { ComposeNote } from '@/features/feed/ComposeNote';
-import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
+import { useNDKCurrentUser, useFollows } from '@nostr-dev-kit/ndk-hooks';
 
 export function HomePage() {
   const currentUser = useNDKCurrentUser();
+  const follows = useFollows();
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -24,7 +25,7 @@ export function HomePage() {
       )}
       
       {/* Notes feed */}
-      <NoteFeed />
+      <NoteFeed authors={currentUser ? Array.from(follows) : undefined} />
     </div>
   );
 }

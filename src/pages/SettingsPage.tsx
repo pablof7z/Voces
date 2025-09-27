@@ -116,7 +116,7 @@ export function SettingsPage() {
         <div className="lg:hidden mb-4">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between"
+            className="w-full bg-white dark:bg-black rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
               {currentSection && (
@@ -138,7 +138,7 @@ export function SettingsPage() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="absolute left-4 right-4 z-20 mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
+              className="absolute left-4 right-4 z-20 mt-2 bg-white dark:bg-black rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
             >
               {sections.map((section) => {
                 const Icon = section.icon;
@@ -155,7 +155,7 @@ export function SettingsPage() {
                     className={cn(
                       'w-full px-4 py-3 flex items-center gap-3 transition-all border-b border-gray-100 dark:border-gray-700 last:border-0',
                       section.available
-                        ? 'hover:bg-gray-50 dark:hover:bg-gray-750'
+                        ? 'hover:bg-gray-50 dark:hover:bg-neutral-900'
                         : 'opacity-50 cursor-not-allowed'
                     )}
                   >
@@ -163,7 +163,7 @@ export function SettingsPage() {
                     <span className="text-sm font-medium">
                       {section.label}
                       {!section.available && (
-                        <span className="ml-2 text-xs bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">
+                        <span className="ml-2 text-xs bg-gray-100 dark:bg-black px-1.5 py-0.5 rounded">
                           {t('common.soon')}
                         </span>
                       )}
@@ -182,7 +182,7 @@ export function SettingsPage() {
             animate={{ opacity: 1, x: 0 }}
             className="hidden lg:block lg:w-64"
           >
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="bg-white dark:bg-black rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
               {sections.map((section) => {
                 const Icon = section.icon;
                 const isActive = section.id === activeSection;
@@ -197,7 +197,7 @@ export function SettingsPage() {
                       isActive
                         ? 'bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400'
                         : section.available
-                        ? 'hover:bg-gray-50 dark:hover:bg-gray-750 text-gray-700 dark:text-gray-300'
+                        ? 'hover:bg-gray-50 dark:hover:bg-neutral-900 text-gray-700 dark:text-gray-300'
                         : 'opacity-50 cursor-not-allowed text-gray-400 dark:text-gray-500'
                     )}
                   >
@@ -209,7 +209,7 @@ export function SettingsPage() {
                       <div className="font-medium text-sm flex items-center gap-2">
                         {section.label}
                         {!section.available && (
-                          <span className="text-xs bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">
+                          <span className="text-xs bg-gray-100 dark:bg-black px-1.5 py-0.5 rounded">
                             {t('common.soon')}
                           </span>
                         )}
@@ -237,7 +237,7 @@ export function SettingsPage() {
             animate={{ opacity: 1, y: 0 }}
             className="flex-1"
           >
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-white dark:bg-black rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
               {SectionComponent && <SectionComponent />}
             </div>
           </motion.main>

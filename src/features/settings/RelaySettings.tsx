@@ -109,7 +109,7 @@ export function RelaySettings() {
                 className={cn(
                   'border rounded-lg p-4 transition-all',
                   relay.enabled
-                    ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                    ? 'bg-white dark:bg-black border-gray-200 dark:border-gray-700'
                     : 'bg-gray-50 dark:bg-black border-gray-200 dark:border-gray-800 opacity-60'
                 )}
               >
@@ -122,7 +122,7 @@ export function RelaySettings() {
                           'w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 mt-0.5 md:mt-0',
                           relay.enabled
                             ? 'bg-purple-600 border-purple-600'
-                            : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600'
+                            : 'bg-white dark:bg-black border-gray-300 dark:border-gray-600'
                         )}
                       >
                         {relay.enabled && <Check className="w-3 h-3 text-white" />}
@@ -180,7 +180,7 @@ export function RelaySettings() {
                     <button
                       onClick={() => testRelayConnection(relay.url)}
                       disabled={testingRelay === relay.url}
-                      className="p-1.5 md:p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors disabled:opacity-50"
+                      className="p-1.5 md:p-2 hover:bg-gray-100 dark:hover:bg-neutral-900 rounded-lg transition-colors disabled:opacity-50"
                       title="Test connection"
                     >
                       <Zap className="w-4 h-4 text-gray-500" />
@@ -250,7 +250,7 @@ export function RelaySettings() {
                       setIsAdding(false);
                       setNewRelay({ url: '', read: true, write: true });
                     }}
-                    className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                    className="px-4 py-2 bg-gray-200 dark:bg-black text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-neutral-900 transition-colors"
                   >
                     Cancel
                   </button>

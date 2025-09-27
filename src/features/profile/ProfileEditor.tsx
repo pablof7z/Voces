@@ -139,7 +139,7 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
           <h2 className="text-xl font-semibold">Edit Profile</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-900 rounded-lg transition-colors"
             disabled={isSubmitting}
           >
             <X className="w-5 h-5" />
@@ -247,7 +247,7 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
               <div className="bg-gray-50 dark:bg-black px-3 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-2">
                 <button
                   type="button"
-                  className="px-2 py-1 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+                  className="px-2 py-1 text-sm font-medium hover:bg-gray-200 dark:hover:bg-neutral-900 rounded"
                   onClick={() => {
                     const textarea = document.getElementById('about') as HTMLTextAreaElement;
                     const start = textarea.selectionStart;
@@ -262,7 +262,7 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
                 </button>
                 <button
                   type="button"
-                  className="px-2 py-1 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 rounded italic"
+                  className="px-2 py-1 text-sm font-medium hover:bg-gray-200 dark:hover:bg-neutral-900 rounded italic"
                   onClick={() => {
                     const textarea = document.getElementById('about') as HTMLTextAreaElement;
                     const start = textarea.selectionStart;
@@ -331,7 +331,7 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
         <div className="sticky bottom-0 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 p-4 flex justify-end space-x-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-900 rounded-lg transition-colors"
             disabled={isSubmitting}
           >
             Cancel

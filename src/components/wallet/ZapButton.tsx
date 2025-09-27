@@ -111,7 +111,7 @@ export function ZapButton({
               exit={{ opacity: 0, scale: 0.9, y: 5 }}
               className="absolute bottom-full left-0 mb-2 z-20"
             >
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-2 flex gap-1">
+              <div className="bg-white dark:bg-black rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-2 flex gap-1">
                 {quickZapAmounts.map((amount) => (
                   <motion.button
                     key={amount}
@@ -122,7 +122,7 @@ export function ZapButton({
                       handleZap(amount);
                     }}
                     disabled={isZapping}
-                    className="px-3 py-2 bg-gray-50 dark:bg-gray-700 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-lg transition-colors disabled:opacity-50"
+                    className="px-3 py-2 bg-gray-50 dark:bg-black hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-lg transition-colors disabled:opacity-50"
                   >
                     <div className="flex items-center gap-1">
                       <Zap className="w-3 h-3 text-yellow-600 dark:text-yellow-500" />

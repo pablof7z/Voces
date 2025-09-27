@@ -52,7 +52,7 @@ export function FilterButton({ categories, selectedCategory, onCategoryChange }:
                 {selectedCategory && (
                   <button
                     onClick={() => handleCategorySelect('')}
-                    className="w-full flex items-center justify-between px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 mb-1"
+                    className="w-full flex items-center justify-between px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-neutral-900 mb-1"
                   >
                     <span>Clear Filter</span>
                     <X className="w-4 h-4" />
@@ -63,7 +63,7 @@ export function FilterButton({ categories, selectedCategory, onCategoryChange }:
                   <button
                     key={category.value}
                     onClick={() => handleCategorySelect(category.value)}
-                    className={`w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 ${
+                    className={`w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-neutral-900 ${
                       selectedCategory === category.value
                         ? 'bg-purple-50 text-purple-700 dark:bg-purple-950/50 dark:text-purple-400'
                         : ''

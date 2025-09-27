@@ -169,7 +169,7 @@ export function NoteDetailPage() {
         <div className="flex items-center gap-4 px-4 py-3">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-900 rounded-lg transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>

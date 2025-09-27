@@ -89,7 +89,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
             </h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-900 rounded-lg transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -137,7 +137,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
                 type="number"
                 value={satsAmount}
                 onChange={(e) => setSatsAmount(e.target.value)}
-                className="w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                className="w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
                 placeholder="100000"
               />
             </div>
@@ -156,7 +156,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
                 type="number"
                 value={fiatAmount}
                 onChange={(e) => setFiatAmount(e.target.value)}
-                className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
                 placeholder="50"
               />
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -170,7 +170,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
               >
                 {currencies.map((curr) => (
                   <option key={curr.code} value={curr.code}>
@@ -213,7 +213,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
               type="number"
               value={premium}
               onChange={(e) => setPremium(e.target.value)}
-              className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+              className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
               placeholder="0"
             />
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -229,7 +229,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
             <select
               value={expirationHours}
               onChange={(e) => setExpirationHours(e.target.value)}
-              className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+              className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
             >
               <option value="1">1 hour</option>
               <option value="6">6 hours</option>
@@ -244,7 +244,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors"
             >
               Cancel
             </button>

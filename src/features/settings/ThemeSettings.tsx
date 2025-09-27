@@ -56,7 +56,7 @@ export function ThemeSettings() {
             className={`px-4 py-3 rounded-lg border transition-all ${
               language === 'en'
                 ? 'bg-purple-50 dark:bg-purple-950/30 border-purple-500 text-purple-700 dark:text-purple-400'
-                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750'
+                : 'bg-white dark:bg-black border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-900'
             }`}
           >
             <div className="flex items-center justify-center gap-2">
@@ -69,7 +69,7 @@ export function ThemeSettings() {
             className={`px-4 py-3 rounded-lg border transition-all ${
               language === 'es'
                 ? 'bg-purple-50 dark:bg-purple-950/30 border-purple-500 text-purple-700 dark:text-purple-400'
-                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750'
+                : 'bg-white dark:bg-black border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-900'
             }`}
           >
             <div className="flex items-center justify-center gap-2">
@@ -97,7 +97,7 @@ export function ThemeSettings() {
             className={`px-4 py-3 rounded-lg border transition-all ${
               theme === 'light'
                 ? 'bg-purple-50 dark:bg-purple-950/30 border-purple-500 text-purple-700 dark:text-purple-400'
-                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750'
+                : 'bg-white dark:bg-black border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-900'
             }`}
           >
             <div className="flex flex-col items-center gap-2">
@@ -112,7 +112,7 @@ export function ThemeSettings() {
             className={`px-4 py-3 rounded-lg border transition-all ${
               theme === 'dark'
                 ? 'bg-purple-50 dark:bg-purple-950/30 border-purple-500 text-purple-700 dark:text-purple-400'
-                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750'
+                : 'bg-white dark:bg-black border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-900'
             }`}
           >
             <div className="flex flex-col items-center gap-2">
@@ -127,7 +127,7 @@ export function ThemeSettings() {
             className={`px-4 py-3 rounded-lg border transition-all ${
               theme === 'system'
                 ? 'bg-purple-50 dark:bg-purple-950/30 border-purple-500 text-purple-700 dark:text-purple-400'
-                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750'
+                : 'bg-white dark:bg-black border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-900'
             }`}
           >
             <div className="flex flex-col items-center gap-2">

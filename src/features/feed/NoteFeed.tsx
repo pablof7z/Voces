@@ -8,13 +8,15 @@ const BATCH_SIZE = 10;
 interface NoteFeedProps {
   events?: NDKEvent[];
   showDebugInfo?: boolean;
+  authors?: string[];
 }
 
-export function NoteFeed({ events: externalEvents, showDebugInfo = true }: NoteFeedProps = {}) {
+export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors }: NoteFeedProps = {}) {
   // If no external events provided, use the default subscription
   const { events: subscribedEvents } = useSubscribe(externalEvents ? false : [{
     kinds: [NDKKind.Text],
-  }], { subId: 'note-feed' });
+    ...(authors && authors.length > 0 ? { authors } : {}),
+  }], { subId: 'note-feed' }, [authors?.length]);
 
   const events = externalEvents || subscribedEvents;
 
@@ -83,7 +85,9 @@ export function NoteFeed({ events: externalEvents, showDebugInfo = true }: NoteF
     return (
       <div className="text-center py-12 px-4">
         <p className="text-gray-500 dark:text-gray-400">
-          No notes yet. Be the first to share something!
+          {authors && authors.length > 0
+            ? "No notes from people you follow yet. Check out the global feed or follow more people!"
+            : "No notes yet. Be the first to share something!"}
         </p>
       </div>
     );

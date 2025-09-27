@@ -81,7 +81,7 @@ function MediaItem({ event, imeta }: MediaItemProps) {
         )}
 
         {mediaType === 'file' && (
-          <div className="w-full h-full bg-gray-200 dark:bg-gray-800 flex flex-col items-center justify-center gap-2">
+          <div className="w-full h-full bg-gray-200 dark:bg-black flex flex-col items-center justify-center gap-2">
             <FileImage className="w-16 h-16 text-gray-500" />
             {imeta.url && (
               <span className="text-xs text-gray-600 dark:text-gray-400 px-2 text-center">

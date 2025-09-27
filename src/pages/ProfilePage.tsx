@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useNDKCurrentUser, useProfile, useSubscribe, NDKKind, useNDK } from '@nostr-dev-kit/ndk-hooks';
+import { useState } from 'react';
+import { useNDKCurrentUser, useProfile, useSubscribe, NDKKind, useUser } from '@nostr-dev-kit/ndk-hooks';
 import { Calendar, Link as LinkIcon, Edit2, Package } from 'lucide-react';
 import { NoteCard } from '@/features/feed/NoteCard';
 import { useParams } from 'react-router-dom';
 import { ProfileEditor } from '@/features/profile/ProfileEditor';
-import { nip19 } from 'nostr-tools';
 import { PackCard } from '@/features/followPacks/components/PackCard';
 import { useProfileFollowPacks } from '@/features/followPacks/hooks/useProfileFollowPacks';
 import { MediaGrid } from '@/components/media/MediaGrid';
@@ -12,73 +11,40 @@ import { MediaGrid } from '@/components/media/MediaGrid';
 export function ProfilePage() {
   const { identifier } = useParams<{ identifier?: string }>();
   const currentUser = useNDKCurrentUser();
-  const { ndk } = useNDK();
-  const [targetPubkey, setTargetPubkey] = useState<string | undefined>();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [activeTab, setActiveTab] = useState<'notes' | 'replies' | 'media' | 'packs'>('notes');
 
-  useEffect(() => {
-    async function resolveIdentifier() {
-      if (!identifier) {
-        setTargetPubkey(currentUser?.pubkey);
-        return;
-      }
+  // Resolve user from identifier (npub, hex pubkey, nip05, or nprofile)
+  const user = useUser(identifier || currentUser?.pubkey);
+  const profile = useProfile(user?.pubkey);
 
-      // Check if it's an npub
-      if (identifier.startsWith('npub')) {
-        try {
-          const decoded = nip19.decode(identifier);
-          if (decoded.type === 'npub') {
-            setTargetPubkey(decoded.data as string);
-          }
-        } catch (error) {
-          console.error('Invalid npub:', error);
-        }
-      } else if (identifier.includes('@') || identifier.includes('.')) {
-        // It's likely a NIP-05 identifier
-        try {
-          const user = await ndk?.getUserFromNip05(identifier);
-          if (user) {
-            setTargetPubkey(user.pubkey);
-          }
-        } catch (error) {
-          console.error('Failed to resolve NIP-05:', error);
-        }
-      }
-    }
+  const isOwnProfile = user?.pubkey === currentUser?.pubkey;
 
-    resolveIdentifier();
-  }, [identifier, currentUser, ndk]);
-
-  const profile = useProfile(targetPubkey);
-
-  const isOwnProfile = targetPubkey === currentUser?.pubkey;
-
-  const { events } = useSubscribe(targetPubkey ? [{
+  const { events } = useSubscribe(user?.pubkey ? [{
     kinds: [NDKKind.Text],
-    authors: [targetPubkey],
+    authors: [user.pubkey],
     limit: 20,
   }] : false, { subId: 'profile-notes' });
 
   // Fetch kind:20, 21, 22 media events for the media tab (NIP-68)
-  const { events: mediaEvents } = useSubscribe(targetPubkey && activeTab === 'media' ? [{
+  const { events: mediaEvents } = useSubscribe(user?.pubkey && activeTab === 'media' ? [{
     kinds: [
       NDKKind.Image,       // kind:20 - Image file metadata
       NDKKind.Video,       // kind:21 - Video file metadata
       NDKKind.ShortVideo,  // kind:22 - Short video file metadata
     ],
-    authors: [targetPubkey],
+    authors: [user.pubkey],
   }] : false, { subId: 'profile-media' });
 
   const [packFilter, setPackFilter] = useState<'all' | 'created' | 'appears'>('all');
-  const { createdPacks, appearsPacks, allPacks } = useProfileFollowPacks(targetPubkey || '');
+  const { createdPacks, appearsPacks, allPacks } = useProfileFollowPacks(user?.pubkey || '');
 
   // Select which packs to show based on filter
   const packs = packFilter === 'created' ? createdPacks :
                 packFilter === 'appears' ? appearsPacks :
                 allPacks;
 
-  if (!targetPubkey) return null;
+  if (!user?.pubkey) return null;
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -96,7 +62,7 @@ export function ProfilePage() {
           {isOwnProfile && (
             <button
               onClick={() => setIsEditingProfile(true)}
-              className="absolute top-4 right-4 p-2 bg-white/90 dark:bg-black/90 hover:bg-white dark:hover:bg-gray-900 rounded-lg transition-colors backdrop-blur-sm"
+              className="absolute top-4 right-4 p-2 bg-white/90 dark:bg-black/90 hover:bg-white dark:hover:bg-neutral-900 rounded-lg transition-colors backdrop-blur-sm"
               aria-label="Edit profile"
             >
               <Edit2 className="w-4 h-4" />
@@ -256,7 +222,7 @@ export function ProfilePage() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   packFilter === 'all'
                     ? 'bg-purple-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    : 'bg-gray-100 dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-900'
                 }`}
               >
                 All
@@ -266,20 +232,20 @@ export function ProfilePage() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   packFilter === 'created'
                     ? 'bg-purple-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    : 'bg-gray-100 dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-900'
                 }`}
               >
-                {isOwnProfile ? 'by you' : `by @${profile?.name || profile?.displayName || targetPubkey?.slice(0, 8)}`}
+                {isOwnProfile ? 'by you' : `by @${profile?.name || profile?.displayName || user.pubkey.slice(0, 8)}`}
               </button>
               <button
                 onClick={() => setPackFilter('appears')}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   packFilter === 'appears'
                     ? 'bg-purple-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    : 'bg-gray-100 dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-900'
                 }`}
               >
-                {isOwnProfile ? 'with you' : `with @${profile?.name || profile?.displayName || targetPubkey?.slice(0, 8)}`}
+                {isOwnProfile ? 'with you' : `with @${profile?.name || profile?.displayName || user.pubkey.slice(0, 8)}`}
               </button>
             </div>
 
@@ -307,9 +273,9 @@ export function ProfilePage() {
       </div>
 
       {/* Profile Editor Modal */}
-      {isEditingProfile && targetPubkey && (
+      {isEditingProfile && user?.pubkey && (
         <ProfileEditor
-          pubkey={targetPubkey}
+          pubkey={user.pubkey}
           onClose={() => setIsEditingProfile(false)}
           onSave={() => {
             setIsEditingProfile(false);

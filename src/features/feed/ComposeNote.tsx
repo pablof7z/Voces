@@ -82,21 +82,21 @@ export function ComposeNote() {
               <div className="flex items-center gap-1">
                 <button
                   type="button"
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400"
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors text-gray-500 dark:text-gray-400"
                   title="Add image (coming soon)"
                 >
                   <Image className="w-5 h-5" />
                 </button>
                 <button
                   type="button"
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400"
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors text-gray-500 dark:text-gray-400"
                   title="Add emoji (coming soon)"
                 >
                   <Smile className="w-5 h-5" />
                 </button>
                 <button
                   type="button"
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400"
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors text-gray-500 dark:text-gray-400"
                   title="Add location (coming soon)"
                 >
                   <MapPin className="w-5 h-5" />
@@ -152,7 +152,7 @@ export function ComposeNote() {
                   className={cn(
                     "px-4 py-1.5 rounded-full font-medium transition-all",
                     (!content.trim() || isOverLimit)
-                      ? "bg-gray-200 text-gray-400 dark:bg-gray-800 dark:text-gray-600 cursor-not-allowed"
+                      ? "bg-gray-200 text-gray-400 dark:bg-black dark:text-gray-600 cursor-not-allowed"
                       : "bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
                   )}
                 >

@@ -21,11 +21,11 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
   const creatorProfile = useProfileValue(pack.pubkey);
 
   // Get preview pubkeys (first 5 users)
-  const previewPubkeys = pack.pubkeys.slice(0, 5);
+  const previewPubkeys = pack.pubkeys?.slice(0, 5) || [];
 
   // Check if current user is in the pack
-  const currentUserInPack = currentUser && pack.pubkeys.includes(currentUser.pubkey);
-  const isCreator = currentUser && pack.pubkey === currentUser.pubkey;
+  const currentUserInPack = currentUser && pack.pubkeys?.includes(currentUser.pubkey);
+  const isCreator = currentUser && pack.pubkey && pack.pubkey === currentUser.pubkey;
 
   const subscribed = isSubscribed(pack.id);
   const favorited = isFavorite(pack.id);
@@ -55,7 +55,7 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
   if (variant === 'compact') {
     return (
       <div
-        className="p-4 bg-white dark:bg-black hover:bg-gray-50 dark:hover:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg transition-colors cursor-pointer"
+        className="p-4 bg-white dark:bg-black hover:bg-gray-50 dark:hover:bg-neutral-900 border border-gray-200 dark:border-gray-800 rounded-lg transition-colors cursor-pointer"
         onClick={handleCardClick}
       >
         <div className="flex items-center justify-between">
@@ -64,7 +64,7 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
               {pack.title}
             </h4>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              {pack.pubkeys.length} members
+              {pack.pubkeys?.length || 0} members
             </p>
           </div>
         </div>
@@ -96,14 +96,14 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
             {pack.title}
           </h3>
           <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <span>{pack.pubkeys.length} members</span>
+            <span>{pack.pubkeys?.length || 0} members</span>
             <span>•</span>
             <span>
               {isCreator
                 ? 'by you'
                 : currentUserInPack
-                  ? `with you and @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey.slice(0, 8)}`
-                  : `by @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey.slice(0, 8)}`
+                  ? `with you and @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey?.slice(0, 8) || 'unknown'}`
+                  : `by @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey?.slice(0, 8) || 'unknown'}`
               }
             </span>
           </div>
@@ -129,9 +129,9 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
                 style={{ zIndex: 5 - index }}
               />
             ))}
-            {pack.pubkeys.length > 5 && (
-              <div className="w-8 h-8 rounded-full border-2 border-white dark:border-black bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300">
-                +{pack.pubkeys.length - 5}
+            {(pack.pubkeys?.length || 0) > 5 && (
+              <div className="w-8 h-8 rounded-full border-2 border-white dark:border-black bg-gray-200 dark:bg-black flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300">
+                +{(pack.pubkeys?.length || 0) - 5}
               </div>
             )}
           </div>
@@ -147,7 +147,7 @@ export function FollowPackCard({ pack, onSubscribe, variant = 'default' }: Follo
             "absolute top-4 right-4 p-2 rounded-lg transition-colors bg-white/90 dark:bg-black/90 backdrop-blur-sm",
             favorited
               ? "text-red-600 dark:text-red-400"
-              : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500"
+              : "hover:bg-gray-100 dark:hover:bg-neutral-900 text-gray-500"
           )}
           aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
         >

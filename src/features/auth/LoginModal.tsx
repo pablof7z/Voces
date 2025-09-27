@@ -144,7 +144,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                   handleExtensionLogin();
                 }}
                 disabled={isConnecting}
-                className="w-full justify-start"
+                className="w-full justify-start bg-neutral-800 hover:bg-neutral-700 text-white border-neutral-600"
                 variant="outline"
               >
                 <Chrome className="w-4 h-4 mr-2" />
@@ -157,7 +157,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               <Button
                 onClick={() => setActiveMethod('bunker')}
                 disabled={isConnecting}
-                className="w-full justify-start"
+                className="w-full justify-start bg-neutral-800 hover:bg-neutral-700 text-white border-neutral-600"
                 variant="outline"
               >
                 <Shield className="w-4 h-4 mr-2" />
@@ -167,7 +167,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               <Button
                 onClick={() => setActiveMethod('private-key')}
                 disabled={isConnecting}
-                className="w-full justify-start"
+                className="w-full justify-start bg-neutral-800 hover:bg-neutral-700 text-white border-neutral-600"
                 variant="outline"
               >
                 <Key className="w-4 h-4 mr-2" />
@@ -176,10 +176,10 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
+                  <span className="w-full border-t border-neutral-700" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">Or</span>
+                  <span className="bg-neutral-900 px-2 text-neutral-400">Or</span>
                 </div>
               </div>
 
@@ -189,7 +189,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                   handleGenerateIdentity();
                 }}
                 disabled={isConnecting}
-                className="w-full justify-start"
+                className="w-full justify-start bg-purple-900/50 hover:bg-purple-800/50 text-white border-purple-700/50"
                 variant="secondary"
               >
                 <Sparkles className="w-4 h-4 mr-2" />

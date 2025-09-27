@@ -54,14 +54,14 @@ export function RelaySelector() {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full mt-2 right-0 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg
+        <div className="absolute top-full mt-2 right-0 w-64 bg-white dark:bg-black rounded-lg shadow-lg
                         border border-gray-200 dark:border-gray-700 overflow-hidden z-50">
           <div className="py-1">
             {/* All Relays option */}
             <button
               onClick={() => handleRelaySelect(null)}
               className="w-full flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-200
-                         hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                         hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors"
             >
               <div className="flex items-center gap-2">
                 <Globe className="h-4 w-4 text-blue-500" />
@@ -71,7 +71,7 @@ export function RelaySelector() {
             </button>
 
             {/* Divider */}
-            <div className="h-px bg-gray-200 dark:bg-gray-700 my-1" />
+            <div className="h-px bg-gray-200 dark:bg-black my-1" />
 
             {/* Individual relays */}
             {enabledRelays.length > 0 ? (
@@ -80,7 +80,7 @@ export function RelaySelector() {
                   key={relay.url}
                   onClick={() => handleRelaySelect(relay.url)}
                   className="w-full flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-200
-                             hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                             hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors"
                 >
                   <div className="flex items-center gap-2">
                     <Circle
@@ -100,7 +100,7 @@ export function RelaySelector() {
             )}
 
             {/* Divider */}
-            <div className="h-px bg-gray-200 dark:bg-gray-700 my-1" />
+            <div className="h-px bg-gray-200 dark:bg-black my-1" />
 
             {/* Settings link */}
             <button
@@ -109,7 +109,7 @@ export function RelaySelector() {
                 navigate('/settings');
               }}
               className="w-full flex items-center px-4 py-2 text-sm text-blue-600 dark:text-blue-400
-                         hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                         hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors"
             >
               Manage Relays →
             </button>

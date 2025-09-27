@@ -17,11 +17,11 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
   const creatorProfile = useProfileValue(pack.pubkey);
   const subscribed = isSubscribed(pack.id);
   const favorited = isFavorite(pack.id);
-  const previewPubkeys = pack.pubkeys.slice(0, 5);
+  const previewPubkeys = pack.pubkeys?.slice(0, 5) || [];
 
   // Check if current user is in the pack or is the creator
-  const currentUserInPack = currentUser && pack.pubkeys.includes(currentUser.pubkey);
-  const isCreator = currentUser && pack.pubkey === currentUser.pubkey;
+  const currentUserInPack = currentUser && pack.pubkeys?.includes(currentUser.pubkey);
+  const isCreator = currentUser && pack.pubkey && pack.pubkey === currentUser.pubkey;
 
   const handleSubscribe = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -50,12 +50,12 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
               {pack.title}
             </h4>
             <p className="text-sm text-neutral-500">
-              {pack.pubkeys.length} members • {
+              {pack.pubkeys?.length || 0} members • {
                 isCreator
                   ? 'by you'
                   : currentUserInPack
-                    ? `with you and @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey.slice(0, 8)}`
-                    : `by @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey.slice(0, 8)}`
+                    ? `with you and @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey?.slice(0, 8) || 'unknown'}`
+                    : `by @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey?.slice(0, 8) || 'unknown'}`
               }
             </p>
           </div>
@@ -70,10 +70,10 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
                   style={{ zIndex: 3 - index }}
                 />
               ))}
-              {pack.pubkeys.length > 3 && (
+              {(pack.pubkeys?.length || 0) > 3 && (
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-600 to-purple-700 border border-black/20 flex items-center justify-center">
                   <span className="text-[10px] text-white font-bold">
-                    +{pack.pubkeys.length - 3}
+                    +{(pack.pubkeys?.length || 0) - 3}
                   </span>
                 </div>
               )}
@@ -128,7 +128,7 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
           {/* Stats overlay */}
           <div className="absolute top-3 left-3 flex items-center gap-2 text-white/90 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
             <Users className="w-3.5 h-3.5" />
-            <span className="text-sm font-medium">{pack.pubkeys.length}</span>
+            <span className="text-sm font-medium">{pack.pubkeys?.length || 0}</span>
           </div>
 
           {/* Title overlay on image */}
@@ -148,12 +148,12 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
               {pack.title}
             </h3>
             <p className="text-sm text-neutral-400">
-              {pack.pubkeys.length} members • {
+              {pack.pubkeys?.length || 0} members • {
                 isCreator
                   ? 'by you'
                   : currentUserInPack
-                    ? `with you and @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey.slice(0, 8)}`
-                    : `by @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey.slice(0, 8)}`
+                    ? `with you and @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey?.slice(0, 8) || 'unknown'}`
+                    : `by @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey?.slice(0, 8) || 'unknown'}`
               }
             </p>
           </div>
@@ -185,10 +185,10 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
                 />
               </div>
             ))}
-            {pack.pubkeys.length > 5 && (
+            {(pack.pubkeys?.length || 0) > 5 && (
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-purple-700 border-2 border-black/20 flex items-center justify-center">
                 <span className="text-xs text-white font-bold">
-                  +{pack.pubkeys.length - 5}
+                  +{(pack.pubkeys?.length || 0) - 5}
                 </span>
               </div>
             )}
