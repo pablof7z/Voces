@@ -1,18 +1,21 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Users, Heart, UserPlus, UserMinus, Calendar } from 'lucide-react';
-import { useNDKCurrentUser, useSubscribe, NDKKind, useProfileValue, useEvent, NDKFollowPack } from '@nostr-dev-kit/ndk-hooks';
+import { ArrowLeft, Users, Heart, UserPlus, Calendar } from 'lucide-react';
+import { useNDKCurrentUser, useSubscribe, NDKKind, useProfileValue, useEvent, NDKFollowPack, useNDK } from '@nostr-dev-kit/ndk-hooks';
 import { Button } from '@/components/ui/button';
 import { NoteFeed } from '@/features/feed/NoteFeed';
 import { ProfileAvatar } from '@/features/followPacks/components/ProfileAvatar';
 import { useFollowPacksStore } from '@/stores/followPacksStore';
 import { cn } from '@/lib/utils';
+import { followMultipleUsers } from '@/utils/followUtils';
 
 export function FollowPackDetailPage() {
   const { packId } = useParams<{ packId: string }>();
+  const { ndk } = useNDK();
   const currentUser = useNDKCurrentUser();
   const [activeTab, setActiveTab] = useState<'feed' | 'members'>('feed');
-  const { isSubscribed, subscribeToPack, unsubscribeFromPack, isFavorite, toggleFavorite } = useFollowPacksStore();
+  const [isFollowingAll, setIsFollowingAll] = useState(false);
+  const { isFavorite, toggleFavorite } = useFollowPacksStore();
 
   // Get the event directly using the bech32 encoded ID
   const event = useEvent(packId || false, { subId: 'pack-detail' });
@@ -34,7 +37,6 @@ export function FollowPackDetailPage() {
   // Get pack creator profile
   const creatorProfile = useProfileValue(pack?.pubkey);
 
-  const subscribed = pack ? isSubscribed(pack.id) : false;
   const favorited = pack ? isFavorite(pack.id) : false;
 
   // Subscribe to notes from all pack members
@@ -46,12 +48,16 @@ export function FollowPackDetailPage() {
     { subId: 'pack-feed' }
   );
 
-  const handleSubscribe = () => {
-    if (!pack || !currentUser) return;
-    if (subscribed) {
-      unsubscribeFromPack(pack.id);
-    } else {
-      subscribeToPack(pack.id);
+  const handleFollowAll = async () => {
+    if (!pack || !currentUser || !ndk || pubkeys.length === 0) return;
+
+    setIsFollowingAll(true);
+    try {
+      await followMultipleUsers(ndk, currentUser, pubkeys);
+    } catch (error) {
+      console.error('Error following all users:', error);
+    } finally {
+      setIsFollowingAll(false);
     }
   };
 
@@ -107,18 +113,30 @@ export function FollowPackDetailPage() {
                 {pack.description || 'A curated list of accounts to follow'}
               </p>
             </div>
-          <button
-            onClick={handleFavorite}
-            className={cn(
-              "p-2.5 rounded-lg transition-colors",
-              favorited
-                ? "bg-red-500/10 text-red-500"
-                : "bg-neutral-800 text-neutral-400 hover:text-white"
-            )}
-          >
-            <Heart className={cn("w-5 h-5", favorited && "fill-current")} />
-          </button>
-        </div>
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={handleFollowAll}
+                variant="primary"
+                size="default"
+                disabled={!currentUser || isFollowingAll}
+                className="flex items-center gap-2"
+              >
+                <UserPlus className="w-4 h-4" />
+                {isFollowingAll ? 'Following...' : 'Follow All'}
+              </Button>
+              <button
+                onClick={handleFavorite}
+                className={cn(
+                  "p-2.5 rounded-lg transition-colors",
+                  favorited
+                    ? "bg-red-500/10 text-red-500"
+                    : "bg-neutral-800 text-neutral-400 hover:text-white"
+                )}
+              >
+                <Heart className={cn("w-5 h-5", favorited && "fill-current")} />
+              </button>
+            </div>
+          </div>
 
         {/* Stats */}
         <div className="flex items-center gap-6 mb-6 text-sm">
@@ -136,7 +154,7 @@ export function FollowPackDetailPage() {
 
         {/* Creator */}
         {creatorProfile && (
-          <div className="flex items-center gap-3 mb-6 pb-6 border-b border-neutral-800">
+          <div className="flex items-center gap-3">
             <ProfileAvatar pubkey={pack.pubkey} size="md" />
             <div>
               <p className="text-sm text-neutral-500">Created by</p>
@@ -149,26 +167,6 @@ export function FollowPackDetailPage() {
             </div>
           </div>
         )}
-
-        {/* Action Button */}
-        <Button
-          onClick={handleSubscribe}
-          variant={subscribed ? 'outline' : 'primary'}
-          className="w-full"
-          disabled={!currentUser}
-        >
-          {subscribed ? (
-            <>
-              <UserMinus className="w-4 h-4 mr-2" />
-              Unfollow Pack
-            </>
-          ) : (
-            <>
-              <UserPlus className="w-4 h-4 mr-2" />
-              Follow Pack
-            </>
-          )}
-        </Button>
         </div>
       </div>
 

@@ -40,11 +40,11 @@ export function FAB({ className }: FABProps) {
       };
     }
 
-    if (path.startsWith('/wallet')) {
+    if (path.startsWith('/money')) {
       return {
         icon: Plus,
         label: 'Add Funds',
-        action: () => {}, // TODO: Implement wallet action
+        action: () => {},
         requiresAuth: false
       };
     }

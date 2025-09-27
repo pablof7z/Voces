@@ -1,112 +1,63 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   ArrowUpRight,
   ArrowDownLeft,
-  Zap,
-  Coffee,
-  TrendingUp,
-  TrendingDown,
-  Clock,
-  ChevronRight,
-  Activity,
   Shield,
   Eye,
-  EyeOff
+  EyeOff,
+  Loader2,
+  Settings
 } from 'lucide-react';
-
-interface Transaction {
-  id: string;
-  type: 'sent' | 'received' | 'zap';
-  description: string;
-  amount: number;
-  timestamp: string;
-  icon?: 'zap' | 'coffee' | 'default';
-  to?: string;
-  from?: string;
-  status?: 'pending' | 'completed';
-}
+import { useWallet } from '../../hooks/useWallet';
+import { useWalletStore } from '../../stores/walletStore';
+import { DepositModal } from './DepositModal';
+import { useNavigate } from 'react-router-dom';
 
 export function ProfessionalWallet() {
-  const [balance] = useState(21000);
+  const { balance: walletBalance, isReady, error, deposit, p2pk } = useWallet();
+  const mints = useWalletStore((state) => state.mints);
   const [balanceHidden, setBalanceHidden] = useState(false);
-  const [dailyChange] = useState(2500);
-  const [selectedTab, setSelectedTab] = useState<'activity' | 'stats'>('activity');
-
-  const transactions: Transaction[] = [
-    {
-      id: '1',
-      type: 'zap',
-      description: 'Zapped @jack',
-      amount: -100,
-      timestamp: '1h ago',
-      icon: 'zap',
-      to: 'jack',
-      status: 'completed'
-    },
-    {
-      id: '2',
-      type: 'received',
-      description: 'Payment received',
-      amount: 500,
-      timestamp: '2h ago',
-      from: 'anon',
-      status: 'completed'
-    },
-    {
-      id: '3',
-      type: 'sent',
-      description: 'Coffee payment',
-      amount: -250,
-      timestamp: '3h ago',
-      icon: 'coffee',
-      to: 'Blue Bottle Coffee',
-      status: 'completed'
-    },
-    {
-      id: '4',
-      type: 'zap',
-      description: 'Zapped @fiatjaf',
-      amount: -1000,
-      timestamp: '1d ago',
-      icon: 'zap',
-      to: 'fiatjaf',
-      status: 'completed'
-    }
-  ];
-
-  const getTransactionIcon = (transaction: Transaction) => {
-    if (transaction.icon === 'zap') {
-      return <Zap className="w-5 h-5" />;
-    }
-    if (transaction.icon === 'coffee') {
-      return <Coffee className="w-5 h-5" />;
-    }
-    if (transaction.type === 'sent') {
-      return <ArrowUpRight className="w-5 h-5" />;
-    }
-    return <ArrowDownLeft className="w-5 h-5" />;
+  const [showDepositModal, setShowDepositModal] = useState(false);
+  const navigate = useNavigate();
+  
+  const balance = walletBalance || 0;
+  
+  const handleDeposit = async (amount: number, mint?: string) => {
+    await deposit(amount, mint);
   };
 
-  const getTransactionColor = (transaction: Transaction) => {
-    if (transaction.type === 'received') {
-      return 'text-emerald-400';
-    }
-    if (transaction.type === 'zap') {
-      return 'text-purple-400';
-    }
-    return 'text-orange-400';
-  };
+  // Show loading state
+  if (!isReady && !error) {
+    return (
+      <div className="w-full min-h-screen bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-950 dark:to-black flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-neutral-400 mx-auto mb-3" />
+          <p className="text-sm text-neutral-500">Initializing wallet...</p>
+          {p2pk && (
+            <p className="text-xs text-neutral-600 mt-2 font-mono">P2PK: {p2pk.substring(0, 16)}...</p>
+          )}
+        </div>
+      </div>
+    );
+  }
 
-  const getIconBgColor = (transaction: Transaction) => {
-    if (transaction.type === 'received') {
-      return 'bg-emerald-400/10 border-emerald-400/20';
-    }
-    if (transaction.type === 'zap') {
-      return 'bg-purple-400/10 border-purple-400/20';
-    }
-    return 'bg-orange-400/10 border-orange-400/20';
-  };
+  // Show error state
+  if (error) {
+    return (
+      <div className="w-full min-h-screen bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-950 dark:to-black flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-6">
+          <div className="w-12 h-12 bg-red-400/10 rounded-full flex items-center justify-center mx-auto mb-3">
+            <Shield className="w-6 h-6 text-red-400" />
+          </div>
+          <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">
+            Wallet Error
+          </h3>
+          <p className="text-sm text-neutral-500">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-950 dark:to-black">
@@ -115,6 +66,16 @@ export function ProfessionalWallet() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-lg mx-auto"
       >
+        {/* Wallet Status Indicator */}
+        {isReady && (
+          <div className="px-6 pt-4">
+            <div className="flex items-center gap-2 text-xs text-emerald-400">
+              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+              <span>Wallet Active</span>
+            </div>
+          </div>
+        )}
+        
         {/* Balance Section */}
         <div className="px-5 pt-8 pb-6">
           <div className="text-center">
@@ -148,18 +109,6 @@ export function ProfessionalWallet() {
                 </>
               )}
             </motion.div>
-            <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
-              dailyChange >= 0
-                ? 'bg-success-50 text-success-700 dark:bg-success-950/30 dark:text-success-400'
-                : 'bg-danger-50 text-danger-700 dark:bg-danger-950/30 dark:text-danger-400'
-            }`}>
-              {dailyChange >= 0 ? (
-                <TrendingUp className="w-3 h-3" />
-              ) : (
-                <TrendingDown className="w-3 h-3" />
-              )}
-              <span>{dailyChange >= 0 ? '+' : ''}{dailyChange.toLocaleString()} today</span>
-            </div>
           </div>
 
           {/* Action Buttons */}
@@ -175,6 +124,7 @@ export function ProfessionalWallet() {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              onClick={() => setShowDepositModal(true)}
               className="flex-1 bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-800 py-3.5 rounded-xl font-medium transition-all flex items-center justify-center gap-2 min-h-[52px]"
             >
               <ArrowDownLeft className="w-4 h-4" strokeWidth={2} />
@@ -183,160 +133,30 @@ export function ProfessionalWallet() {
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Wallet Settings Button */}
         <div className="px-6 pb-4">
-          <div className="grid grid-cols-2 gap-3">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-gray-800/50 hover:bg-gray-800 border border-gray-700/50 rounded-xl p-3 flex items-center justify-between transition-all"
-            >
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-yellow-400/10 rounded-lg flex items-center justify-center">
-                  <Activity className="w-4 h-4 text-yellow-400" />
-                </div>
-                <span className="text-sm text-gray-300">Mint</span>
-              </div>
-              <ChevronRight className="w-4 h-4 text-gray-500" />
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-gray-800/50 hover:bg-gray-800 border border-gray-700/50 rounded-xl p-3 flex items-center justify-between transition-all"
-            >
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-blue-400/10 rounded-lg flex items-center justify-center">
-                  <Shield className="w-4 h-4 text-blue-400" />
-                </div>
-                <span className="text-sm text-gray-300">Backup</span>
-              </div>
-              <ChevronRight className="w-4 h-4 text-gray-500" />
-            </motion.button>
-          </div>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate('/money/settings')}
+            className="w-full bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 flex items-center justify-center gap-2 transition-all"
+          >
+            <Settings className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
+            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Wallet Settings</span>
+          </motion.button>
         </div>
 
-        {/* Tabs */}
-        <div className="px-6">
-          <div className="flex gap-1 p-1 bg-gray-800/30 rounded-xl">
-            <button
-              onClick={() => setSelectedTab('activity')}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                selectedTab === 'activity'
-                  ? 'bg-gray-700 text-white'
-                  : 'text-gray-400 hover:text-gray-300'
-              }`}
-            >
-              Recent Activity
-            </button>
-            <button
-              onClick={() => setSelectedTab('stats')}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                selectedTab === 'stats'
-                  ? 'bg-gray-700 text-white'
-                  : 'text-gray-400 hover:text-gray-300'
-              }`}
-            >
-              Statistics
-            </button>
-          </div>
-        </div>
-
-        {/* Transactions List */}
+        {/* Recent Activity */}
         <div className="px-6 py-4">
-          <AnimatePresence mode="wait">
-            {selectedTab === 'activity' && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="space-y-3"
-              >
-                {transactions.map((transaction, index) => (
-                  <motion.div
-                    key={transaction.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    whileHover={{ x: 4 }}
-                    className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-800/30 transition-all cursor-pointer group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${getIconBgColor(transaction)}`}>
-                        <div className={getTransactionColor(transaction)}>
-                          {getTransactionIcon(transaction)}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium text-gray-200">
-                          {transaction.description}
-                        </div>
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <Clock className="w-3 h-3" />
-                          <span>{transaction.timestamp}</span>
-                          {transaction.status === 'pending' && (
-                            <span className="px-1.5 py-0.5 bg-yellow-400/10 text-yellow-400 rounded text-xs">
-                              Pending
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className={`text-sm font-semibold ${
-                        transaction.amount > 0 ? 'text-emerald-400' : 'text-gray-300'
-                      }`}>
-                        {transaction.amount > 0 ? '+' : ''}{Math.abs(transaction.amount).toLocaleString()} sats
-                      </div>
-                      <div className="text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                        View details
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            )}
-
-            {selectedTab === 'stats' && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="space-y-4"
-              >
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700/50">
-                    <div className="text-xs text-gray-500 mb-1">Total Sent</div>
-                    <div className="text-lg font-semibold text-orange-400">1,350 sats</div>
-                    <div className="text-xs text-gray-500 mt-1">4 transactions</div>
-                  </div>
-                  <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700/50">
-                    <div className="text-xs text-gray-500 mb-1">Total Received</div>
-                    <div className="text-lg font-semibold text-emerald-400">3,850 sats</div>
-                    <div className="text-xs text-gray-500 mt-1">8 transactions</div>
-                  </div>
-                </div>
-                <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700/50">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="text-xs text-gray-500">Weekly Activity</div>
-                    <TrendingUp className="w-4 h-4 text-emerald-400" />
-                  </div>
-                  <div className="flex items-end gap-1 h-12">
-                    {[40, 65, 30, 80, 45, 90, 70].map((height, i) => (
-                      <div
-                        key={i}
-                        className="flex-1 bg-gradient-to-t from-purple-500 to-purple-400 rounded-t"
-                        style={{ height: `${height}%` }}
-                      />
-                    ))}
-                  </div>
-                  <div className="flex justify-between mt-2 text-xs text-gray-500">
-                    <span>Mon</span>
-                    <span>Sun</span>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-3">Recent Activity</h3>
+          <div className="text-center py-12">
+            <div className="text-sm text-neutral-500 dark:text-neutral-600">
+              No transactions yet
+            </div>
+            <div className="text-xs text-neutral-400 dark:text-neutral-700 mt-1">
+              Transactions will appear here once you start using your wallet
+            </div>
+          </div>
         </div>
 
         {/* Footer */}
@@ -350,6 +170,13 @@ export function ProfessionalWallet() {
           </motion.button>
         </div>
       </motion.div>
+      
+      <DepositModal
+        isOpen={showDepositModal}
+        onClose={() => setShowDepositModal(false)}
+        onDeposit={handleDeposit}
+        mints={mints}
+      />
     </div>
   );
 }

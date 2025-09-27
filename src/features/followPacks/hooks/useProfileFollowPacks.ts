@@ -27,25 +27,16 @@ export function useProfileFollowPacks(profilePubkey: string) {
     );
 
     const processed = uniqueEvents.map((event) => {
-      // Convert to NDKFollowPack to use its built-in getters
       const followPack = NDKFollowPack.from(event);
 
-      // Extract pubkeys from 'p' tags
-      const pubkeys = event.tags
-        .filter((t: string[]) => t[0] === 'p')
-        .map((t: string[]) => t[1]);
+      const pubkeys = followPack.pubkeys || [];
 
-      return {
-        ...followPack,
-        pubkeys,
-        subscriberCount: 0,
-        isSubscribed: isSubscribed(event.id),
-        isFavorite: isFavorite(event.id),
-        lastUpdated: event.created_at,
-        // Keep track of whether user created it or appears in it
+      Object.assign(followPack, {
         isCreator: event.pubkey === profilePubkey,
         appearsIn: pubkeys.includes(profilePubkey)
-      } as FollowPackWithMetadata & { isCreator: boolean; appearsIn: boolean };
+      });
+
+      return followPack as NDKFollowPack & { isCreator: boolean; appearsIn: boolean };
     });
 
     const created = processed.filter(p => p.isCreator);

@@ -2,18 +2,17 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import type { NDKEvent } from '@nostr-dev-kit/ndk-hooks';
 
 interface ZapButtonProps {
-  eventId: string;
-  authorPubkey: string;
+  event: NDKEvent;
   initialZapCount?: number;
   size?: 'sm' | 'md';
-  onZap?: (amount: number) => void;
+  onZap?: (amount: number, success: boolean) => void;
 }
 
 export function ZapButton({
-  eventId: _eventId,
-  authorPubkey: _authorPubkey,
+  event,
   initialZapCount = 0,
   size = 'sm',
   onZap
@@ -22,23 +21,46 @@ export function ZapButton({
   const [zapCount, setZapCount] = useState(initialZapCount);
   const [isZapping, setIsZapping] = useState(false);
   const [lastZapAmount, setLastZapAmount] = useState<number | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const quickZapAmounts = [21, 100, 500, 1000];
 
   const handleZap = async (amount: number) => {
     setIsZapping(true);
     setLastZapAmount(amount);
+    setErrorMessage(null);
 
-    // Mock zap action
-    setTimeout(() => {
-      setZapCount(prev => prev + 1);
+    try {
+      const { useZap } = await import('@/hooks/useZap');
+      const { sendZap } = useZap({
+        onSuccess: () => {
+          setZapCount(prev => prev + 1);
+          setShowAmounts(false);
+          onZap?.(amount, true);
+          setTimeout(() => setLastZapAmount(null), 2000);
+        },
+        onError: (error) => {
+          setErrorMessage(error.message);
+          onZap?.(amount, false);
+          setTimeout(() => {
+            setErrorMessage(null);
+            setLastZapAmount(null);
+          }, 3000);
+        }
+      });
+
+      await sendZap(event, amount);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Zap failed';
+      setErrorMessage(message);
+      onZap?.(amount, false);
+      setTimeout(() => {
+        setErrorMessage(null);
+        setLastZapAmount(null);
+      }, 3000);
+    } finally {
       setIsZapping(false);
-      setShowAmounts(false);
-      onZap?.(amount);
-
-      // Clear the animation after a moment
-      setTimeout(() => setLastZapAmount(null), 2000);
-    }, 500);
+    }
   };
 
   return (
@@ -81,7 +103,7 @@ export function ZapButton({
 
       {/* Floating zap amount indicator */}
       <AnimatePresence>
-        {lastZapAmount && (
+        {lastZapAmount && !errorMessage && (
           <motion.div
             initial={{ opacity: 0, y: 0, scale: 0.8 }}
             animate={{ opacity: 1, y: -30, scale: 1 }}
@@ -90,6 +112,18 @@ export function ZapButton({
           >
             <div className="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full font-bold whitespace-nowrap">
               +{lastZapAmount} ⚡
+            </div>
+          </motion.div>
+        )}
+        {errorMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 0, scale: 0.8 }}
+            animate={{ opacity: 1, y: -30, scale: 1 }}
+            exit={{ opacity: 0, y: -50, scale: 0.8 }}
+            className="absolute left-1/2 -translate-x-1/2 pointer-events-none whitespace-nowrap"
+          >
+            <div className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+              {errorMessage}
             </div>
           </motion.div>
         )}

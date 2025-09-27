@@ -2,6 +2,7 @@
   "navigation": {
     "feed": "Inicio",
     "compose": "Redactar",
+    "messages": "Mensajes",
     "notifications": "Notificaciones",
     "classifieds": "Clasificados",
     "marketplace": "Mercado",
@@ -9,6 +10,7 @@
     "followPacks": "Paquetes de Seguimiento",
     "profile": "Perfil",
     "wallet": "Billetera",
+    "money": "Dinero",
     "settings": "Configuración",
     "logout": "Cerrar sesión"
   },
@@ -137,6 +139,17 @@
     "follow": "Seguir",
     "unfollow": "Dejar de seguir"
   },
+  "messages": {
+    "title": "Mensajes",
+    "noMessages": "No hay mensajes todavía.",
+    "newMessage": "Nuevo Mensaje",
+    "enterRecipient": "Ingresa el npub del usuario...",
+    "invalidNpub": "Npub inválido",
+    "mustBeLoggedIn": "Debes iniciar sesión.",
+    "messagePlaceholder": "Mensaje...",
+    "sending": "Enviando...",
+    "next": "Siguiente"
+  },
   "common": {
     "loading": "Cargando...",
     "error": "Ocurrió un error",
@@ -153,6 +166,7 @@
     "copy": "Copiar",
     "copied": "¡Copiado!",
     "share": "Compartir",
-    "soon": "Pronto"
+    "soon": "Pronto",
+    "message": "Mensaje"
   }
 }

@@ -5,7 +5,8 @@ import { HomePage } from './pages/HomePage';
 import { ComposePage } from './pages/ComposePage';
 import { NotificationsPage } from './pages/NotificationsPage';
 import { ProfilePage } from './pages/ProfilePage';
-import { WalletPage } from './pages/WalletPage';
+import { MoneyPage } from './pages/MoneyPage';
+import { MoneySettingsPage } from './pages/MoneySettingsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { TradePage } from './pages/TradePage';
 import { MarketplacePage } from './pages/marketplace/MarketplacePage';
@@ -14,14 +15,19 @@ import { ListingDetailPage } from './pages/marketplace/ListingDetailPage';
 import { FollowPacksPage } from './pages/FollowPacksPageImproved';
 import { FollowPackDetailPage } from './pages/FollowPackDetailPage';
 import { NoteDetailPage } from './pages/NoteDetailPage';
+import { MessagesPage } from './pages/MessagesPage';
+import { ConversationPage } from './pages/ConversationPage';
+import { NewConversationPage } from './pages/NewConversationPage';
 import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
 import { useAutoLogin } from './features/auth/useAutoLogin';
+import { useMessageSubscription } from './features/messages/hooks/useMessageSubscription';
 
 const queryClient = new QueryClient();
 
 function AppRoutes() {
   const currentUser = useNDKCurrentUser();
   useAutoLogin();
+  useMessageSubscription();
 
   return (
     <Routes>
@@ -34,11 +40,15 @@ function AppRoutes() {
         <Route path="e/:nevent" element={<NoteDetailPage />} />
         <Route path="packs" element={<FollowPacksPage />} />
         <Route path="packs/:packId" element={<FollowPackDetailPage />} />
-        <Route path="wallet" element={<WalletPage />} />
+        <Route path="money" element={<MoneyPage />} />
+        <Route path="money/settings" element={<MoneySettingsPage />} />
         <Route path="trades" element={<TradePage />} />
         <Route path="marketplace" element={<MarketplacePage />} />
         <Route path="marketplace/create" element={<CreateListingPage />} />
         <Route path="marketplace/:id" element={<ListingDetailPage />} />
+        <Route path="messages" element={currentUser ? <MessagesPage /> : <Navigate to="/" />} />
+        <Route path="messages/:conversationId" element={currentUser ? <ConversationPage /> : <Navigate to="/" />} />
+        <Route path="messages/new" element={currentUser ? <NewConversationPage /> : <Navigate to="/" />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
     </Routes>

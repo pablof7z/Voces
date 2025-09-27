@@ -1,16 +1,21 @@
 import { useState } from 'react';
 import { useNDKCurrentUser, useProfile, useSubscribe, NDKKind, useUser } from '@nostr-dev-kit/ndk-hooks';
-import { Calendar, Link as LinkIcon, Edit2, Package } from 'lucide-react';
+import { Calendar, Link as LinkIcon, Edit2, Package, MessageSquare } from 'lucide-react';
 import { NoteCard } from '@/features/feed/NoteCard';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ProfileEditor } from '@/features/profile/ProfileEditor';
 import { PackCard } from '@/features/followPacks/components/PackCard';
 import { useProfileFollowPacks } from '@/features/followPacks/hooks/useProfileFollowPacks';
 import { MediaGrid } from '@/components/media/MediaGrid';
 import { FollowButton } from '@/components/ui/FollowButton';
+import { ContentRenderer } from '@/components/content/ContentRenderer';
+import { getConversationId } from '@/features/messages/utils/nip17';
+import { useTranslation } from 'react-i18next';
 
 export function ProfilePage() {
   const { identifier } = useParams<{ identifier?: string }>();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const currentUser = useNDKCurrentUser();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [activeTab, setActiveTab] = useState<'notes' | 'replies' | 'media' | 'packs'>('notes');
@@ -21,14 +26,33 @@ export function ProfilePage() {
 
   const isOwnProfile = user?.pubkey === currentUser?.pubkey;
 
-  const { events } = useSubscribe(user?.pubkey ? [{
+  const handleMessageClick = () => {
+    if (!currentUser || !user) return;
+    const conversationId = getConversationId([currentUser.pubkey, user.pubkey]);
+    navigate(`/messages/${conversationId}`);
+  };
+
+  const { events: allTextEvents } = useSubscribe(user?.pubkey ? [{
     kinds: [NDKKind.Text],
     authors: [user.pubkey],
-    limit: 20,
+    limit: 100,
   }] : false, { subId: 'profile-notes' });
 
+  // Helper to check if content has media URLs
+  const hasMediaUrl = (content: string): boolean => {
+    const urlRegex = /(https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp|svg|avif|mp4|webm|mov|avi|mkv))/gi;
+    return urlRegex.test(content);
+  };
+
+  // Filter notes (kind:1 without 'e' tag) and replies (kind:1 with 'e' tag)
+  const notes = allTextEvents.filter(event => !event.tags.some(tag => tag[0] === 'e'));
+  const replies = allTextEvents.filter(event => event.tags.some(tag => tag[0] === 'e'));
+
+  // Media: kind:1 events with media URLs in content
+  const textMediaEvents = allTextEvents.filter(event => hasMediaUrl(event.content));
+
   // Fetch kind:20, 21, 22 media events for the media tab (NIP-68)
-  const { events: mediaEvents } = useSubscribe(user?.pubkey && activeTab === 'media' ? [{
+  const { events: nip68MediaEvents } = useSubscribe(user?.pubkey && activeTab === 'media' ? [{
     kinds: [
       NDKKind.Image,       // kind:20 - Image file metadata
       NDKKind.Video,       // kind:21 - Video file metadata
@@ -36,6 +60,9 @@ export function ProfilePage() {
     ],
     authors: [user.pubkey],
   }] : false, { subId: 'profile-media' });
+
+  // Combine NIP-68 media events with kind:1 text events that have media
+  const allMediaEvents = [...nip68MediaEvents, ...textMediaEvents];
 
   const [packFilter, setPackFilter] = useState<'all' | 'created' | 'appears'>('all');
   const { createdPacks, appearsPacks, allPacks } = useProfileFollowPacks(user?.pubkey || '');
@@ -101,12 +128,26 @@ export function ProfilePage() {
                   </p>
                 )}
               </div>
-              <FollowButton pubkey={user.pubkey} />
+              <div className="flex gap-2">
+                {!isOwnProfile && (
+                  <button
+                    onClick={handleMessageClick}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-900"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    {t('common.message')}
+                  </button>
+                )}
+                <FollowButton pubkey={user.pubkey} />
+              </div>
             </div>
             {profile?.about && (
-              <p className="mt-3 text-gray-700 dark:text-gray-300">
-                {profile.about}
-              </p>
+              <div className="mt-3">
+                <ContentRenderer
+                  content={profile.about}
+                  className="text-gray-700 dark:text-gray-300"
+                />
+              </div>
             )}
           </div>
           
@@ -133,7 +174,7 @@ export function ProfilePage() {
           <div className="flex gap-6 mt-4">
             <div>
               <span className="font-semibold text-gray-900 dark:text-gray-100">
-                {events.length}
+                {notes.length}
               </span>
               <span className="text-gray-500 dark:text-gray-400 ml-1">Notes</span>
             </div>
@@ -196,10 +237,10 @@ export function ProfilePage() {
       <div>
         {activeTab === 'notes' && (
           <>
-            {events.map((event) => (
+            {notes.map((event) => (
               <NoteCard key={event.id} event={event} />
             ))}
-            {events.length === 0 && (
+            {notes.length === 0 && (
               <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                 No notes yet
               </div>
@@ -208,14 +249,21 @@ export function ProfilePage() {
         )}
 
         {activeTab === 'replies' && (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            Replies coming soon
-          </div>
+          <>
+            {replies.map((event) => (
+              <NoteCard key={event.id} event={event} />
+            ))}
+            {replies.length === 0 && (
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                No replies yet
+              </div>
+            )}
+          </>
         )}
 
         {activeTab === 'media' && (
           <div className="p-4">
-            <MediaGrid events={mediaEvents} />
+            <MediaGrid events={allMediaEvents} />
           </div>
         )}
 

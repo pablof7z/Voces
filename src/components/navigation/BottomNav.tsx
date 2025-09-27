@@ -1,4 +1,4 @@
-import { Home, Store, Wallet, TrendingUp, User } from 'lucide-react';
+import { Home, Store, Wallet, User, MessageSquare } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
@@ -6,9 +6,9 @@ import { useNDKCurrentUser, useProfile } from '@nostr-dev-kit/ndk-hooks';
 
 const navItemsConfig = [
   { path: '/', icon: Home, key: 'feed' },
+  { path: '/messages', icon: MessageSquare, key: 'messages' },
   { path: '/marketplace', icon: Store, key: 'marketplace' },
-  { path: '/wallet', icon: Wallet, key: 'wallet' },
-  { path: '/trades', icon: TrendingUp, key: 'trades' },
+  { path: '/money', icon: Wallet, key: 'money' },
   { path: '/profile', icon: User, key: 'profile' },
 ];
 

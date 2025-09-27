@@ -8,7 +8,7 @@ export function WalletBalanceBadge() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/wallet');
+    navigate('/money');
   };
 
   return (

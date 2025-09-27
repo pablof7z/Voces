@@ -1,5 +1,4 @@
 import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
-import { WalletWidget } from '../wallet/WalletWidget';
 import { LoginButton } from '@/features/auth/LoginButton';
 import { NavItems } from './NavItems';
 import { UserMenu } from './UserMenu';
@@ -17,11 +16,7 @@ export function Sidebar() {
 
       <NavItems />
 
-      <div className="px-3 mb-4">
-        <WalletWidget />
-      </div>
-
-      <div className="border-t border-neutral-800/50 p-4">
+      <div className="border-t border-neutral-800/50 p-4 mt-auto">
         {currentUser ? <UserMenu /> : <LoginButton />}
       </div>
     </aside>

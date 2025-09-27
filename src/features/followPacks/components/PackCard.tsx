@@ -42,14 +42,27 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
     return (
       <Link
         to={`/packs/${pack.encode()}`}
-        className="block bg-black/40 backdrop-blur-sm border border-neutral-800 rounded-lg p-4 hover:border-purple-500/50 hover:bg-black/60 transition-all group"
+        className="block bg-black/40 backdrop-blur-sm border border-neutral-800 rounded-xl overflow-hidden hover:border-purple-500/50 hover:bg-black/60 transition-all group"
       >
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <h4 className="font-semibold text-white truncate group-hover:text-purple-400 transition-colors">
+        <div className="relative">
+          {/* Background image */}
+          {pack.image && (
+            <div className="absolute inset-0">
+              <img
+                src={pack.image}
+                alt={pack.title}
+                className="w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent" />
+            </div>
+          )}
+
+          {/* Content */}
+          <div className="relative p-4">
+            <h4 className="font-semibold text-white group-hover:text-purple-400 transition-colors mb-2 text-lg">
               {pack.title}
             </h4>
-            <p className="text-sm text-neutral-500">
+            <p className="text-sm text-neutral-400 mb-2">
               {pack.pubkeys?.length || 0} members • {
                 isCreator
                   ? 'by you'
@@ -58,39 +71,33 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
                     : `by @${creatorProfile?.name || creatorProfile?.displayName || pack.pubkey?.slice(0, 8) || 'unknown'}`
               }
             </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="flex -space-x-2">
-              {previewPubkeys.slice(0, 3).map((pubkey: string, index: number) => (
-                <ProfileAvatar
+            {pack.description && (
+              <p className="text-sm text-neutral-500 mb-3 line-clamp-2">
+                {pack.description}
+              </p>
+            )}
+            <div className="flex items-center -space-x-2">
+              {previewPubkeys.slice(0, 5).map((pubkey: string, index: number) => (
+                <div
                   key={pubkey}
-                  pubkey={pubkey}
-                  size="xs"
-                  className="border border-black/20"
-                  style={{ zIndex: 3 - index }}
-                />
+                  className="w-10 h-10 rounded-full overflow-hidden border-2 border-black/60 flex-shrink-0"
+                  style={{ zIndex: 5 - index }}
+                >
+                  <ProfileAvatar
+                    pubkey={pubkey}
+                    size="sm"
+                    className="w-full h-full"
+                  />
+                </div>
               ))}
-              {(pack.pubkeys?.length || 0) > 3 && (
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-600 to-purple-700 border border-black/20 flex items-center justify-center">
-                  <span className="text-[10px] text-white font-bold">
-                    +{(pack.pubkeys?.length || 0) - 3}
+              {(pack.pubkeys?.length || 0) > 5 && (
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-purple-700 border-2 border-black/60 flex items-center justify-center flex-shrink-0">
+                  <span className="text-xs text-white font-bold">
+                    +{(pack.pubkeys?.length || 0) - 5}
                   </span>
                 </div>
               )}
             </div>
-            <Button
-              onClick={handleSubscribe}
-              size="sm"
-              variant={subscribed ? 'ghost' : 'default'}
-              className={cn(
-                "min-w-[80px] h-7 text-xs",
-                subscribed
-                  ? "border border-purple-500/30 hover:bg-purple-500/10 text-purple-400"
-                  : "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
-              )}
-            >
-              {subscribed ? 'Following' : 'Follow'}
-            </Button>
           </div>
         </div>
       </Link>

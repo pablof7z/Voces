@@ -3,7 +3,11 @@ import { useNDK, NDKEvent, useNDKCurrentUser, NDKKind, useProfile } from '@nostr
 import { Image, Smile, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export function ComposeNote() {
+interface ComposeNoteProps {
+  onPublish?: () => void;
+}
+
+export function ComposeNote({ onPublish }: ComposeNoteProps) {
   const { ndk } = useNDK();
   const currentUser = useNDKCurrentUser();
   const profile = useProfile(currentUser?.pubkey);
@@ -11,7 +15,6 @@ export function ComposeNote() {
   const [isPublishing, setIsPublishing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-resize textarea
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -29,9 +32,10 @@ export function ComposeNote() {
       const event = new NDKEvent(ndk);
       event.kind = NDKKind.Text;
       event.content = content;
-      
+
       await event.publish();
       setContent('');
+      onPublish?.();
     } catch (error) {
       console.error('Failed to publish note:', error);
     } finally {
@@ -48,63 +52,60 @@ export function ComposeNote() {
   const isOverLimit = remainingChars < 0;
 
   return (
-    <div className="bg-white dark:bg-black rounded-lg">
+    <div className="bg-transparent">
       <form onSubmit={handleSubmit}>
-        <div className="flex gap-3">
-          {/* Avatar */}
+        <div className="flex gap-4">
           <div className="flex-shrink-0">
             {profile?.picture ? (
               <img
                 src={profile.picture}
                 alt={displayName}
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
+                className="w-12 h-12 rounded-full object-cover"
               />
             ) : (
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold text-lg">
                 {displayName[0]?.toUpperCase()}
               </div>
             )}
           </div>
-          
-          {/* Input area */}
+
           <div className="flex-1">
             <textarea
               ref={textareaRef}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="What's happening?"
-              className="w-full p-0 text-lg placeholder:text-gray-500 dark:placeholder:text-gray-400 bg-transparent resize-none focus:outline-none text-gray-900 dark:text-gray-100 min-h-[60px]"
+              className="w-full p-0 text-xl placeholder:text-neutral-500 bg-transparent resize-none outline-none focus:outline-none focus:ring-0 focus:border-none text-white min-h-[120px] border-0"
               disabled={isPublishing}
+              autoFocus
             />
-            
-            {/* Actions bar */}
-            <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200 dark:border-gray-800">
-              <div className="flex items-center gap-1">
+
+            <div className="flex items-center justify-between mt-6 pt-4 border-t border-neutral-800">
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors text-gray-500 dark:text-gray-400"
+                  className="p-2 rounded-full hover:bg-neutral-800/50 transition-colors text-neutral-500 hover:text-purple-400"
                   title="Add image (coming soon)"
                 >
                   <Image className="w-5 h-5" />
                 </button>
                 <button
                   type="button"
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors text-gray-500 dark:text-gray-400"
+                  className="p-2 rounded-full hover:bg-neutral-800/50 transition-colors text-neutral-500 hover:text-purple-400"
                   title="Add emoji (coming soon)"
                 >
                   <Smile className="w-5 h-5" />
                 </button>
                 <button
                   type="button"
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors text-gray-500 dark:text-gray-400"
+                  className="p-2 rounded-full hover:bg-neutral-800/50 transition-colors text-neutral-500 hover:text-purple-400"
                   title="Add location (coming soon)"
                 >
                   <MapPin className="w-5 h-5" />
                 </button>
               </div>
-              
+
               <div className="flex items-center gap-3">
-                {/* Character counter */}
                 {content.length > 0 && (
                   <div className="relative">
                     <svg className="w-8 h-8 -rotate-90">
@@ -115,7 +116,7 @@ export function ComposeNote() {
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2"
-                        className="text-gray-200 dark:text-gray-700"
+                        className="text-neutral-800"
                       />
                       <circle
                         cx="16"
@@ -128,8 +129,8 @@ export function ComposeNote() {
                         strokeLinecap="round"
                         className={cn(
                           "transition-all duration-150",
-                          isOverLimit ? "text-red-500" : 
-                          remainingChars < 20 ? "text-yellow-500" : 
+                          isOverLimit ? "text-red-500" :
+                          remainingChars < 20 ? "text-yellow-500" :
                           "text-purple-500"
                         )}
                       />
@@ -137,23 +138,22 @@ export function ComposeNote() {
                     {remainingChars < 20 && (
                       <span className={cn(
                         "absolute inset-0 flex items-center justify-center text-xs font-medium",
-                        isOverLimit ? "text-red-500" : "text-gray-500 dark:text-gray-400"
+                        isOverLimit ? "text-red-500" : "text-neutral-400"
                       )}>
                         {remainingChars}
                       </span>
                     )}
                   </div>
                 )}
-                
-                {/* Publish button */}
+
                 <button
                   type="submit"
                   disabled={!content.trim() || isPublishing || isOverLimit}
                   className={cn(
-                    "px-4 py-1.5 rounded-full font-medium transition-all",
+                    "px-6 py-2 rounded-full font-semibold transition-all text-base",
                     (!content.trim() || isOverLimit)
-                      ? "bg-gray-200 text-gray-400 dark:bg-black dark:text-gray-600 cursor-not-allowed"
-                      : "bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
+                      ? "bg-neutral-800 text-neutral-600 cursor-not-allowed"
+                      : "bg-purple-600 text-white hover:bg-purple-700 shadow-lg shadow-purple-500/30"
                   )}
                 >
                   {isPublishing ? (

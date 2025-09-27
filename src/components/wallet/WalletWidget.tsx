@@ -1,15 +1,15 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Zap, Send, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useWallet } from '../../hooks/useWallet';
 
 export function WalletWidget() {
   const { t } = useTranslation();
-  const [balance] = useState(21000);
+  const { balance } = useWallet();
 
   return (
-    <Link to="/wallet">
+    <Link to="/money">
       <motion.div
         whileHover={{ scale: 1.02 }}
         className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 p-4 rounded-xl cursor-pointer transition-all hover:shadow-md"
@@ -19,7 +19,7 @@ export function WalletWidget() {
             <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
               <Zap className="w-4 h-4 text-white" />
             </div>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('navigation.wallet')}</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('navigation.money')}</span>
           </div>
         </div>
 

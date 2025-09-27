@@ -2,6 +2,7 @@
   "navigation": {
     "feed": "Home",
     "compose": "Compose",
+    "messages": "Messages",
     "notifications": "Notifications",
     "classifieds": "Classifieds",
     "marketplace": "Marketplace",
@@ -9,6 +10,7 @@
     "followPacks": "Follow Packs",
     "profile": "Profile",
     "wallet": "Wallet",
+    "money": "Money",
     "settings": "Settings",
     "logout": "Logout"
   },
@@ -137,6 +139,17 @@
     "follow": "Follow",
     "unfollow": "Unfollow"
   },
+  "messages": {
+    "title": "Messages",
+    "noMessages": "No messages yet.",
+    "newMessage": "New Message",
+    "enterRecipient": "Enter user npub...",
+    "invalidNpub": "Invalid npub",
+    "mustBeLoggedIn": "You must be logged in.",
+    "messagePlaceholder": "Message...",
+    "sending": "Sending...",
+    "next": "Next"
+  },
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
@@ -153,6 +166,7 @@
     "copy": "Copy",
     "copied": "Copied!",
     "share": "Share",
-    "soon": "Soon"
+    "soon": "Soon",
+    "message": "Message"
   }
 }

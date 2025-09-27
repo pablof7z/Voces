@@ -43,7 +43,7 @@ function MediaItem({ event, imeta }: MediaItemProps) {
   return (
     <>
       <div
-        className="group relative aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-black cursor-pointer"
+        className="group relative aspect-square overflow-hidden bg-gray-100 dark:bg-black cursor-pointer"
         onClick={() => setShowFullscreen(true)}
       >
         {mediaType === 'image' && (
@@ -183,15 +183,42 @@ function MediaItem({ event, imeta }: MediaItemProps) {
 }
 
 export function MediaGrid({ events }: MediaGridProps) {
-  // Process events to extract media items with imeta tags
+  // Helper to extract media URLs from content
+  const extractMediaUrls = (content: string): string[] => {
+    const urlRegex = /(https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp|svg|avif|mp4|webm|mov|avi|mkv))/gi;
+    return content.match(urlRegex) || [];
+  };
+
+  // Process events to extract media items with imeta tags or content URLs
   const mediaItems = events.flatMap(event => {
     const imetaTags = event.tags.filter(tag => tag[0] === 'imeta');
     const imetas = imetaTags.map(tag => mapImetaTag(tag));
 
-    // Return only events with valid imeta tags that have URLs
-    return imetas
+    // Items from imeta tags
+    const imetaItems = imetas
       .filter(imeta => imeta.url)
       .map(imeta => ({ event, imeta }));
+
+    // If we have imeta tags, use those
+    if (imetaItems.length > 0) {
+      return imetaItems;
+    }
+
+    // Otherwise, extract media URLs from content (for kind:1 events)
+    const contentUrls = extractMediaUrls(event.content);
+    return contentUrls.map(url => {
+      // Create a simple imeta-like object from the URL
+      const ext = url.split('.').pop()?.toLowerCase();
+      const isVideo = ['mp4', 'webm', 'mov', 'avi', 'mkv'].includes(ext || '');
+
+      return {
+        event,
+        imeta: {
+          url,
+          m: isVideo ? 'video/' + ext : 'image/' + ext,
+        } as NDKImetaTag
+      };
+    });
   });
 
   if (mediaItems.length === 0) {
@@ -203,7 +230,7 @@ export function MediaGrid({ events }: MediaGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-3 gap-1">
       {mediaItems.map(({ event, imeta }, index) => (
         <MediaItem key={`${event.id}-${index}`} event={event} imeta={imeta} />
       ))}

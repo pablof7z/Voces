@@ -76,7 +76,7 @@ export function MarketplacePage() {
   const isFilteredView = selectedCategory || searchQuery;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-black">
+    <div className="min-h-screen bg-gray-50 dark:bg-black">
       <div className="container mx-auto px-4 py-4 max-w-7xl">
         {/* Header */}
         <div className="mb-6">

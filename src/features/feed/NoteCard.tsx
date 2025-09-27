@@ -4,6 +4,7 @@ import { Heart, MessageCircle, Repeat2, Share, MoreHorizontal, Copy, Code2, Chev
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { ZapButton } from '@/components/wallet/ZapButton';
+import { walletLogger } from '@/utils/walletLogger';
 import { UserAvatar } from '@/components/ui/UserAvatar';
 import { Link, useNavigate } from 'react-router-dom';
 import { ContentRenderer } from '@/components/content/ContentRenderer';
@@ -336,9 +337,12 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
 
                 {/* Zap Button */}
                 <ZapButton
-                  eventId={event.id}
-                  authorPubkey={event.pubkey}
-                  onZap={(amount) => console.log(`Zapped ${amount} sats to`, event.pubkey)}
+                  event={event}
+                  onZap={(amount, success) => {
+                    if (success) {
+                      walletLogger.info(`Zapped ${amount} sats to ${event.pubkey}`, 'NoteCard');
+                    }
+                  }}
                 />
 
                 <button
