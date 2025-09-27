@@ -108,59 +108,12 @@ export function useAvailableCurrencies() {
   const [currencies, setCurrencies] = useState<CurrencyInfo[]>([
     { code: 'all', name: 'All', flag: '🌍' }
   ]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!ndk) return;
 
-    const fetchCurrencies = async () => {
-      setLoading(true);
-
-      const filter: NDKFilter = {
-        kinds: [38383 as any],
-        limit: 1000
-      };
-
-      const events = await ndk.fetchEvents(filter);
-      const uniqueCurrencies = new Set<string>();
-
-      events.forEach((event: NDKEvent) => {
-        const tags = event.tags;
-
-        const zTag = tags.find((t: string[]) => t[0] === 'z');
-        if (zTag && zTag[1] === 'info') return;
-
-        const currency = tags.find((t: string[]) => t[0] === 'f')?.[1];
-        const status = tags.find((t: string[]) => t[0] === 's')?.[1];
-
-        if (currency && status === 'pending') {
-          uniqueCurrencies.add(currency.toUpperCase());
-        }
-      });
-
-      const currencyList: CurrencyInfo[] = [
-        { code: 'all', name: 'All', flag: '🌍' }
-      ];
-
-      Array.from(uniqueCurrencies)
-        .sort()
-        .forEach(code => {
-          const metadata = currencyMetadata[code];
-          currencyList.push({
-            code,
-            name: metadata?.name || code,
-            flag: metadata?.flag || '💱'
-          });
-        });
-
-      setCurrencies(currencyList);
-      setLoading(false);
-    };
-
-    fetchCurrencies();
-
     const sub = ndk.subscribe(
-      { kinds: [38383 as any], since: Math.floor(Date.now() / 1000) },
+      { kinds: [38383 as any] },
       { closeOnEose: false }
     );
 
@@ -198,5 +151,5 @@ export function useAvailableCurrencies() {
     };
   }, [ndk]);
 
-  return { currencies, loading };
+  return { currencies };
 }

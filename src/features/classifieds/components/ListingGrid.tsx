@@ -1,8 +1,8 @@
-import type { ClassifiedListing } from '../types';
+import { NDKClassified } from '@nostr-dev-kit/ndk';
 import { ListingCard } from './ListingCard';
 
 interface ListingGridProps {
-  listings: ClassifiedListing[];
+  listings: NDKClassified[];
 }
 
 export function ListingGrid({ listings }: ListingGridProps) {

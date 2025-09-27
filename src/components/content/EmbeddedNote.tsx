@@ -3,6 +3,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { UserAvatar } from '@/components/ui/UserAvatar';
 import { Link, useNavigate } from 'react-router-dom';
 import { nip19 } from 'nostr-tools';
+import { ContentRenderer } from './ContentRenderer';
 
 interface EmbeddedNoteProps {
   eventId: string;
@@ -67,9 +68,11 @@ export function EmbeddedNote({ eventId }: EmbeddedNoteProps) {
           </div>
 
           <div className="mt-1">
-            <p className="text-neutral-700 dark:text-neutral-300 text-sm leading-relaxed whitespace-pre-wrap break-words line-clamp-4">
-              {event.content}
-            </p>
+            <ContentRenderer
+              content={event.content}
+              emojiTags={event.tags}
+              className="text-neutral-700 dark:text-neutral-300 text-sm leading-relaxed line-clamp-4"
+            />
           </div>
         </div>
       </div>

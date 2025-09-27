@@ -1,11 +1,11 @@
 import { ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import type { ClassifiedListing } from '../types';
+import { NDKClassified } from '@nostr-dev-kit/ndk';
 import { ListingCard } from './ListingCard';
 
 interface CategorySectionProps {
   category: string;
-  listings: ClassifiedListing[];
+  listings: NDKClassified[];
   showViewAll?: boolean;
 }
 

@@ -1,6 +1,7 @@
-import { useSubscribe, NDKKind, NDKEvent } from '@nostr-dev-kit/ndk-hooks';
+import { useSubscribe, NDKKind, NDKEvent, NDKSubscriptionCacheUsage } from '@nostr-dev-kit/ndk-hooks';
 import { NoteCard } from './NoteCard';
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useSettingsStore } from '@/stores/settingsStore';
 
 const INITIAL_LOAD = 20;
 const BATCH_SIZE = 10;
@@ -12,11 +13,20 @@ interface NoteFeedProps {
 }
 
 export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors }: NoteFeedProps = {}) {
-  // If no external events provided, use the default subscription
-  const { events: subscribedEvents } = useSubscribe(externalEvents ? false : [{
-    kinds: [NDKKind.Text],
-    ...(authors && authors.length > 0 ? { authors } : {}),
-  }], { subId: 'note-feed' }, [authors?.length]);
+  const selectedRelay = useSettingsStore((state) => state.selectedRelay);
+
+  const { events: subscribedEvents } = useSubscribe(
+    externalEvents ? false : [{
+      kinds: [NDKKind.Text],
+      ...(authors && authors.length > 0 && !selectedRelay ? { authors } : {}),
+    }],
+    {
+      subId: 'note-feed',
+      ...(selectedRelay ? { relays: [selectedRelay] } : {}),
+      cacheUsage: selectedRelay ? NDKSubscriptionCacheUsage.ONLY_RELAY : undefined,
+    },
+    [authors?.length, selectedRelay]
+  );
 
   const events = externalEvents || subscribedEvents;
 
@@ -74,7 +84,11 @@ export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors
     };
   }, [hasMore, isLoadingMore, loadMore]);
 
-  // Reset visible count when events change significantly
+  // Reset visible count when events change significantly or relay changes
+  useEffect(() => {
+    setVisibleCount(INITIAL_LOAD);
+  }, [selectedRelay]);
+
   useEffect(() => {
     if (events.length < visibleCount) {
       setVisibleCount(Math.min(INITIAL_LOAD, events.length));
@@ -85,9 +99,7 @@ export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors
     return (
       <div className="text-center py-12 px-4">
         <p className="text-gray-500 dark:text-gray-400">
-          {authors && authors.length > 0
-            ? "No notes from people you follow yet. Check out the global feed or follow more people!"
-            : "No notes yet. Be the first to share something!"}
+            No notes yet. Be the first to share something!
         </p>
       </div>
     );

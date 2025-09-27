@@ -18,16 +18,16 @@ import { NoteDetailPage } from './pages/NoteDetailPage';
 import { MessagesPage } from './pages/MessagesPage';
 import { ConversationPage } from './pages/ConversationPage';
 import { NewConversationPage } from './pages/NewConversationPage';
+import { ArticlePage } from './pages/ArticlePage';
 import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
 import { useAutoLogin } from './features/auth/useAutoLogin';
-import { useMessageSubscription } from './features/messages/hooks/useMessageSubscription';
+import { WalletInitializer } from './components/wallet/WalletInitializer';
 
 const queryClient = new QueryClient();
 
 function AppRoutes() {
   const currentUser = useNDKCurrentUser();
   useAutoLogin();
-  useMessageSubscription();
 
   return (
     <Routes>
@@ -35,9 +35,13 @@ function AppRoutes() {
         <Route index element={<HomePage />} />
         <Route path="compose" element={currentUser ? <ComposePage /> : <Navigate to="/" />} />
         <Route path="notifications" element={currentUser ? <NotificationsPage /> : <Navigate to="/" />} />
+        <Route path="messages" element={currentUser ? <MessagesPage /> : <Navigate to="/" />} />
+        <Route path="messages/new" element={currentUser ? <NewConversationPage /> : <Navigate to="/" />} />
+        <Route path="messages/:pubkey" element={currentUser ? <ConversationPage /> : <Navigate to="/" />} />
         <Route path="profile" element={currentUser ? <ProfilePage /> : <Navigate to="/" />} />
         <Route path="p/:identifier" element={<ProfilePage />} />
         <Route path="e/:nevent" element={<NoteDetailPage />} />
+        <Route path="article/:naddr" element={<ArticlePage />} />
         <Route path="packs" element={<FollowPacksPage />} />
         <Route path="packs/:packId" element={<FollowPackDetailPage />} />
         <Route path="money" element={<MoneyPage />} />
@@ -46,9 +50,6 @@ function AppRoutes() {
         <Route path="marketplace" element={<MarketplacePage />} />
         <Route path="marketplace/create" element={<CreateListingPage />} />
         <Route path="marketplace/:id" element={<ListingDetailPage />} />
-        <Route path="messages" element={currentUser ? <MessagesPage /> : <Navigate to="/" />} />
-        <Route path="messages/:conversationId" element={currentUser ? <ConversationPage /> : <Navigate to="/" />} />
-        <Route path="messages/new" element={currentUser ? <NewConversationPage /> : <Navigate to="/" />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
     </Routes>
@@ -59,6 +60,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        <WalletInitializer />
         <AppRoutes />
       </BrowserRouter>
     </QueryClientProvider>

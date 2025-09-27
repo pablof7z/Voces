@@ -2,8 +2,8 @@
   "navigation": {
     "feed": "Home",
     "compose": "Compose",
-    "messages": "Messages",
     "notifications": "Notifications",
+    "messages": "Messages",
     "classifieds": "Classifieds",
     "marketplace": "Marketplace",
     "trades": "P2P Trades",
@@ -141,14 +141,15 @@
   },
   "messages": {
     "title": "Messages",
-    "noMessages": "No messages yet.",
+    "noConversations": "No conversations yet",
+    "startConversation": "Start a conversation by messaging someone",
     "newMessage": "New Message",
-    "enterRecipient": "Enter user npub...",
-    "invalidNpub": "Invalid npub",
-    "mustBeLoggedIn": "You must be logged in.",
-    "messagePlaceholder": "Message...",
-    "sending": "Sending...",
-    "next": "Next"
+    "recipientLabel": "To:",
+    "recipientPlaceholder": "Enter npub or pubkey",
+    "recipientHint": "Enter a Nostr npub (npub1...) or public key (hex)",
+    "checkingReachability": "Checking if user can receive messages...",
+    "notReachable": "User is not reachable for DMs",
+    "notReachableHint": "This user has not set up their DM relay list (NIP-17)"
   },
   "common": {
     "loading": "Loading...",
@@ -166,7 +167,6 @@
     "copy": "Copy",
     "copied": "Copied!",
     "share": "Share",
-    "soon": "Soon",
-    "message": "Message"
+    "soon": "Soon"
   }
 }

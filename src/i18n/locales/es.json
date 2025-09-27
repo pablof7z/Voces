@@ -2,8 +2,8 @@
   "navigation": {
     "feed": "Inicio",
     "compose": "Redactar",
-    "messages": "Mensajes",
     "notifications": "Notificaciones",
+    "messages": "Mensajes",
     "classifieds": "Clasificados",
     "marketplace": "Mercado",
     "trades": "Intercambios P2P",
@@ -141,14 +141,15 @@
   },
   "messages": {
     "title": "Mensajes",
-    "noMessages": "No hay mensajes todavía.",
+    "noConversations": "No hay conversaciones todavía",
+    "startConversation": "Inicia una conversación enviando un mensaje a alguien",
     "newMessage": "Nuevo Mensaje",
-    "enterRecipient": "Ingresa el npub del usuario...",
-    "invalidNpub": "Npub inválido",
-    "mustBeLoggedIn": "Debes iniciar sesión.",
-    "messagePlaceholder": "Mensaje...",
-    "sending": "Enviando...",
-    "next": "Siguiente"
+    "recipientLabel": "Para:",
+    "recipientPlaceholder": "Ingresa npub o clave pública",
+    "recipientHint": "Ingresa un npub de Nostr (npub1...) o clave pública (hex)",
+    "checkingReachability": "Verificando si el usuario puede recibir mensajes...",
+    "notReachable": "El usuario no puede recibir mensajes directos",
+    "notReachableHint": "Este usuario no ha configurado su lista de relays para mensajes (NIP-17)"
   },
   "common": {
     "loading": "Cargando...",
@@ -166,7 +167,6 @@
     "copy": "Copiar",
     "copied": "¡Copiado!",
     "share": "Compartir",
-    "soon": "Pronto",
-    "message": "Mensaje"
+    "soon": "Pronto"
   }
 }

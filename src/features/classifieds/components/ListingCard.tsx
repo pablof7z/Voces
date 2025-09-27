@@ -2,21 +2,23 @@ import { Link } from 'react-router-dom';
 import { MapPin, Clock } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { UserAvatar } from '@/components/ui/UserAvatar';
-import type { ClassifiedListing } from '../types';
+import { NDKClassified } from '@nostr-dev-kit/ndk';
 import { formatDistanceToNow } from 'date-fns';
 
 interface ListingCardProps {
-  listing: ClassifiedListing;
+  listing: NDKClassified;
 }
 
 export function ListingCard({ listing }: ListingCardProps) {
-  const mainImage = listing.images?.[0];
-  const timeAgo = listing.publishedAt
-    ? formatDistanceToNow(new Date(listing.publishedAt * 1000), { addSuffix: true })
+  const mainImage = listing.tagValue("image");
+  const timeAgo = listing.created_at
+    ? formatDistanceToNow(new Date(listing.created_at * 1000), { addSuffix: true })
     : 'recently';
+  const price = listing.price;
+  const status = listing.tagValue('status');
 
   return (
-    <Link to={`/marketplace/${listing.id}`}>
+    <Link to={`/marketplace/${listing.encode()}`}>
       <Card className="hover:shadow-soft-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer h-full overflow-hidden group bg-white dark:bg-black/50 border-gray-100 dark:border-gray-800/50 animate-fade-in">
         {/* Image Section */}
         <div className="aspect-[4/3] relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
@@ -28,7 +30,7 @@ export function ListingCard({ listing }: ListingCardProps) {
                 className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                 loading="lazy"
               />
-              {listing.status === 'sold' && (
+              {status === 'sold' && (
                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
                   <span className="text-white font-bold text-xl rotate-12 border-4 border-white px-3 py-1 rounded">
                     SOLD
@@ -48,23 +50,23 @@ export function ListingCard({ listing }: ListingCardProps) {
         {/* Content Section */}
         <div className="p-4 space-y-3">
           {/* Price - Most prominent */}
-          {listing.price && (
+          {price && (
             <div className="flex justify-between items-start">
               <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                {listing.price.currency === 'SATS' ? (
-                  <span className="text-orange-500">{listing.price.amount} SATS</span>
+                {price.currency === 'SATS' ? (
+                  <span className="text-orange-500">{price.amount} SATS</span>
                 ) : (
                   <span>
-                    {listing.price.currency === 'USD' && '$'}
-                    {listing.price.currency === 'EUR' && '€'}
-                    {listing.price.currency === 'GBP' && '£'}
-                    {listing.price.amount}
-                    {!['USD', 'EUR', 'GBP'].includes(listing.price.currency) && ` ${listing.price.currency}`}
+                    {price.currency === 'USD' && '$'}
+                    {price.currency === 'EUR' && '€'}
+                    {price.currency === 'GBP' && '£'}
+                    {price.amount}
+                    {!['USD', 'EUR', 'GBP'].includes(price.currency) && ` ${price.currency}`}
                   </span>
                 )}
-                {listing.price.frequency && listing.price.frequency !== 'once' && (
+                {price.frequency && price.frequency !== 'once' && (
                   <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    /{listing.price.frequency}
+                    /{price.frequency}
                   </span>
                 )}
               </span>
@@ -99,7 +101,7 @@ export function ListingCard({ listing }: ListingCardProps) {
 
           {/* Seller Info */}
           <div className="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center gap-2">
-            <UserAvatar pubkey={listing.author} size="xs" />
+            <UserAvatar pubkey={listing.pubkey} size="xs" />
             <span className="text-xs text-gray-500 dark:text-gray-400">
               Posted by
             </span>

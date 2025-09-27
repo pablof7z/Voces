@@ -253,6 +253,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
               >
                 <ContentRenderer
                   content={event.content}
+                  emojiTags={event.tags}
                   className={cn(
                     "text-gray-800 dark:text-gray-200 leading-relaxed",
                     isLargeText ? "text-lg sm:text-xl" : "text-[15px] sm:text-base"

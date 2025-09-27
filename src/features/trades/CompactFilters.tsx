@@ -1,6 +1,7 @@
 import { ChevronDown } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useAvailableCurrencies } from './hooks/useAvailableCurrencies';
+import { useAvailablePaymentMethods } from './hooks/useAvailablePaymentMethods';
 
 interface CompactFiltersProps {
   filters: {
@@ -17,15 +18,6 @@ const orderTypes = [
   { value: 'sell', label: 'Sell', color: 'text-red-600' },
 ];
 
-const paymentMethods = [
-  { id: 'all', name: 'All', icon: '💰' },
-  { id: 'Cash', name: 'Cash', icon: '💵' },
-  { id: 'PIX', name: 'PIX', icon: '🔄' },
-  { id: 'BLIK', name: 'BLIK', icon: '📱' },
-  { id: 'Revolut', name: 'Revolut', icon: '💳' },
-  { id: 'Zelle', name: 'Zelle', icon: '🏦' },
-  { id: 'CashApp', name: 'CashApp', icon: '📲' },
-];
 
 function Dropdown({
   value,
@@ -80,6 +72,7 @@ function Dropdown({
 
 export function CompactFilters({ filters, onFiltersChange }: CompactFiltersProps) {
   const { currencies } = useAvailableCurrencies();
+  const { paymentMethods } = useAvailablePaymentMethods();
   const selectedOrderType = orderTypes.find(t => t.value === filters.orderType);
   const selectedCurrency = currencies.find(c => c.code === filters.currency);
   const selectedPayment = paymentMethods.find(p => p.id === filters.paymentMethod);

@@ -6,7 +6,7 @@ import { ListingGrid } from '@/features/classifieds/components/ListingGrid';
 import { CategorySection } from '@/features/classifieds/components/CategorySection';
 import { FilterButton } from '@/features/classifieds/components/FilterButton';
 import { useListings } from '@/features/classifieds/hooks/useListings';
-import type { ClassifiedListing } from '@/features/classifieds/types';
+import { NDKClassified } from '@nostr-dev-kit/ndk';
 
 const CATEGORIES = [
   { value: '', label: 'All Categories' },
@@ -55,9 +55,10 @@ export function MarketplacePage() {
     });
 
     // Group by category for the category sections view
-    const byCategory = filtered.reduce<Record<string, ClassifiedListing[]>>((acc, listing) => {
-      if (listing.categories && listing.categories.length > 0) {
-        listing.categories.forEach(category => {
+    const byCategory = filtered.reduce<Record<string, NDKClassified[]>>((acc, listing) => {
+      const categories = listing.tags.filter(t => t[0] === 't').map(t => t[1]);
+      if (categories.length > 0) {
+        categories.forEach(category => {
           const key = category.toLowerCase();
           if (!acc[key]) acc[key] = [];
           acc[key].push(listing);

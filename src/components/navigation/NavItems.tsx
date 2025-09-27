@@ -47,7 +47,8 @@ export function NavItems() {
         {NAV_ITEMS_CONFIG.map(({ path, icon: Icon, labelKey }) => {
           const isActive = location.pathname === path ||
                          (path === '/packs' && location.pathname.startsWith('/packs/')) ||
-                         (path === '/money' && location.pathname.startsWith('/money'));
+                         (path === '/money' && location.pathname.startsWith('/money')) ||
+                         (path === '/messages' && location.pathname.startsWith('/messages'));
           const isMoney = path === '/money';
 
           return (

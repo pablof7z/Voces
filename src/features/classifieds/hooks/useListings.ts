@@ -1,5 +1,6 @@
 import { useSubscribe } from '@nostr-dev-kit/ndk-hooks';
-import { CLASSIFIED_LISTING_KIND, parseListingFromEvent } from '../types';
+import { NDKClassified, NDKKind } from '@nostr-dev-kit/ndk';
+import { CLASSIFIED_LISTING_KIND } from '../types';
 import { useMemo } from 'react';
 
 interface UseListingsOptions {
@@ -14,7 +15,7 @@ export function useListings(options: UseListingsOptions = {}) {
   // Build filter based on options
   const filters = useMemo(() => {
     const filter: any = {
-      kinds: [CLASSIFIED_LISTING_KIND],
+      kinds: [NDKKind.Classified],
       limit
     };
 
@@ -35,12 +36,15 @@ export function useListings(options: UseListingsOptions = {}) {
 
   const listings = useMemo(() => {
     return events
-      .map(parseListingFromEvent)
-      .filter(listing => listing.status === 'active')
+      .map(event => NDKClassified.from(event))
+      .filter(listing => {
+        const status = listing.tagValue('status') || 'active';
+        return status === 'active';
+      })
       .sort((a, b) => {
-        const timeA = a.publishedAt || 0;
-        const timeB = b.publishedAt || 0;
-        return timeB - timeA; // Most recent first
+        const timeA = a.created_at || 0;
+        const timeB = b.created_at || 0;
+        return timeB - timeA;
       });
   }, [events]);
 

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNDK } from '@nostr-dev-kit/ndk-hooks';
+import { useMemo } from 'react';
+import { useSubscribe } from '@nostr-dev-kit/ndk-hooks';
 import { NDKEvent, type NDKFilter } from '@nostr-dev-kit/ndk';
 import { OrderCard } from './OrderCard';
 
@@ -20,6 +20,7 @@ interface Order {
 }
 
 interface OrderBookProps {
+  pair: string;
   filters: {
     currency: string;
     paymentMethod: string;
@@ -29,115 +30,62 @@ interface OrderBookProps {
   };
 }
 
-export function OrderBook({ filters }: OrderBookProps) {
-  const { ndk } = useNDK();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+export function OrderBook({ pair, filters }: OrderBookProps) {
+  const filter: NDKFilter = {
+    kinds: [38383],
+    "#t": [pair],
+    limit: 100,
+  };
 
-  useEffect(() => {
-    if (!ndk) return;
+  const { events } = useSubscribe({ filters: [filter], opts: { closeOnEose: false, groupByKind: true } });
 
-    const fetchOrders = async () => {
-      setLoading(true);
+  const orders = useMemo(() => {
+    const parsedOrders: Order[] = [];
 
-      const filter: NDKFilter = {
-        kinds: [38383 as any],
-        limit: 100,
-      };
-
-      const events = await ndk.fetchEvents(filter);
-
-      const parsedOrders: Order[] = [];
-
-      events.forEach((event: NDKEvent) => {
-        const tags = event.tags;
-
-        // Skip info events
-        const zTag = tags.find((t: string[]) => t[0] === 'z');
-        if (zTag && zTag[1] === 'info') return;
-
-        // Extract order data from tags
-        const orderType = tags.find((t: string[]) => t[0] === 'k')?.[1] as 'buy' | 'sell';
-        const currency = tags.find((t: string[]) => t[0] === 'f')?.[1];
-        const status = tags.find((t: string[]) => t[0] === 's')?.[1];
-        const paymentMethod = tags.find((t: string[]) => t[0] === 'pm')?.[1];
-        const satsAmount = parseInt(tags.find((t: string[]) => t[0] === 'amt')?.[1] || '0');
-        const fiatAmount = parseFloat(tags.find((t: string[]) => t[0] === 'fa')?.[1] || '0');
-        const premium = parseFloat(tags.find((t: string[]) => t[0] === 'premium')?.[1] || '0');
-        const rating = parseFloat(tags.find((t: string[]) => t[0] === 'rating')?.[1] || '0');
-        const platform = tags.find((t: string[]) => t[0] === 'y')?.[1];
-        const dTag = tags.find((t: string[]) => t[0] === 'd')?.[1];
-
-        // Only include active orders
-        if (status === 'pending' && orderType && currency && dTag) {
-          parsedOrders.push({
-            id: dTag,
-            pubkey: event.pubkey,
-            type: orderType,
-            currency,
-            status,
-            paymentMethod: paymentMethod || 'Unknown',
-            satsAmount,
-            fiatAmount,
-            premium,
-            rating,
-            platform,
-            createdAt: event.created_at || Date.now() / 1000,
-            event
-          });
-        }
-      });
-
-      // Sort by created date, newest first
-      parsedOrders.sort((a, b) => b.createdAt - a.createdAt);
-
-      setOrders(parsedOrders);
-      setLoading(false);
-    };
-
-    fetchOrders();
-
-    // Subscribe to new orders
-    const sub = ndk.subscribe(
-      { kinds: [38383 as any], since: Math.floor(Date.now() / 1000) },
-      { closeOnEose: false }
-    );
-
-    sub.on('event', (event: NDKEvent) => {
+    events.forEach((event: NDKEvent) => {
       const tags = event.tags;
+
+      // Skip info events
       const zTag = tags.find((t: string[]) => t[0] === 'z');
       if (zTag && zTag[1] === 'info') return;
 
+      // Extract order data from tags
       const orderType = tags.find((t: string[]) => t[0] === 'k')?.[1] as 'buy' | 'sell';
       const currency = tags.find((t: string[]) => t[0] === 'f')?.[1];
       const status = tags.find((t: string[]) => t[0] === 's')?.[1];
+      const paymentMethod = tags.find((t: string[]) => t[0] === 'pm')?.[1];
+      const satsAmount = parseInt(tags.find((t: string[]) => t[0] === 'amt')?.[1] || '0');
+      const fiatAmount = parseFloat(tags.find((t: string[]) => t[0] === 'fa')?.[1] || '0');
+      const premium = parseFloat(tags.find((t: string[]) => t[0] === 'premium')?.[1] || '0');
+      const rating = parseFloat(tags.find((t: string[]) => t[0] === 'rating')?.[1] || '0');
+      const platform = tags.find((t: string[]) => t[0] === 'y')?.[1];
       const dTag = tags.find((t: string[]) => t[0] === 'd')?.[1];
 
+      // Only include active orders
       if (status === 'pending' && orderType && currency && dTag) {
-        const newOrder: Order = {
+        parsedOrders.push({
           id: dTag,
           pubkey: event.pubkey,
           type: orderType,
           currency,
           status,
-          paymentMethod: tags.find((t: string[]) => t[0] === 'pm')?.[1] || 'Unknown',
-          satsAmount: parseInt(tags.find((t: string[]) => t[0] === 'amt')?.[1] || '0'),
-          fiatAmount: parseFloat(tags.find((t: string[]) => t[0] === 'fa')?.[1] || '0'),
-          premium: parseFloat(tags.find((t: string[]) => t[0] === 'premium')?.[1] || '0'),
-          rating: parseFloat(tags.find((t: string[]) => t[0] === 'rating')?.[1] || '0'),
-          platform: tags.find((t: string[]) => t[0] === 'y')?.[1],
+          paymentMethod: paymentMethod || 'Unknown',
+          satsAmount,
+          fiatAmount,
+          premium,
+          rating,
+          platform,
           createdAt: event.created_at || Date.now() / 1000,
           event
-        };
-
-        setOrders(prev => [newOrder, ...prev.filter(o => o.id !== dTag)]);
+        });
       }
     });
 
-    return () => {
-      sub.stop();
-    };
-  }, [ndk]);
+    // Sort by created date, newest first
+    parsedOrders.sort((a, b) => b.createdAt - a.createdAt);
+
+    return parsedOrders;
+  }, [events]);
 
   // Filter orders based on user preferences
   const filteredOrders = orders.filter(order => {
@@ -147,14 +95,6 @@ export function OrderBook({ filters }: OrderBookProps) {
     if (order.satsAmount < filters.minAmount || order.satsAmount > filters.maxAmount) return false;
     return true;
   });
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full">

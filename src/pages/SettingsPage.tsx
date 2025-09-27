@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   Server,
@@ -9,7 +9,7 @@ import {
   Palette,
   User,
   ChevronRight,
-  Settings as SettingsIcon,
+  ArrowLeft,
   Image
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -20,13 +20,15 @@ import { PrivacySettings } from '@/features/settings/PrivacySettings';
 import { ProfileSettings } from '@/features/settings/ProfileSettings';
 import { BlossomSettings } from '@/features/settings/BlossomSettings';
 
-type SettingsSection = 'relays' | 'theme' | 'notifications' | 'privacy' | 'profile' | 'blossom';
+type SettingsSection = 'relays' | 'theme' | 'notifications' | 'privacy' | 'profile' | 'blossom' | null;
 
 interface SectionConfig {
   id: SettingsSection;
   label: string;
   description: string;
   icon: React.ElementType;
+  iconColor: string;
+  iconBg: string;
   component: React.ComponentType;
   available: boolean;
 }
@@ -35,36 +37,48 @@ const sectionConfigs: Omit<SectionConfig, 'label' | 'description'>[] = [
   {
     id: 'relays',
     icon: Server,
+    iconColor: 'text-blue-400',
+    iconBg: 'bg-blue-400/10',
     component: RelaySettings,
     available: true,
   },
   {
     id: 'blossom',
     icon: Image,
+    iconColor: 'text-purple-400',
+    iconBg: 'bg-purple-400/10',
     component: BlossomSettings,
+    available: true,
+  },
+  {
+    id: 'theme',
+    icon: Palette,
+    iconColor: 'text-pink-400',
+    iconBg: 'bg-pink-400/10',
+    component: ThemeSettings,
     available: true,
   },
   {
     id: 'profile',
     icon: User,
+    iconColor: 'text-green-400',
+    iconBg: 'bg-green-400/10',
     component: ProfileSettings,
     available: false,
   },
   {
-    id: 'theme',
-    icon: Palette,
-    component: ThemeSettings,
-    available: true,
-  },
-  {
     id: 'notifications',
     icon: Bell,
+    iconColor: 'text-yellow-400',
+    iconBg: 'bg-yellow-400/10',
     component: NotificationSettings,
     available: false,
   },
   {
     id: 'privacy',
     icon: Shield,
+    iconColor: 'text-orange-400',
+    iconBg: 'bg-orange-400/10',
     component: PrivacySettings,
     available: false,
   },
@@ -73,17 +87,14 @@ const sectionConfigs: Omit<SectionConfig, 'label' | 'description'>[] = [
 export function SettingsPage() {
   const { t } = useTranslation();
   const location = useLocation();
-  const [activeSection, setActiveSection] = useState<SettingsSection>('relays');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<SettingsSection>(null);
 
-  // Build sections with translations
   const sections: SectionConfig[] = sectionConfigs.map(config => ({
     ...config,
     label: t(`settings.sections.${config.id}.title`),
     description: t(`settings.sections.${config.id}.description`),
   }));
 
-  // Handle URL tab parameter
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const tab = params.get('tab');
@@ -96,153 +107,102 @@ export function SettingsPage() {
   const SectionComponent = currentSection?.component;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black pb-20 md:pb-0">
-      <div className="max-w-7xl mx-auto px-4 py-4 md:py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 md:gap-3">
-            <SettingsIcon className="w-6 h-6 md:w-8 md:h-8 text-purple-600" />
-            {t('settings.title')}
-          </h1>
-          <p className="mt-1 text-sm md:text-base text-gray-600 dark:text-gray-400">
-            {t('settings.description')}
-          </p>
-        </motion.div>
-
-        {/* Mobile Section Selector */}
-        <div className="lg:hidden mb-4">
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="w-full bg-white dark:bg-black rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              {currentSection && (
-                <>
-                  {React.createElement(currentSection.icon, { className: "w-5 h-5 text-purple-600" })}
-                  <span className="font-medium text-gray-900 dark:text-gray-100">
-                    {currentSection.label}
-                  </span>
-                </>
-              )}
-            </div>
-            <ChevronRight className={cn(
-              "w-5 h-5 text-gray-400 transition-transform",
-              mobileMenuOpen ? "rotate-90" : ""
-            )} />
-          </button>
-
-          {mobileMenuOpen && (
+    <div className="w-full min-h-screen bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-950 dark:to-black pb-20 md:pb-0">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-lg mx-auto"
+      >
+        <AnimatePresence mode="wait">
+          {activeSection ? (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="absolute left-4 right-4 z-20 mt-2 bg-white dark:bg-black rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
+              key="detail"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
             >
-              {sections.map((section) => {
-                const Icon = section.icon;
-                return (
-                  <button
-                    key={section.id}
-                    onClick={() => {
-                      if (section.available) {
-                        setActiveSection(section.id);
-                        setMobileMenuOpen(false);
-                      }
-                    }}
-                    disabled={!section.available}
-                    className={cn(
-                      'w-full px-4 py-3 flex items-center gap-3 transition-all border-b border-gray-100 dark:border-gray-700 last:border-0',
-                      section.available
-                        ? 'hover:bg-gray-50 dark:hover:bg-neutral-900'
-                        : 'opacity-50 cursor-not-allowed'
-                    )}
+              <div className="px-6 pt-6 pb-4 border-b border-neutral-200 dark:border-neutral-800">
+                <div className="flex items-center gap-3">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setActiveSection(null)}
+                    className="p-2 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/30 rounded-lg transition-all"
                   >
-                    <Icon className="w-5 h-5" />
-                    <span className="text-sm font-medium">
-                      {section.label}
-                      {!section.available && (
-                        <span className="ml-2 text-xs bg-gray-100 dark:bg-black px-1.5 py-0.5 rounded">
-                          {t('common.soon')}
-                        </span>
-                      )}
-                    </span>
-                  </button>
-                );
-              })}
+                    <ArrowLeft className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
+                  </motion.button>
+                  <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+                    {currentSection?.label}
+                  </h1>
+                </div>
+              </div>
+
+              <div className="px-6 py-6">
+                {SectionComponent && <SectionComponent />}
+              </div>
             </motion.div>
-          )}
-        </div>
+          ) : (
+            <motion.div
+              key="list"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <div className="px-6 pt-6 pb-4">
+                <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+                  {t('settings.title')}
+                </h1>
+              </div>
 
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-          {/* Desktop Sidebar Navigation */}
-          <motion.nav
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="hidden lg:block lg:w-64"
-          >
-            <div className="bg-white dark:bg-black rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-              {sections.map((section) => {
-                const Icon = section.icon;
-                const isActive = section.id === activeSection;
-
-                return (
-                  <button
-                    key={section.id}
-                    onClick={() => section.available && setActiveSection(section.id)}
-                    disabled={!section.available}
-                    className={cn(
-                      'w-full px-4 py-3 flex items-center gap-3 transition-all border-b border-gray-100 dark:border-gray-700 last:border-0',
-                      isActive
-                        ? 'bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400'
-                        : section.available
-                        ? 'hover:bg-gray-50 dark:hover:bg-neutral-900 text-gray-700 dark:text-gray-300'
-                        : 'opacity-50 cursor-not-allowed text-gray-400 dark:text-gray-500'
-                    )}
-                  >
-                    <Icon className={cn(
-                      'w-5 h-5',
-                      isActive ? 'text-purple-600 dark:text-purple-400' : ''
-                    )} />
-                    <div className="flex-1 text-left">
-                      <div className="font-medium text-sm flex items-center gap-2">
-                        {section.label}
-                        {!section.available && (
-                          <span className="text-xs bg-gray-100 dark:bg-black px-1.5 py-0.5 rounded">
-                            {t('common.soon')}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                        {section.description}
+              <div className="px-6 py-6 space-y-6">
+                {sections.map((section) => {
+                  const Icon = section.icon;
+                  return (
+                    <div key={section.id}>
+                      <div className="space-y-2">
+                        <motion.button
+                          whileHover={section.available ? { scale: 1.01 } : {}}
+                          whileTap={section.available ? { scale: 0.99 } : {}}
+                          onClick={() => section.available && setActiveSection(section.id)}
+                          disabled={!section.available}
+                          className={cn(
+                            'w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 flex items-center justify-between transition-all',
+                            section.available
+                              ? 'hover:bg-neutral-200 dark:hover:bg-neutral-800 cursor-pointer'
+                              : 'opacity-50 cursor-not-allowed'
+                          )}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center', section.iconBg)}>
+                              <Icon className={cn('w-5 h-5', section.iconColor)} />
+                            </div>
+                            <div className="text-left">
+                              <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+                                {section.label}
+                                {!section.available && (
+                                  <span className="text-xs bg-neutral-200 dark:bg-neutral-800 px-1.5 py-0.5 rounded">
+                                    {t('common.soon')}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-xs text-neutral-500 dark:text-neutral-600">
+                                {section.description}
+                              </div>
+                            </div>
+                          </div>
+                          {section.available && (
+                            <ChevronRight className="w-4 h-4 text-neutral-400" />
+                          )}
+                        </motion.button>
                       </div>
                     </div>
-                    {section.available && (
-                      <ChevronRight className={cn(
-                        'w-4 h-4 transition-transform',
-                        isActive ? 'translate-x-1' : ''
-                      )} />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </motion.nav>
-
-          {/* Main Content */}
-          <motion.main
-            key={activeSection}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex-1"
-          >
-            <div className="bg-white dark:bg-black rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              {SectionComponent && <SectionComponent />}
-            </div>
-          </motion.main>
-        </div>
-      </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }

@@ -1,36 +1,28 @@
 import { useState } from 'react';
 import { useNDKCurrentUser, useProfile, useSubscribe, NDKKind, useUser } from '@nostr-dev-kit/ndk-hooks';
-import { Calendar, Link as LinkIcon, Edit2, Package, MessageSquare } from 'lucide-react';
+import { Calendar, Link as LinkIcon, Edit2, Package, FileText } from 'lucide-react';
 import { NoteCard } from '@/features/feed/NoteCard';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { ProfileEditor } from '@/features/profile/ProfileEditor';
 import { PackCard } from '@/features/followPacks/components/PackCard';
 import { useProfileFollowPacks } from '@/features/followPacks/hooks/useProfileFollowPacks';
 import { MediaGrid } from '@/components/media/MediaGrid';
 import { FollowButton } from '@/components/ui/FollowButton';
 import { ContentRenderer } from '@/components/content/ContentRenderer';
-import { getConversationId } from '@/features/messages/utils/nip17';
-import { useTranslation } from 'react-i18next';
+import { useUserArticles } from '@/features/articles/hooks/useUserArticles';
+import { ArticleList } from '@/features/articles/components/ArticleList';
 
 export function ProfilePage() {
   const { identifier } = useParams<{ identifier?: string }>();
-  const { t } = useTranslation();
-  const navigate = useNavigate();
   const currentUser = useNDKCurrentUser();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [activeTab, setActiveTab] = useState<'notes' | 'replies' | 'media' | 'packs'>('notes');
+  const [activeTab, setActiveTab] = useState<'notes' | 'replies' | 'media' | 'articles' | 'packs'>('notes');
 
   // Resolve user from identifier (npub, hex pubkey, nip05, or nprofile)
   const user = useUser(identifier || currentUser?.pubkey);
   const profile = useProfile(user?.pubkey);
 
   const isOwnProfile = user?.pubkey === currentUser?.pubkey;
-
-  const handleMessageClick = () => {
-    if (!currentUser || !user) return;
-    const conversationId = getConversationId([currentUser.pubkey, user.pubkey]);
-    navigate(`/messages/${conversationId}`);
-  };
 
   const { events: allTextEvents } = useSubscribe(user?.pubkey ? [{
     kinds: [NDKKind.Text],
@@ -71,6 +63,9 @@ export function ProfilePage() {
   const packs = packFilter === 'created' ? createdPacks :
                 packFilter === 'appears' ? appearsPacks :
                 allPacks;
+
+  const { articles, isLoading: articlesLoading } = useUserArticles(user?.pubkey);
+  const hasArticles = articles.length > 0;
 
   if (!user?.pubkey) return null;
 
@@ -128,18 +123,7 @@ export function ProfilePage() {
                   </p>
                 )}
               </div>
-              <div className="flex gap-2">
-                {!isOwnProfile && (
-                  <button
-                    onClick={handleMessageClick}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-900"
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    {t('common.message')}
-                  </button>
-                )}
-                <FollowButton pubkey={user.pubkey} />
-              </div>
+              <FollowButton pubkey={user.pubkey} />
             </div>
             {profile?.about && (
               <div className="mt-3">
@@ -220,6 +204,18 @@ export function ProfilePage() {
             }`}>
             Media
           </button>
+          {hasArticles && (
+            <button
+              onClick={() => setActiveTab('articles')}
+              className={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
+                activeTab === 'articles'
+                  ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+              }`}>
+              <FileText className="w-4 h-4" />
+              Articles
+            </button>
+          )}
           <button
             onClick={() => setActiveTab('packs')}
             className={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
@@ -264,6 +260,16 @@ export function ProfilePage() {
         {activeTab === 'media' && (
           <div className="p-4">
             <MediaGrid events={allMediaEvents} />
+          </div>
+        )}
+
+        {activeTab === 'articles' && (
+          <div>
+            <ArticleList 
+              articles={articles} 
+              isLoading={articlesLoading}
+              emptyMessage={isOwnProfile ? "You haven't published any articles yet" : "No articles published yet"}
+            />
           </div>
         )}
 

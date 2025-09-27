@@ -51,20 +51,14 @@ export function useZap(options: UseZapOptions = {}) {
 
       const zapResults = await zapper.zap(['nip61']);
 
-      if (!zapResults || zapResults.length === 0) {
+      if (!zapResults) {
         throw new Error('Zap failed: No results returned');
-      }
-
-      const successfulZaps = zapResults.filter((result) => result !== null);
-      
-      if (successfulZaps.length === 0) {
-        throw new Error('Zap failed: All zap attempts failed');
       }
 
       walletLogger.info(
         `Nutzap successful: ${amountSats} sats`,
         'useZap',
-        { eventId: event.id, results: zapResults.length }
+        { eventId: event.id, zapResults }
       );
 
       options.onSuccess?.(amountSats, event.id);

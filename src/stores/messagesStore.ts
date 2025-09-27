@@ -1,45 +1,114 @@
 import { create } from 'zustand';
-import { NDKUser } from '@nostr-dev-kit/ndk';
-import type { DecryptedMessage } from '@/features/messages/utils/nip17';
+import { persist } from 'zustand/middleware';
+import type { NDKEvent } from '@nostr-dev-kit/ndk';
+
+export interface Message {
+  id: string;
+  pubkey: string;
+  content: string;
+  created_at: number;
+  event: NDKEvent;
+}
 
 export interface Conversation {
-  id: string;
-  participants: NDKUser[];
-  messages: DecryptedMessage[];
-  lastMessage: DecryptedMessage | null;
+  pubkey: string;
+  lastMessage?: Message;
+  lastMessageAt: number;
   unreadCount: number;
 }
 
 interface MessagesState {
   conversations: Map<string, Conversation>;
-  addMessage: (message: DecryptedMessage) => void;
+  messages: Map<string, Message[]>;
+
+  addMessage: (conversationPubkey: string, message: Message) => void;
+  setConversations: (conversations: Map<string, Conversation>) => void;
+  markConversationAsRead: (conversationPubkey: string) => void;
+  clearConversation: (conversationPubkey: string) => void;
 }
 
-export const useMessagesStore = create<MessagesState>((set) => ({
-  conversations: new Map(),
-  addMessage: (message) => set((state) => {
-    const newConversations = new Map(state.conversations);
-    const { conversationId } = message;
-    const existingConvo = newConversations.get(conversationId);
+export const useMessagesStore = create<MessagesState>()(
+  persist(
+    (set) => ({
+      conversations: new Map(),
+      messages: new Map(),
 
-    if (existingConvo) {
-      if (existingConvo.messages.some(m => m.event.id === message.event.id)) {
-        return { conversations: newConversations };
-      }
-      const updatedMessages = [...existingConvo.messages, message]
-        .sort((a, b) => (a.event.created_at || 0) - (b.event.created_at || 0));
-      
-      existingConvo.messages = updatedMessages;
-      existingConvo.lastMessage = updatedMessages[updatedMessages.length - 1];
-    } else {
-      newConversations.set(conversationId, {
-        id: conversationId,
-        participants: [message.sender, ...message.recipients],
-        messages: [message],
-        lastMessage: message,
-        unreadCount: 1,
-      });
+      addMessage: (conversationPubkey: string, message: Message) => {
+        set((state) => {
+          const messages = new Map(state.messages);
+          const conversationMessages = messages.get(conversationPubkey) || [];
+
+          if (conversationMessages.some(m => m.id === message.id)) {
+            return state;
+          }
+
+          const updatedMessages = [...conversationMessages, message].sort(
+            (a, b) => a.created_at - b.created_at
+          );
+          messages.set(conversationPubkey, updatedMessages);
+
+          const conversations = new Map(state.conversations);
+          const conversation = conversations.get(conversationPubkey) || {
+            pubkey: conversationPubkey,
+            lastMessageAt: 0,
+            unreadCount: 0,
+          };
+
+          conversations.set(conversationPubkey, {
+            ...conversation,
+            lastMessage: message,
+            lastMessageAt: message.created_at,
+            unreadCount: conversation.unreadCount + 1,
+          });
+
+          return { messages, conversations };
+        });
+      },
+
+      setConversations: (conversations: Map<string, Conversation>) => {
+        set({ conversations });
+      },
+
+      markConversationAsRead: (conversationPubkey: string) => {
+        set((state) => {
+          const conversations = new Map(state.conversations);
+          const conversation = conversations.get(conversationPubkey);
+          if (conversation) {
+            conversations.set(conversationPubkey, {
+              ...conversation,
+              unreadCount: 0,
+            });
+          }
+          return { conversations };
+        });
+      },
+
+      clearConversation: (conversationPubkey: string) => {
+        set((state) => {
+          const messages = new Map(state.messages);
+          const conversations = new Map(state.conversations);
+          messages.delete(conversationPubkey);
+          conversations.delete(conversationPubkey);
+          return { messages, conversations };
+        });
+      },
+    }),
+    {
+      name: 'voces-messages-storage',
+      partialize: (state) => ({
+        conversations: Array.from(state.conversations.entries()),
+        messages: Array.from(state.messages.entries()),
+      }),
+      merge: (persistedState: any, currentState) => {
+        const conversationsArray = persistedState?.conversations || [];
+        const messagesArray = persistedState?.messages || [];
+
+        return {
+          ...currentState,
+          conversations: new Map(conversationsArray),
+          messages: new Map(messagesArray),
+        };
+      },
     }
-    return { conversations: newConversations };
-  }),
-}));
+  )
+);

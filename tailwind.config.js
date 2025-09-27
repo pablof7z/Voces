@@ -1,3 +1,5 @@
+import typography from '@tailwindcss/typography';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -78,6 +80,7 @@ export default {
       },
       fontFamily: {
         sans: ['SF Pro Display', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        serif: ['Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
         mono: ['SF Mono', 'Monaco', 'Inconsolata', 'monospace'],
       },
       fontSize: {
@@ -133,5 +136,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [typography],
 };

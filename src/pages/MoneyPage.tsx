@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowUpRight,
@@ -19,6 +19,8 @@ import { DepositModal } from '../components/wallet/DepositModal';
 import { useListings } from '@/features/classifieds/hooks/useListings';
 import { useTranslation } from 'react-i18next';
 import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
+import { useSubscribe } from '@nostr-dev-kit/ndk-hooks';
+import type { NDKFilter, NDKEvent } from '@nostr-dev-kit/ndk';
 
 export function MoneyPage() {
   const { t } = useTranslation();
@@ -30,6 +32,53 @@ export function MoneyPage() {
   const { currency } = usePreferredCurrency();
 
   const { listings } = useListings({});
+
+  const tradesFilter: NDKFilter = {
+    kinds: [38383],
+    limit: 100,
+  };
+
+  const { events: tradeEvents } = useSubscribe({
+    filters: [tradesFilter],
+    opts: { closeOnEose: false, groupByKind: true }
+  });
+
+  const activeTrades = useMemo(() => {
+    const trades: Array<{
+      id: string;
+      type: 'buy' | 'sell';
+      currency: string;
+      fiatAmount: number;
+      satsAmount: number;
+    }> = [];
+
+    tradeEvents.forEach((event: NDKEvent) => {
+      const tags = event.tags;
+      const zTag = tags.find((t: string[]) => t[0] === 'z');
+      if (zTag && zTag[1] === 'info') return;
+
+      const orderType = tags.find((t: string[]) => t[0] === 'k')?.[1] as 'buy' | 'sell';
+      const tradeCurrency = tags.find((t: string[]) => t[0] === 'f')?.[1];
+      const status = tags.find((t: string[]) => t[0] === 's')?.[1];
+      const dTag = tags.find((t: string[]) => t[0] === 'd')?.[1];
+      const satsAmount = parseInt(tags.find((t: string[]) => t[0] === 'amt')?.[1] || '0');
+      const fiatAmount = parseFloat(tags.find((t: string[]) => t[0] === 'fa')?.[1] || '0');
+
+      if (status === 'pending' && orderType && tradeCurrency && dTag) {
+        if (currency === 'all' || tradeCurrency.toUpperCase() === currency.toUpperCase()) {
+          trades.push({
+            id: dTag,
+            type: orderType,
+            currency: tradeCurrency,
+            fiatAmount,
+            satsAmount,
+          });
+        }
+      }
+    });
+
+    return trades.slice(0, 5);
+  }, [tradeEvents, currency]);
 
   const balance = walletBalance || 0;
 
@@ -176,13 +225,13 @@ export function MoneyPage() {
                 <motion.div
                   key={listing.id}
                   whileHover={{ scale: 1.02 }}
-                  onClick={() => navigate(`/marketplace/${listing.id}`)}
+                  onClick={() => navigate(`/marketplace/${listing.encode()}`)}
                   className="flex-shrink-0 w-48 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 cursor-pointer transition-all hover:shadow-md"
                 >
-                  {listing.images && listing.images.length > 0 && (
+                  {listing.image && (
                     <div className="w-full h-32 bg-neutral-100 dark:bg-neutral-800 rounded-lg mb-3 overflow-hidden">
                       <img
-                        src={listing.images[0]}
+                        src={listing.image}
                         alt={listing.title}
                         className="w-full h-full object-cover"
                       />
@@ -193,7 +242,7 @@ export function MoneyPage() {
                   </h4>
                   {listing.price && (
                     <p className="text-xs text-neutral-600 dark:text-neutral-400">
-                      {listing.price} {listing.currency || 'sats'}
+                      {listing.price.amount} {listing.price.currency || 'sats'}
                     </p>
                   )}
                 </motion.div>
@@ -220,9 +269,41 @@ export function MoneyPage() {
           </div>
 
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-            <div className="w-full text-center py-8 text-sm text-neutral-500">
-              No active trades in {currency}
-            </div>
+            {activeTrades.length === 0 ? (
+              <div className="w-full text-center py-8 text-sm text-neutral-500">
+                No active trades in {currency}
+              </div>
+            ) : (
+              activeTrades.map((trade) => (
+                <motion.div
+                  key={trade.id}
+                  whileHover={{ scale: 1.02 }}
+                  onClick={() => navigate('/trades')}
+                  className="flex-shrink-0 w-48 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 cursor-pointer transition-all hover:shadow-md"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={`text-xs font-semibold px-2 py-1 rounded ${
+                      trade.type === 'buy'
+                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                        : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                    }`}>
+                      {trade.type.toUpperCase()}
+                    </span>
+                    <span className="text-xs font-medium text-neutral-600 dark:text-neutral-400">
+                      {trade.currency.toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                      {trade.satsAmount.toLocaleString()} sats
+                    </p>
+                    <p className="text-xs text-neutral-600 dark:text-neutral-400">
+                      ≈ {trade.fiatAmount.toLocaleString()} {trade.currency.toUpperCase()}
+                    </p>
+                  </div>
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
 

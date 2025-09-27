@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { NDKEvent } from '@nostr-dev-kit/ndk-hooks';
+import { useZap } from '@/hooks/useZap';
 
 interface ZapButtonProps {
   event: NDKEvent;
@@ -23,6 +24,25 @@ export function ZapButton({
   const [lastZapAmount, setLastZapAmount] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const { sendZap } = useZap({
+    onSuccess: (amount: number) => {
+      setZapCount(prev => prev + 1);
+      setShowAmounts(false);
+      setLastZapAmount(null);
+      onZap?.(amount, true);
+    },
+    onError: (error: Error) => {
+      setErrorMessage(error.message);
+      if (lastZapAmount) {
+        onZap?.(lastZapAmount, false);
+      }
+      setTimeout(() => {
+        setErrorMessage(null);
+        setLastZapAmount(null);
+      }, 3000);
+    }
+  });
+
   const quickZapAmounts = [21, 100, 500, 1000];
 
   const handleZap = async (amount: number) => {
@@ -31,25 +51,10 @@ export function ZapButton({
     setErrorMessage(null);
 
     try {
-      const { useZap } = await import('@/hooks/useZap');
-      const { sendZap } = useZap({
-        onSuccess: () => {
-          setZapCount(prev => prev + 1);
-          setShowAmounts(false);
-          onZap?.(amount, true);
-          setTimeout(() => setLastZapAmount(null), 2000);
-        },
-        onError: (error) => {
-          setErrorMessage(error.message);
-          onZap?.(amount, false);
-          setTimeout(() => {
-            setErrorMessage(null);
-            setLastZapAmount(null);
-          }, 3000);
-        }
-      });
-
-      await sendZap(event, amount);
+      const success = await sendZap(event, amount);
+      if (success) {
+        setTimeout(() => setLastZapAmount(null), 2000);
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Zap failed';
       setErrorMessage(message);

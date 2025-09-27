@@ -1,5 +1,6 @@
 import { DollarSign, CreditCard, TrendingUp } from 'lucide-react';
 import { useAvailableCurrencies } from './hooks/useAvailableCurrencies';
+import { useAvailablePaymentMethods } from './hooks/useAvailablePaymentMethods';
 
 interface TradeFiltersProps {
   filters: {
@@ -12,18 +13,9 @@ interface TradeFiltersProps {
   onChange: (filters: any) => void;
 }
 
-const paymentMethods = [
-  { id: 'all', name: 'All Methods' },
-  { id: 'Cash', name: 'Cash' },
-  { id: 'Revolut', name: 'Revolut' },
-  { id: 'PIX', name: 'PIX' },
-  { id: 'BLIK', name: 'BLIK' },
-  { id: 'Zelle', name: 'Zelle' },
-  { id: 'CashApp', name: 'Cash App' },
-];
-
 export function TradeFilters({ filters, onChange }: TradeFiltersProps) {
   const { currencies } = useAvailableCurrencies();
+  const { paymentMethods } = useAvailablePaymentMethods();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
