@@ -20,7 +20,7 @@ import { useListings } from '@/features/classifieds/hooks/useListings';
 import { useTranslation } from 'react-i18next';
 import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
 import { useSubscribe } from '@nostr-dev-kit/ndk-hooks';
-import type { NDKFilter, NDKEvent } from '@nostr-dev-kit/ndk';
+import type { NDKFilter, NDKEvent, NDKKind } from '@nostr-dev-kit/ndk';
 
 export function MoneyPage() {
   const { t } = useTranslation();
@@ -34,14 +34,14 @@ export function MoneyPage() {
   const { listings } = useListings({});
 
   const tradesFilter: NDKFilter = {
-    kinds: [38383],
+    kinds: [38383 as NDKKind],
     limit: 100,
   };
 
-  const { events: tradeEvents } = useSubscribe({
-    filters: [tradesFilter],
-    opts: { closeOnEose: false, groupByKind: true }
-  });
+  const { events: tradeEvents } = useSubscribe(
+    [tradesFilter],
+    { closeOnEose: false, subId: 'trades' }
+  );
 
   const activeTrades = useMemo(() => {
     const trades: Array<{
@@ -83,7 +83,7 @@ export function MoneyPage() {
   const balance = walletBalance || 0;
 
   const handleDeposit = async (amount: number, mint?: string) => {
-    await deposit(amount, mint);
+    return await deposit(amount, mint);
   };
 
   const recentListings = listings.slice(0, 5);

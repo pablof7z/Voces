@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voces Onboarding Flow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #fafafa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .onboarding-container {
+            width: 100%;
+            max-width: 100vw;
+            height: 100vh;
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #f0f0f0;
+            z-index: 100;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #000;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .step {
+            padding: 80px 40px;
+            max-width: 720px;
+            margin: 0 auto;
+            display: none;
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #000;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 64px;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .community-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 64px;
+        }
+
+        .community-card {
+            background: #fafafa;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            padding: 32px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .community-card:hover {
+            background: #f5f5f5;
+        }
+
+        .community-card.selected {
+            background: #000;
+            border-color: #000;
+        }
+
+        .community-card.selected .community-flag {
+            filter: grayscale(0);
+        }
+
+        .community-card.selected .community-name {
+            color: #fff;
+        }
+
+        .community-flag {
+            font-size: 40px;
+            margin-bottom: 12px;
+            filter: grayscale(0.3);
+            transition: filter 0.2s ease;
+        }
+
+        .community-card:hover .community-flag {
+            filter: grayscale(0);
+        }
+
+        .community-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #000;
+        }
+
+        .two-panel {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 0;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        @media (max-width: 968px) {
+            .two-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .community-visual {
+                display: none;
+            }
+        }
+
+        .community-visual {
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .community-visual-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.85;
+        }
+
+        .community-visual-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 60px;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, transparent 100%);
+        }
+
+        .community-visual-quote {
+            font-size: 28px;
+            font-weight: 600;
+            color: #fff;
+            line-height: 1.3;
+            margin-bottom: 24px;
+            letter-spacing: -0.01em;
+        }
+
+        .community-visual-attribution {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .community-visual-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .community-visual-author {
+            color: #fff;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .community-visual-meta {
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+        }
+
+        .packs-panel {
+            background: #fff;
+            overflow-y: auto;
+            padding: 80px 40px;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 32px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .pack-card {
+            background: #fafafa;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .pack-card:hover {
+            background: #f5f5f5;
+        }
+
+        .pack-card.selected {
+            background: #000;
+            border-color: #000;
+        }
+
+        .pack-card.selected .pack-title,
+        .pack-card.selected .pack-meta {
+            color: #fff;
+        }
+
+        .pack-card.selected .avatar {
+            background: #fff;
+            color: #000;
+        }
+
+        .pack-title {
+            font-weight: 500;
+            color: #000;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+
+        .pack-meta {
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .pack-avatars {
+            display: flex;
+        }
+
+        .pack-avatars .avatar {
+            width: 28px;
+            height: 28px;
+            margin-right: -8px;
+            border: 2px solid #fafafa;
+            font-size: 11px;
+        }
+
+        .pack-card.selected .pack-avatars .avatar {
+            border-color: #000;
+        }
+
+        .feature-preview {
+            text-align: center;
+            margin-bottom: 64px;
+            padding: 80px 0;
+        }
+
+        .feature-icon {
+            font-size: 64px;
+            margin-bottom: 32px;
+        }
+
+        .feature-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #000;
+            letter-spacing: -0.01em;
+        }
+
+        .feature-description {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-example {
+            background: #fafafa;
+            border-radius: 4px;
+            padding: 24px;
+            margin-top: 32px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .input-group {
+            margin-bottom: 32px;
+        }
+
+        .input-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #000;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+            background: #fff;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #000;
+        }
+
+        textarea {
+            min-height: 160px;
+            resize: vertical;
+        }
+
+        .intro-examples {
+            margin-bottom: 48px;
+        }
+
+        .intro-card {
+            background: #fafafa;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 12px;
+        }
+
+        .intro-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .intro-content {
+            color: #000;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+
+        .intro-stats {
+            display: flex;
+            gap: 24px;
+            font-size: 13px;
+            color: #999;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-highlight {
+            font-weight: 500;
+            color: #000;
+        }
+
+        .btn {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: #333;
+        }
+
+        .btn:disabled {
+            background: #e8e8e8;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #666;
+            border: 1px solid #e8e8e8;
+        }
+
+        .btn-secondary:hover {
+            background: #fafafa;
+            border-color: #000;
+            color: #000;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-start;
+            margin-top: 48px;
+        }
+
+        .welcome-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 64px 0;
+        }
+
+        .stat-card {
+            background: #fafafa;
+            border-radius: 4px;
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            background: transparent;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #000;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .back-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .template-suggestions {
+            background: #fafafa;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .template-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: #999;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .template {
+            background: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.2s ease;
+        }
+
+        .template:hover {
+            border-color: #000;
+            color: #000;
+        }
+
+        .security-notice {
+            background: #fffbeb;
+            border: 1px solid #fbbf24;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .security-notice-title {
+            font-weight: 500;
+            color: #92400e;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .security-notice-text {
+            font-size: 14px;
+            color: #92400e;
+            line-height: 1.5;
+        }
+
+        .profile-preview-container {
+            position: relative;
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            overflow: visible;
+        }
+
+        .profile-card {
+            width: 540px;
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: absolute;
+        }
+
+        .profile-card.side:first-child {
+            opacity: 0.9;
+            transform: rotate(-4deg) translateX(-260px) translateY(-30px) scale(0.94);
+            z-index: 0;
+        }
+
+        .profile-card.center {
+            transform: scale(1.08);
+            opacity: 1;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+            z-index: 2;
+            position: relative;
+        }
+
+        .profile-card.side:last-child {
+            opacity: 0.9;
+            transform: rotate(4deg) translateX(260px) translateY(-30px) scale(0.94);
+            z-index: 0;
+        }
+
+        .profile-banner {
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-banner:hover::after {
+            content: 'Click to change banner';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 14px;
+        }
+
+        .profile-avatar-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: -60px auto 0;
+            z-index: 2;
+        }
+
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #000;
+            border: 5px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .profile-avatar-large:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-info {
+            padding: 20px 32px 32px;
+            text-align: center;
+        }
+
+        .profile-name-editable {
+            font-size: 28px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 6px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+            cursor: text;
+            outline: none;
+            border: 2px solid transparent;
+        }
+
+        .profile-name-editable:hover {
+            background: #fafafa;
+        }
+
+        .profile-name-editable:focus {
+            background: #fafafa;
+            border-color: #000;
+        }
+
+        .profile-name-editable[contenteditable="true"]:empty::before {
+            content: 'Your name';
+            color: #999;
+        }
+
+        .profile-location-editable {
+            font-size: 14px;
+            color: #666;
+            padding: 4px 12px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+            cursor: text;
+            outline: none;
+            border: 2px solid transparent;
+            margin-bottom: 16px;
+        }
+
+        .profile-location-editable:hover {
+            background: #fafafa;
+        }
+
+        .profile-location-editable:focus {
+            background: #fafafa;
+            border-color: #000;
+        }
+
+        .profile-location-editable[contenteditable="true"]:empty::before {
+            content: 'Your location (optional)';
+            color: #999;
+        }
+
+        .profile-bio-editable {
+            font-size: 15px;
+            color: #000;
+            line-height: 1.5;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+            cursor: text;
+            outline: none;
+            border: 2px solid transparent;
+            min-height: 60px;
+        }
+
+        .profile-bio-editable:hover {
+            background: #fafafa;
+        }
+
+        .profile-bio-editable:focus {
+            background: #fafafa;
+            border-color: #000;
+        }
+
+        .profile-bio-editable[contenteditable="true"]:empty::before {
+            content: 'Tell your community about yourself...';
+            color: #999;
+        }
+
+        .profile-hint {
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            margin-top: 24px;
+        }
+
+        .welcome-notice {
+            background: #fafafa;
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 48px;
+        }
+
+        .welcome-notice-title {
+            font-weight: 500;
+            color: #000;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .welcome-notice-text {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="onboarding-container">
+        <button class="back-btn" id="backBtn" style="display: none;">←</button>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 12.5%;"></div>
+        </div>
+
+        <!-- Step 1: Community Selection -->
+        <div class="step active" data-step="1" style="padding: 0; max-width: 100vw;">
+            <div class="two-panel">
+                <div class="community-visual">
+                    <img
+                        src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&q=80"
+                        alt="Global community"
+                        class="community-visual-image"
+                    />
+                    <div class="community-visual-overlay">
+                        <div class="community-visual-quote">
+                            Your community.<br>
+                            Your voice.<br>
+                            Amplified.
+                        </div>
+                        <p style="color: rgba(255,255,255,0.8); font-size: 16px; line-height: 1.6; max-width: 480px;">
+                            Voces isn't another social network. It's a community-first platform where local voices connect globally—without algorithms, without censorship, without intermediaries.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="packs-panel">
+                    <h1 style="font-size: 32px; margin-bottom: 12px;">Choose Your Community</h1>
+                    <p style="color: #666; margin-bottom: 48px; font-size: 16px;">
+                        Select your community to see local leaders, news, and conversations.
+                    </p>
+
+                    <div class="community-grid" style="margin-bottom: 0;">
+                        <div class="community-card" data-community="venezuela">
+                            <div class="community-flag">🇻🇪</div>
+                            <div class="community-name">Venezuela</div>
+                        </div>
+                        <div class="community-card" data-community="cambodia">
+                            <div class="community-flag">🇰🇭</div>
+                            <div class="community-name">Cambodia</div>
+                        </div>
+                        <div class="community-card" data-community="nicaragua">
+                            <div class="community-flag">🇳🇮</div>
+                            <div class="community-name">Nicaragua</div>
+                        </div>
+                        <div class="community-card" data-community="zimbabwe">
+                            <div class="community-flag">🇿🇼</div>
+                            <div class="community-name">Zimbabwe</div>
+                        </div>
+                        <div class="community-card" data-community="afghanistan">
+                            <div class="community-flag">🇦🇫</div>
+                            <div class="community-name">Afghanistan</div>
+                        </div>
+                        <div class="community-card" data-community="iran">
+                            <div class="community-flag">🇮🇷</div>
+                            <div class="community-name">Iran</div>
+                        </div>
+                    </div>
+
+                    <div class="btn-container" style="margin-top: 64px;">
+                        <button class="btn" id="step1Next" disabled style="width: 100%;">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Community Visual -->
+        <div class="step" data-step="2" style="padding: 0; max-width: 100vw;">
+            <div class="two-panel">
+                <div class="community-visual">
+                    <img
+                        src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1200&q=80"
+                        alt="Community in Venezuela"
+                        class="community-visual-image"
+                    />
+                    <div class="community-visual-overlay">
+                        <div class="community-visual-quote">
+                            "We're not just surviving—we're building the future our community deserves. One voice at a time."
+                        </div>
+                        <div class="community-visual-attribution">
+                            <div class="community-visual-avatar">MR</div>
+                            <div>
+                                <div class="community-visual-author">María Rodríguez</div>
+                                <div class="community-visual-meta">Community Organizer · Caracas</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="packs-panel">
+                    <h1 style="font-size: 32px; margin-bottom: 12px;">Join Your Community</h1>
+                    <p style="color: #666; margin-bottom: 48px; font-size: 16px;">
+                        Follow these packs to stay connected with what matters.
+                    </p>
+
+                    <div class="panel-title">Curated Follow Packs</div>
+
+                    <div class="pack-card" data-pack="activists">
+                        <div class="pack-title">Venezuelan Activists</div>
+                        <div class="pack-meta">24 members</div>
+                        <div class="pack-avatars">
+                            <div class="avatar">A</div>
+                            <div class="avatar">B</div>
+                            <div class="avatar">C</div>
+                            <div class="avatar">+21</div>
+                        </div>
+                    </div>
+
+                    <div class="pack-card" data-pack="journalists">
+                        <div class="pack-title">Community Journalists</div>
+                        <div class="pack-meta">18 members</div>
+                        <div class="pack-avatars">
+                            <div class="avatar">D</div>
+                            <div class="avatar">E</div>
+                            <div class="avatar">F</div>
+                            <div class="avatar">+15</div>
+                        </div>
+                    </div>
+
+                    <div class="pack-card" data-pack="tech">
+                        <div class="pack-title">Tech Innovators</div>
+                        <div class="pack-meta">31 members</div>
+                        <div class="pack-avatars">
+                            <div class="avatar">G</div>
+                            <div class="avatar">H</div>
+                            <div class="avatar">I</div>
+                            <div class="avatar">+28</div>
+                        </div>
+                    </div>
+
+                    <div class="btn-container" style="margin-top: 64px;">
+                        <button class="btn" id="step2Next" style="width: 100%;">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Marketplace Feature -->
+        <div class="step" data-step="3">
+            <div class="feature-preview">
+                <div class="feature-icon">🛍️</div>
+                <h2 class="feature-title">Buy and Sell Locally</h2>
+                <p class="feature-description">
+                    Connect with your community marketplace. No middlemen, no fees. Just people helping people.
+                </p>
+
+                <div class="feature-example">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div class="avatar">M</div>
+                        <div style="text-align: left;">
+                            <div style="font-weight: 600;">María in Caracas</div>
+                            <div style="font-size: 14px; color: #6b7280;">Handmade Crafts</div>
+                        </div>
+                    </div>
+                    <div style="color: #6b7280; text-align: left;">
+                        "I've been able to support my family by selling my crafts directly to the community. No fees, no barriers."
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button class="btn-secondary btn">Skip</button>
+                <button class="btn" id="step3Next">Continue →</button>
+            </div>
+        </div>
+
+        <!-- Step 4: P2P Exchange Feature -->
+        <div class="step" data-step="4">
+            <div class="feature-preview">
+                <div class="feature-icon">💱</div>
+                <h2 class="feature-title">Turn Earnings into Local Currency</h2>
+                <p class="feature-description">
+                    Earn Bitcoin through engagement and convert it to your local currency. Your community, your terms.
+                </p>
+
+                <div class="feature-example">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <div>
+                            <div style="font-size: 24px; font-weight: 700; color: #667eea;">100,000 sats</div>
+                            <div style="font-size: 14px; color: #6b7280;">≈ 850 Bs</div>
+                        </div>
+                        <div style="font-size: 32px;">→</div>
+                        <div>
+                            <div style="font-size: 24px; font-weight: 700; color: #10b981;">850 Bs</div>
+                            <div style="font-size: 14px; color: #6b7280;">Venezuelan Bolívar</div>
+                        </div>
+                    </div>
+                    <div style="color: #6b7280; font-size: 14px;">
+                        P2P exchange with trusted community members
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button class="btn-secondary btn">Skip</button>
+                <button class="btn" id="step4Next">Continue →</button>
+            </div>
+        </div>
+
+        <!-- Step 5: News Feature -->
+        <div class="step" data-step="5">
+            <div class="feature-preview">
+                <div class="feature-icon">📰</div>
+                <h2 class="feature-title">Real News from Real People</h2>
+                <p class="feature-description">
+                    Your community first, the world second. Get news directly from journalists you trust.
+                </p>
+
+                <div class="feature-example">
+                    <div class="post-header" style="margin-bottom: 12px;">
+                        <div class="avatar">LC</div>
+                        <div style="text-align: left;">
+                            <div style="font-weight: 600;">Luis Contreras</div>
+                            <div style="font-size: 14px; color: #6b7280;">Community Journalist</div>
+                        </div>
+                    </div>
+                    <div style="color: #1f2937; font-weight: 600; margin-bottom: 8px; text-align: left;">
+                        Community Mobilization in Valencia Continues
+                    </div>
+                    <div style="color: #6b7280; text-align: left;">
+                        "Today I witnessed something powerful. Neighbors coming together, sharing resources, and building hope..."
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button class="btn-secondary btn">Skip</button>
+                <button class="btn" id="step5Next">Continue →</button>
+            </div>
+        </div>
+
+        <!-- Step 6: Create Profile -->
+        <div class="step" data-step="6">
+            <h1>How should people know you?</h1>
+            <p class="subtitle">Click on any field to edit your profile.</p>
+
+            <div class="profile-preview-container">
+                <!-- Side profile (example 1) -->
+                <div class="profile-card side">
+                    <div class="profile-banner" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                    <div class="profile-avatar-wrapper">
+                        <div class="profile-avatar-large">MR</div>
+                    </div>
+                    <div class="profile-info">
+                        <div style="font-size: 28px; font-weight: 600; color: #000; margin-bottom: 6px;">María Rodríguez</div>
+                        <div style="font-size: 15px; color: #666; margin-bottom: 20px;">📍 Caracas, Venezuela · 12K followers</div>
+                        <div style="font-size: 16px; color: #000; line-height: 1.6;">Community organizer & activist. Fighting for clean water access and social justice. Every voice matters.</div>
+                    </div>
+                </div>
+
+                <!-- Center profile (editable) -->
+                <div class="profile-card center">
+                    <div class="profile-banner"></div>
+                    <div class="profile-avatar-wrapper">
+                        <div class="profile-avatar-large" id="profileAvatar">?</div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-name-editable" contenteditable="true" id="profileName"></div>
+                        <div class="profile-location-editable" contenteditable="true" id="profileLocation"></div>
+                        <div class="profile-bio-editable" contenteditable="true" id="profileBio"></div>
+                    </div>
+                </div>
+
+                <!-- Side profile (example 2) -->
+                <div class="profile-card side">
+                    <div class="profile-banner" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+                    <div class="profile-avatar-wrapper">
+                        <div class="profile-avatar-large">JG</div>
+                    </div>
+                    <div class="profile-info">
+                        <div style="font-size: 28px; font-weight: 600; color: #000; margin-bottom: 6px;">Jorge García</div>
+                        <div style="font-size: 15px; color: #666; margin-bottom: 20px;">📍 Valencia, Venezuela · 8K followers</div>
+                        <div style="font-size: 16px; color: #000; line-height: 1.6;">Independent journalist covering local stories. Building tech tools for community empowerment and transparency.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-hint">
+                💡 Your profile preview updates as you type. Click to edit any field.
+            </div>
+
+            <div class="security-notice">
+                <div class="security-notice-title">🔐 Your keys are being generated</div>
+                <div class="security-notice-text">
+                    We're creating your secure identity. You'll be able to back it up later with trusted friends.
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button class="btn" id="step6Next">Continue</button>
+            </div>
+        </div>
+
+        <!-- Step 7: Introduce Yourself -->
+        <div class="step" data-step="7">
+            <h1>Introduce Yourself</h1>
+            <p class="subtitle">Good introductions help your community find you. And they might earn you some sats!</p>
+
+            <div class="intro-examples">
+                <div style="font-weight: 600; color: #374151; margin-bottom: 16px;">
+                    💎 Introduction Posts That Resonated
+                </div>
+
+                <div class="intro-card">
+                    <div class="intro-header">
+                        <div class="avatar">AR</div>
+                        <div>
+                            <div style="font-weight: 600; color: #1f2937;">Ana Ruiz</div>
+                        </div>
+                    </div>
+                    <div class="intro-content">
+                        👋 Hello from Maracaibo! I'm Ana, a teacher working to bring education to underserved communities. Excited to connect with fellow Venezuelans and share our stories. #introductions
+                    </div>
+                    <div class="intro-stats">
+                        <div class="stat">
+                            <span>⚡</span>
+                            <span class="stat-highlight">45,000 sats</span>
+                        </div>
+                        <div class="stat">
+                            <span>💬</span>
+                            <span>23 replies</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="intro-card">
+                    <div class="intro-header">
+                        <div class="avatar">CP</div>
+                        <div>
+                            <div style="font-weight: 600; color: #1f2937;">Carlos Pérez</div>
+                        </div>
+                    </div>
+                    <div class="intro-content">
+                        🌍 New to Voces from Valencia! I'm a freelance developer hoping to connect with the tech community here. Looking forward to building together. #introductions
+                    </div>
+                    <div class="intro-stats">
+                        <div class="stat">
+                            <span>⚡</span>
+                            <span class="stat-highlight">32,000 sats</span>
+                        </div>
+                        <div class="stat">
+                            <span>💬</span>
+                            <span>18 replies</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="template-suggestions">
+                <div class="template-title">💡 Template Suggestions</div>
+                <div class="template" onclick="document.getElementById('introText').value = this.textContent.trim()">
+                    👋 Hola desde [city]! Soy [name], y estoy aquí para conectar con la comunidad venezolana...
+                </div>
+                <div class="template" onclick="document.getElementById('introText').value = this.textContent.trim()">
+                    🌍 New to Voces from Venezuela! I'm passionate about [interest] and excited to...
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Your Introduction</label>
+                <textarea id="introText" placeholder="Write your introduction... #introductions"></textarea>
+                <div style="font-size: 14px; color: #6b7280; margin-top: 8px;">
+                    Don't forget the #introductions hashtag!
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button class="btn-secondary btn">Skip for now</button>
+                <button class="btn" id="step7Next">Publish & Continue →</button>
+            </div>
+        </div>
+
+        <!-- Step 8: Welcome -->
+        <div class="step" data-step="8">
+            <div style="text-align: center;">
+                <div style="font-size: 80px; margin-bottom: 20px;">🎉</div>
+                <h1>Welcome to Voces!</h1>
+                <p class="subtitle">Your voice matters. Your community is here.</p>
+            </div>
+
+            <div class="welcome-stats">
+                <div class="stat-card">
+                    <div class="stat-number">47</div>
+                    <div class="stat-label">People Following</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Follow Packs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">1</div>
+                    <div class="stat-label">Post Published</div>
+                </div>
+            </div>
+
+            <div class="welcome-notice">
+                <div class="welcome-notice-title">✨ Your wallet is ready</div>
+                <div class="welcome-notice-text">
+                    Start earning sats for your contributions. Check out the marketplace or explore P2P trading to turn your earnings into local currency.
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button class="btn" onclick="alert('Mock complete! In the real app, this would navigate to the home feed.')">
+                    Start Exploring 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedCommunity = null;
+        let selectedPacks = new Set();
+        const totalSteps = 8;
+
+        // Update progress bar
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // Show/hide back button
+            const backBtn = document.getElementById('backBtn');
+            backBtn.style.display = currentStep > 1 ? 'flex' : 'none';
+        }
+
+        // Navigate steps
+        function goToStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.querySelector(`[data-step="${step}"]`).classList.add('active');
+            currentStep = step;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        // Back button
+        document.getElementById('backBtn').addEventListener('click', () => {
+            if (currentStep > 1) {
+                goToStep(currentStep - 1);
+            }
+        });
+
+        // Step 1: Community Selection
+        document.querySelectorAll('.community-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.community-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedCommunity = this.dataset.community;
+                document.getElementById('step1Next').disabled = false;
+            });
+        });
+
+        document.getElementById('step1Next').addEventListener('click', () => {
+            if (selectedCommunity) {
+                goToStep(2);
+            }
+        });
+
+        // Step 2: Pack Selection
+        document.querySelectorAll('.pack-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const packId = this.dataset.pack;
+                if (selectedPacks.has(packId)) {
+                    selectedPacks.delete(packId);
+                    this.classList.remove('selected');
+                } else {
+                    selectedPacks.add(packId);
+                    this.classList.add('selected');
+                }
+            });
+        });
+
+        document.getElementById('step2Next').addEventListener('click', () => goToStep(3));
+        document.getElementById('step3Next').addEventListener('click', () => goToStep(4));
+        document.getElementById('step4Next').addEventListener('click', () => goToStep(5));
+        document.getElementById('step5Next').addEventListener('click', () => goToStep(6));
+        document.getElementById('step6Next').addEventListener('click', () => goToStep(7));
+        document.getElementById('step7Next').addEventListener('click', () => goToStep(8));
+
+        // Step 6: Profile editing with live preview
+        const profileName = document.getElementById('profileName');
+        const profileAvatar = document.getElementById('profileAvatar');
+        const profileBanner = document.querySelector('.profile-card.center .profile-banner');
+
+        if (profileName && profileAvatar) {
+            profileName.addEventListener('input', () => {
+                const name = profileName.textContent.trim();
+                if (name) {
+                    // Get initials from name
+                    const initials = name
+                        .split(' ')
+                        .map(word => word[0])
+                        .join('')
+                        .toUpperCase()
+                        .slice(0, 2);
+                    profileAvatar.textContent = initials;
+                } else {
+                    profileAvatar.textContent = '?';
+                }
+            });
+        }
+
+        // Cycle through banner colors
+        const bannerColors = [
+            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+            'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+            'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+            'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
+        ];
+        let currentBannerIndex = 0;
+
+        if (profileBanner) {
+            profileBanner.addEventListener('click', () => {
+                currentBannerIndex = (currentBannerIndex + 1) % bannerColors.length;
+                profileBanner.style.background = bannerColors[currentBannerIndex];
+            });
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>

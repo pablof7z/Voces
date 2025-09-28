@@ -10,7 +10,8 @@ import {
   User,
   ChevronRight,
   ArrowLeft,
-  Image
+  Image,
+  Key
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RelaySettings } from '@/features/settings/RelaySettings';
@@ -19,8 +20,10 @@ import { NotificationSettings } from '@/features/settings/NotificationSettings';
 import { PrivacySettings } from '@/features/settings/PrivacySettings';
 import { ProfileSettings } from '@/features/settings/ProfileSettings';
 import { BlossomSettings } from '@/features/settings/BlossomSettings';
+import { BackupKeySettings } from '@/features/backup/BackupKeySettings';
+import { AUTH_STORAGE_KEYS } from '@/config/auth';
 
-type SettingsSection = 'relays' | 'theme' | 'notifications' | 'privacy' | 'profile' | 'blossom' | null;
+type SettingsSection = 'relays' | 'theme' | 'notifications' | 'privacy' | 'profile' | 'blossom' | 'backup' | null;
 
 interface SectionConfig {
   id: SettingsSection;
@@ -48,6 +51,14 @@ const sectionConfigs: Omit<SectionConfig, 'label' | 'description'>[] = [
     iconColor: 'text-purple-400',
     iconBg: 'bg-purple-400/10',
     component: BlossomSettings,
+    available: true,
+  },
+  {
+    id: 'backup',
+    icon: Key,
+    iconColor: 'text-red-400',
+    iconBg: 'bg-red-400/10',
+    component: BackupKeySettings,
     available: true,
   },
   {
@@ -89,10 +100,13 @@ export function SettingsPage() {
   const location = useLocation();
   const [activeSection, setActiveSection] = useState<SettingsSection>(null);
 
+  const hasPrivateKey = !!localStorage.getItem(AUTH_STORAGE_KEYS.PRIVATE_KEY);
+
   const sections: SectionConfig[] = sectionConfigs.map(config => ({
     ...config,
     label: t(`settings.sections.${config.id}.title`),
     description: t(`settings.sections.${config.id}.description`),
+    available: config.id === 'backup' ? hasPrivateKey : config.available,
   }));
 
   useEffect(() => {

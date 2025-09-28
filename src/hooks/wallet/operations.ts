@@ -18,10 +18,15 @@ export interface DepositOptions {
 /**
  * Create a deposit with timeout and error handling
  */
+export interface DepositResult {
+  token: string;
+  invoice: string;
+}
+
 export async function createDeposit(
   wallet: NDKCashuWallet,
   options: DepositOptions
-): Promise<string> {
+): Promise<DepositResult> {
   const { amountSats, mintUrl, timeoutMs = DEPOSIT_TIMEOUT_MS } = options;
 
   return retryWithBackoff(async () => {
@@ -31,9 +36,9 @@ export async function createDeposit(
       { mintUrl }
     );
 
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<DepositResult>((resolve, reject) => {
       const depositInstance = wallet.deposit(amountSats, mintUrl);
-      
+
       const timeoutId = setTimeout(() => {
         reject(
           toWalletError(
@@ -46,8 +51,9 @@ export async function createDeposit(
       depositInstance.on('success', (token: any) => {
         clearTimeout(timeoutId);
         const tokenStr = typeof token === 'string' ? token : JSON.stringify(token);
-        walletLogger.info('Deposit successful', 'createDeposit', { token: tokenStr.substring(0, 20) });
-        resolve(tokenStr);
+        const invoice = (depositInstance as any).pr || '';
+        walletLogger.info('Deposit successful', 'createDeposit', { token: tokenStr.substring(0, 20), invoice: invoice.substring(0, 20) });
+        resolve({ token: tokenStr, invoice });
       });
 
       depositInstance.on('error', (error: any) => {
@@ -58,7 +64,7 @@ export async function createDeposit(
       });
 
       depositInstance.start();
-      
+
       if (depositInstance.quoteId) {
         walletLogger.debug('Deposit invoice generated', 'createDeposit', {
           quoteId: depositInstance.quoteId,

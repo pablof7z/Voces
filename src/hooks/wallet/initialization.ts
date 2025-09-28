@@ -5,6 +5,7 @@
 
 import type NDK from '@nostr-dev-kit/ndk';
 import type { NDKUser } from '@nostr-dev-kit/ndk';
+import { NDKRelaySet } from '@nostr-dev-kit/ndk';
 import { NDKCashuWallet, NDKNutzapMonitor } from '@nostr-dev-kit/ndk-wallet';
 import { walletLogger } from '../../utils/walletLogger';
 import { toWalletError, retryWithBackoff } from '../../utils/walletErrors';
@@ -14,6 +15,7 @@ export interface WalletInitializationConfig {
   ndk: NDK;
   currentUser: NDKUser;
   mintUrls: string[];
+  walletRelays: string[];
 }
 
 export interface WalletInitializationResult {
@@ -27,13 +29,18 @@ export interface WalletInitializationResult {
  */
 async function initializeCashuWallet(
   ndk: NDK,
-  mintUrls: string[]
+  mintUrls: string[],
+  walletRelays: string[]
 ): Promise<NDKCashuWallet> {
   return retryWithBackoff(async () => {
     walletLogger.info('Initializing Cashu wallet', 'initializeCashuWallet');
-    
-    const cashuWallet = new NDKCashuWallet(ndk as any);
+
+    const cashuWallet = new NDKCashuWallet(ndk);
     cashuWallet.mints = [...mintUrls];
+    if (walletRelays.length > 0) {
+      const relaySet = NDKRelaySet.fromRelayUrls(ndk.explicitRelayUrls, ndk);
+      cashuWallet.relaySet = relaySet;
+    }
     
     const walletP2PK = await cashuWallet.getP2pk();
     walletLogger.info(`Wallet P2PK generated: ${walletP2PK}`, 'initializeCashuWallet');
@@ -59,7 +66,7 @@ async function initializeNutzapMonitor(
   return retryWithBackoff(async () => {
     walletLogger.info('Initializing nutzap monitor', 'initializeNutzapMonitor');
     
-    const nutzapMonitor = new NDKNutzapMonitor(ndk as any, currentUser as any, {
+    const nutzapMonitor = new NDKNutzapMonitor(ndk, currentUser, {
       store: createNutzapMonitorStore(),
     });
     
@@ -79,24 +86,25 @@ async function initializeNutzapMonitor(
  * Configure NDK wallet integration
  */
 function configureNDKWalletIntegration(ndk: NDK, wallet: NDKCashuWallet): void {
-  (ndk as any).walletConfig = {
-    cashuPay: async (payment: any) => {
-      walletLogger.info('Processing Cashu payment', 'configureNDKWalletIntegration', {
-        amount: payment.amount,
-        unit: payment.unit,
-      });
-      const result = await wallet.cashuPay(payment);
-      return result;
-    },
-    lnPay: async (payment: any) => {
-      walletLogger.info('Processing Lightning payment', 'configureNDKWalletIntegration', {
-        amount: payment.amount,
-        unit: payment.unit,
-      });
-      const result = await wallet.lnPay(payment);
-      return result;
-    },
-  };
+  ndk.wallet = wallet;
+  // ndk.walletConfig = {
+  //   cashuPay: async (payment) => {
+  //     walletLogger.info('Processing Cashu payment', 'configureNDKWalletIntegration', {
+  //       amount: payment.amount,
+  //       unit: payment.unit,
+  //     });
+  //     const result = await wallet.cashuPay(payment);
+  //     return result;
+  //   },
+  //   lnPay: async (payment) => {
+  //     walletLogger.info('Processing Lightning payment', 'configureNDKWalletIntegration', {
+  //       amount: payment.amount,
+  //       unit: payment.unit,
+  //     });
+  //     const result = await wallet.lnPay(payment);
+  //     return result;
+  //   },
+  // };
 }
 
 /**
@@ -105,12 +113,12 @@ function configureNDKWalletIntegration(ndk: NDK, wallet: NDKCashuWallet): void {
 export async function initializeWallet(
   config: WalletInitializationConfig
 ): Promise<WalletInitializationResult> {
-  const { ndk, currentUser, mintUrls } = config;
-  
+  const { ndk, currentUser, mintUrls, walletRelays } = config;
+
   try {
-    walletLogger.info('Starting wallet initialization', 'initializeWallet', { mintUrls });
-    
-    const wallet = await initializeCashuWallet(ndk, mintUrls);
+    walletLogger.info('Starting wallet initialization', 'initializeWallet', { mintUrls, walletRelays });
+
+    const wallet = await initializeCashuWallet(ndk, mintUrls, walletRelays);
     configureNDKWalletIntegration(ndk, wallet);
     
     const monitor = await initializeNutzapMonitor(ndk, currentUser, wallet);

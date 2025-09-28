@@ -37,7 +37,7 @@ export function OrderBook({ pair, filters }: OrderBookProps) {
     limit: 100,
   };
 
-  const { events } = useSubscribe({ filters: [filter], opts: { closeOnEose: false, groupByKind: true } });
+  const { events } = useSubscribe([filter], { closeOnEose: false });
 
   const orders = useMemo(() => {
     const parsedOrders: Order[] = [];

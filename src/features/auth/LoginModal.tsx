@@ -51,8 +51,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         throw new Error('No Nostr extension found. Please install Alby, nos2x, or another NIP-07 compatible extension.');
       }
       const signer = new NDKNip07Signer();
-      await login(signer, true);
-      localStorage.setItem('nostr_extension_auto_login', 'true');
+      await login(signer, false);
       handleClose();
     } catch (error) {
       console.error('Extension login failed:', error);
@@ -70,7 +69,6 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       const signer = new NDKNip46Signer(bunkerUrl);
       await signer.blockUntilReady();
       await login(signer, true);
-      localStorage.setItem('nostr_bunker_url', bunkerUrl);
       handleClose();
     } catch (error) {
       console.error('Bunker login failed:', error);
@@ -87,7 +85,6 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     try {
       const signer = new NDKPrivateKeySigner(nsec);
       await login(signer, true);
-      localStorage.setItem('nostr_private_key', nsec);
       handleClose();
     } catch (error) {
       console.error('Private key login failed:', error);
@@ -104,7 +101,6 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       const signer = NDKPrivateKeySigner.generate();
       await login(signer, true);
       const privateKey = signer.privateKey!;
-      localStorage.setItem('nostr_private_key', privateKey);
       const user = await signer.user();
 
       // Show the keys in a more user-friendly way

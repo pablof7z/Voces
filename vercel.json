@@ -1,0 +1,6 @@
+{
+  "outputDirectory": "dist",
+  "buildCommand": "bun run vite build --mode production",
+  "installCommand": "bun install",
+  "framework": null
+}

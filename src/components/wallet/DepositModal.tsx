@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Copy, Check, Loader2, AlertCircle } from 'lucide-react';
 import { Dialog } from '../ui/dialog';
+import { QRCodeSVG } from 'qrcode.react';
+import type { DepositResult } from '../../hooks/wallet/operations';
 
 interface DepositModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onDeposit: (amount: number, mint?: string) => Promise<void>;
+  onDeposit: (amount: number, mint?: string) => Promise<DepositResult>;
   mints: string[];
 }
 
@@ -29,13 +31,8 @@ export function DepositModal({ isOpen, onClose, onDeposit, mints }: DepositModal
     setError(null);
 
     try {
-      await onDeposit(amountNum, selectedMint);
-      // Reset and close
-      setTimeout(() => {
-        onClose();
-        setAmount('100');
-        setInvoice(null);
-      }, 1000);
+      const result = await onDeposit(amountNum, selectedMint);
+      setInvoice(result.invoice);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create deposit');
     } finally {
@@ -51,8 +48,16 @@ export function DepositModal({ isOpen, onClose, onDeposit, mints }: DepositModal
     }
   };
 
+  const handleClose = () => {
+    setAmount('100');
+    setInvoice(null);
+    setError(null);
+    setCopied(false);
+    onClose();
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       {isOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
         <motion.div
@@ -66,7 +71,7 @@ export function DepositModal({ isOpen, onClose, onDeposit, mints }: DepositModal
               Deposit Funds
             </h2>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-colors"
             >
               <X className="w-5 h-5 text-neutral-500" />
@@ -113,42 +118,53 @@ export function DepositModal({ isOpen, onClose, onDeposit, mints }: DepositModal
             </div>
 
             {invoice && (
-              <div className="mt-4 p-4 bg-neutral-50 dark:bg-neutral-800 rounded-xl">
-                <p className="text-xs text-neutral-500 mb-2">Lightning Invoice</p>
-                <div className="flex items-center gap-2">
-                  <code className="flex-1 text-xs font-mono break-all text-neutral-700 dark:text-neutral-300">
-                    {invoice.substring(0, 40)}...
+              <div className="mt-4 space-y-4">
+                <div className="flex items-center justify-center p-6 bg-white dark:bg-neutral-950 rounded-xl">
+                  <QRCodeSVG value={invoice} size={200} level="M" />
+                </div>
+                <div className="p-4 bg-neutral-50 dark:bg-neutral-800 rounded-xl">
+                  <p className="text-xs text-neutral-500 mb-2">Lightning Invoice</p>
+                  <code className="block text-xs font-mono break-all text-neutral-700 dark:text-neutral-300 mb-3">
+                    {invoice}
                   </code>
                   <button
                     onClick={handleCopy}
-                    className="p-2 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-lg transition-colors"
+                    className="w-full py-2 bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 rounded-lg transition-colors flex items-center justify-center gap-2"
                   >
                     {copied ? (
-                      <Check className="w-4 h-4 text-emerald-500" />
+                      <>
+                        <Check className="w-4 h-4 text-emerald-500" />
+                        <span className="text-sm text-emerald-600 dark:text-emerald-400">Copied!</span>
+                      </>
                     ) : (
-                      <Copy className="w-4 h-4 text-neutral-500" />
+                      <>
+                        <Copy className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                        <span className="text-sm text-neutral-700 dark:text-neutral-300">Copy Invoice</span>
+                      </>
                     )}
                   </button>
                 </div>
               </div>
             )}
 
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleDeposit}
-              disabled={isLoading}
-              className="w-full py-3.5 bg-purple-600 hover:bg-purple-700 disabled:bg-neutral-400 text-white rounded-xl font-medium transition-all flex items-center justify-center gap-2"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Creating Deposit...</span>
-                </>
-              ) : (
-                <span>Create Deposit</span>
-              )}
-            </motion.button>
+            {!invoice && (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleDeposit}
+                disabled={isLoading}
+                className="w-full py-3.5 bg-purple-600 hover:bg-purple-700 disabled:bg-neutral-400 text-white rounded-xl font-medium transition-all flex items-center justify-center gap-2"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Creating Invoice...</span>
+                  </>
+                ) : (
+                  <span>Generate Invoice</span>
+                )}
+              </motion.button>
+            )}
           </div>
 
           <p className="text-xs text-neutral-500 mt-4 text-center">

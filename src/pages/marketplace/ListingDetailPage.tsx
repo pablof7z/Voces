@@ -47,6 +47,26 @@ export function ListingDetailPage() {
     alert('Link copied to clipboard!');
   };
 
+  if (!listing) {
+    return (
+      <div className="container mx-auto px-4 py-6">
+        <div className="max-w-6xl mx-auto">
+          <Button
+            variant="ghost"
+            onClick={() => navigate('/marketplace')}
+            className="mb-6"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Marketplace
+          </Button>
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="max-w-6xl mx-auto">

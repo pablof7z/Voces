@@ -18,21 +18,8 @@ export function NoteDetailPage() {
   const [replyContent, setReplyContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Decode the nevent to get the event ID
-  let eventId: string | null = null;
-  if (nevent) {
-    try {
-      const decoded = nip19.decode(nevent);
-      if (decoded.type === 'nevent') {
-        eventId = decoded.data.id;
-      }
-    } catch (error) {
-      console.error('Failed to decode nevent:', error);
-    }
-  }
-
   // Fetch the main event
-  const event = useEvent(eventId || '');
+  const event = useEvent(nevent ?? false);
   const profile = useProfile(event?.pubkey);
 
   // Fetch parent notes (thread context)
@@ -137,21 +124,6 @@ export function NoteDetailPage() {
       setIsSubmitting(false);
     }
   };
-
-  if (!eventId) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Invalid Note</h1>
-        <p className="text-gray-600 dark:text-gray-400">The note ID is invalid or malformed.</p>
-        <button
-          onClick={() => navigate('/')}
-          className="mt-4 px-4 py-2 bg-accent-600 text-white rounded-lg hover:bg-accent-700"
-        >
-          Go Home
-        </button>
-      </div>
-    );
-  }
 
   if (!event) {
     return (

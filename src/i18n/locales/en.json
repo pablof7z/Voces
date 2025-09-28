@@ -118,9 +118,72 @@
       "followpacks": {
         "title": "Follow Packs",
         "description": "Discover and manage follow packs"
+      },
+      "backup": {
+        "title": "Backup Key",
+        "description": "Secure your key with trusted friends"
       }
     },
     "comingSoon": "Coming soon..."
+  },
+  "backup": {
+    "security": {
+      "warning": {
+        "title": "Important Security Notice",
+        "description": "This feature splits your private key into encrypted pieces. If you lose your passphrase, you will NOT be able to recover your key. Write it down and store it safely."
+      }
+    },
+    "quorum": {
+      "totalShards": {
+        "label": "How many people do you want to trust?",
+        "description": "Your key will be split into this many pieces. Each trusted person gets one piece.",
+        "pieces": "people"
+      },
+      "threshold": {
+        "label": "How many pieces are needed to recover?",
+        "description": "You'll need to collect at least this many pieces to recover your key.",
+        "pieces": "pieces"
+      },
+      "explanation": {
+        "title": "What does this mean?",
+        "description": "You're creating {{totalShards}} pieces. To recover your key, you'll need any {{threshold}} of those pieces. So if some friends lose their piece, you can still recover as long as {{threshold}} friends still have theirs."
+      }
+    },
+    "trustees": {
+      "label": "Who do you trust?",
+      "description": "Add the people you trust to hold pieces of your backup. Each person will get one encrypted piece.",
+      "placeholder": "Enter npub or public key...",
+      "selected": "{{count}} of {{max}} trustees selected"
+    },
+    "passphrase": {
+      "label": "Create a strong passphrase",
+      "placeholder": "Enter a strong passphrase...",
+      "confirmLabel": "Confirm your passphrase",
+      "confirmPlaceholder": "Enter the same passphrase again...",
+      "strong": "Passphrase is strong",
+      "mismatch": "Passphrases don't match",
+      "match": "Passphrases match",
+      "warning": {
+        "title": "Never Forget This Passphrase",
+        "description": "Your backup pieces are encrypted with this passphrase. If you forget it, your backup is useless. There is no password recovery. Write it down and keep it safe."
+      }
+    },
+    "create": {
+      "button": "Create Secure Backup"
+    },
+    "progress": {
+      "creatingShards": "Creating encrypted backup pieces...",
+      "publishing": "Sending backup pieces to your trusted friends...",
+      "publishingShard": "Sending piece {{index}} of {{total}}...",
+      "publishingMetadata": "Saving backup information...",
+      "complete": "Backup created successfully!",
+      "step": "Step {{current}} of {{total}}"
+    },
+    "errors": {
+      "noUser": "Please log in to create a backup",
+      "noPrivateKey": "Private key not found. Please log in with a private key.",
+      "failed": "Backup creation failed. Please try again."
+    }
   },
   "wallet": {
     "title": "Wallet",

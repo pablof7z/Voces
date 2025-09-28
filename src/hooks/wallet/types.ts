@@ -3,6 +3,7 @@
  */
 
 import type { NDKCashuWallet, NDKNutzapMonitor } from '@nostr-dev-kit/ndk-wallet';
+import type { DepositResult } from './operations';
 
 export interface WalletState {
   wallet: NDKCashuWallet | null;
@@ -15,7 +16,7 @@ export interface WalletState {
 }
 
 export interface WalletActions {
-  deposit: (amountSats: number, mintUrl?: string) => Promise<string>;
+  deposit: (amountSats: number, mintUrl?: string) => Promise<DepositResult>;
   receiveToken: (token: string, description?: string) => Promise<void>;
   refreshBalance: () => Promise<void>;
 }

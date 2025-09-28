@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { NDKHeadless, NDKSessionLocalStorage } from '@nostr-dev-kit/ndk-hooks';
-import NDKCacheAdapterDexie from '@nostr-dev-kit/ndk-cache-dexie';
+import NDKCacheAdapterSqliteWasm from '@nostr-dev-kit/ndk-cache-sqlite-wasm';
 import { useSettingsStore } from './stores/settingsStore';
 import './i18n/config';
 import './app.css';
@@ -10,47 +10,48 @@ import App from './App.tsx';
 const root = createRoot(document.getElementById('root')!);
 
 function AppWithNDK() {
-  // Get relay configuration from settings store
   const relays = useSettingsStore((state) => state.relays);
   const selectedRelay = useSettingsStore((state) => state.selectedRelay);
+  const sessionStorage = useRef(new NDKSessionLocalStorage());
+  const cacheAdapter = useRef(new NDKCacheAdapterSqliteWasm({
+    dbName: 'voces-ndk-cache-2',
+    useWorker: false,
+    workerUrl: '/worker.js',
+    wasmUrl: '/sql-wasm.wasm'
+  }));
 
-  // If a specific relay is selected, use only that one
-  // Otherwise use all enabled relays
   let relayUrls: string[];
 
   if (selectedRelay) {
-    // Single relay mode
     relayUrls = [selectedRelay];
   } else {
-    // All enabled relays mode
     const enabledRelayUrls = relays
       .filter((relay) => relay.enabled)
       .map((relay) => relay.url);
 
-    // Fallback to default relays if none are enabled
     relayUrls = enabledRelayUrls.length > 0
       ? enabledRelayUrls
       : ['wss://relay.damus.io', 'wss://nos.lol'];
   }
 
   return (
-    <>
-      <NDKHeadless
-        ndk={{
-          explicitRelayUrls: relayUrls,
-          cacheAdapter: new NDKCacheAdapterDexie({ dbName: 'voces-ndk-cache' }),
-        }}
-        session={{
-          storage: new NDKSessionLocalStorage(),
-          opts: {
-            follows: true,
-            profile: true
-          }
-        }}
-      />
-      <App />
-    </>
-  );
+			<>
+				<NDKHeadless
+					ndk={{
+						explicitRelayUrls: relayUrls,
+						cacheAdapter: cacheAdapter.current,
+					}}
+					session={{
+						storage: sessionStorage.current,
+						opts: {
+							follows: true,
+							profile: true,
+						},
+					}}
+				/>
+				<App />
+			</>
+		);
 }
 
 root.render(

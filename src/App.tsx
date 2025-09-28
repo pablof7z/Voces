@@ -19,18 +19,30 @@ import { MessagesPage } from './pages/MessagesPage';
 import { ConversationPage } from './pages/ConversationPage';
 import { NewConversationPage } from './pages/NewConversationPage';
 import { ArticlePage } from './pages/ArticlePage';
+import InviteOnboarding1 from './pages/invites/InviteOnboarding1';
+import InviteOnboarding2 from './pages/invites/InviteOnboarding2';
+import InviteOnboarding3 from './pages/invites/InviteOnboarding3';
+import InviteOnboarding4 from './pages/invites/InviteOnboarding4';
+import InviteOnboarding5 from './pages/invites/InviteOnboarding5';
+import InviteOnboarding6 from './pages/invites/InviteOnboarding6';
 import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
-import { useAutoLogin } from './features/auth/useAutoLogin';
 import { WalletInitializer } from './components/wallet/WalletInitializer';
 
 const queryClient = new QueryClient();
 
 function AppRoutes() {
   const currentUser = useNDKCurrentUser();
-  useAutoLogin();
 
   return (
     <Routes>
+      {/* Invite onboarding routes - standalone without layout */}
+      <Route path="/i-1/:code" element={<InviteOnboarding1 />} />
+      <Route path="/i-2/:code" element={<InviteOnboarding2 />} />
+      <Route path="/i-3/:code" element={<InviteOnboarding3 />} />
+      <Route path="/i-4/:code" element={<InviteOnboarding4 />} />
+      <Route path="/i-5/:code" element={<InviteOnboarding5 />} />
+      <Route path="/i-6/:code" element={<InviteOnboarding6 />} />
+      
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="compose" element={currentUser ? <ComposePage /> : <Navigate to="/" />} />

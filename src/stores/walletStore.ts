@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { NDKNutzapState, NDKEventId, NDK, NDKUser } from '@nostr-dev-kit/ndk';
+import type { NDKNutzapState, NDKEventId, NDKUser } from '@nostr-dev-kit/ndk';
+import type NDK from '@nostr-dev-kit/ndk';
 import { NdkNutzapStatus } from '@nostr-dev-kit/ndk';
 import type { NDKNutzapMonitorStore, NDKCashuWallet } from '@nostr-dev-kit/ndk-wallet';
 import type { NDKNutzapMonitor } from '@nostr-dev-kit/ndk-wallet';
@@ -18,6 +19,7 @@ import {
   createDeposit as createDepositOperation,
   receiveToken as receiveTokenOperation,
   queryBalance,
+  type DepositResult,
 } from '../hooks/wallet/operations';
 
 const BALANCE_POLLING_INTERVAL_MS = 30000;
@@ -39,9 +41,10 @@ interface WalletState {
   // Wallet configuration
   mints: string[];
   selectedMint: string | null;
+  walletRelays: string[];
 
   // Internal state
-  balancePollingInterval: NodeJS.Timeout | null;
+  balancePollingInterval: ReturnType<typeof setInterval> | null;
   cleanupBalanceListeners: (() => void) | null;
   cleanupMonitorListeners: (() => void) | null;
 
@@ -50,7 +53,7 @@ interface WalletState {
   cleanup: () => void;
 
   // Actions
-  deposit: (amountSats: number, mintUrl?: string) => Promise<string>;
+  deposit: (amountSats: number, mintUrl?: string) => Promise<DepositResult>;
   receiveToken: (token: string, description?: string) => Promise<void>;
   refreshBalance: () => Promise<void>;
   setNutzapState: (id: NDKEventId, state: Partial<NDKNutzapState>) => Promise<void>;
@@ -58,6 +61,8 @@ interface WalletState {
   addMint: (mint: string) => void;
   removeMint: (mint: string) => void;
   setSelectedMint: (mint: string | null) => void;
+  addWalletRelay: (relay: string) => void;
+  removeWalletRelay: (relay: string) => void;
 }
 
 export const useWalletStore = create<WalletState>()(
@@ -72,6 +77,7 @@ export const useWalletStore = create<WalletState>()(
       nutzaps: new Map(),
       mints: ['https://nofees.testnut.cashu.space'],
       selectedMint: null,
+      walletRelays: [],
       balancePollingInterval: null,
       cleanupBalanceListeners: null,
       cleanupMonitorListeners: null,
@@ -98,6 +104,7 @@ export const useWalletStore = create<WalletState>()(
             ndk,
             currentUser,
             mintUrls: state.mints,
+            walletRelays: state.walletRelays,
           });
 
           const { wallet: initializedWallet, monitor: initializedMonitor, initialBalance } = initResult;
@@ -195,13 +202,13 @@ export const useWalletStore = create<WalletState>()(
 
         walletLogger.info(`Initiating deposit: ${amountSats} sats`, 'walletStore.deposit');
 
-        const token = await createDepositOperation(state.wallet, {
+        const result = await createDepositOperation(state.wallet, {
           amountSats,
           mintUrl: targetMint,
         });
 
         walletLogger.info('Deposit completed', 'walletStore.deposit');
-        return token;
+        return result;
       },
 
       receiveToken: async (token: string, description?: string) => {
@@ -258,12 +265,26 @@ export const useWalletStore = create<WalletState>()(
       setSelectedMint: (mint: string | null) => {
         set({ selectedMint: mint });
       },
+
+      addWalletRelay: (relay: string) => {
+        set((state) => {
+          if (state.walletRelays.includes(relay)) return state;
+          return { walletRelays: [...state.walletRelays, relay] };
+        });
+      },
+
+      removeWalletRelay: (relay: string) => {
+        set((state) => ({
+          walletRelays: state.walletRelays.filter((r) => r !== relay),
+        }));
+      },
     }),
     {
       name: 'voces-wallet-storage',
       partialize: (state) => ({
         mints: state.mints,
         selectedMint: state.selectedMint,
+        walletRelays: state.walletRelays,
         nutzaps: Array.from(state.nutzaps.entries()),
       }),
       merge: (persistedState: any, currentState) => {

@@ -13,6 +13,9 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['@nostr-dev-kit/ndk-cache-sqlite-wasm']
   },
+  worker: {
+    format: 'es'
+  },
   server: {
     headers: {
       'Cross-Origin-Embedder-Policy': 'credentialless',
@@ -20,6 +23,12 @@ export default defineConfig({
     },
     fs: {
       allow: ['..']
+    }
+  },
+  preview: {
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'credentialless',
+      'Cross-Origin-Opener-Policy': 'same-origin',
     }
   },
   assetsInclude: ['**/*.wasm'],

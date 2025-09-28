@@ -118,9 +118,72 @@
       "followpacks": {
         "title": "Paquetes de Seguimiento",
         "description": "Descubre y gestiona paquetes de seguimiento"
+      },
+      "backup": {
+        "title": "Respaldar Clave",
+        "description": "Asegura tu clave con amigos de confianza"
       }
     },
     "comingSoon": "Próximamente..."
+  },
+  "backup": {
+    "security": {
+      "warning": {
+        "title": "Aviso de Seguridad Importante",
+        "description": "Esta función divide tu clave privada en piezas encriptadas. Si pierdes tu contraseña, NO podrás recuperar tu clave. Escríbela y guárdala de forma segura."
+      }
+    },
+    "quorum": {
+      "totalShards": {
+        "label": "¿En cuántas personas confías?",
+        "description": "Tu clave se dividirá en esta cantidad de piezas. Cada persona de confianza recibe una pieza.",
+        "pieces": "personas"
+      },
+      "threshold": {
+        "label": "¿Cuántas piezas se necesitan para recuperar?",
+        "description": "Necesitarás reunir al menos esta cantidad de piezas para recuperar tu clave.",
+        "pieces": "piezas"
+      },
+      "explanation": {
+        "title": "¿Qué significa esto?",
+        "description": "Estás creando {{totalShards}} piezas. Para recuperar tu clave, necesitarás cualquier {{threshold}} de esas piezas. Entonces, si algunos amigos pierden su pieza, aún puedes recuperarla siempre que {{threshold}} amigos tengan la suya."
+      }
+    },
+    "trustees": {
+      "label": "¿En quién confías?",
+      "description": "Agrega las personas en las que confías para guardar piezas de tu respaldo. Cada persona recibirá una pieza encriptada.",
+      "placeholder": "Ingresa npub o clave pública...",
+      "selected": "{{count}} de {{max}} custodios seleccionados"
+    },
+    "passphrase": {
+      "label": "Crea una contraseña fuerte",
+      "placeholder": "Ingresa una contraseña fuerte...",
+      "confirmLabel": "Confirma tu contraseña",
+      "confirmPlaceholder": "Ingresa la misma contraseña nuevamente...",
+      "strong": "La contraseña es fuerte",
+      "mismatch": "Las contraseñas no coinciden",
+      "match": "Las contraseñas coinciden",
+      "warning": {
+        "title": "Nunca Olvides Esta Contraseña",
+        "description": "Tus piezas de respaldo están encriptadas con esta contraseña. Si la olvidas, tu respaldo será inútil. No hay recuperación de contraseña. Escríbela y guárdala de forma segura."
+      }
+    },
+    "create": {
+      "button": "Crear Respaldo Seguro"
+    },
+    "progress": {
+      "creatingShards": "Creando piezas de respaldo encriptadas...",
+      "publishing": "Enviando piezas de respaldo a tus amigos de confianza...",
+      "publishingShard": "Enviando pieza {{index}} de {{total}}...",
+      "publishingMetadata": "Guardando información del respaldo...",
+      "complete": "¡Respaldo creado exitosamente!",
+      "step": "Paso {{current}} de {{total}}"
+    },
+    "errors": {
+      "noUser": "Por favor, inicia sesión para crear un respaldo",
+      "noPrivateKey": "Clave privada no encontrada. Por favor, inicia sesión con una clave privada.",
+      "failed": "La creación del respaldo falló. Por favor, intenta de nuevo."
+    }
   },
   "wallet": {
     "title": "Billetera",
