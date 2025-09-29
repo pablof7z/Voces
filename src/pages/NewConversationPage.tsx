@@ -72,7 +72,7 @@ export function NewConversationPage() {
         <div className="flex items-center gap-3 p-4">
           <button
             onClick={() => navigate('/messages')}
-            className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
+            className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-gray-900 dark:text-white" />
           </button>
@@ -95,7 +95,7 @@ export function NewConversationPage() {
                 onChange={(e) => setSearchInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                 placeholder={t('messages.recipientPlaceholder')}
-                className="flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                className="flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-gray-900 dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600"
               />
               <button
                 onClick={handleSearch}
@@ -110,7 +110,7 @@ export function NewConversationPage() {
           </div>
 
           {resolvedPubkey && (
-            <div className="border border-gray-200 dark:border-gray-800 rounded-lg p-4 bg-white dark:bg-gray-900">
+            <div className="border border-gray-200 dark:border-gray-800 rounded-lg p-4 bg-white dark:bg-black">
               <div className="flex items-center gap-3 mb-4">
                 {profile?.picture ? (
                   <img

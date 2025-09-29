@@ -57,7 +57,7 @@ export function ComposeDM({ recipientPubkey }: ComposeDMProps) {
           disabled={isSending}
           className={cn(
             'flex-1 resize-none rounded-2xl px-4 py-3 text-sm',
-            'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white',
+            'bg-gray-100 dark:bg-black text-gray-900 dark:text-white',
             'placeholder:text-gray-500 dark:placeholder:text-gray-400',
             'focus:outline-none focus:ring-2 focus:ring-purple-600',
             'disabled:opacity-50 disabled:cursor-not-allowed',

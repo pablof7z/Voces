@@ -32,7 +32,14 @@
     },
     "loading": "Loading notes...",
     "empty": "No notes to display",
-    "error": "Error loading feed"
+    "error": "Error loading feed",
+    "mediaTypes": {
+      "conversations": "Conversations",
+      "images": "Images",
+      "videos": "Videos",
+      "audio": "Audio",
+      "articles": "Articles"
+    }
   },
   "classifieds": {
     "title": "Classifieds",
@@ -122,6 +129,35 @@
       "backup": {
         "title": "Backup Key",
         "description": "Secure your key with trusted friends"
+      },
+      "wot": {
+        "title": "Web of Trust",
+        "description": "Filter spam using your social network",
+        "info": {
+          "title": "What is Web of Trust?",
+          "description": "Filter content based on your social connections. Only show notes from people you follow, or people followed by those you follow."
+        },
+        "enable": "Enable Web of Trust",
+        "enableDescription": "Filter feed based on trust scores",
+        "trustLevel": "Trust Level",
+        "levels": {
+          "strict": "Direct",
+          "moderate": "Extended",
+          "relaxed": "All"
+        },
+        "currentLevel": {
+          "direct": "Only show people you directly follow",
+          "extended": "Show people you follow + their follows",
+          "all": "Show everyone (WoT disabled)"
+        },
+        "stats": {
+          "total": "Total",
+          "direct": "Direct",
+          "extended": "Extended"
+        },
+        "lastUpdate": "Last updated",
+        "recalculate": "Recalculate Network",
+        "calculating": "Calculating..."
       }
     },
     "comingSoon": "Coming soon..."

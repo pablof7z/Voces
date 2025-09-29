@@ -32,7 +32,14 @@
     },
     "loading": "Cargando notas...",
     "empty": "No hay notas para mostrar",
-    "error": "Error al cargar el feed"
+    "error": "Error al cargar el feed",
+    "mediaTypes": {
+      "conversations": "Conversaciones",
+      "images": "Imágenes",
+      "videos": "Videos",
+      "audio": "Audio",
+      "articles": "Artículos"
+    }
   },
   "classifieds": {
     "title": "Clasificados",
@@ -122,6 +129,35 @@
       "backup": {
         "title": "Respaldar Clave",
         "description": "Asegura tu clave con amigos de confianza"
+      },
+      "wot": {
+        "title": "Red de Confianza",
+        "description": "Filtra spam usando tu red social",
+        "info": {
+          "title": "¿Qué es la Red de Confianza?",
+          "description": "Filtra contenido basado en tus conexiones sociales. Solo muestra notas de personas que sigues, o personas seguidas por quienes sigues."
+        },
+        "enable": "Habilitar Red de Confianza",
+        "enableDescription": "Filtrar feed basado en puntajes de confianza",
+        "trustLevel": "Nivel de Confianza",
+        "levels": {
+          "strict": "Directo",
+          "moderate": "Extendido",
+          "relaxed": "Todos"
+        },
+        "currentLevel": {
+          "direct": "Solo mostrar personas que sigues directamente",
+          "extended": "Mostrar personas que sigues + sus seguidores",
+          "all": "Mostrar todos (Red de Confianza deshabilitada)"
+        },
+        "stats": {
+          "total": "Total",
+          "direct": "Directo",
+          "extended": "Extendido"
+        },
+        "lastUpdate": "Última actualización",
+        "recalculate": "Recalcular Red",
+        "calculating": "Calculando..."
       }
     },
     "comingSoon": "Próximamente..."

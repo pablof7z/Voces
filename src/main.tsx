@@ -38,7 +38,7 @@ function AppWithNDK() {
 			<>
 				<NDKHeadless
 					ndk={{
-						explicitRelayUrls: relayUrls,
+						explicitRelayUrls: ['wss://purplepag.es', ...relayUrls],
 						cacheAdapter: cacheAdapter.current,
 					}}
 					session={{

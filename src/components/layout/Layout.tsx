@@ -21,11 +21,8 @@ export function Layout() {
         {/* Mobile header */}
         <header className="md:hidden sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800">
           <div className="flex items-center justify-between px-4 h-14">
-            <h1 className="text-lg font-bold text-gray-900 dark:text-white">
-              Voces
-            </h1>
+            <RelaySelector />
             <div className="flex items-center gap-2">
-              <RelaySelector />
               {currentUser && (
                 <button
                   onClick={() => navigate('/notifications')}

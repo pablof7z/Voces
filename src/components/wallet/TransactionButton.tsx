@@ -87,7 +87,7 @@ export function TransactionButton({
       className={`
         flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all
         ${isSend 
-          ? 'bg-gray-900 hover:bg-gray-800 text-white' 
+          ? 'bg-black hover:bg-neutral-950 text-white' 
           : 'bg-white hover:bg-gray-50 text-gray-900 border border-gray-200'
         }
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}

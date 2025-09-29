@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { ChevronLeft, Check, Plus, Trash2, Search, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
@@ -76,15 +75,60 @@ export function MoneySettingsPage() {
     setDiscoveredMints([]);
 
     try {
-      const filter: NDKFilter = {
-        kinds: [10019 as NDKKind],
-        limit: 50,
-      };
+      // NIP-87: Discover Cashu mints
+      // Kind 38000: Cashu mint announcements
+      // Kind 38172: Mint recommendations (from users you follow)
+      const filters: NDKFilter[] = [
+        {
+          kinds: [38000 as NDKKind], // Mint announcements
+          limit: 100
+        },
+        {
+          kinds: [38172 as NDKKind], // Mint recommendations
+          limit: 50
+        }
+      ];
 
-      const events = await ndk.fetchEvents(filter);
+      const events = await ndk.fetchEvents(filters);
       const mintUrls = new Set<string>();
+      const mintInfo = new Map<string, { name?: string; description?: string; pubkey?: string }>();
 
       events.forEach((event) => {
+        if (event.kind === 38000) {
+          // Mint announcement event
+          // Should have 'u' tag with mint URL
+          const uTag = event.tags.find((t) => t[0] === 'u');
+          if (uTag && uTag[1]) {
+            mintUrls.add(uTag[1]);
+
+            // Get additional info from content or tags
+            const dTag = event.tags.find((t) => t[0] === 'd');
+            const nameTag = event.tags.find((t) => t[0] === 'name');
+
+            mintInfo.set(uTag[1], {
+              name: nameTag?.[1] || dTag?.[1],
+              description: event.content,
+              pubkey: event.pubkey
+            });
+          }
+        } else if (event.kind === 38172) {
+          // Mint recommendation event
+          // Should have 'u' tag with recommended mint URL
+          const uTag = event.tags.find((t) => t[0] === 'u');
+          if (uTag && uTag[1]) {
+            mintUrls.add(uTag[1]);
+          }
+        }
+      });
+
+      // Also check for mints in kind 10019 (wallet info) for backwards compatibility
+      const walletInfoFilter: NDKFilter = {
+        kinds: [10019 as NDKKind],
+        limit: 20
+      };
+
+      const walletEvents = await ndk.fetchEvents(walletInfoFilter);
+      walletEvents.forEach((event) => {
         const mintTag = event.tags.find((t) => t[0] === 'mint');
         if (mintTag && mintTag[1]) {
           mintUrls.add(mintTag[1]);
@@ -324,55 +368,42 @@ export function MoneySettingsPage() {
               </p>
             </div>
 
-            <div className="space-y-2">
-              {FIAT_CURRENCIES.map((curr) => (
-                <motion.button
-                  key={curr.code}
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                  onClick={() => handleSelectCurrency(curr.code)}
-                  className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${
-                    currency === curr.code
-                      ? 'bg-neutral-900 dark:bg-neutral-100 border-neutral-900 dark:border-neutral-100'
-                      : 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center font-medium ${
-                        currency === curr.code
-                          ? 'bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100'
-                          : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300'
-                      }`}
-                    >
-                      {curr.symbol}
+            <div className="relative">
+              <select
+                value={currency}
+                onChange={(e) => handleSelectCurrency(e.target.value)}
+                className="w-full px-4 py-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none appearance-none pr-10 text-base font-medium"
+              >
+                {FIAT_CURRENCIES.map((curr) => (
+                  <option key={curr.code} value={curr.code}>
+                    {curr.symbol} {curr.code} - {curr.name}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+
+              {currency && (
+                <div className="mt-3 p-3 bg-neutral-100 dark:bg-neutral-800 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 rounded-lg bg-purple-600 text-white flex items-center justify-center font-semibold">
+                      {FIAT_CURRENCIES.find(c => c.code === currency)?.symbol}
                     </div>
-                    <div className="text-left">
-                      <div
-                        className={`font-medium ${
-                          currency === curr.code
-                            ? 'text-neutral-50 dark:text-neutral-900'
-                            : 'text-neutral-900 dark:text-neutral-100'
-                        }`}
-                      >
-                        {curr.code}
+                    <div>
+                      <div className="font-medium text-neutral-900 dark:text-neutral-100">
+                        {currency}
                       </div>
-                      <div
-                        className={`text-sm ${
-                          currency === curr.code
-                            ? 'text-neutral-300 dark:text-neutral-600'
-                            : 'text-neutral-500 dark:text-neutral-400'
-                        }`}
-                      >
-                        {curr.name}
+                      <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                        {FIAT_CURRENCIES.find(c => c.code === currency)?.name}
                       </div>
                     </div>
+                    <Check className="ml-auto w-5 h-5 text-green-600 dark:text-green-400" />
                   </div>
-                  {currency === curr.code && (
-                    <Check className="w-5 h-5 text-neutral-50 dark:text-neutral-900" />
-                  )}
-                </motion.button>
-              ))}
+                </div>
+              )}
             </div>
           </section>
         </div>

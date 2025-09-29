@@ -36,7 +36,7 @@ export async function createDeposit(
       { mintUrl }
     );
 
-    return new Promise<DepositResult>((resolve, reject) => {
+    return new Promise<DepositResult>(async (resolve, reject) => {
       const depositInstance = wallet.deposit(amountSats, mintUrl);
 
       const timeoutId = setTimeout(() => {
@@ -48,14 +48,6 @@ export async function createDeposit(
         );
       }, timeoutMs);
 
-      depositInstance.on('success', (token: any) => {
-        clearTimeout(timeoutId);
-        const tokenStr = typeof token === 'string' ? token : JSON.stringify(token);
-        const invoice = (depositInstance as any).pr || '';
-        walletLogger.info('Deposit successful', 'createDeposit', { token: tokenStr.substring(0, 20), invoice: invoice.substring(0, 20) });
-        resolve({ token: tokenStr, invoice });
-      });
-
       depositInstance.on('error', (error: any) => {
         clearTimeout(timeoutId);
         const errorObj = typeof error === 'string' ? new Error(error) : error;
@@ -63,13 +55,27 @@ export async function createDeposit(
         reject(toWalletError(errorObj, 'Deposit operation failed'));
       });
 
-      depositInstance.start();
+      // Start the deposit and get the lightning invoice
+      const invoice = await depositInstance.start();
 
-      if (depositInstance.quoteId) {
-        walletLogger.debug('Deposit invoice generated', 'createDeposit', {
-          quoteId: depositInstance.quoteId,
+      if (invoice) {
+        walletLogger.info('Deposit invoice generated', 'createDeposit', {
+          invoice: invoice.substring(0, 50)
         });
+        clearTimeout(timeoutId);
+        resolve({ token: '', invoice });
+      } else {
+        clearTimeout(timeoutId);
+        reject(toWalletError(new Error('Failed to generate invoice'), 'No invoice returned'));
       }
+
+      // Still listen for success for when the deposit is confirmed (for future use)
+      depositInstance.on('success', (token: any) => {
+        const tokenStr = typeof token === 'string' ? token : JSON.stringify(token);
+        walletLogger.info('Deposit confirmed', 'createDeposit', {
+          token: tokenStr.substring(0, 20)
+        });
+      });
     });
   }, {
     maxAttempts: 2,

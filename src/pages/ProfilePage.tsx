@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNDKCurrentUser, useProfile, useSubscribe, NDKKind, useUser } from '@nostr-dev-kit/ndk-hooks';
-import { Calendar, Link as LinkIcon, Edit2, Package, FileText } from 'lucide-react';
+import { Calendar, Link as LinkIcon, Edit2, Package, FileText, Share2 } from 'lucide-react';
 import { NoteCard } from '@/features/feed/NoteCard';
 import { useParams } from 'react-router-dom';
 import { ProfileEditor } from '@/features/profile/ProfileEditor';
@@ -11,11 +11,13 @@ import { FollowButton } from '@/components/ui/FollowButton';
 import { ContentRenderer } from '@/components/content/ContentRenderer';
 import { useUserArticles } from '@/features/articles/hooks/useUserArticles';
 import { ArticleList } from '@/features/articles/components/ArticleList';
+import { ShareProfileModal } from '@/features/profile/ShareProfileModal';
 
 export function ProfilePage() {
   const { identifier } = useParams<{ identifier?: string }>();
   const currentUser = useNDKCurrentUser();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'notes' | 'replies' | 'media' | 'articles' | 'packs'>('notes');
 
   // Resolve user from identifier (npub, hex pubkey, nip05, or nprofile)
@@ -117,11 +119,18 @@ export function ProfilePage() {
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {profile?.name || 'Anonymous'}
                 </h1>
-                {profile?.nip05 && (
+                <div className="flex items-center gap-2">
                   <p className="text-gray-500 dark:text-gray-400">
-                    @{profile.nip05.split('@')[0]}
+                    {profile?.nip05 ? `@${profile.nip05.split('@')[0]}` : `${user.npub?.slice(0, 12)}...`}
                   </p>
-                )}
+                  <button
+                    onClick={() => setIsShareModalOpen(true)}
+                    className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    aria-label="Share profile"
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
               <FollowButton pubkey={user.pubkey} />
             </div>
@@ -341,6 +350,16 @@ export function ProfilePage() {
             setIsEditingProfile(false);
             // Profile will auto-update via the useProfile hook
           }}
+        />
+      )}
+
+      {/* Share Profile Modal */}
+      {user?.pubkey && user?.npub && (
+        <ShareProfileModal
+          isOpen={isShareModalOpen}
+          onClose={() => setIsShareModalOpen(false)}
+          pubkey={user.pubkey}
+          npub={user.npub}
         />
       )}
     </div>

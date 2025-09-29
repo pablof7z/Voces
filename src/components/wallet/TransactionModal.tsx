@@ -45,7 +45,7 @@ export function TransactionModal({
   const getModalStyles = () => {
     switch (variant) {
       case 'dark':
-        return 'bg-gray-900 text-white';
+        return 'bg-black text-white';
       case 'gradient':
         return 'bg-gradient-to-br from-purple-600 to-pink-600 text-white';
       default:
@@ -155,7 +155,7 @@ export function TransactionModal({
                       ? 'bg-white text-purple-600 hover:bg-white/90'
                       : variant === 'dark'
                       ? 'bg-yellow-500 text-gray-900 hover:bg-yellow-400'
-                      : 'bg-gray-900 text-white hover:bg-gray-800'
+                      : 'bg-black text-white hover:bg-gray-800'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {isProcessing ? (
@@ -255,7 +255,7 @@ export function TransactionModal({
                         ? 'bg-white text-purple-600 hover:bg-white/90'
                         : variant === 'dark'
                         ? 'bg-yellow-500 text-gray-900 hover:bg-yellow-400'
-                        : 'bg-gray-900 text-white hover:bg-gray-800'
+                        : 'bg-black text-white hover:bg-gray-800'
                     }`}
                   >
                     Generate Invoice

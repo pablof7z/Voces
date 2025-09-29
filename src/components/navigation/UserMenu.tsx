@@ -1,4 +1,4 @@
-import { Settings, LogOut, UserPlus } from 'lucide-react';
+import { Settings, LogOut, UserPlus, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNDKCurrentUser, useNDKSessionLogout } from '@nostr-dev-kit/ndk-hooks';
@@ -51,11 +51,26 @@ export function UserMenu() {
           Positioned above (side="top") to avoid dropdown being cut off at bottom of screen.
           Aligned to start (left edge) to match the trigger element's position.
         */}
-        <DropdownMenuContent 
+        <DropdownMenuContent
           className="w-56 mb-2 ml-4"
           align="start"
           side="top"
         >
+          <DropdownMenuItem asChild>
+            <Link
+              to={`/p/${currentUser.npub}`}
+              className="flex items-center gap-3 px-2 py-3 cursor-pointer hover:bg-neutral-900/50"
+            >
+              <UserAvatar pubkey={currentUser.pubkey} size="md" />
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-sm truncate text-white">
+                  {profile?.name || 'Anonymous'}
+                </p>
+                <p className="text-xs text-neutral-500">View profile</p>
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setShowInviteModal(true)}>
             <div className="flex items-center gap-3 cursor-pointer">
               <UserPlus className="w-4 h-4" />

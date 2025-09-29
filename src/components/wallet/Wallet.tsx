@@ -88,7 +88,7 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-gray-900 rounded-3xl p-8 shadow-2xl"
+          className="bg-black rounded-3xl p-8 shadow-2xl"
         >
           <div className="flex justify-between items-center mb-8">
             <div className="flex items-center gap-3">

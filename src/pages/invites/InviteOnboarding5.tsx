@@ -46,7 +46,7 @@ function InviteOnboarding5() {
               animate={{ opacity: 1, rotateY: 0 }}
               exit={{ opacity: 0, rotateY: 90 }}
               transition={{ duration: 0.5 }}
-              className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden"
+              className="bg-white dark:bg-black rounded-3xl shadow-2xl overflow-hidden"
             >
               {/* Card Header with gradient */}
               <div className="h-40 bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600 relative overflow-hidden">
@@ -122,7 +122,7 @@ function InviteOnboarding5() {
               animate={{ opacity: 1, rotateY: 0 }}
               exit={{ opacity: 0, rotateY: 90 }}
               transition={{ duration: 0.5 }}
-              className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-12 space-y-8"
+              className="bg-white dark:bg-black rounded-3xl shadow-2xl p-8 md:p-12 space-y-8"
             >
               <div className="text-center">
                 <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-4">
@@ -193,7 +193,7 @@ function InviteOnboarding5() {
               animate={{ opacity: 1, rotateY: 0 }}
               exit={{ opacity: 0, rotateY: 90 }}
               transition={{ duration: 0.5 }}
-              className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-12 space-y-8"
+              className="bg-white dark:bg-black rounded-3xl shadow-2xl p-8 md:p-12 space-y-8"
             >
               <div className="text-center">
                 <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-4">
@@ -256,7 +256,7 @@ function InviteOnboarding5() {
               key="ready"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-12 text-center space-y-8"
+              className="bg-white dark:bg-black rounded-3xl shadow-2xl p-8 md:p-12 text-center space-y-8"
             >
               <motion.div
                 initial={{ scale: 0 }}

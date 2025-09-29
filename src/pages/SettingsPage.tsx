@@ -11,7 +11,8 @@ import {
   ChevronRight,
   ArrowLeft,
   Image,
-  Key
+  Key,
+  Network
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { RelaySettings } from '@/features/settings/RelaySettings';
@@ -21,9 +22,10 @@ import { PrivacySettings } from '@/features/settings/PrivacySettings';
 import { ProfileSettings } from '@/features/settings/ProfileSettings';
 import { BlossomSettings } from '@/features/settings/BlossomSettings';
 import { BackupKeySettings } from '@/features/backup/BackupKeySettings';
+import { WoTSettings } from '@/features/settings/WoTSettings';
 import { AUTH_STORAGE_KEYS } from '@/config/auth';
 
-type SettingsSection = 'relays' | 'theme' | 'notifications' | 'privacy' | 'profile' | 'blossom' | 'backup' | null;
+type SettingsSection = 'relays' | 'theme' | 'notifications' | 'privacy' | 'profile' | 'blossom' | 'backup' | 'wot' | null;
 
 interface SectionConfig {
   id: SettingsSection;
@@ -43,6 +45,14 @@ const sectionConfigs: Omit<SectionConfig, 'label' | 'description'>[] = [
     iconColor: 'text-blue-400',
     iconBg: 'bg-blue-400/10',
     component: RelaySettings,
+    available: true,
+  },
+  {
+    id: 'wot',
+    icon: Network,
+    iconColor: 'text-emerald-400',
+    iconBg: 'bg-emerald-400/10',
+    component: WoTSettings,
     available: true,
   },
   {

@@ -1,10 +1,13 @@
 import { useProfile } from '@nostr-dev-kit/ndk-hooks';
 import { cn } from '@/lib/utils';
+import { useWoTScore } from '@/hooks/useWoT';
+import { CheckCircle2 } from 'lucide-react';
 
 interface UserAvatarProps {
   pubkey?: string;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
+  showTrustIndicator?: boolean;
 }
 
 const sizeClasses = {
@@ -15,14 +18,22 @@ const sizeClasses = {
   xl: 'w-20 h-20 text-xl',
 };
 
-export function UserAvatar({ pubkey, size = 'md', className }: UserAvatarProps) {
+const badgeSizeClasses = {
+  xs: 'w-3 h-3',
+  sm: 'w-3.5 h-3.5',
+  md: 'w-4 h-4',
+  lg: 'w-5 h-5',
+  xl: 'w-6 h-6',
+};
+
+export function UserAvatar({ pubkey, size = 'md', className, showTrustIndicator = true }: UserAvatarProps) {
   const profile = useProfile(pubkey);
+  const trustScore = useWoTScore(pubkey || '');
 
   // Try multiple image sources
   const imageUrl = profile?.picture || profile?.image || profile?.banner;
   const displayName = profile?.displayName || profile?.name || 'Anonymous';
 
-  // Generate initials from name
   const initials = displayName
     .split(' ')
     .map(n => n[0])
@@ -30,26 +41,6 @@ export function UserAvatar({ pubkey, size = 'md', className }: UserAvatarProps) 
     .join('')
     .toUpperCase() || '?';
 
-  if (imageUrl) {
-    return (
-      <img
-        src={imageUrl}
-        alt={displayName}
-        className={cn(
-          'rounded-full object-cover bg-neutral-100 dark:bg-neutral-900',
-          sizeClasses[size],
-          className
-        )}
-        loading="lazy"
-        onError={(e) => {
-          // Hide broken images
-          (e.target as HTMLImageElement).style.display = 'none';
-        }}
-      />
-    );
-  }
-
-  // Consistent color based on pubkey for fallback
   const colors = [
     'bg-blue-500',
     'bg-green-500',
@@ -61,22 +52,53 @@ export function UserAvatar({ pubkey, size = 'md', className }: UserAvatarProps) 
     'bg-teal-500',
   ];
 
-  const colorIndex = pubkey ?
-    parseInt(pubkey.slice(0, 8), 16) % colors.length :
-    0;
+  const showBadge = showTrustIndicator && trustScore > 0;
 
-  const bgColor = colors[colorIndex];
-
-  return (
+  const avatarContent = imageUrl ? (
+    <img
+      src={imageUrl}
+      alt={displayName}
+      className={cn(
+        'rounded-full object-cover bg-neutral-100 dark:bg-neutral-900',
+        sizeClasses[size],
+        className
+      )}
+      loading="lazy"
+      onError={(e) => {
+        (e.target as HTMLImageElement).style.display = 'none';
+      }}
+    />
+  ) : (
     <div
       className={cn(
         'rounded-full flex items-center justify-center text-white font-semibold',
-        bgColor,
+        colors[pubkey ? parseInt(pubkey.slice(0, 8), 16) % colors.length : 0],
         sizeClasses[size],
         className
       )}
     >
       {initials}
+    </div>
+  );
+
+  if (!showBadge) {
+    return avatarContent;
+  }
+
+  return (
+    <div className="relative inline-block">
+      {avatarContent}
+      <div
+        className={cn(
+          'absolute -bottom-0.5 -right-0.5 rounded-full flex items-center justify-center',
+          trustScore === 1.0
+            ? 'bg-green-500 text-white'
+            : 'bg-blue-500 text-white',
+          badgeSizeClasses[size]
+        )}
+      >
+        <CheckCircle2 className="w-full h-full p-0.5" />
+      </div>
     </div>
   );
 }

@@ -9,7 +9,7 @@ const navItemsConfig = [
   { path: '/messages', icon: MessageSquare, key: 'messages' },
   { path: '/marketplace', icon: Store, key: 'marketplace' },
   { path: '/money', icon: Wallet, key: 'money' },
-  { path: '/profile', icon: User, key: 'profile' },
+  { path: 'profile', icon: User, key: 'profile' },
 ];
 
 export function BottomNav() {
@@ -20,6 +20,7 @@ export function BottomNav() {
 
   const navItems = navItemsConfig.map(item => ({
     ...item,
+    path: item.key === 'profile' && currentUser ? `/p/${currentUser.npub}` : item.path,
     label: t(`navigation.${item.key}`)
   }));
 
@@ -29,7 +30,9 @@ export function BottomNav() {
       <div className="bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800">
         <div className="flex items-center justify-around h-16 px-3">
           {navItems.map(({ path, icon: Icon, label, key }) => {
-            const isActive = location.pathname === path;
+            const isActive = key === 'profile'
+              ? location.pathname.startsWith('/p/')
+              : location.pathname === path;
             const isProfileTab = key === 'profile';
             const showAvatar = isProfileTab && currentUser && profile?.picture;
 

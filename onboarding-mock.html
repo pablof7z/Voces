@@ -548,8 +548,8 @@
             background: #fffbeb;
             border: 1px solid #fbbf24;
             border-radius: 4px;
-            padding: 20px;
-            margin-bottom: 32px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
         }
 
         .security-notice-title {
@@ -565,183 +565,17 @@
             line-height: 1.5;
         }
 
-        .profile-preview-container {
-            position: relative;
-            height: 85vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 32px;
-            overflow: visible;
-        }
-
-        .profile-card {
-            width: 540px;
-            background: #fff;
-            border: 1px solid #e8e8e8;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            position: absolute;
-        }
-
-        .profile-card.side:first-child {
-            opacity: 0.9;
-            transform: rotate(-4deg) translateX(-260px) translateY(-30px) scale(0.94);
-            z-index: 0;
-        }
-
-        .profile-card.center {
-            transform: scale(1.08);
-            opacity: 1;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.25);
-            z-index: 2;
-            position: relative;
-        }
-
-        .profile-card.side:last-child {
-            opacity: 0.9;
-            transform: rotate(4deg) translateX(260px) translateY(-30px) scale(0.94);
-            z-index: 0;
-        }
-
-        .profile-banner {
-            height: 180px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            position: relative;
-            cursor: pointer;
-        }
-
-        .profile-banner:hover::after {
-            content: 'Click to change banner';
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.6);
-            color: white;
-            font-size: 14px;
-        }
-
-        .profile-avatar-wrapper {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin: -60px auto 0;
-            z-index: 2;
-        }
-
-        .profile-avatar-large {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: #000;
-            border: 5px solid #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 40px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .profile-avatar-large:hover {
-            transform: scale(1.05);
-        }
-
-        .profile-info {
-            padding: 20px 32px 32px;
-            text-align: center;
-        }
-
-        .profile-name-editable {
-            font-size: 28px;
-            font-weight: 600;
-            color: #000;
-            margin-bottom: 6px;
-            padding: 8px 12px;
-            border-radius: 4px;
-            transition: background 0.2s ease;
-            cursor: text;
-            outline: none;
-            border: 2px solid transparent;
-        }
-
-        .profile-name-editable:hover {
-            background: #fafafa;
-        }
-
-        .profile-name-editable:focus {
-            background: #fafafa;
-            border-color: #000;
-        }
-
-        .profile-name-editable[contenteditable="true"]:empty::before {
-            content: 'Your name';
-            color: #999;
-        }
-
-        .profile-location-editable {
-            font-size: 14px;
-            color: #666;
-            padding: 4px 12px;
-            border-radius: 4px;
-            transition: background 0.2s ease;
-            cursor: text;
-            outline: none;
-            border: 2px solid transparent;
-            margin-bottom: 16px;
-        }
-
-        .profile-location-editable:hover {
-            background: #fafafa;
-        }
-
-        .profile-location-editable:focus {
-            background: #fafafa;
-            border-color: #000;
-        }
-
-        .profile-location-editable[contenteditable="true"]:empty::before {
-            content: 'Your location (optional)';
-            color: #999;
-        }
-
-        .profile-bio-editable {
-            font-size: 15px;
-            color: #000;
-            line-height: 1.5;
-            padding: 8px 12px;
-            border-radius: 4px;
-            transition: background 0.2s ease;
-            cursor: text;
-            outline: none;
-            border: 2px solid transparent;
-            min-height: 60px;
-        }
-
-        .profile-bio-editable:hover {
-            background: #fafafa;
-        }
-
-        .profile-bio-editable:focus {
-            background: #fafafa;
-            border-color: #000;
-        }
-
-        .profile-bio-editable[contenteditable="true"]:empty::before {
-            content: 'Tell your community about yourself...';
-            color: #999;
-        }
 
         .profile-hint {
             text-align: center;
             color: #999;
             font-size: 13px;
             margin-top: 24px;
+        }
+
+        [contenteditable]:empty:before {
+            content: attr(data-placeholder);
+            color: #999;
         }
 
         .welcome-notice {
@@ -859,47 +693,89 @@
 
                 <div class="packs-panel">
                     <h1 style="font-size: 32px; margin-bottom: 12px;">Join Your Community</h1>
-                    <p style="color: #666; margin-bottom: 48px; font-size: 16px;">
-                        Follow these packs to stay connected with what matters.
+                    <p style="color: #666; margin-bottom: 32px; font-size: 16px;">
+                        Follow influential voices and see what they're discussing.
                     </p>
 
-                    <div class="panel-title">Curated Follow Packs</div>
+                    <div style="display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;">
+                        <div class="pack-card selected" data-pack="activists" style="flex: 0 0 calc(50% - 6px); cursor: pointer; padding: 16px; border: 2px solid #000;">
+                            <div class="pack-title">Venezuelan Activists</div>
+                            <div class="pack-meta">24 members</div>
+                        </div>
 
-                    <div class="pack-card" data-pack="activists">
-                        <div class="pack-title">Venezuelan Activists</div>
-                        <div class="pack-meta">24 members</div>
-                        <div class="pack-avatars">
-                            <div class="avatar">A</div>
-                            <div class="avatar">B</div>
-                            <div class="avatar">C</div>
-                            <div class="avatar">+21</div>
+                        <div class="pack-card" data-pack="journalists" style="flex: 0 0 calc(50% - 6px); cursor: pointer; padding: 16px; border: 1px solid #e8e8e8;">
+                            <div class="pack-title">Community Journalists</div>
+                            <div class="pack-meta">18 members</div>
+                        </div>
+
+                        <div class="pack-card" data-pack="tech" style="flex: 0 0 calc(50% - 6px); cursor: pointer; padding: 16px; border: 1px solid #e8e8e8;">
+                            <div class="pack-title">Tech Innovators</div>
+                            <div class="pack-meta">31 members</div>
+                        </div>
+
+                        <div class="pack-card" data-pack="artists" style="flex: 0 0 calc(50% - 6px); cursor: pointer; padding: 16px; border: 1px solid #e8e8e8;">
+                            <div class="pack-title">Artists & Creators</div>
+                            <div class="pack-meta">27 members</div>
                         </div>
                     </div>
 
-                    <div class="pack-card" data-pack="journalists">
-                        <div class="pack-title">Community Journalists</div>
-                        <div class="pack-meta">18 members</div>
-                        <div class="pack-avatars">
-                            <div class="avatar">D</div>
-                            <div class="avatar">E</div>
-                            <div class="avatar">F</div>
-                            <div class="avatar">+15</div>
+                    <div class="panel-title" style="margin-bottom: 16px;">Recent from Venezuelan Activists</div>
+
+                    <div class="recent-posts" style="max-height: 400px; overflow-y: auto;">
+                        <div style="background: #fafafa; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                <div class="avatar">JM</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; font-size: 14px;">Jorge Martínez</div>
+                                    <div style="font-size: 12px; color: #666;">2 hours ago</div>
+                                </div>
+                            </div>
+                            <div style="font-size: 14px; line-height: 1.5; color: #333;">
+                                🚨 Important: Community kitchen in Petare will be open this weekend. We have enough supplies for 500 families. Please spread the word to those who need it most. Together we rise! 🇻🇪
+                            </div>
+                            <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 12px; color: #666;">
+                                <span>⚡ 12.5k sats</span>
+                                <span>💬 45 replies</span>
+                            </div>
+                        </div>
+
+                        <div style="background: #fafafa; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                <div class="avatar">LG</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; font-size: 14px;">Lucia González</div>
+                                    <div style="font-size: 12px; color: #666;">5 hours ago</div>
+                                </div>
+                            </div>
+                            <div style="font-size: 14px; line-height: 1.5; color: #333;">
+                                Today we successfully delivered medical supplies to 3 clinics in Valencia. This wouldn't be possible without this amazing network. Proof that decentralized coordination works! 💪
+                            </div>
+                            <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 12px; color: #666;">
+                                <span>⚡ 8.3k sats</span>
+                                <span>💬 21 replies</span>
+                            </div>
+                        </div>
+
+                        <div style="background: #fafafa; border-radius: 8px; padding: 16px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                <div class="avatar">RP</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; font-size: 14px;">Rafael Pérez</div>
+                                    <div style="font-size: 12px; color: #666;">Yesterday</div>
+                                </div>
+                            </div>
+                            <div style="font-size: 14px; line-height: 1.5; color: #333;">
+                                New P2P marketplace is live! Already seeing 200+ listings from local merchants. This is how we build parallel economies. No middlemen, no censorship. Just peer to peer commerce. 🚀
+                            </div>
+                            <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 12px; color: #666;">
+                                <span>⚡ 23.7k sats</span>
+                                <span>💬 67 replies</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="pack-card" data-pack="tech">
-                        <div class="pack-title">Tech Innovators</div>
-                        <div class="pack-meta">31 members</div>
-                        <div class="pack-avatars">
-                            <div class="avatar">G</div>
-                            <div class="avatar">H</div>
-                            <div class="avatar">I</div>
-                            <div class="avatar">+28</div>
-                        </div>
-                    </div>
-
-                    <div class="btn-container" style="margin-top: 64px;">
-                        <button class="btn" id="step2Next" style="width: 100%;">Continue</button>
+                    <div class="btn-container" style="margin-top: 32px;">
+                        <button class="btn" id="step2Next" style="width: 100%;">Follow Pack & Continue</button>
                     </div>
                 </div>
             </div>
@@ -1000,71 +876,77 @@
         </div>
 
         <!-- Step 6: Create Profile -->
-        <div class="step" data-step="6">
-            <h1>How should people know you?</h1>
-            <p class="subtitle">Click on any field to edit your profile.</p>
+        <div class="step" data-step="6" style="padding: 40px 20px; display: flex; flex-direction: column; min-height: 100vh;">
+            <div style="text-align: center; margin-bottom: 32px;">
+                <h1 style="font-size: 36px; margin-bottom: 8px; font-weight: 600;">You're joining these leaders</h1>
+                <p style="font-size: 17px; color: #666;">Create your profile to stand alongside influential voices in your community.</p>
+            </div>
 
-            <div class="profile-preview-container">
-                <!-- Side profile (example 1) -->
-                <div class="profile-card side">
-                    <div class="profile-banner" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
-                    <div class="profile-avatar-wrapper">
-                        <div class="profile-avatar-large">MR</div>
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+                <div style="display: flex; gap: 20px; align-items: center;">
+                    <!-- Side profile (example 1) -->
+                    <div style="width: 360px; background: #fff; border: 1px solid #e8e8e8; border-radius: 12px; overflow: hidden; transform: rotate(-4deg) scale(0.92); opacity: 0.8;">
+                        <div style="height: 140px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                        <div style="position: relative; width: 100px; height: 100px; margin: -50px auto 0;">
+                            <div style="width: 100px; height: 100px; border-radius: 50%; background: #000; border: 4px solid #fff; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 32px;">MR</div>
+                        </div>
+                        <div style="padding: 20px 30px 30px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 600; color: #000; margin-bottom: 6px;">María Rodríguez</div>
+                            <div style="font-size: 14px; color: #666; margin-bottom: 16px;">📍 Caracas · 12K followers</div>
+                            <div style="font-size: 15px; color: #333; line-height: 1.5;">Community organizer & activist. Fighting for clean water access and social justice.</div>
+                        </div>
                     </div>
-                    <div class="profile-info">
-                        <div style="font-size: 28px; font-weight: 600; color: #000; margin-bottom: 6px;">María Rodríguez</div>
-                        <div style="font-size: 15px; color: #666; margin-bottom: 20px;">📍 Caracas, Venezuela · 12K followers</div>
-                        <div style="font-size: 16px; color: #000; line-height: 1.6;">Community organizer & activist. Fighting for clean water access and social justice. Every voice matters.</div>
-                    </div>
-                </div>
 
-                <!-- Center profile (editable) -->
-                <div class="profile-card center">
-                    <div class="profile-banner"></div>
-                    <div class="profile-avatar-wrapper">
-                        <div class="profile-avatar-large" id="profileAvatar">?</div>
+                    <!-- Center profile (editable) -->
+                    <div style="width: 400px; background: #fff; border: 1px solid #d0d0d0; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.15); transform: scale(1.05); position: relative; z-index: 2;">
+                        <div id="profileBanner" style="height: 160px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); cursor: pointer; position: relative;">
+                            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); color: white; font-size: 14px; opacity: 0; transition: opacity 0.2s;"
+                                 onmouseover="this.style.opacity='1'"
+                                 onmouseout="this.style.opacity='0'">Click to change banner</div>
+                        </div>
+                        <div style="position: relative; width: 110px; height: 110px; margin: -55px auto 0;">
+                            <div id="profileAvatar" style="width: 110px; height: 110px; border-radius: 50%; background: #000; border: 5px solid #fff; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 36px; cursor: pointer;">?</div>
+                        </div>
+                        <div style="padding: 24px 32px 32px; text-align: center;">
+                            <div contenteditable="true" id="profileName" style="font-size: 26px; font-weight: 600; color: #000; margin-bottom: 6px; padding: 8px 12px; border-radius: 4px; outline: none; border: 2px solid transparent; min-height: 40px;"
+                                 onfocus="this.style.background='#fafafa'; this.style.borderColor='#667eea'"
+                                 onblur="this.style.background='transparent'; this.style.borderColor='transparent'"
+                                 data-placeholder="Your name"></div>
+                            <div contenteditable="true" id="profileLocation" style="font-size: 14px; color: #666; padding: 6px 12px; border-radius: 4px; outline: none; border: 2px solid transparent; margin-bottom: 16px; min-height: 24px;"
+                                 onfocus="this.style.background='#fafafa'; this.style.borderColor='#667eea'"
+                                 onblur="this.style.background='transparent'; this.style.borderColor='transparent'"
+                                 data-placeholder="📍 Your location (optional)"></div>
+                            <div contenteditable="true" id="profileBio" style="font-size: 15px; color: #333; line-height: 1.5; padding: 8px 12px; border-radius: 4px; outline: none; border: 2px solid transparent; min-height: 60px; text-align: left;"
+                                 onfocus="this.style.background='#fafafa'; this.style.borderColor='#667eea'"
+                                 onblur="this.style.background='transparent'; this.style.borderColor='transparent'"
+                                 data-placeholder="Tell your community about yourself..."></div>
+                        </div>
                     </div>
-                    <div class="profile-info">
-                        <div class="profile-name-editable" contenteditable="true" id="profileName"></div>
-                        <div class="profile-location-editable" contenteditable="true" id="profileLocation"></div>
-                        <div class="profile-bio-editable" contenteditable="true" id="profileBio"></div>
-                    </div>
-                </div>
 
-                <!-- Side profile (example 2) -->
-                <div class="profile-card side">
-                    <div class="profile-banner" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
-                    <div class="profile-avatar-wrapper">
-                        <div class="profile-avatar-large">JG</div>
-                    </div>
-                    <div class="profile-info">
-                        <div style="font-size: 28px; font-weight: 600; color: #000; margin-bottom: 6px;">Jorge García</div>
-                        <div style="font-size: 15px; color: #666; margin-bottom: 20px;">📍 Valencia, Venezuela · 8K followers</div>
-                        <div style="font-size: 16px; color: #000; line-height: 1.6;">Independent journalist covering local stories. Building tech tools for community empowerment and transparency.</div>
+                    <!-- Side profile (example 2) -->
+                    <div style="width: 360px; background: #fff; border: 1px solid #e8e8e8; border-radius: 12px; overflow: hidden; transform: rotate(4deg) scale(0.92); opacity: 0.8;">
+                        <div style="height: 140px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+                        <div style="position: relative; width: 100px; height: 100px; margin: -50px auto 0;">
+                            <div style="width: 100px; height: 100px; border-radius: 50%; background: #000; border: 4px solid #fff; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 32px;">JG</div>
+                        </div>
+                        <div style="padding: 20px 30px 30px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 600; color: #000; margin-bottom: 6px;">Jorge García</div>
+                            <div style="font-size: 14px; color: #666; margin-bottom: 16px;">📍 Valencia · 8K followers</div>
+                            <div style="font-size: 15px; color: #333; line-height: 1.5;">Independent journalist. Building tech tools for community empowerment.</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="profile-hint">
-                💡 Your profile preview updates as you type. Click to edit any field.
-            </div>
-
-            <div class="security-notice">
-                <div class="security-notice-title">🔐 Your keys are being generated</div>
-                <div class="security-notice-text">
-                    We're creating your secure identity. You'll be able to back it up later with trusted friends.
-                </div>
-            </div>
-
-            <div class="btn-container">
-                <button class="btn" id="step6Next">Continue</button>
+            <div style="margin-top: 40px; max-width: 500px; margin-left: auto; margin-right: auto; width: 100%;">
+                <button class="btn" id="step6Next" style="width: 100%; padding: 16px; font-size: 16px; background: #000; color: white; border: none; border-radius: 8px; cursor: pointer;">Continue →</button>
             </div>
         </div>
 
         <!-- Step 7: Introduce Yourself -->
         <div class="step" data-step="7">
-            <h1>Introduce Yourself</h1>
-            <p class="subtitle">Good introductions help your community find you. And they might earn you some sats!</p>
+            <h1>Introduce Yourself to the Community</h1>
+            <p class="subtitle">Write a brief introduction using #introductions. Good introductions often earn zaps!</p>
 
             <div class="intro-examples">
                 <div style="font-weight: 600; color: #374151; margin-bottom: 16px;">
@@ -1101,42 +983,38 @@
                         </div>
                     </div>
                     <div class="intro-content">
-                        🌍 New to Voces from Valencia! I'm a freelance developer hoping to connect with the tech community here. Looking forward to building together. #introductions
+                        🎨 Artist from Caracas here! I document our daily resilience through street photography. Art is resistance. Looking forward to sharing Venezuela's untold stories with this community. #introductions
                     </div>
                     <div class="intro-stats">
                         <div class="stat">
                             <span>⚡</span>
-                            <span class="stat-highlight">32,000 sats</span>
+                            <span class="stat-highlight">67,500 sats</span>
                         </div>
                         <div class="stat">
                             <span>💬</span>
-                            <span>18 replies</span>
+                            <span>41 replies</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="template-suggestions">
-                <div class="template-title">💡 Template Suggestions</div>
-                <div class="template" onclick="document.getElementById('introText').value = this.textContent.trim()">
-                    👋 Hola desde [city]! Soy [name], y estoy aquí para conectar con la comunidad venezolana...
-                </div>
-                <div class="template" onclick="document.getElementById('introText').value = this.textContent.trim()">
-                    🌍 New to Voces from Venezuela! I'm passionate about [interest] and excited to...
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label class="input-label">Your Introduction</label>
-                <textarea id="introText" placeholder="Write your introduction... #introductions"></textarea>
-                <div style="font-size: 14px; color: #6b7280; margin-top: 8px;">
-                    Don't forget the #introductions hashtag!
+            <div style="background: #fafafa; border-radius: 8px; padding: 24px; margin: 32px 0;">
+                <div style="font-weight: 600; margin-bottom: 12px; font-size: 14px; color: #333;">Write Your Introduction</div>
+                <textarea
+                    id="introText"
+                    placeholder="Tell the community who you are, what you do, and what brings you here. Don't forget to add #introductions!"
+                    style="width: 100%; min-height: 120px; padding: 12px; border: 1px solid #e8e8e8; border-radius: 4px; font-size: 14px; line-height: 1.5; resize: vertical; font-family: inherit;"
+                    onkeyup="updateCharCount(this)"
+                ></textarea>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                    <div style="font-size: 12px; color: #666;">Tip: Mention your location, interests, or how you're contributing to the community</div>
+                    <div id="charCount" style="font-size: 12px; color: #666;">0 / 280</div>
                 </div>
             </div>
 
             <div class="btn-container">
-                <button class="btn-secondary btn">Skip for now</button>
-                <button class="btn" id="step7Next">Publish & Continue →</button>
+                <button class="btn-secondary btn" onclick="goToStep(8)">Skip for now</button>
+                <button class="btn" id="step7Next" disabled>Post Introduction</button>
             </div>
         </div>
 
@@ -1179,10 +1057,11 @@
     </div>
 
     <script>
-        let currentStep = 1;
-        let selectedCommunity = null;
-        let selectedPacks = new Set();
-        const totalSteps = 8;
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentStep = 1;
+            let selectedCommunity = null;
+            let selectedPacks = new Set();
+            const totalSteps = 8;
 
         // Update progress bar
         function updateProgress() {
@@ -1195,7 +1074,8 @@
         }
 
         // Navigate steps
-        function goToStep(step) {
+        // Make goToStep globally accessible since it's called from inline HTML
+        window.goToStep = function(step) {
             document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
             document.querySelector(`[data-step="${step}"]`).classList.add('active');
             currentStep = step;
@@ -1206,7 +1086,7 @@
         // Back button
         document.getElementById('backBtn').addEventListener('click', () => {
             if (currentStep > 1) {
-                goToStep(currentStep - 1);
+                window.goToStep(currentStep - 1);
             }
         });
 
@@ -1222,30 +1102,194 @@
 
         document.getElementById('step1Next').addEventListener('click', () => {
             if (selectedCommunity) {
-                goToStep(2);
+                window.goToStep(2);
             }
         });
 
-        // Step 2: Pack Selection
-        document.querySelectorAll('.pack-card').forEach(card => {
+        // Step 2: Pack Selection with recent posts
+        const packData = {
+            activists: {
+                title: 'Venezuelan Activists',
+                posts: [
+                    {
+                        name: 'Jorge Martínez',
+                        time: '2 hours ago',
+                        content: '🚨 Important: Community kitchen in Petare will be open this weekend. We have enough supplies for 500 families. Please spread the word to those who need it most. Together we rise! 🇻🇪',
+                        sats: '12.5k',
+                        replies: 45
+                    },
+                    {
+                        name: 'Lucia González',
+                        time: '5 hours ago',
+                        content: 'Today we successfully delivered medical supplies to 3 clinics in Valencia. This wouldn\'t be possible without this amazing network. Proof that decentralized coordination works! 💪',
+                        sats: '8.3k',
+                        replies: 21
+                    },
+                    {
+                        name: 'Rafael Pérez',
+                        time: 'Yesterday',
+                        content: 'New P2P marketplace is live! Already seeing 200+ listings from local merchants. This is how we build parallel economies. No middlemen, no censorship. Just peer to peer commerce. 🚀',
+                        sats: '23.7k',
+                        replies: 67
+                    }
+                ]
+            },
+            journalists: {
+                title: 'Community Journalists',
+                posts: [
+                    {
+                        name: 'Maria Fernandez',
+                        time: '1 hour ago',
+                        content: 'Breaking: Just documented the incredible community response in Maracaibo. People are organizing local supply chains using nothing but messaging apps. The story mainstream media won\'t tell.',
+                        sats: '15.2k',
+                        replies: 38
+                    },
+                    {
+                        name: 'Diego Ramirez',
+                        time: '4 hours ago',
+                        content: 'Published my latest investigation on how communities are bypassing traditional banking. The resilience here is incredible. Full report coming tomorrow. 📰',
+                        sats: '9.8k',
+                        replies: 29
+                    },
+                    {
+                        name: 'Sofia Herrera',
+                        time: '6 hours ago',
+                        content: 'Just interviewed 5 local entrepreneurs building solutions. No venture capital, no government support. Pure grassroots innovation. Venezuela is writing its own future.',
+                        sats: '11.3k',
+                        replies: 52
+                    }
+                ]
+            },
+            tech: {
+                title: 'Tech Innovators',
+                posts: [
+                    {
+                        name: 'Alex Chen',
+                        time: '30 minutes ago',
+                        content: 'Just deployed a mesh network in 3 neighborhoods! Internet freedom can\'t be stopped. Code is open source - let\'s build resilient infrastructure together. 🌐',
+                        sats: '34.5k',
+                        replies: 89
+                    },
+                    {
+                        name: 'Isabella Torres',
+                        time: '2 hours ago',
+                        content: 'New tutorial: How to accept payments without banks. Covering Lightning, Cashu, and P2P methods. Financial sovereignty is not optional. ⚡',
+                        sats: '28.1k',
+                        replies: 76
+                    },
+                    {
+                        name: 'Marco Antonio',
+                        time: '8 hours ago',
+                        content: 'Our community marketplace app hit 10k users! Zero fees, no middlemen, just neighbors helping neighbors. This is what real peer-to-peer looks like.',
+                        sats: '45.2k',
+                        replies: 124
+                    }
+                ]
+            },
+            artists: {
+                title: 'Artists & Creators',
+                posts: [
+                    {
+                        name: 'Carmen Luz',
+                        time: '3 hours ago',
+                        content: 'New mural completed in Caracas! Art is how we tell our own story. Every wall is a canvas for hope. Check out the process video 🎨',
+                        sats: '19.7k',
+                        replies: 61
+                    },
+                    {
+                        name: 'Roberto Silva',
+                        time: '5 hours ago',
+                        content: 'Documenting daily life through photography. These streets have stories that deserve to be told. New gallery dropping tomorrow 📸',
+                        sats: '14.3k',
+                        replies: 43
+                    },
+                    {
+                        name: 'Elena Martinez',
+                        time: 'Yesterday',
+                        content: 'Music from the barrios! Recording local artists who are keeping our culture alive. Every song is an act of resistance 🎵',
+                        sats: '22.8k',
+                        replies: 58
+                    }
+                ]
+            }
+        };
+
+        document.querySelectorAll('.packs-panel .pack-card').forEach(card => {
             card.addEventListener('click', function() {
                 const packId = this.dataset.pack;
-                if (selectedPacks.has(packId)) {
-                    selectedPacks.delete(packId);
-                    this.classList.remove('selected');
-                } else {
-                    selectedPacks.add(packId);
-                    this.classList.add('selected');
+
+                // Remove selected from all cards
+                document.querySelectorAll('.packs-panel .pack-card').forEach(c => {
+                    c.classList.remove('selected');
+                    c.style.border = '1px solid #e8e8e8';
+                });
+
+                // Add selected to this card
+                this.classList.add('selected');
+                this.style.border = '2px solid #000';
+
+                // Update the posts section
+                const packInfo = packData[packId];
+                if (packInfo) {
+                    document.querySelector('.packs-panel .panel-title').textContent = `Recent from ${packInfo.title}`;
+
+                    const postsHTML = packInfo.posts.map(post => `
+                        <div style="background: #fafafa; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                <div class="avatar">${post.name.split(' ').map(n => n[0]).join('')}</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; font-size: 14px;">${post.name}</div>
+                                    <div style="font-size: 12px; color: #666;">${post.time}</div>
+                                </div>
+                            </div>
+                            <div style="font-size: 14px; line-height: 1.5; color: #333;">
+                                ${post.content}
+                            </div>
+                            <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 12px; color: #666;">
+                                <span>⚡ ${post.sats} sats</span>
+                                <span>💬 ${post.replies} replies</span>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    document.querySelector('.packs-panel .recent-posts').innerHTML = postsHTML;
                 }
             });
         });
 
-        document.getElementById('step2Next').addEventListener('click', () => goToStep(3));
-        document.getElementById('step3Next').addEventListener('click', () => goToStep(4));
-        document.getElementById('step4Next').addEventListener('click', () => goToStep(5));
-        document.getElementById('step5Next').addEventListener('click', () => goToStep(6));
-        document.getElementById('step6Next').addEventListener('click', () => goToStep(7));
-        document.getElementById('step7Next').addEventListener('click', () => goToStep(8));
+        document.getElementById('step2Next').addEventListener('click', () => window.goToStep(3));
+        document.getElementById('step3Next').addEventListener('click', () => window.goToStep(4));
+        document.getElementById('step4Next').addEventListener('click', () => window.goToStep(5));
+        document.getElementById('step5Next').addEventListener('click', () => window.goToStep(6));
+        document.getElementById('step6Next').addEventListener('click', () => window.goToStep(7));
+        // Step 7: Handle introduction text
+        const introText = document.getElementById('introText');
+        const step7Next = document.getElementById('step7Next');
+
+        // Define updateCharCount globally since it's called from inline HTML
+        window.updateCharCount = function(textarea) {
+            const charCount = textarea.value.length;
+            const charCountEl = document.getElementById('charCount');
+            const step7NextBtn = document.getElementById('step7Next');
+
+            if (charCountEl) {
+                charCountEl.innerHTML = `${charCount} / 280`;
+            }
+
+            // Enable/disable button based on text and hashtag
+            const hasHashtag = textarea.value.includes('#introductions');
+            const hasContent = charCount > 10;
+
+            if (step7NextBtn) {
+                step7NextBtn.disabled = !(hasContent && hasHashtag);
+            }
+
+            if (hasContent && !hasHashtag && charCountEl) {
+                charCountEl.innerHTML = `${charCount} / 280 - <span style="color: #ef4444;">Missing #introductions</span>`;
+            }
+        }
+
+        step7Next.addEventListener('click', () => window.goToStep(8));
 
         // Step 6: Profile editing with live preview
         const profileName = document.getElementById('profileName');
@@ -1264,6 +1308,7 @@
                         .toUpperCase()
                         .slice(0, 2);
                     profileAvatar.textContent = initials;
+                    profileAvatar.style.fontSize = initials.length > 1 ? '24px' : '28px';
                 } else {
                     profileAvatar.textContent = '?';
                 }
@@ -1290,6 +1335,7 @@
 
         // Initialize
         updateProgress();
+        });  // End of DOMContentLoaded
     </script>
 </body>
 </html>

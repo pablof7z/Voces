@@ -50,7 +50,6 @@ function AppRoutes() {
         <Route path="messages" element={currentUser ? <MessagesPage /> : <Navigate to="/" />} />
         <Route path="messages/new" element={currentUser ? <NewConversationPage /> : <Navigate to="/" />} />
         <Route path="messages/:pubkey" element={currentUser ? <ConversationPage /> : <Navigate to="/" />} />
-        <Route path="profile" element={currentUser ? <ProfilePage /> : <Navigate to="/" />} />
         <Route path="p/:identifier" element={<ProfilePage />} />
         <Route path="e/:nevent" element={<NoteDetailPage />} />
         <Route path="article/:naddr" element={<ArticlePage />} />

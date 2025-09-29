@@ -9,10 +9,15 @@ import {
   Edit2,
   Globe,
   AlertCircle,
-  Wifi
+  Wifi,
+  Shield,
+  Server,
+  MapPin,
+  Info
 } from 'lucide-react';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { cn } from '@/lib/utils';
+import { useRelayInfoCached } from '@/hooks/useRelayInfo';
 
 export function RelaySettings() {
   const { relays, addRelay, removeRelay, updateRelay, toggleRelay } = useSettingsStore();
@@ -127,53 +132,12 @@ export function RelaySettings() {
                       >
                         {relay.enabled && <Check className="w-3 h-3 text-white" />}
                       </button>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <Globe className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                          <span className="font-mono text-xs md:text-sm text-gray-900 dark:text-gray-100 break-all">
-                            {relay.url}
-                          </span>
-                          {status === 'connected' && (
-                            <span className="text-xs bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full">
-                              Connected
-                            </span>
-                          )}
-                          {status === 'disconnected' && connectionStatus[relay.url] !== undefined && (
-                            <span className="text-xs bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400 px-2 py-0.5 rounded-full">
-                              Offline
-                            </span>
-                          )}
-                          {status === 'testing' && (
-                            <span className="text-xs bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400 px-2 py-0.5 rounded-full">
-                              Testing...
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-4 mt-2">
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={relay.read}
-                              onChange={(e) => updateRelay(relay.url, { read: e.target.checked })}
-                              className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500"
-                            />
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                              Read
-                            </span>
-                          </label>
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={relay.write}
-                              onChange={(e) => updateRelay(relay.url, { write: e.target.checked })}
-                              className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500"
-                            />
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                              Write
-                            </span>
-                          </label>
-                        </div>
-                      </div>
+                      <RelayDetails
+                        relay={relay}
+                        status={status}
+                        connectionStatus={connectionStatus}
+                        onUpdateRelay={updateRelay}
+                      />
                     </div>
                   </div>
                   <div className="flex items-center gap-2 ml-8 md:ml-0">
@@ -282,6 +246,149 @@ export function RelaySettings() {
             <p>Changes to relay configuration will take effect after refreshing the app.</p>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// Relay details component with NIP-11 info
+function RelayDetails({
+  relay,
+  status,
+  connectionStatus,
+  onUpdateRelay
+}: {
+  relay: { url: string; read: boolean; write: boolean };
+  status: string;
+  connectionStatus: Record<string, string>;
+  onUpdateRelay: (url: string, updates: any) => void;
+}) {
+  const { info } = useRelayInfoCached(relay.url);
+
+  // Get relay icon based on features
+  const getRelayIcon = () => {
+    if (info?.limitation?.payment_required) return <Zap className="w-4 h-4 text-yellow-500" />;
+    if (info?.limitation?.auth_required) return <Shield className="w-4 h-4 text-blue-500" />;
+    if (info?.software) return <Server className="w-4 h-4 text-purple-500" />;
+    return <Globe className="w-4 h-4 text-gray-400" />;
+  };
+
+  return (
+    <div className="flex-1 min-w-0">
+      <div className="flex flex-wrap items-center gap-2">
+        {getRelayIcon()}
+        <span className="font-mono text-xs md:text-sm text-gray-900 dark:text-gray-100 break-all">
+          {relay.url}
+        </span>
+        {status === 'connected' && (
+          <span className="text-xs bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full">
+            Connected
+          </span>
+        )}
+        {status === 'disconnected' && connectionStatus[relay.url] !== undefined && (
+          <span className="text-xs bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400 px-2 py-0.5 rounded-full">
+            Offline
+          </span>
+        )}
+        {status === 'testing' && (
+          <span className="text-xs bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400 px-2 py-0.5 rounded-full">
+            Testing...
+          </span>
+        )}
+      </div>
+
+      {/* NIP-11 Info Display */}
+      {info && (
+        <div className="mt-2 space-y-1">
+          {info.name && (
+            <div className="flex items-start gap-2">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 min-w-[60px]">Name:</span>
+              <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{info.name}</span>
+            </div>
+          )}
+
+          {info.description && (
+            <div className="flex items-start gap-2">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 min-w-[60px]">About:</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">{info.description}</span>
+            </div>
+          )}
+
+          {(info.software || info.version) && (
+            <div className="flex items-start gap-2">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400 min-w-[60px]">Software:</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                {info.software}{info.version ? ` v${info.version}` : ''}
+              </span>
+            </div>
+          )}
+
+          {info.relay_countries && info.relay_countries.length > 0 && (
+            <div className="flex items-start gap-2">
+              <MapPin className="w-3 h-3 text-gray-400 mt-0.5" />
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                {info.relay_countries.join(', ')}
+              </span>
+            </div>
+          )}
+
+          {info.supported_nips && info.supported_nips.length > 0 && (
+            <div className="flex items-start gap-2">
+              <Info className="w-3 h-3 text-gray-400 mt-0.5" />
+              <div className="flex-1">
+                <span className="text-xs text-gray-600 dark:text-gray-400">
+                  Supports {info.supported_nips.length} NIPs: {info.supported_nips.slice(0, 5).join(', ')}
+                  {info.supported_nips.length > 5 && '...'}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Feature badges */}
+          <div className="flex flex-wrap gap-2 mt-2">
+            {info.limitation?.payment_required && (
+              <span className="text-xs bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400 px-2 py-0.5 rounded-full">
+                💰 Paid
+              </span>
+            )}
+            {info.limitation?.auth_required && (
+              <span className="text-xs bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400 px-2 py-0.5 rounded-full">
+                🔐 Auth Required
+              </span>
+            )}
+            {info.contact && (
+              <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-400 px-2 py-0.5 rounded-full">
+                📧 {info.contact}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Read/Write toggles */}
+      <div className="flex items-center gap-4 mt-3">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={relay.read}
+            onChange={(e) => onUpdateRelay(relay.url, { read: e.target.checked })}
+            className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500"
+          />
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            Read
+          </span>
+        </label>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={relay.write}
+            onChange={(e) => onUpdateRelay(relay.url, { write: e.target.checked })}
+            className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500"
+          />
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            Write
+          </span>
+        </label>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Home, Edit3, Bell, User, Wallet, TrendingUp, ShoppingBag, Package, MessageSquare, MoreHorizontal, ChevronDown } from 'lucide-react';
+import { Home, Edit3, Bell, Wallet, TrendingUp, ShoppingBag, Package, MessageSquare, MoreHorizontal, ChevronDown } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
@@ -10,7 +10,6 @@ const NAV_ITEMS_CONFIG = [
   { path: '/', icon: Home, labelKey: 'feed' },
   { path: '/messages', icon: MessageSquare, labelKey: 'messages' },
   { path: '/notifications', icon: Bell, labelKey: 'notifications' },
-  { path: '/profile', icon: User, labelKey: 'profile' },
   { path: '/packs', icon: Package, labelKey: 'followPacks' },
   { path: '/money', icon: Wallet, labelKey: 'money' },
 ] as const;

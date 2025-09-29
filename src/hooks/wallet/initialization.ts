@@ -5,7 +5,7 @@
 
 import type NDK from '@nostr-dev-kit/ndk';
 import type { NDKUser } from '@nostr-dev-kit/ndk';
-import { NDKRelaySet } from '@nostr-dev-kit/ndk';
+import { NDKRelaySet, NDKKind } from '@nostr-dev-kit/ndk';
 import { NDKCashuWallet, NDKNutzapMonitor } from '@nostr-dev-kit/ndk-wallet';
 import { walletLogger } from '../../utils/walletLogger';
 import { toWalletError, retryWithBackoff } from '../../utils/walletErrors';
@@ -25,6 +25,33 @@ export interface WalletInitializationResult {
 }
 
 /**
+ * Find existing wallet from NDK events
+ */
+async function findExistingWallet(ndk: NDK): Promise<NDKCashuWallet | undefined> {
+  const activeUser = ndk.activeUser;
+
+  if (!activeUser) {
+    walletLogger.warn('No active user, cannot search for existing wallet', 'findExistingWallet');
+    return undefined;
+  }
+
+  walletLogger.info('Searching for existing wallet', 'findExistingWallet', { pubkey: activeUser.pubkey });
+
+  const event = await ndk.fetchEvent({
+    kinds: [NDKKind.CashuWallet],
+    authors: [activeUser.pubkey]
+  });
+
+  if (event) {
+    walletLogger.info('Found existing wallet event', 'findExistingWallet', { eventId: event.id });
+    return await NDKCashuWallet.from(event);
+  }
+
+  walletLogger.info('No existing wallet found', 'findExistingWallet');
+  return undefined;
+}
+
+/**
  * Initialize the Cashu wallet with retry logic
  */
 async function initializeCashuWallet(
@@ -35,19 +62,47 @@ async function initializeCashuWallet(
   return retryWithBackoff(async () => {
     walletLogger.info('Initializing Cashu wallet', 'initializeCashuWallet');
 
+    const existingWallet = await findExistingWallet(ndk);
+
+    if (existingWallet) {
+      walletLogger.info('Using existing wallet', 'initializeCashuWallet', {
+        existingMints: existingWallet.mints
+      });
+
+      // Merge the existing wallet mints with any new mints from settings
+      const combinedMints = new Set([
+        ...(existingWallet.mints || []),
+        ...mintUrls
+      ]);
+      existingWallet.mints = Array.from(combinedMints);
+
+      // Set relay configuration if provided
+      if (walletRelays.length > 0) {
+        const relaySet = NDKRelaySet.fromRelayUrls(walletRelays, ndk);
+        existingWallet.relaySet = relaySet;
+      }
+
+      await existingWallet.start();
+      walletLogger.info('Existing wallet started successfully', 'initializeCashuWallet', {
+        mints: existingWallet.mints
+      });
+      return existingWallet;
+    }
+
+    walletLogger.info('Creating new wallet', 'initializeCashuWallet');
     const cashuWallet = new NDKCashuWallet(ndk);
     cashuWallet.mints = [...mintUrls];
     if (walletRelays.length > 0) {
-      const relaySet = NDKRelaySet.fromRelayUrls(ndk.explicitRelayUrls, ndk);
+      const relaySet = NDKRelaySet.fromRelayUrls(walletRelays, ndk);
       cashuWallet.relaySet = relaySet;
     }
-    
+
     const walletP2PK = await cashuWallet.getP2pk();
     walletLogger.info(`Wallet P2PK generated: ${walletP2PK}`, 'initializeCashuWallet');
-    
+
     await cashuWallet.start();
-    walletLogger.info('Cashu wallet started successfully', 'initializeCashuWallet');
-    
+    walletLogger.info('New wallet started successfully', 'initializeCashuWallet');
+
     return cashuWallet;
   }, {
     maxAttempts: 3,

@@ -1,7 +1,8 @@
 import { mapImetaTag } from '@nostr-dev-kit/ndk';
 import type { NDKEvent, NDKImetaTag } from '@nostr-dev-kit/ndk';
-import { Play, Music, FileImage, Download } from 'lucide-react';
+import { Play, Music, FileImage } from 'lucide-react';
 import { useState } from 'react';
+import { MediaViewer } from './MediaViewer';
 
 interface MediaGridProps {
   events: NDKEvent[];
@@ -13,7 +14,7 @@ interface MediaItemProps {
 }
 
 function MediaItem({ event, imeta }: MediaItemProps) {
-  const [showFullscreen, setShowFullscreen] = useState(false);
+  const [showViewer, setShowViewer] = useState(false);
 
   // Determine media type from mimetype or URL extension
   const getMediaType = (imeta: NDKImetaTag): 'image' | 'video' | 'audio' | 'file' => {
@@ -44,7 +45,7 @@ function MediaItem({ event, imeta }: MediaItemProps) {
     <>
       <div
         className="group relative aspect-square overflow-hidden bg-gray-100 dark:bg-black cursor-pointer"
-        onClick={() => setShowFullscreen(true)}
+        onClick={() => setShowViewer(true)}
       >
         {mediaType === 'image' && (
           <img
@@ -114,69 +115,13 @@ function MediaItem({ event, imeta }: MediaItemProps) {
         )}
       </div>
 
-      {/* Fullscreen modal */}
-      {showFullscreen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
-          onClick={() => setShowFullscreen(false)}
-        >
-          <div className="relative max-w-full max-h-full" onClick={e => e.stopPropagation()}>
-            {mediaType === 'image' && (
-              <img
-                src={imeta.url}
-                alt={imeta.alt || event.content || 'Image'}
-                className="max-w-full max-h-[90vh] object-contain"
-              />
-            )}
-
-            {mediaType === 'video' && (
-              <video
-                src={imeta.url}
-                className="max-w-full max-h-[90vh]"
-                controls
-                autoPlay
-              />
-            )}
-
-            {mediaType === 'audio' && (
-              <div className="bg-white dark:bg-black rounded-lg p-8 min-w-[400px]">
-                <div className="flex items-center gap-4 mb-4">
-                  <Music className="w-12 h-12 text-purple-600" />
-                  <div>
-                    <h3 className="font-semibold">{imeta.alt || 'Audio File'}</h3>
-                    {fileSize && <p className="text-sm text-gray-500">{fileSize} MB</p>}
-                  </div>
-                </div>
-                <audio src={imeta.url} controls autoPlay className="w-full" />
-              </div>
-            )}
-
-            {mediaType === 'file' && imeta.url && (
-              <div className="bg-white dark:bg-black rounded-lg p-8">
-                <FileImage className="w-16 h-16 text-gray-500 mb-4" />
-                <h3 className="font-semibold mb-2">{imeta.url.split('/').pop()}</h3>
-                {fileSize && <p className="text-sm text-gray-500 mb-4">{fileSize} MB</p>}
-                <a
-                  href={imeta.url}
-                  download
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-                  onClick={e => e.stopPropagation()}
-                >
-                  <Download className="w-4 h-4" />
-                  Download
-                </a>
-              </div>
-            )}
-
-            {/* Close button */}
-            <button
-              onClick={() => setShowFullscreen(false)}
-              className="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/20"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
+      {/* Media viewer modal */}
+      {showViewer && (
+        <MediaViewer
+          event={event}
+          imeta={imeta}
+          onClose={() => setShowViewer(false)}
+        />
       )}
     </>
   );

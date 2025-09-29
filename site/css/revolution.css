@@ -1,0 +1,469 @@
+/* Revolution Page Specific Styles */
+
+.revolution-page {
+    background: var(--darker-bg);
+}
+
+/* Revolution Hero */
+.revolution-hero {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding-top: 80px;
+    background: linear-gradient(135deg,
+        rgba(239, 68, 68, 0.1) 0%,
+        rgba(107, 70, 193, 0.2) 50%,
+        rgba(15, 15, 20, 0.9) 100%);
+}
+
+.revolution-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+}
+
+.protest-overlay {
+    width: 100%;
+    height: 100%;
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 35px,
+        rgba(239, 68, 68, 0.03) 35px,
+        rgba(239, 68, 68, 0.03) 70px
+    );
+}
+
+.revolution-title {
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: var(--space-md);
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+}
+
+.title-line {
+    display: block;
+}
+
+.title-line.accent {
+    color: var(--danger-red);
+    text-shadow: 0 0 40px rgba(239, 68, 68, 0.5);
+}
+
+.revolution-subtitle {
+    font-size: 1.5rem;
+    color: var(--gray-text);
+    margin-bottom: var(--space-lg);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.revolution-quote {
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--bitcoin-orange);
+    padding: var(--space-md);
+    border-left: 4px solid var(--bitcoin-orange);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Reality Section */
+.reality-section {
+    padding: var(--space-2xl) 0;
+    background: var(--dark-bg);
+}
+
+.control-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+.control-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: var(--space-md);
+    transition: all 0.3s ease;
+}
+
+.control-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--danger-red);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.control-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-sm);
+    filter: grayscale(100%);
+    opacity: 0.5;
+}
+
+.control-item h3 {
+    color: var(--danger-red);
+    margin-bottom: var(--space-sm);
+    font-size: 1.25rem;
+}
+
+.control-item p {
+    color: var(--gray-text);
+    margin-bottom: var(--space-sm);
+}
+
+.counter-solution {
+    padding-top: var(--space-sm);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--success-green);
+    font-size: 0.875rem;
+}
+
+.counter-solution strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+/* Arsenal Section */
+.arsenal-section {
+    padding: var(--space-2xl) 0;
+    background: linear-gradient(180deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+}
+
+.arsenal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+.weapon-card {
+    background: linear-gradient(135deg,
+        rgba(107, 70, 193, 0.1) 0%,
+        rgba(255, 255, 255, 0.02) 100%);
+    border: 2px solid rgba(107, 70, 193, 0.3);
+    border-radius: 20px;
+    padding: var(--space-md);
+    transition: all 0.3s ease;
+}
+
+.weapon-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: var(--primary-purple);
+    box-shadow: 0 20px 60px rgba(107, 70, 193, 0.4);
+}
+
+.weapon-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+}
+
+.weapon-icon {
+    font-size: 2rem;
+}
+
+.weapon-card h3 {
+    font-size: 1.25rem;
+    color: var(--light-text);
+}
+
+.weapon-card > p {
+    color: var(--bitcoin-orange);
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+}
+
+.weapon-features {
+    list-style: none;
+    margin-bottom: var(--space-sm);
+}
+
+.weapon-features li {
+    padding-left: 1.5rem;
+    position: relative;
+    margin-bottom: 0.5rem;
+    color: var(--gray-text);
+    font-size: 0.875rem;
+}
+
+.weapon-features li::before {
+    content: '⚡';
+    position: absolute;
+    left: 0;
+    color: var(--bitcoin-orange);
+}
+
+.weapon-stat {
+    padding-top: var(--space-sm);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    color: var(--light-text);
+}
+
+.weapon-stat strong {
+    color: var(--bitcoin-orange);
+    font-size: 1.25rem;
+}
+
+/* Stories Section */
+.stories-section {
+    padding: var(--space-2xl) 0;
+    background: var(--darker-bg);
+}
+
+.stories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+.story-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 4px solid var(--bitcoin-orange);
+    border-radius: 12px;
+    padding: var(--space-md);
+    transition: all 0.3s ease;
+}
+
+.story-card:hover {
+    transform: translateX(10px);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.story-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+}
+
+.story-location {
+    font-weight: 600;
+    color: var(--light-text);
+}
+
+.story-impact {
+    color: var(--bitcoin-orange);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.story-quote {
+    font-style: italic;
+    line-height: 1.8;
+    color: var(--gray-text);
+    margin-bottom: var(--space-sm);
+    padding: 0;
+    border: none;
+}
+
+.story-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-sm);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.story-footer span:first-child {
+    color: var(--light-text);
+    font-weight: 600;
+}
+
+.story-action {
+    color: var(--success-green);
+    font-size: 0.875rem;
+}
+
+/* Start Section */
+.start-section {
+    padding: var(--space-2xl) 0;
+    background: var(--dark-bg);
+}
+
+.start-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+.start-step {
+    text-align: center;
+    padding: var(--space-md);
+}
+
+.start-step .step-number {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--danger-red) 0%, var(--bitcoin-orange) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 auto var(--space-sm);
+    color: white;
+}
+
+.start-step h3 {
+    margin-bottom: var(--space-xs);
+    color: var(--light-text);
+}
+
+.start-step p {
+    color: var(--gray-text);
+    font-size: 0.875rem;
+}
+
+/* Movement Map */
+.movement-map {
+    padding: var(--space-2xl) 0;
+    background: linear-gradient(180deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+}
+
+.map-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xl);
+    margin: var(--space-lg) 0;
+}
+
+.map-stat {
+    text-align: center;
+}
+
+.map-stat .stat-number {
+    display: block;
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--danger-red) 0%, var(--bitcoin-orange) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.map-stat .stat-label {
+    color: var(--gray-text);
+    font-size: 0.875rem;
+}
+
+.active-regions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.region-badge {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.region-badge:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--danger-red);
+    transform: scale(1.1);
+}
+
+/* Revolutionary CTA */
+.revolution-cta {
+    padding: var(--space-2xl) 0;
+    background: linear-gradient(135deg,
+        rgba(239, 68, 68, 0.2) 0%,
+        rgba(107, 70, 193, 0.3) 100%);
+    text-align: center;
+}
+
+.cta-message {
+    max-width: 700px;
+    margin: var(--space-lg) auto;
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--gray-text);
+}
+
+.cta-message strong {
+    color: var(--light-text);
+    font-size: 1.25rem;
+}
+
+.revolution-download {
+    background: linear-gradient(135deg, var(--danger-red) 0%, var(--bitcoin-orange) 100%);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.revolution-download:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(239, 68, 68, 0.4);
+}
+
+.cta-warning {
+    color: var(--bitcoin-orange);
+    font-weight: 600;
+    margin-top: var(--space-md);
+}
+
+/* Revolution Footer */
+.revolution-page .footer {
+    background: var(--darker-bg);
+}
+
+.footer-quote {
+    max-width: 700px;
+    margin: 0 auto;
+    font-style: italic;
+    line-height: 1.8;
+    color: var(--gray-text);
+    padding: var(--space-md);
+    border-left: 4px solid var(--bitcoin-orange);
+}
+
+.footer-quote span {
+    display: block;
+    margin-top: var(--space-sm);
+    color: var(--bitcoin-orange);
+    font-weight: 600;
+    font-style: normal;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .revolution-title {
+        font-size: clamp(2rem, 8vw, 4rem);
+    }
+
+    .control-grid,
+    .arsenal-grid,
+    .stories-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .map-stats {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+}
