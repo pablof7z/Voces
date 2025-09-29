@@ -85,9 +85,9 @@ export function NotificationsPage() {
   return (
     <div className="max-w-2xl mx-auto">
       {/* Page header */}
-      <div className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+      <div className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-800">
         <div className="px-4 py-3 sm:px-6 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Notifications</h2>
+          <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Notifications</h2>
           {sortedGroups.length > 0 && (
             <Button
               variant="ghost"
@@ -106,19 +106,19 @@ export function NotificationsPage() {
         /* Empty state */
         <div className="flex flex-col items-center justify-center py-16 px-4">
           <div className="w-16 h-16 bg-neutral-100 dark:bg-black rounded-full flex items-center justify-center mb-4">
-            <Bell className="w-8 h-8 text-gray-400 dark:text-gray-600" />
+            <Bell className="w-8 h-8 text-neutral-400 dark:text-neutral-600" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-1">
+          <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-1">
             No notifications yet
           </h3>
-          <p className="text-gray-500 dark:text-gray-400 text-center max-w-sm">
+          <p className="text-neutral-500 dark:text-neutral-400 text-center max-w-sm">
             When someone mentions you or interacts with your notes, you&apos;ll see it here.
           </p>
         </div>
       ) : (
         /* Notification list */
         <>
-          <div className="divide-y divide-gray-200 dark:divide-gray-800">
+          <div className="divide-y divide-neutral-200 dark:divide-neutral-800">
             {visibleGroups.map(group => (
               <NotificationCard
                 key={group.id}
@@ -135,14 +135,14 @@ export function NotificationsPage() {
               className="flex items-center justify-center py-8"
             >
               {isLoadingMore ? (
-                <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                  <div className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 border-t-transparent dark:border-t-transparent rounded-full animate-spin" />
+                <div className="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+                  <div className="w-5 h-5 border-2 border-neutral-300 dark:border-neutral-600 border-t-transparent dark:border-t-transparent rounded-full animate-spin" />
                   <span className="text-sm">Loading more notifications...</span>
                 </div>
               ) : (
                 <button
                   onClick={loadMore}
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                  className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300"
                 >
                   Load more
                 </button>
@@ -152,7 +152,7 @@ export function NotificationsPage() {
 
           {/* End of list indicator */}
           {!hasMore && sortedGroups.length > 0 && (
-            <div className="text-center py-8 text-sm text-gray-400 dark:text-gray-600">
+            <div className="text-center py-8 text-sm text-neutral-400 dark:text-neutral-600">
               You&apos;ve seen all notifications
             </div>
           )}

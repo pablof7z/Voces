@@ -166,12 +166,12 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
   return (
     <>
     <article
-      className="bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800 hover:bg-neutral-50/50 dark:hover:bg-neutral-900/50 transition-all duration-150 cursor-pointer"
+      className="bg-white dark:bg-black border-b border-neutral-100 dark:border-neutral-800 hover:bg-neutral-50/50 dark:hover:bg-neutral-900/50 transition-all duration-150 cursor-pointer"
       onClick={handleNoteClick}>
       <div className="px-4 py-3 sm:px-5 sm:py-4 relative">
         {/* Timestamp in top right corner */}
         <time
-          className="absolute top-3 right-4 sm:top-4 sm:right-5 text-gray-500 dark:text-gray-400 text-[13px] sm:text-sm hover:underline cursor-help"
+          className="absolute top-3 right-4 sm:top-4 sm:right-5 text-neutral-500 dark:text-neutral-400 text-[13px] sm:text-sm hover:underline cursor-help"
           title={new Date(event.created_at! * 1000).toLocaleString()}
         >
           {formatTimeAgo(event.created_at!)}
@@ -193,10 +193,10 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                 to={`/p/${npub}`}
                 className="flex items-center gap-1 hover:opacity-75 transition-opacity"
               >
-                <span className="font-medium text-[15px] text-gray-900 dark:text-white whitespace-nowrap">
+                <span className="font-medium text-[15px] text-neutral-900 dark:text-white whitespace-nowrap">
                   {displayName}
                 </span>
-                <span className="text-gray-500 dark:text-gray-400 text-[13px] whitespace-nowrap">
+                <span className="text-neutral-500 dark:text-neutral-400 text-[13px] whitespace-nowrap">
                   {handle}
                 </span>
               </Link>
@@ -220,10 +220,10 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                 to={`/p/${npub}`}
                 className="flex items-center gap-1.5 hover:opacity-75 transition-opacity min-w-0"
               >
-                <span className="font-medium text-base text-gray-900 dark:text-white whitespace-nowrap">
+                <span className="font-medium text-base text-neutral-900 dark:text-white whitespace-nowrap">
                   {displayName}
                 </span>
-                <span className="text-gray-500 dark:text-gray-400 text-sm whitespace-nowrap">
+                <span className="text-neutral-500 dark:text-neutral-400 text-sm whitespace-nowrap">
                   {handle}
                 </span>
               </Link>
@@ -231,11 +231,11 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
 
             {/* Reply indicator */}
             {replyToEvent && (
-              <div className="flex items-center gap-1 mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-1 mt-1 text-sm text-neutral-500 dark:text-neutral-400">
                 <span>Replying to</span>
                 <Link
                   to={`/p/${nip19.npubEncode(replyToEvent.pubkey)}`}
-                  className="font-medium hover:underline text-gray-700 dark:text-gray-300"
+                  className="font-medium hover:underline text-neutral-700 dark:text-neutral-300"
                 >
                   @{replyToProfile?.name || replyToProfile?.displayName || `${replyToEvent.pubkey.slice(0, 8)}...`}
                 </Link>
@@ -256,7 +256,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                   emojiTags={event.tags}
                   event={event}
                   className={cn(
-                    "text-gray-800 dark:text-gray-200 leading-relaxed",
+                    "text-neutral-800 dark:text-neutral-200 leading-relaxed",
                     isLargeText ? "text-lg sm:text-xl" : "text-[15px] sm:text-base"
                   )}
                 />
@@ -293,7 +293,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                   className="group flex items-center gap-1.5 p-2.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800/50 transition-all duration-200"
                   disabled={!currentUser}
                 >
-                  <MessageCircle className="w-4 h-4 text-neutral-500 group-hover:text-gray-700 dark:text-neutral-500 dark:group-hover:text-gray-300" strokeWidth={1.5} />
+                  <MessageCircle className="w-4 h-4 text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-500 dark:group-hover:text-neutral-300" strokeWidth={1.5} />
                   {/* Reply count will be shown when implemented */}
                 </button>
 
@@ -329,8 +329,8 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                     <span className={cn(
                       "text-sm font-medium",
                       isLiked
-                        ? "text-pink-500 dark:text-pink-400"
-                        : "text-gray-500 group-hover:text-pink-500 dark:text-gray-400 dark:group-hover:text-pink-400"
+                        ? "text-red-500 dark:text-red-400"
+                        : "text-neutral-500 group-hover:text-red-500 dark:text-neutral-400 dark:group-hover:text-red-400"
                     )}>
                       {likeCount}
                     </span>
@@ -351,7 +351,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                   onClick={() => {/* TODO: Implement share */}}
                   className="group p-2.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800/50 transition-all duration-200"
                 >
-                  <Share className="w-4 h-4 text-neutral-500 group-hover:text-gray-700 dark:text-neutral-500 dark:group-hover:text-gray-300" strokeWidth={1.5} />
+                  <Share className="w-4 h-4 text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-500 dark:group-hover:text-neutral-300" strokeWidth={1.5} />
                 </button>
               </div>
 
@@ -367,7 +367,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-black rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-black rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700 z-50">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -406,7 +406,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
         />
         <div className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-2xl md:w-full z-50">
           <div className="bg-white dark:bg-black rounded-lg shadow-xl h-full md:h-auto max-h-[80vh] flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-700">
               <h3 className="text-lg font-semibold">Raw Event</h3>
               <button
                 onClick={() => setShowRawEvent(false)}

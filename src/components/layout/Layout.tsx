@@ -19,11 +19,12 @@ export function Layout() {
   const hideRightSidebar = location.pathname.startsWith('/article/') ||
                           location.pathname.startsWith('/note/') ||
                           location.pathname.startsWith('/messages/') ||
-                          location.pathname.startsWith('/p/');
+                          location.pathname.startsWith('/p/') ||
+                          location.pathname.startsWith('/packs');
 
   return (
-    <div className="min-h-screen bg-black flex justify-center">
-      <div className="flex w-full max-w-[1400px]">
+    <div className="min-h-screen bg-black flex justify-center overflow-x-hidden">
+      <div className="flex w-full max-w-[1400px] relative">
         {/* Left Sidebar - Navigation */}
         <Sidebar />
 

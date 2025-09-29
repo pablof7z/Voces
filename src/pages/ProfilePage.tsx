@@ -74,9 +74,9 @@ export function ProfilePage() {
   return (
     <div className="max-w-2xl mx-auto">
       {/* Profile header */}
-      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
+      <div className="bg-white dark:bg-black border-b border-neutral-200 dark:border-neutral-800">
         {/* Cover image */}
-        <div className="h-32 sm:h-48 bg-gradient-to-br from-purple-500 to-pink-500 relative">
+        <div className="h-32 sm:h-48 bg-gradient-to-br from-orange-500 to-red-500 relative">
           {profile?.banner && (
             <img
               src={profile.banner}
@@ -103,10 +103,10 @@ export function ProfilePage() {
               <img
                 src={profile.picture}
                 alt={profile?.name || 'Profile'}
-                className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white dark:border-gray-950 object-cover"
+                className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white dark:border-neutral-950 object-cover"
               />
             ) : (
-              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white dark:border-gray-950 bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-3xl">
+              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white dark:border-neutral-950 bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white font-bold text-3xl">
                 {(profile?.name || 'A')[0].toUpperCase()}
               </div>
             )}
@@ -116,16 +116,16 @@ export function ProfilePage() {
           <div className="mb-4">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <h1 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-100">
                   {profile?.name || 'Anonymous'}
                 </h1>
                 <div className="flex items-center gap-2">
-                  <p className="text-gray-500 dark:text-gray-400">
+                  <p className="text-neutral-500 dark:text-neutral-400">
                     {profile?.nip05 ? `@${profile.nip05.split('@')[0]}` : `${user.npub?.slice(0, 12)}...`}
                   </p>
                   <button
                     onClick={() => setIsShareModalOpen(true)}
-                    className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    className="p-1 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
                     aria-label="Share profile"
                   >
                     <Share2 className="w-4 h-4" />
@@ -138,20 +138,20 @@ export function ProfilePage() {
               <div className="mt-3">
                 <ContentRenderer
                   content={profile.about}
-                  className="text-gray-700 dark:text-gray-300"
+                  className="text-neutral-700 dark:text-neutral-300"
                 />
               </div>
             )}
           </div>
           
           {/* Meta info */}
-          <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400">
+          <div className="flex flex-wrap gap-4 text-sm text-neutral-500 dark:text-neutral-400">
             {profile?.website && (
               <a 
                 href={profile.website} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 hover:text-purple-600 dark:hover:text-purple-400"
+                className="flex items-center gap-1 hover:text-orange-600 dark:hover:text-orange-500"
               >
                 <LinkIcon className="w-4 h-4" />
                 <span>{profile.website.replace(/^https?:\/\//, '')}</span>
@@ -166,32 +166,32 @@ export function ProfilePage() {
           {/* Stats */}
           <div className="flex gap-6 mt-4">
             <div>
-              <span className="font-semibold text-gray-900 dark:text-gray-100">
+              <span className="font-semibold text-neutral-900 dark:text-neutral-100">
                 {notes.length}
               </span>
-              <span className="text-gray-500 dark:text-gray-400 ml-1">Notes</span>
+              <span className="text-neutral-500 dark:text-neutral-400 ml-1">Notes</span>
             </div>
             <div>
-              <span className="font-semibold text-gray-900 dark:text-gray-100">0</span>
-              <span className="text-gray-500 dark:text-gray-400 ml-1">Following</span>
+              <span className="font-semibold text-neutral-900 dark:text-neutral-100">0</span>
+              <span className="text-neutral-500 dark:text-neutral-400 ml-1">Following</span>
             </div>
             <div>
-              <span className="font-semibold text-gray-900 dark:text-gray-100">0</span>
-              <span className="text-gray-500 dark:text-gray-400 ml-1">Followers</span>
+              <span className="font-semibold text-neutral-900 dark:text-neutral-100">0</span>
+              <span className="text-neutral-500 dark:text-neutral-400 ml-1">Followers</span>
             </div>
           </div>
         </div>
       </div>
       
       {/* Tabs */}
-      <div className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+      <div className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-800">
         <div className="flex px-4 sm:px-6 overflow-x-auto">
           <button
             onClick={() => setActiveTab('notes')}
             className={`px-4 py-3 font-medium whitespace-nowrap ${
               activeTab === 'notes'
-                ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
-                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                ? 'text-orange-600 dark:text-orange-500 border-b-2 border-orange-600 dark:border-orange-500'
+                : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300'
             }`}>
             Notes
           </button>
@@ -199,8 +199,8 @@ export function ProfilePage() {
             onClick={() => setActiveTab('replies')}
             className={`px-4 py-3 font-medium whitespace-nowrap ${
               activeTab === 'replies'
-                ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
-                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                ? 'text-orange-600 dark:text-orange-500 border-b-2 border-orange-600 dark:border-orange-500'
+                : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300'
             }`}>
             Replies
           </button>
@@ -208,8 +208,8 @@ export function ProfilePage() {
             onClick={() => setActiveTab('media')}
             className={`px-4 py-3 font-medium whitespace-nowrap ${
               activeTab === 'media'
-                ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
-                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                ? 'text-orange-600 dark:text-orange-500 border-b-2 border-orange-600 dark:border-orange-500'
+                : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300'
             }`}>
             Media
           </button>
@@ -218,8 +218,8 @@ export function ProfilePage() {
               onClick={() => setActiveTab('articles')}
               className={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === 'articles'
-                  ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                  ? 'text-orange-600 dark:text-orange-500 border-b-2 border-orange-600 dark:border-orange-500'
+                  : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300'
               }`}>
               <FileText className="w-4 h-4" />
               Articles
@@ -229,8 +229,8 @@ export function ProfilePage() {
             onClick={() => setActiveTab('packs')}
             className={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
               activeTab === 'packs'
-                ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
-                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                ? 'text-orange-600 dark:text-orange-500 border-b-2 border-orange-600 dark:border-orange-500'
+                : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300'
             }`}>
             <Package className="w-4 h-4" />
             Follow Packs
@@ -246,7 +246,7 @@ export function ProfilePage() {
               <NoteCard key={event.id} event={event} />
             ))}
             {notes.length === 0 && (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+              <div className="text-center py-8 text-neutral-500 dark:text-neutral-400">
                 No notes yet
               </div>
             )}
@@ -259,7 +259,7 @@ export function ProfilePage() {
               <NoteCard key={event.id} event={event} />
             ))}
             {replies.length === 0 && (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+              <div className="text-center py-8 text-neutral-500 dark:text-neutral-400">
                 No replies yet
               </div>
             )}
@@ -290,8 +290,8 @@ export function ProfilePage() {
                 onClick={() => setPackFilter('all')}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   packFilter === 'all'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-neutral-100 dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-neutral-200 dark:hover:bg-neutral-900'
+                    ? 'bg-orange-600 text-white'
+                    : 'bg-neutral-100 dark:bg-black text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-900'
                 }`}
               >
                 All
@@ -300,8 +300,8 @@ export function ProfilePage() {
                 onClick={() => setPackFilter('created')}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   packFilter === 'created'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-neutral-100 dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-neutral-200 dark:hover:bg-neutral-900'
+                    ? 'bg-orange-600 text-white'
+                    : 'bg-neutral-100 dark:bg-black text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-900'
                 }`}
               >
                 {isOwnProfile ? 'by you' : `by @${profile?.name || profile?.displayName || user.pubkey.slice(0, 8)}`}
@@ -310,8 +310,8 @@ export function ProfilePage() {
                 onClick={() => setPackFilter('appears')}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   packFilter === 'appears'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-neutral-100 dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-neutral-200 dark:hover:bg-neutral-900'
+                    ? 'bg-orange-600 text-white'
+                    : 'bg-neutral-100 dark:bg-black text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-900'
                 }`}
               >
                 {isOwnProfile ? 'with you' : `with @${profile?.name || profile?.displayName || user.pubkey.slice(0, 8)}`}
@@ -325,7 +325,7 @@ export function ProfilePage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+              <div className="text-center py-8 text-neutral-500 dark:text-neutral-400">
                 {packFilter === 'created'
                   ? (isOwnProfile
                       ? "You haven't created any follow packs yet"

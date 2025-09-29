@@ -42,7 +42,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
   return (
     <Link
       to={`/article/${article.dTag}`}
-      className="group block bg-white dark:bg-neutral-900 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 dark:border-gray-800"
+      className="group block bg-white dark:bg-neutral-900 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 border border-neutral-100 dark:border-neutral-800"
     >
       {image && (
         <div className="aspect-[2/1] overflow-hidden bg-neutral-100 dark:bg-neutral-800">
@@ -56,12 +56,12 @@ export function ArticleCard({ article }: ArticleCardProps) {
       )}
 
       <div className="p-5">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+        <h2 className="text-xl font-bold text-neutral-900 dark:text-white mb-2 line-clamp-2 group-hover:text-orange-600 dark:group-hover:text-orange-500 transition-colors">
           {article.title}
         </h2>
 
         {summary && (
-          <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3">
+          <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-4 line-clamp-3">
             {summary}
           </p>
         )}
@@ -73,13 +73,13 @@ export function ArticleCard({ article }: ArticleCardProps) {
               className="w-8 h-8 flex-shrink-0"
             />
             <div className="min-w-0">
-              <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+              <p className="text-sm font-medium text-neutral-900 dark:text-white truncate">
                 {profile?.displayName || profile?.name || article.pubkey.slice(0, 8) + '...'}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-500">
+          <div className="flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-500">
             {timeAgo && (
               <div className="flex items-center gap-1">
                 <Clock className="w-3 h-3" />

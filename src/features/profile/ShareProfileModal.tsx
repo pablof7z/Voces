@@ -74,7 +74,7 @@ export function ShareProfileModal({ isOpen, onClose, pubkey, npub }: ShareProfil
           <h2 className="text-xl font-bold text-center mb-6">Share Profile</h2>
 
           {/* Profile Card */}
-          <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl p-6 mb-6">
+          <div className="bg-gradient-to-br from-orange-500 to-red-500 rounded-xl p-6 mb-6">
             <div className="flex flex-col items-center text-white">
               <div className="relative mb-4">
                 <UserAvatar pubkey={pubkey} size="xl" className="ring-4 ring-white/20" />
@@ -128,7 +128,7 @@ export function ShareProfileModal({ isOpen, onClose, pubkey, npub }: ShareProfil
 
           {/* Share Buttons */}
           <div className="space-y-2">
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">Share on:</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">Share on:</p>
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => shareOnPlatform('whatsapp')}
@@ -175,7 +175,7 @@ export function ShareProfileModal({ isOpen, onClose, pubkey, npub }: ShareProfil
             {navigator.share && (
               <button
                 onClick={handleNativeShare}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors mt-3"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors mt-3"
               >
                 <Share2 className="w-5 h-5" />
                 More Options

@@ -22,7 +22,7 @@ const InviteLandingPage = () => {
         {/* Main Card */}
         <div className="relative bg-white dark:bg-neutral-900 rounded-2xl shadow-xl overflow-hidden">
           {/* Hero Banner */}
-          <div className="h-32 bg-gradient-to-br from-purple-600 via-purple-500 to-indigo-600" />
+          <div className="h-32 bg-gradient-to-br from-orange-600 via-red-500 to-red-600" />
 
           {/* Content Container */}
           <div className="px-8 pb-8 pt-12">
@@ -39,8 +39,8 @@ const InviteLandingPage = () => {
             {/* Feature Points */}
             <div className="space-y-5 mb-10">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Globe className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                <div className="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Globe className="w-6 h-6 text-orange-600 dark:text-orange-500" />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-lg mb-1 text-neutral-900 dark:text-white">
@@ -86,7 +86,7 @@ const InviteLandingPage = () => {
               <Button
                 onClick={handleStartJourney}
                 size="lg"
-                className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg transition-all duration-200 hover:shadow-xl"
+                className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white shadow-lg transition-all duration-200 hover:shadow-xl"
               >
                 Start Your Journey
                 <ArrowRight className="w-5 h-5 ml-2" />

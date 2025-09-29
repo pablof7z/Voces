@@ -161,7 +161,7 @@ export function NoteFeed({ events: externalEvents, authors, showMediaFilter = fa
   if (events.length === 0 && mediaType !== 'articles') {
     return (
       <div className="text-center py-12 px-4">
-        <p className="text-gray-500 dark:text-gray-400">
+        <p className="text-neutral-500 dark:text-neutral-400">
             No notes yet. Be the first to share something! {unfilteredEvents.length}
         </p>
       </div>
@@ -182,7 +182,7 @@ export function NoteFeed({ events: externalEvents, authors, showMediaFilter = fa
       ) : mediaType === 'images' || mediaType === 'videos' ? (
         <MediaGrid events={events} />
       ) : (
-        <div className="divide-y divide-gray-200 dark:divide-gray-800">
+        <div className="divide-y divide-neutral-200 dark:divide-neutral-800">
 
           {sortedEvents.map((event) => (
             <NoteCard key={event.id} event={event} />
@@ -203,7 +203,7 @@ export function NoteFeed({ events: externalEvents, authors, showMediaFilter = fa
               ) : (
                 <button
                   onClick={loadMore}
-                  className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                  className="text-sm text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors"
                 >
                   Load more notes
                 </button>

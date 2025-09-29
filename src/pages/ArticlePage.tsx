@@ -146,8 +146,8 @@ export function ArticlePage() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-black">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white"></div>
-        <p className="mt-4 text-gray-600 dark:text-gray-400">Loading article...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-900 dark:border-white"></div>
+        <p className="mt-4 text-neutral-600 dark:text-neutral-400">Loading article...</p>
       </div>
     );
   }
@@ -155,8 +155,8 @@ export function ArticlePage() {
   if (fetchError || !article) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen px-4 bg-white dark:bg-black">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Article Not Found</h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-4">{fetchError || 'The article could not be loaded.'}</p>
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">Article Not Found</h1>
+        <p className="text-neutral-600 dark:text-neutral-400 mb-4">{fetchError || 'The article could not be loaded.'}</p>
         <button
           onClick={() => navigate('/')}
           className="px-4 py-2 bg-neutral-900 dark:bg-white text-white dark:text-black rounded-full hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors text-sm font-medium"
@@ -178,7 +178,7 @@ export function ArticlePage() {
               className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-full transition-colors"
               aria-label="Go back"
             >
-              <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+              <ArrowLeft className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
             </button>
 
             <div className="flex items-center gap-2">
@@ -189,7 +189,7 @@ export function ArticlePage() {
                 className={`p-2 rounded-full transition-colors ${
                   isBookmarked
                     ? 'text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
-                    : 'hover:bg-neutral-100 dark:hover:bg-neutral-900 text-gray-700 dark:text-gray-300'
+                    : 'hover:bg-neutral-100 dark:hover:bg-neutral-900 text-neutral-700 dark:text-neutral-300'
                 } ${!currentUser ? 'opacity-50 cursor-not-allowed' : ''}`}
                 title={currentUser ? (isBookmarked ? 'Remove bookmark' : 'Add bookmark') : 'Login to bookmark'}
               >
@@ -202,11 +202,11 @@ export function ArticlePage() {
                   onClick={() => setShowShareMenu(!showShareMenu)}
                   className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-full transition-colors"
                 >
-                  <Share2 className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                  <Share2 className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
                 </button>
 
                 {showShareMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-neutral-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800">
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-neutral-900 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-800">
                     <button
                       onClick={() => handleShare('twitter')}
                       className="w-full px-4 py-2 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800 flex items-center gap-3"
@@ -238,11 +238,11 @@ export function ArticlePage() {
                   onClick={() => setShowDropdown(!showDropdown)}
                   className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-full transition-colors"
                 >
-                  <MoreHorizontal className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                  <MoreHorizontal className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
                 </button>
 
                 {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-neutral-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800">
+                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-neutral-900 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-800">
                     <button
                       onClick={handleCopyIdentifier}
                       className="w-full px-4 py-2 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800 flex items-center gap-3"

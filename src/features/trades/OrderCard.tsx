@@ -71,7 +71,7 @@ export function OrderCard({ order }: OrderCardProps) {
 
   return (
     <>
-      <div className="bg-white dark:bg-black rounded-lg md:rounded-xl border border-gray-200 dark:border-gray-800 p-3 md:p-4 hover:shadow-lg transition-shadow">
+      <div className="bg-white dark:bg-black rounded-lg md:rounded-xl border border-neutral-200 dark:border-neutral-800 p-3 md:p-4 hover:shadow-lg transition-shadow">
         <div className="flex items-start justify-between mb-2 md:mb-3">
           <div className="flex items-center gap-3">
             {profile?.picture ? (
@@ -81,11 +81,11 @@ export function OrderCard({ order }: OrderCardProps) {
                 className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
               />
             ) : (
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full" />
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-orange-500 to-red-400 rounded-full" />
             )}
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-sm md:text-base text-gray-900 dark:text-white">
+                <h3 className="font-semibold text-sm md:text-base text-neutral-900 dark:text-white">
                   {profile?.name || `@${order.pubkey.slice(0, 6)}...`}
                 </h3>
                 {order.rating && order.rating > 0 && (
@@ -95,7 +95,7 @@ export function OrderCard({ order }: OrderCardProps) {
                   </div>
                 )}
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
                 {formatDistanceToNow(order.createdAt * 1000, { addSuffix: true })}
                 {order.platform && ` • ${order.platform}`}
                 {order.geohash && order.paymentMethod.includes('F2F') && (
@@ -122,28 +122,28 @@ export function OrderCard({ order }: OrderCardProps) {
 
         <div className="grid grid-cols-3 gap-2 md:gap-4 mb-3 md:mb-4">
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5 md:mb-1">Amount</p>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-0.5 md:mb-1">Amount</p>
             <div className="flex items-center gap-1 md:gap-2">
               <Bitcoin className="w-3 h-3 md:w-4 md:h-4 text-orange-500" />
-              <span className="font-mono font-semibold text-xs md:text-base text-gray-900 dark:text-white">
+              <span className="font-mono font-semibold text-xs md:text-base text-neutral-900 dark:text-white">
                 {(order.satsAmount / 100000000).toFixed(4)}
               </span>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 md:mt-1 hidden md:block">
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5 md:mt-1 hidden md:block">
               {order.satsAmount.toLocaleString()} sats
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5 md:mb-1">Price</p>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-0.5 md:mb-1">Price</p>
             <div className="flex items-center gap-1">
               <span className="text-sm md:text-base hidden md:inline">{currencyInfo.flag}</span>
-              <p className="text-sm md:text-lg font-semibold text-gray-900 dark:text-white">
+              <p className="text-sm md:text-lg font-semibold text-neutral-900 dark:text-white">
                 {currencyInfo.symbol}{order.fiatAmount.toFixed(0)}
               </p>
             </div>
             {pricePerBtc > 0 && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
                 {currencyInfo.symbol}{pricePerBtc.toFixed(2)}/BTC
                 {order.premium && order.premium !== 0 && (
                   <span className={order.premium > 0 ? 'text-red-500' : 'text-green-500'}>
@@ -155,15 +155,15 @@ export function OrderCard({ order }: OrderCardProps) {
           </div>
 
           <div className="min-w-0">
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5 md:mb-1">Payment</p>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-0.5 md:mb-1">Payment</p>
             <div className="flex items-center gap-1 md:gap-2">
               <span className="text-sm md:text-lg flex-shrink-0">{paymentInfo.icon}</span>
               <div className="flex flex-col min-w-0">
-                <span className="font-medium text-xs md:text-base text-gray-900 dark:text-white truncate max-w-[80px] md:max-w-none">
+                <span className="font-medium text-xs md:text-base text-neutral-900 dark:text-white truncate max-w-[80px] md:max-w-none">
                   {order.paymentMethod}
                 </span>
                 {paymentInfo.region && (
-                  <span className="text-xs text-gray-500 dark:text-gray-400 hidden md:inline">
+                  <span className="text-xs text-neutral-500 dark:text-neutral-400 hidden md:inline">
                     {paymentInfo.region}
                   </span>
                 )}
@@ -175,16 +175,16 @@ export function OrderCard({ order }: OrderCardProps) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowTakeModal(true)}
-            className="flex-1 flex items-center justify-center gap-1 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm md:text-base"
+            className="flex-1 flex items-center justify-center gap-1 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm md:text-base"
           >
             <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
             <span className="hidden md:inline">{order.type === 'buy' ? 'Sell to User' : 'Buy from User'}</span>
             <span className="md:hidden">{order.type === 'buy' ? 'Sell' : 'Buy'}</span>
           </button>
-          <button className="p-1.5 md:p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors">
+          <button className="p-1.5 md:p-2 border border-neutral-300 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors">
             <MessageSquare className="w-3 h-3 md:w-4 md:h-4" />
           </button>
-          <button className="p-1.5 md:p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors hidden md:block">
+          <button className="p-1.5 md:p-2 border border-neutral-300 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors hidden md:block">
             <Shield className="w-3 h-3 md:w-4 md:h-4" />
           </button>
         </div>

@@ -40,7 +40,7 @@ export function QRScanner({ onScan, variant = 'minimal' }: QRScannerProps) {
           onClick={() => setIsOpen(true)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="p-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors"
+          className="p-3 bg-orange-600 text-white rounded-xl hover:bg-orange-700 transition-colors"
         >
           <QrCode className="w-5 h-5" />
         </motion.button>
@@ -62,32 +62,32 @@ export function QRScanner({ onScan, variant = 'minimal' }: QRScannerProps) {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-xl font-semibold text-gray-900">Scan or Paste</h3>
+                  <h3 className="text-xl font-semibold text-neutral-900">Scan or Paste</h3>
                   <button
                     onClick={() => setIsOpen(false)}
                     className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
                   >
-                    <X className="w-5 h-5 text-gray-500" />
+                    <X className="w-5 h-5 text-neutral-500" />
                   </button>
                 </div>
 
                 <div className="space-y-4">
                   <div className="bg-neutral-100 rounded-2xl p-8 flex flex-col items-center justify-center">
-                    <Camera className="w-12 h-12 text-gray-400 mb-3" />
-                    <p className="text-sm text-gray-600 text-center">
+                    <Camera className="w-12 h-12 text-neutral-400 mb-3" />
+                    <p className="text-sm text-neutral-600 text-center">
                       Camera access needed for QR scanning
                     </p>
-                    <button className="mt-4 text-sm text-purple-600 hover:text-purple-700">
+                    <button className="mt-4 text-sm text-orange-600 hover:text-orange-700">
                       Enable Camera
                     </button>
                   </div>
 
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-200" />
+                      <div className="w-full border-t border-neutral-200" />
                     </div>
                     <div className="relative flex justify-center text-sm">
-                      <span className="bg-white px-3 text-gray-500">or</span>
+                      <span className="bg-white px-3 text-neutral-500">or</span>
                     </div>
                   </div>
 
@@ -96,8 +96,8 @@ export function QRScanner({ onScan, variant = 'minimal' }: QRScannerProps) {
                       onClick={handleQuickPaste}
                       className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-neutral-50 hover:bg-neutral-100 rounded-xl transition-colors"
                     >
-                      <Clipboard className="w-4 h-4 text-gray-600" />
-                      <span className="text-gray-700">Paste from Clipboard</span>
+                      <Clipboard className="w-4 h-4 text-neutral-600" />
+                      <span className="text-neutral-700">Paste from Clipboard</span>
                     </button>
 
                     <AnimatePresence>
@@ -114,13 +114,13 @@ export function QRScanner({ onScan, variant = 'minimal' }: QRScannerProps) {
                             onChange={(e) => setPasteValue(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handlePaste()}
                             placeholder="Paste invoice here..."
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-purple-500"
+                            className="w-full px-4 py-3 border border-neutral-200 rounded-xl focus:outline-none focus:border-orange-500"
                             autoFocus
                           />
                           <button
                             onClick={handlePaste}
                             disabled={!pasteValue}
-                            className="w-full mt-3 px-4 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            className="w-full mt-3 px-4 py-3 bg-orange-600 text-white rounded-xl hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                           >
                             Process Invoice
                           </button>
@@ -142,13 +142,13 @@ export function QRScanner({ onScan, variant = 'minimal' }: QRScannerProps) {
       <div className="space-y-3">
         <button
           onClick={() => setShowPasteInput(!showPasteInput)}
-          className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl hover:from-purple-100 hover:to-pink-100 transition-all"
+          className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl hover:from-orange-100 hover:to-red-100 transition-all"
         >
           <div className="flex items-center gap-3">
-            <QrCode className="w-5 h-5 text-purple-600" />
-            <span className="text-gray-700 font-medium">Scan QR Code</span>
+            <QrCode className="w-5 h-5 text-orange-600" />
+            <span className="text-neutral-700 font-medium">Scan QR Code</span>
           </div>
-          <span className="text-xs text-gray-500">Tap to paste</span>
+          <span className="text-xs text-neutral-500">Tap to paste</span>
         </button>
 
         <AnimatePresence>
@@ -165,12 +165,12 @@ export function QRScanner({ onScan, variant = 'minimal' }: QRScannerProps) {
                   value={pasteValue}
                   onChange={(e) => setPasteValue(e.target.value)}
                   placeholder="Paste Lightning invoice..."
-                  className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500"
+                  className="flex-1 px-3 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:border-orange-500"
                 />
                 <button
                   onClick={handlePaste}
                   disabled={!pasteValue}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700 disabled:opacity-50"
+                  className="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm hover:bg-orange-700 disabled:opacity-50"
                 >
                   Pay
                 </button>
@@ -187,7 +187,7 @@ export function QRScanner({ onScan, variant = 'minimal' }: QRScannerProps) {
     <div className="relative">
       <button
         onClick={() => setShowPasteInput(!showPasteInput)}
-        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-neutral-50 rounded-lg transition-colors"
+        className="flex items-center gap-2 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-50 rounded-lg transition-colors"
       >
         <Camera className="w-4 h-4" />
         <span>Scan</span>
@@ -199,7 +199,7 @@ export function QRScanner({ onScan, variant = 'minimal' }: QRScannerProps) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full left-0 mt-2 p-3 bg-white rounded-lg shadow-lg border border-gray-200 z-10"
+            className="absolute top-full left-0 mt-2 p-3 bg-white rounded-lg shadow-lg border border-neutral-200 z-10"
           >
             <div className="flex gap-2">
               <input
@@ -208,7 +208,7 @@ export function QRScanner({ onScan, variant = 'minimal' }: QRScannerProps) {
                 onChange={(e) => setPasteValue(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handlePaste()}
                 placeholder="Paste invoice"
-                className="px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:border-blue-500"
+                className="px-2 py-1 text-sm border border-neutral-200 rounded focus:outline-none focus:border-blue-500"
                 autoFocus
               />
               <button

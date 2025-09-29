@@ -19,9 +19,9 @@ export function ListingCard({ listing }: ListingCardProps) {
 
   return (
     <Link to={`/marketplace/${listing.encode()}`}>
-      <Card className="hover:shadow-soft-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer h-full overflow-hidden group bg-white dark:bg-black/50 border-gray-100 dark:border-gray-800/50 animate-fade-in">
+      <Card className="hover:shadow-soft-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer h-full overflow-hidden group bg-white dark:bg-black/50 border-neutral-100 dark:border-neutral-800/50 animate-fade-in">
         {/* Image Section */}
-        <div className="aspect-[4/3] relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
+        <div className="aspect-[4/3] relative overflow-hidden bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-900 dark:to-neutral-800">
           {mainImage ? (
             <>
               <img
@@ -39,7 +39,7 @@ export function ListingCard({ listing }: ListingCardProps) {
               )}
             </>
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-600">
+            <div className="w-full h-full flex items-center justify-center text-neutral-400 dark:text-neutral-600">
               <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
@@ -52,7 +52,7 @@ export function ListingCard({ listing }: ListingCardProps) {
           {/* Price - Most prominent */}
           {price && (
             <div className="flex justify-between items-start">
-              <span className="text-2xl font-bold text-gray-900 dark:text-white">
+              <span className="text-2xl font-bold text-neutral-900 dark:text-white">
                 {price.currency === 'SATS' ? (
                   <span className="text-orange-500">{price.amount} SATS</span>
                 ) : (
@@ -65,7 +65,7 @@ export function ListingCard({ listing }: ListingCardProps) {
                   </span>
                 )}
                 {price.frequency && price.frequency !== 'once' && (
-                  <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                  <span className="text-sm font-normal text-neutral-500 dark:text-neutral-400">
                     /{price.frequency}
                   </span>
                 )}
@@ -74,19 +74,19 @@ export function ListingCard({ listing }: ListingCardProps) {
           )}
 
           {/* Title */}
-          <h3 className="font-semibold text-base text-gray-900 dark:text-white line-clamp-2 leading-tight">
+          <h3 className="font-semibold text-base text-neutral-900 dark:text-white line-clamp-2 leading-tight">
             {listing.title}
           </h3>
 
           {/* Summary - if exists */}
           {listing.summary && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2">
               {listing.summary}
             </p>
           )}
 
           {/* Metadata */}
-          <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-500">
+          <div className="flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-500">
             {listing.location && (
               <div className="flex items-center gap-1">
                 <MapPin className="w-3 h-3" />
@@ -100,9 +100,9 @@ export function ListingCard({ listing }: ListingCardProps) {
           </div>
 
           {/* Seller Info */}
-          <div className="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center gap-2">
+          <div className="pt-3 border-t border-neutral-100 dark:border-neutral-800 flex items-center gap-2">
             <UserAvatar pubkey={listing.pubkey} size="xs" />
-            <span className="text-xs text-gray-500 dark:text-gray-400">
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">
               Posted by
             </span>
           </div>

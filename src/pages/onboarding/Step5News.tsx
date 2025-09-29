@@ -8,7 +8,7 @@ export function Step5News({ onNext }: Step5NewsProps) {
       <div className="max-w-2xl w-full text-center">
         <div className="text-6xl mb-6">📰</div>
         <h2 className="text-3xl font-bold mb-4">Real News from Real People</h2>
-        <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+        <p className="text-lg text-neutral-600 dark:text-neutral-400 mb-8">
           No censorship. No propaganda. Just authentic stories from your community.
         </p>
 
@@ -20,15 +20,15 @@ export function Step5News({ onNext }: Step5NewsProps) {
             </div>
             <div className="flex-1">
               <div className="font-semibold">Carlos Mendoza</div>
-              <div className="text-xs text-gray-500">Independent Journalist · 2 hours ago</div>
+              <div className="text-xs text-neutral-500">Independent Journalist · 2 hours ago</div>
             </div>
           </div>
           <h3 className="font-semibold mb-2">Community Organizes Alternative Supply Chain</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
             Residents in Petare have successfully established a direct farmer-to-community distribution network,
             bypassing traditional middlemen and reducing food costs by 40%...
           </p>
-          <div className="flex items-center gap-4 text-sm text-gray-500">
+          <div className="flex items-center gap-4 text-sm text-neutral-500">
             <span className="flex items-center gap-1">
               ⚡ 23.5k sats
             </span>

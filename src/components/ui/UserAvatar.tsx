@@ -48,7 +48,7 @@ export function UserAvatar({ pubkey, size = 'md', className, showTrustIndicator 
     'bg-red-500',
     'bg-orange-500',
     'bg-indigo-500',
-    'bg-pink-500',
+    'bg-red-500',
     'bg-teal-500',
   ];
 

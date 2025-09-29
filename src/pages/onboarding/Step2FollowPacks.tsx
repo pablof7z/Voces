@@ -115,7 +115,7 @@ export function Step2FollowPacks({ selectedCommunity, selectedPacks, onSelectPac
         <div className="max-w-xl w-full">
           <div className="mb-6 lg:mb-8">
             <h1 className="text-2xl lg:text-3xl font-bold mb-2 lg:mb-3">Build Your Network</h1>
-            <p className="text-sm lg:text-base text-gray-600 dark:text-gray-400">
+            <p className="text-sm lg:text-base text-neutral-600 dark:text-neutral-400">
               Follow curated packs from the {communityInfo.name} community
             </p>
           </div>
@@ -139,7 +139,7 @@ export function Step2FollowPacks({ selectedCommunity, selectedPacks, onSelectPac
                       className={`
                         relative cursor-pointer rounded-xl transition-all
                         ${isSelected
-                          ? 'ring-2 ring-purple-500 bg-purple-50 dark:bg-purple-950/20'
+                          ? 'ring-2 ring-orange-500 bg-orange-50 dark:bg-orange-950/20'
                           : ''
                         }
                       `}
@@ -154,7 +154,7 @@ export function Step2FollowPacks({ selectedCommunity, selectedPacks, onSelectPac
 
                       {/* Selection checkmark */}
                       {isSelected && (
-                        <div className="absolute top-1/2 right-4 -translate-y-1/2 bg-purple-500 text-white rounded-full p-1.5 z-10">
+                        <div className="absolute top-1/2 right-4 -translate-y-1/2 bg-orange-500 text-white rounded-full p-1.5 z-10">
                           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
@@ -166,7 +166,7 @@ export function Step2FollowPacks({ selectedCommunity, selectedPacks, onSelectPac
               </div>
 
               {followPacks.length === 0 && (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <div className="text-center py-8 text-neutral-500 dark:text-neutral-400">
                   No follow packs available for this community yet
                 </div>
               )}
@@ -180,7 +180,7 @@ export function Step2FollowPacks({ selectedCommunity, selectedPacks, onSelectPac
               w-full py-3 lg:py-4 px-6 rounded-lg font-medium transition-all text-sm lg:text-base
               ${selectedPacks.length > 0 && !loading
                 ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200'
-                : 'bg-neutral-100 dark:bg-black text-gray-400 cursor-not-allowed'
+                : 'bg-neutral-100 dark:bg-black text-neutral-400 cursor-not-allowed'
               }
             `}
           >

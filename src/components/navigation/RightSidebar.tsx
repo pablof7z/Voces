@@ -5,6 +5,8 @@ import { nip19 } from 'nostr-tools';
 import { useArticles } from '@/features/articles/hooks/useArticles';
 import { useMemo } from 'react';
 import { UserName } from '@/components/ui/UserName';
+import { MarketplaceSidebar } from '@/components/wallet/MarketplaceSidebar';
+import { P2PTradeSidebar } from '@/components/wallet/P2PTradeSidebar';
 
 export function RightSidebar() {
   const { t } = useTranslation();
@@ -12,8 +14,9 @@ export function RightSidebar() {
   const articles = useArticles({ limit: 10 }); // Fetch more to ensure we have 5 with images
   const loading = articles.length === 0;
 
-  // Only show content on the home feed
+  // Determine what content to show based on current page
   const showHomeFeedContent = location.pathname === '/' || location.pathname === '/home';
+  const showMoneyContent = location.pathname === '/money';
 
   const articleData = useMemo(() => {
     return articles
@@ -88,6 +91,25 @@ export function RightSidebar() {
                 </div>
               )}
             </div>
+
+            {/* Footer Links */}
+            <div className="px-5 py-4">
+              <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-neutral-600">
+                <a href="#" className="hover:text-neutral-400 transition-colors">Terms</a>
+                <a href="#" className="hover:text-neutral-400 transition-colors">Privacy</a>
+                <a href="#" className="hover:text-neutral-400 transition-colors">About</a>
+                <a href="#" className="hover:text-neutral-400 transition-colors">Help</a>
+              </div>
+              <p className="text-xs text-neutral-700 mt-3">© 2024 Voces</p>
+            </div>
+          </>
+        ) : showMoneyContent ? (
+          <>
+            {/* Marketplace Section */}
+            <MarketplaceSidebar />
+
+            {/* P2P Trades Section */}
+            <P2PTradeSidebar />
 
             {/* Footer Links */}
             <div className="px-5 py-4">

@@ -55,7 +55,7 @@ export function Step7Introduction({ publicKey, profileData, introductionPosts, o
       <div className="flex-1 px-8 py-6 max-w-[1400px] mx-auto w-full">
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold mb-2">Introduce Yourself to the Community</h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-neutral-600 dark:text-neutral-400">
             Write a brief introduction. Good introductions often earn zaps!
           </p>
         </div>
@@ -63,7 +63,7 @@ export function Step7Introduction({ publicKey, profileData, introductionPosts, o
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-200px)]">
           {/* Left column: Recent introductions */}
           <div className="flex flex-col">
-            <h3 className="font-semibold text-sm text-gray-500 uppercase tracking-wide mb-4">
+            <h3 className="font-semibold text-sm text-neutral-500 uppercase tracking-wide mb-4">
               💎 Recent Introductions
             </h3>
             <div className="space-y-3 overflow-y-auto flex-1 pr-2">
@@ -75,7 +75,7 @@ export function Step7Introduction({ publicKey, profileData, introductionPosts, o
                   />
                 ))
               ) : (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-neutral-500">
                   <p>Loading recent introductions...</p>
                 </div>
               )}
@@ -91,15 +91,15 @@ export function Step7Introduction({ publicKey, profileData, introductionPosts, o
                 value={introText}
                 onChange={(e) => setIntroText(e.target.value)}
                 placeholder="Tell the community who you are, what you do, and what brings you here."
-                className="w-full min-h-[200px] p-4 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
+                className="w-full min-h-[200px] p-4 bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
                 rows={8}
               />
               <div className="flex items-center justify-between mt-3">
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-neutral-500">
                   {profileData.location && `Tip: Mention that you're from ${profileData.location}`}
                 </div>
                 <div className="text-xs">
-                  <span className={charCount > 500 ? 'text-red-500' : 'text-gray-500'}>
+                  <span className={charCount > 500 ? 'text-red-500' : 'text-neutral-500'}>
                     {charCount} characters
                   </span>
                 </div>
@@ -109,7 +109,7 @@ export function Step7Introduction({ publicKey, profileData, introductionPosts, o
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={onSkip}
-                  className="flex-1 py-3 px-6 border border-gray-300 dark:border-gray-700 rounded-lg font-medium hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+                  className="flex-1 py-3 px-6 border border-neutral-300 dark:border-neutral-700 rounded-lg font-medium hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
                 >
                   Skip for now
                 </button>
@@ -120,7 +120,7 @@ export function Step7Introduction({ publicKey, profileData, introductionPosts, o
                     flex-1 py-3 px-6 rounded-lg font-medium transition-all
                     ${hasValidIntro && !publishing
                       ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200'
-                      : 'bg-neutral-100 dark:bg-black text-gray-400 cursor-not-allowed'
+                      : 'bg-neutral-100 dark:bg-black text-neutral-400 cursor-not-allowed'
                     }
                   `}
                 >

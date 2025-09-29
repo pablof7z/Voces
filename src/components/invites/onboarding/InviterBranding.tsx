@@ -24,7 +24,7 @@ export function InviterBranding({ inviter }: InviterBrandingProps) {
         </div>
       )}
       <h1 className="text-3xl font-bold">Welcome to Voces</h1>
-      <p className="text-lg text-gray-600 mt-2">
+      <p className="text-lg text-neutral-600 mt-2">
         <span className="font-semibold">{displayName}</span> has invited you to join.
       </p>
     </div>

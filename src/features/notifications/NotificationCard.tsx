@@ -51,11 +51,11 @@ export function NotificationCard({ group, onRead }: NotificationCardProps) {
       case 'zap':
         return <Zap className="w-5 h-5 text-orange-500" />;
       case 'follow':
-        return <UserPlus className="w-5 h-5 text-purple-500" />;
+        return <UserPlus className="w-5 h-5 text-orange-500" />;
       case 'mention':
         return <AtSign className="w-5 h-5 text-indigo-500" />;
       default:
-        return <MoreHorizontal className="w-5 h-5 text-gray-500" />;
+        return <MoreHorizontal className="w-5 h-5 text-neutral-500" />;
     }
   };
 
@@ -95,7 +95,7 @@ export function NotificationCard({ group, onRead }: NotificationCardProps) {
   return (
     <div
       className={cn(
-        "px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors border-b border-gray-200 dark:border-gray-800",
+        "px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors border-b border-neutral-200 dark:border-neutral-800",
         !group.read && "bg-blue-50/30 dark:bg-blue-900/10"
       )}
     >
@@ -113,7 +113,7 @@ export function NotificationCard({ group, onRead }: NotificationCardProps) {
             <div className="flex-1">
               <span className="text-sm">
                 <ActorNames pubkeys={actors} />
-                <span className="text-gray-600 dark:text-gray-400 ml-1">
+                <span className="text-neutral-600 dark:text-neutral-400 ml-1">
                   {getActionText()}
                 </span>
               </span>
@@ -123,7 +123,7 @@ export function NotificationCard({ group, onRead }: NotificationCardProps) {
           {/* Target content preview */}
           {targetEvent && (
             <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-3 text-sm">
-              <p className="line-clamp-2 text-gray-700 dark:text-gray-300">
+              <p className="line-clamp-2 text-neutral-700 dark:text-neutral-300">
                 {targetEvent.content}
               </p>
             </div>
@@ -131,13 +131,13 @@ export function NotificationCard({ group, onRead }: NotificationCardProps) {
 
           {/* For replies and mentions, show the actual note content in compact form */}
           {(group.type === 'reply' || group.type === 'mention') && group.sourceEvents[0] && (
-            <div className="mt-2 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+            <div className="mt-2 border border-neutral-200 dark:border-neutral-700 rounded-lg overflow-hidden">
               <CompactNoteCard event={group.sourceEvents[0]} showActions={false} />
             </div>
           )}
 
           {/* Timestamp */}
-          <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
+          <p className="text-xs text-neutral-500 dark:text-neutral-500 mt-2">
             {formatDistanceToNow(new Date(group.latestTimestamp * 1000), { addSuffix: true })}
           </p>
         </div>
@@ -170,7 +170,7 @@ function ActorNames({ pubkeys }: { pubkeys: string[] }) {
   ));
 
   return (
-    <span className="font-medium text-gray-900 dark:text-gray-100">
+    <span className="font-medium text-neutral-900 dark:text-neutral-100">
       {names}
     </span>
   );

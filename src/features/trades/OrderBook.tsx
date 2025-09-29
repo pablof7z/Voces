@@ -103,7 +103,7 @@ export function OrderBook({ pair, filters }: OrderBookProps) {
     <div className="w-full">
       <div className="grid gap-3 md:gap-4">
         {filteredOrders.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-neutral-500">
             No orders available matching your filters
           </div>
         ) : (

@@ -34,7 +34,7 @@ export function CreateListingPage() {
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">Sign In Required</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-neutral-600 dark:text-neutral-400 mb-6">
             You need to be logged in to create a listing.
           </p>
           <Button onClick={() => navigate('/')}>
@@ -58,10 +58,10 @@ export function CreateListingPage() {
             Back to Marketplace
           </Button>
 
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">
             Create New Listing
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-neutral-600 dark:text-neutral-400 mt-2">
             Fill in the details below to create your classified listing
           </p>
         </div>

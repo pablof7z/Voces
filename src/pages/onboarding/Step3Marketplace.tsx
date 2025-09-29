@@ -8,7 +8,7 @@ export function Step3Marketplace({ onNext }: Step3MarketplaceProps) {
       <div className="max-w-2xl w-full text-center">
         <div className="text-6xl mb-6">🛍️</div>
         <h2 className="text-3xl font-bold mb-4">Buy and Sell Locally</h2>
-        <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+        <p className="text-lg text-neutral-600 dark:text-neutral-400 mb-8">
           Connect with your community marketplace. No middlemen, no fees. Just people helping people.
         </p>
 
@@ -20,14 +20,14 @@ export function Step3Marketplace({ onNext }: Step3MarketplaceProps) {
             </div>
             <div className="flex-1">
               <div className="font-semibold">María&apos;s Bakery</div>
-              <div className="text-xs text-gray-500">2km away</div>
+              <div className="text-xs text-neutral-500">2km away</div>
             </div>
             <span className="text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-1 rounded">
               Available
             </span>
           </div>
           <h3 className="font-semibold mb-2">Fresh Bread & Pastries</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
             Daily baked goods, accepting sats or local currency. Delivery available in Petare area.
           </p>
           <div className="flex items-center justify-between text-sm">

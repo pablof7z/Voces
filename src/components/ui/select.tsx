@@ -47,7 +47,7 @@ export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerPr
         type="button"
         onClick={() => setOpen(!open)}
         className={cn(
-          'flex h-10 w-full items-center justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-800 dark:bg-black dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-orange-400',
+          'flex h-10 w-full items-center justify-between rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800 dark:bg-black dark:ring-offset-neutral-950 dark:placeholder:text-neutral-400 dark:focus:ring-orange-400',
           className
         )}
         {...props}
@@ -96,7 +96,7 @@ export function SelectContent({ className, children }: SelectContentProps) {
     <div
       ref={ref}
       className={cn(
-        'absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-200 bg-white py-1 text-sm shadow-lg dark:border-gray-800 dark:bg-black',
+        'absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-neutral-200 bg-white py-1 text-sm shadow-lg dark:border-neutral-800 dark:bg-black',
         className
       )}
     >

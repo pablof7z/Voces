@@ -58,7 +58,7 @@ export function CompactNoteCard({ event, showActions = true }: CompactNoteCardPr
 
   return (
     <article
-      className="bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800 hover:bg-neutral-50/50 dark:hover:bg-neutral-900/50 transition-all duration-150 cursor-pointer"
+      className="bg-white dark:bg-black border-b border-neutral-100 dark:border-neutral-800 hover:bg-neutral-50/50 dark:hover:bg-neutral-900/50 transition-all duration-150 cursor-pointer"
       onClick={handleNoteClick}
     >
       <div className="px-3 py-2.5 sm:px-4 sm:py-3">
@@ -80,14 +80,14 @@ export function CompactNoteCard({ event, showActions = true }: CompactNoteCardPr
                 to={`/p/${npub}`}
                 className="inline-flex items-center gap-1 hover:opacity-75 transition-opacity"
               >
-                <span className="font-medium text-sm text-gray-900 dark:text-white">
+                <span className="font-medium text-sm text-neutral-900 dark:text-white">
                   {displayName}
                 </span>
-                <span className="text-gray-500 dark:text-gray-400 text-xs">
+                <span className="text-neutral-500 dark:text-neutral-400 text-xs">
                   {handle}
                 </span>
               </Link>
-              <span className="text-gray-500 dark:text-gray-400 text-xs">
+              <span className="text-neutral-500 dark:text-neutral-400 text-xs">
                 · {formatTimeAgo(event.created_at!)}
               </span>
             </div>
@@ -98,7 +98,7 @@ export function CompactNoteCard({ event, showActions = true }: CompactNoteCardPr
                 content={event.content.trim()}
                 emojiTags={event.tags}
                 event={event}
-                className="text-[14px] sm:text-[15px] text-gray-800 dark:text-gray-200 leading-relaxed line-clamp-3"
+                className="text-[14px] sm:text-[15px] text-neutral-800 dark:text-neutral-200 leading-relaxed line-clamp-3"
               />
             </div>
 
@@ -110,7 +110,7 @@ export function CompactNoteCard({ event, showActions = true }: CompactNoteCardPr
                     e.stopPropagation();
                     // TODO: Implement reply
                   }}
-                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                  className="text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300"
                 >
                   <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
                 </button>
@@ -120,7 +120,7 @@ export function CompactNoteCard({ event, showActions = true }: CompactNoteCardPr
                     e.stopPropagation();
                     // TODO: Implement repost
                   }}
-                  className="text-gray-500 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400"
+                  className="text-neutral-500 hover:text-green-600 dark:text-neutral-400 dark:hover:text-green-400"
                 >
                   <Repeat2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                 </button>
@@ -130,7 +130,7 @@ export function CompactNoteCard({ event, showActions = true }: CompactNoteCardPr
                     e.stopPropagation();
                     // TODO: Implement like
                   }}
-                  className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
+                  className="text-neutral-500 hover:text-red-500 dark:text-neutral-400 dark:hover:text-red-400"
                 >
                   <Heart className="w-3.5 h-3.5" strokeWidth={1.5} />
                 </button>

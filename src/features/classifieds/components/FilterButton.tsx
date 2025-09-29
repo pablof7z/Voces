@@ -46,7 +46,7 @@ export function FilterButton({ categories, selectedCategory, onCategoryChange }:
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute right-0 mt-2 w-56 bg-white dark:bg-black rounded-lg shadow-lg border border-gray-200 dark:border-gray-800 z-50"
+              className="absolute right-0 mt-2 w-56 bg-white dark:bg-black rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-800 z-50"
             >
               <div className="p-2">
                 {selectedCategory && (
@@ -65,7 +65,7 @@ export function FilterButton({ categories, selectedCategory, onCategoryChange }:
                     onClick={() => handleCategorySelect(category.value)}
                     className={`w-full text-left px-3 py-2 text-sm rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-900 ${
                       selectedCategory === category.value
-                        ? 'bg-purple-50 text-purple-700 dark:bg-purple-950/50 dark:text-purple-400'
+                        ? 'bg-orange-50 text-orange-700 dark:bg-orange-950/50 dark:text-orange-500'
                         : ''
                     }`}
                   >

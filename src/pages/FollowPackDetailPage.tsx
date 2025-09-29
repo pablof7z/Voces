@@ -71,7 +71,7 @@ export function FollowPackDetailPage() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="text-center py-12">
           <p className="text-neutral-400">Follow pack not found</p>
-          <Link to="/packs" className="text-purple-400 hover:text-purple-300 mt-4 inline-block">
+          <Link to="/packs" className="text-orange-500 hover:text-orange-300 mt-4 inline-block">
             Browse all packs
           </Link>
         </div>
@@ -160,7 +160,7 @@ export function FollowPackDetailPage() {
               <p className="text-sm text-neutral-500">Created by</p>
               <Link
                 to={`/p/${pack.pubkey}`}
-                className="font-medium text-white hover:text-purple-400 transition-colors"
+                className="font-medium text-white hover:text-orange-500 transition-colors"
               >
                 {creatorProfile.name || 'Anonymous'}
               </Link>
@@ -184,7 +184,7 @@ export function FollowPackDetailPage() {
           >
             Feed
             {activeTab === 'feed' && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-500" />
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500" />
             )}
           </button>
           <button
@@ -198,7 +198,7 @@ export function FollowPackDetailPage() {
           >
             Members ({pubkeys.length})
             {activeTab === 'members' && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-500" />
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500" />
             )}
           </button>
         </div>

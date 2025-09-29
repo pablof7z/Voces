@@ -12,12 +12,12 @@ export function CommentSection({ article, onError }: CommentSectionProps) {
   const { comments, isLoading, addComment } = useArticleComments(article);
 
   return (
-    <div className="border-t border-gray-200 dark:border-gray-800 pt-12">
+    <div className="border-t border-neutral-200 dark:border-neutral-800 pt-12">
       <div className="mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white font-serif mb-2">
+        <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-white font-serif mb-2">
           Discussion
         </h2>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-neutral-600 dark:text-neutral-400">
           {comments.length} {comments.length === 1 ? 'comment' : 'comments'}
         </p>
       </div>

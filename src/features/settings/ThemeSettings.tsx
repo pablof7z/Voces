@@ -31,23 +31,23 @@ export function ThemeSettings() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+        <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
           {t('settings.sections.appearance.title')}
         </h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
           {t('settings.sections.appearance.description')}
         </p>
       </div>
 
       {/* Language Selection */}
-      <div className="border-b border-gray-200 dark:border-gray-700 pb-6">
+      <div className="border-b border-neutral-200 dark:border-neutral-700 pb-6">
         <div className="flex items-center gap-3 mb-4">
-          <Globe className="w-5 h-5 text-purple-600" />
-          <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
+          <Globe className="w-5 h-5 text-orange-600" />
+          <h3 className="text-base font-medium text-neutral-900 dark:text-neutral-100">
             {t('settings.sections.appearance.language')}
           </h3>
         </div>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
           {t('settings.sections.appearance.languageDescription')}
         </p>
         <div className="grid grid-cols-2 gap-3">
@@ -55,8 +55,8 @@ export function ThemeSettings() {
             onClick={() => handleLanguageChange('en')}
             className={`px-4 py-3 rounded-lg border transition-all ${
               language === 'en'
-                ? 'bg-purple-50 dark:bg-purple-950/30 border-purple-500 text-purple-700 dark:text-purple-400'
-                : 'bg-white dark:bg-black border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-neutral-900'
+                ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-500 text-orange-700 dark:text-orange-500'
+                : 'bg-white dark:bg-black border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900'
             }`}
           >
             <div className="flex items-center justify-center gap-2">
@@ -68,8 +68,8 @@ export function ThemeSettings() {
             onClick={() => handleLanguageChange('es')}
             className={`px-4 py-3 rounded-lg border transition-all ${
               language === 'es'
-                ? 'bg-purple-50 dark:bg-purple-950/30 border-purple-500 text-purple-700 dark:text-purple-400'
-                : 'bg-white dark:bg-black border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-neutral-900'
+                ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-500 text-orange-700 dark:text-orange-500'
+                : 'bg-white dark:bg-black border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900'
             }`}
           >
             <div className="flex items-center justify-center gap-2">
@@ -83,12 +83,12 @@ export function ThemeSettings() {
       {/* Theme Selection */}
       <div>
         <div className="flex items-center gap-3 mb-4">
-          <Palette className="w-5 h-5 text-purple-600" />
-          <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
+          <Palette className="w-5 h-5 text-orange-600" />
+          <h3 className="text-base font-medium text-neutral-900 dark:text-neutral-100">
             {t('settings.sections.appearance.theme')}
           </h3>
         </div>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
           {t('settings.sections.appearance.themeDescription')}
         </p>
         <div className="grid grid-cols-3 gap-3">
@@ -96,8 +96,8 @@ export function ThemeSettings() {
             onClick={() => handleThemeChange('light')}
             className={`px-4 py-3 rounded-lg border transition-all ${
               theme === 'light'
-                ? 'bg-purple-50 dark:bg-purple-950/30 border-purple-500 text-purple-700 dark:text-purple-400'
-                : 'bg-white dark:bg-black border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-neutral-900'
+                ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-500 text-orange-700 dark:text-orange-500'
+                : 'bg-white dark:bg-black border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900'
             }`}
           >
             <div className="flex flex-col items-center gap-2">
@@ -111,8 +111,8 @@ export function ThemeSettings() {
             onClick={() => handleThemeChange('dark')}
             className={`px-4 py-3 rounded-lg border transition-all ${
               theme === 'dark'
-                ? 'bg-purple-50 dark:bg-purple-950/30 border-purple-500 text-purple-700 dark:text-purple-400'
-                : 'bg-white dark:bg-black border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-neutral-900'
+                ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-500 text-orange-700 dark:text-orange-500'
+                : 'bg-white dark:bg-black border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900'
             }`}
           >
             <div className="flex flex-col items-center gap-2">
@@ -126,8 +126,8 @@ export function ThemeSettings() {
             onClick={() => handleThemeChange('system')}
             className={`px-4 py-3 rounded-lg border transition-all ${
               theme === 'system'
-                ? 'bg-purple-50 dark:bg-purple-950/30 border-purple-500 text-purple-700 dark:text-purple-400'
-                : 'bg-white dark:bg-black border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-neutral-900'
+                ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-500 text-orange-700 dark:text-orange-500'
+                : 'bg-white dark:bg-black border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-900'
             }`}
           >
             <div className="flex flex-col items-center gap-2">

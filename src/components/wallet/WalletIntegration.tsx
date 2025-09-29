@@ -38,8 +38,8 @@ export function WalletIntegration() {
       <Wallet variant="minimal-light" />
 
       {/* Example Zap Interface */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Zap</h3>
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-neutral-100">
+        <h3 className="text-lg font-medium text-neutral-900 mb-4">Quick Zap</h3>
         
         <div className="space-y-4">
           {/* Quick Zap Buttons */}
@@ -50,7 +50,7 @@ export function WalletIntegration() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleZap('npub1...example', amount)}
-                className="flex-1 px-3 py-2 bg-neutral-50 hover:bg-neutral-100 rounded-lg text-sm font-medium text-gray-700 transition-colors"
+                className="flex-1 px-3 py-2 bg-neutral-50 hover:bg-neutral-100 rounded-lg text-sm font-medium text-neutral-700 transition-colors"
               >
                 <Zap className="w-4 h-4 inline mr-1" />
                 {amount}
@@ -61,7 +61,7 @@ export function WalletIntegration() {
           {/* Recent Zaps */}
           {zapHistory.length > 0 && (
             <div className="space-y-2 mt-6">
-              <h4 className="text-sm font-medium text-gray-600">Recent Zaps</h4>
+              <h4 className="text-sm font-medium text-neutral-600">Recent Zaps</h4>
               {zapHistory.slice(0, 3).map(zap => (
                 <motion.div
                   key={zap.id}
@@ -76,15 +76,15 @@ export function WalletIntegration() {
                       <XCircle className="w-4 h-4 text-red-500" />
                     )}
                     <div>
-                      <div className="text-sm font-medium text-gray-700">
+                      <div className="text-sm font-medium text-neutral-700">
                         {zap.amount} sats
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-neutral-500">
                         {zap.recipient.slice(0, 16)}...
                       </div>
                     </div>
                   </div>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs text-neutral-400">
                     {zap.timestamp.toLocaleTimeString()}
                   </div>
                 </motion.div>

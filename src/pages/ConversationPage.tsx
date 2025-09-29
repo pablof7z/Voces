@@ -32,13 +32,13 @@ export function ConversationPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-black">
+      <div className="border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black">
         <div className="flex items-center gap-3 p-4">
           <button
             onClick={() => navigate('/messages')}
             className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-900 dark:text-white" />
+            <ArrowLeft className="w-5 h-5 text-neutral-900 dark:text-white" />
           </button>
 
           <div className="flex items-center gap-3 flex-1">
@@ -49,16 +49,16 @@ export function ConversationPage() {
                 className="w-10 h-10 rounded-full object-cover"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white font-semibold">
                 {displayName.charAt(0).toUpperCase()}
               </div>
             )}
             <div>
-              <h2 className="font-semibold text-gray-900 dark:text-white">
+              <h2 className="font-semibold text-neutral-900 dark:text-white">
                 {displayName}
               </h2>
               {profile?.nip05 && (
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
                   {profile.nip05}
                 </p>
               )}
@@ -70,7 +70,7 @@ export function ConversationPage() {
       <div className="flex-1 overflow-y-auto p-4 bg-neutral-50 dark:bg-black">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full text-center">
-            <p className="text-gray-500 dark:text-gray-400">
+            <p className="text-neutral-500 dark:text-neutral-400">
               No messages yet. Start the conversation!
             </p>
           </div>

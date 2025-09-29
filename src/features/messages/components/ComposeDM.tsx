@@ -47,7 +47,7 @@ export function ComposeDM({ recipientPubkey }: ComposeDMProps) {
   };
 
   return (
-    <div className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-black p-4">
+    <div className="border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black p-4">
       <div className="flex items-end gap-2">
         <textarea
           value={message}
@@ -57,9 +57,9 @@ export function ComposeDM({ recipientPubkey }: ComposeDMProps) {
           disabled={isSending}
           className={cn(
             'flex-1 resize-none rounded-2xl px-4 py-3 text-sm',
-            'bg-neutral-100 dark:bg-black text-gray-900 dark:text-white',
-            'placeholder:text-gray-500 dark:placeholder:text-gray-400',
-            'focus:outline-none focus:ring-2 focus:ring-purple-600',
+            'bg-neutral-100 dark:bg-black text-neutral-900 dark:text-white',
+            'placeholder:text-neutral-500 dark:placeholder:text-neutral-400',
+            'focus:outline-none focus:ring-2 focus:ring-orange-600',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             'min-h-[44px] max-h-[120px]'
           )}
@@ -70,8 +70,8 @@ export function ComposeDM({ recipientPubkey }: ComposeDMProps) {
           disabled={!message.trim() || isSending}
           className={cn(
             'flex items-center justify-center w-10 h-10 rounded-full',
-            'bg-purple-600 text-white',
-            'hover:bg-purple-700 transition-colors',
+            'bg-orange-600 text-white',
+            'hover:bg-orange-700 transition-colors',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             'flex-shrink-0'
           )}

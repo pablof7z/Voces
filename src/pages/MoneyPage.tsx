@@ -196,7 +196,8 @@ export function MoneyPage() {
           </motion.button>
         </div>
 
-        <div className="px-6 py-6 border-t border-neutral-200 dark:border-neutral-800">
+        {/* Marketplace Section - Hidden on desktop (xl+), visible on mobile/tablet */}
+        <div className="xl:hidden px-6 py-6 border-t border-neutral-200 dark:border-neutral-800">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <ShoppingBag className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
@@ -249,7 +250,8 @@ export function MoneyPage() {
           </div>
         </div>
 
-        <div className="px-6 py-6 border-t border-neutral-200 dark:border-neutral-800">
+        {/* P2P Trades Section - Hidden on desktop (xl+), visible on mobile/tablet */}
+        <div className="xl:hidden px-6 py-6 border-t border-neutral-200 dark:border-neutral-800">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
@@ -321,7 +323,7 @@ export function MoneyPage() {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full py-3 bg-neutral-800/50 hover:bg-neutral-800 border border-gray-700/50 rounded-xl text-sm text-gray-400 hover:text-gray-300 transition-all"
+            className="w-full py-3 bg-neutral-800/50 hover:bg-neutral-800 border border-neutral-700/50 rounded-xl text-sm text-neutral-400 hover:text-neutral-300 transition-all"
           >
             View All Transactions
           </motion.button>

@@ -28,7 +28,7 @@ export function ProfileAvatar({
   return (
     <div className={cn("flex items-center gap-3", className)} style={style}>
       <div className={cn(
-        "rounded-full border-2 border-white dark:border-gray-950 overflow-hidden",
+        "rounded-full border-2 border-white dark:border-neutral-950 overflow-hidden",
         sizeClasses[size]
       )}>
         {profile?.picture ? (
@@ -39,7 +39,7 @@ export function ProfileAvatar({
           />
         ) : (
           <div className={cn(
-            "w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold",
+            "w-full h-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white font-bold",
             sizeClasses[size]
           )}>
             {(profile?.name || 'A')[0].toUpperCase()}
@@ -48,11 +48,11 @@ export function ProfileAvatar({
       </div>
       {showName && (
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-gray-900 dark:text-gray-100 truncate">
+          <p className="font-medium text-neutral-900 dark:text-neutral-100 truncate">
             {profile?.name || 'Anonymous'}
           </p>
           {profile?.nip05 && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
               @{profile.nip05}
             </p>
           )}

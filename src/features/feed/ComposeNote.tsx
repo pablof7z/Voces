@@ -63,7 +63,7 @@ export function ComposeNote({ onPublish }: ComposeNoteProps) {
                 className="w-12 h-12 rounded-full object-cover"
               />
             ) : (
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold text-lg">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white font-semibold text-lg">
                 {displayName[0]?.toUpperCase()}
               </div>
             )}
@@ -84,21 +84,21 @@ export function ComposeNote({ onPublish }: ComposeNoteProps) {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  className="p-2 rounded-full hover:bg-neutral-800/50 transition-colors text-neutral-500 hover:text-purple-400"
+                  className="p-2 rounded-full hover:bg-neutral-800/50 transition-colors text-neutral-500 hover:text-orange-500"
                   title="Add image (coming soon)"
                 >
                   <Image className="w-5 h-5" />
                 </button>
                 <button
                   type="button"
-                  className="p-2 rounded-full hover:bg-neutral-800/50 transition-colors text-neutral-500 hover:text-purple-400"
+                  className="p-2 rounded-full hover:bg-neutral-800/50 transition-colors text-neutral-500 hover:text-orange-500"
                   title="Add emoji (coming soon)"
                 >
                   <Smile className="w-5 h-5" />
                 </button>
                 <button
                   type="button"
-                  className="p-2 rounded-full hover:bg-neutral-800/50 transition-colors text-neutral-500 hover:text-purple-400"
+                  className="p-2 rounded-full hover:bg-neutral-800/50 transition-colors text-neutral-500 hover:text-orange-500"
                   title="Add location (coming soon)"
                 >
                   <MapPin className="w-5 h-5" />
@@ -131,7 +131,7 @@ export function ComposeNote({ onPublish }: ComposeNoteProps) {
                           "transition-all duration-150",
                           isOverLimit ? "text-red-500" :
                           remainingChars < 20 ? "text-yellow-500" :
-                          "text-purple-500"
+                          "text-orange-500"
                         )}
                       />
                     </svg>
@@ -153,7 +153,7 @@ export function ComposeNote({ onPublish }: ComposeNoteProps) {
                     "px-6 py-2 rounded-full font-semibold transition-all text-base",
                     (!content.trim() || isOverLimit)
                       ? "bg-neutral-800 text-neutral-600 cursor-not-allowed"
-                      : "bg-purple-600 text-white hover:bg-purple-700 shadow-lg shadow-purple-500/30"
+                      : "bg-orange-600 text-white hover:bg-orange-700 shadow-lg shadow-orange-500/30"
                   )}
                 >
                   {isPublishing ? (

@@ -30,6 +30,7 @@ import InviteOnboarding6 from './pages/invites/InviteOnboarding6';
 import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
 import { WalletInitializer } from './components/wallet/WalletInitializer';
 import { NotificationProvider } from './components/notifications/NotificationProvider';
+import { ThemeInitializer } from './components/ThemeInitializer';
 
 const queryClient = new QueryClient();
 
@@ -79,6 +80,7 @@ function AppRoutes() {
 function App({ isSSR = false }: { isSSR?: boolean }) {
   const content = (
     <>
+      <ThemeInitializer />
       <WalletInitializer />
       <NotificationProvider />
       <AppRoutes />

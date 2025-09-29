@@ -31,13 +31,13 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
   return (
     <div className="mb-12">
       {/* Title */}
-      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-[1.1] tracking-tight font-serif">
+      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-neutral-900 dark:text-white mb-6 leading-[1.1] tracking-tight font-serif">
         {title}
       </h1>
 
       {/* Summary */}
       {summary && (
-        <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-400 mb-8 leading-relaxed font-light">
+        <p className="text-xl sm:text-2xl text-neutral-600 dark:text-neutral-400 mb-8 leading-relaxed font-light">
           {summary}
         </p>
       )}
@@ -55,11 +55,11 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
         <div className="flex-1">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
             <Link to={`/p/${npub}`} className="group">
-              <div className="font-semibold text-lg text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              <div className="font-semibold text-lg text-neutral-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                 {authorName}
               </div>
               {authorBio && (
-                <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-1 max-w-md">
+                <p className="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-1 max-w-md">
                   {authorBio}
                 </p>
               )}
@@ -73,7 +73,7 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
       </div>
 
       {/* Article Metadata */}
-      <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+      <div className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
         {publishedAt && (
           <>
             <time dateTime={new Date(publishedAt * 1000).toISOString()}>
@@ -90,7 +90,7 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
       </div>
 
       {/* Divider */}
-      <div className="mt-8 border-t border-gray-200 dark:border-gray-800" />
+      <div className="mt-8 border-t border-neutral-200 dark:border-neutral-800" />
     </div>
   );
 }

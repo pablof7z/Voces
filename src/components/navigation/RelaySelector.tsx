@@ -55,7 +55,7 @@ export function RelaySelector() {
     if (!selectedRelay) {
       // Home icon for all relays
       return (
-        <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+        <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
           <Globe className="h-3.5 w-3.5 text-white" />
         </div>
       );
@@ -87,8 +87,8 @@ export function RelaySelector() {
       icon = <Shield className={`${iconClass} text-blue-600`} />;
       bgColor = 'bg-blue-100 dark:bg-blue-900/30';
     } else if (selectedRelayInfo?.software) {
-      icon = <Server className={`${iconClass} text-purple-600`} />;
-      bgColor = 'bg-purple-100 dark:bg-purple-900/30';
+      icon = <Server className={`${iconClass} text-orange-600`} />;
+      bgColor = 'bg-orange-100 dark:bg-orange-900/30';
     } else if (currentRelay) {
       // Default status indicator
       const isFullAccess = currentRelay.write && currentRelay.read;
@@ -98,8 +98,8 @@ export function RelaySelector() {
                 currentRelay.read ? 'bg-blue-100 dark:bg-blue-900/30' :
                 'bg-orange-100 dark:bg-orange-900/30';
     } else {
-      icon = <Server className={`${iconClass} text-gray-600`} />;
-      bgColor = 'bg-gray-100 dark:bg-gray-800';
+      icon = <Server className={`${iconClass} text-neutral-600`} />;
+      bgColor = 'bg-neutral-100 dark:bg-neutral-800';
     }
 
     return (
@@ -116,21 +116,21 @@ export function RelaySelector() {
         className="flex items-center gap-2 group"
       >
         {getHeaderRelayIcon()}
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
           {currentRelayDisplay}
         </h2>
-        <ChevronDown className={`h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform
-                                group-hover:text-gray-700 dark:group-hover:text-gray-200
+        <ChevronDown className={`h-5 w-5 text-neutral-500 dark:text-neutral-400 transition-transform
+                                group-hover:text-neutral-700 dark:group-hover:text-neutral-200
                                 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
         <div className="absolute top-full mt-2 left-0 w-72 bg-white dark:bg-neutral-900 rounded-xl shadow-2xl
-                        border border-gray-200 dark:border-neutral-700 overflow-hidden z-50">
+                        border border-neutral-200 dark:border-neutral-700 overflow-hidden z-50">
           <div className="p-2">
             {/* Header */}
-            <div className="px-3 py-2 border-b border-gray-200 dark:border-neutral-800 mb-2">
-              <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <div className="px-3 py-2 border-b border-neutral-200 dark:border-neutral-800 mb-2">
+              <h3 className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
                 Active Relays
               </h3>
             </div>
@@ -138,19 +138,19 @@ export function RelaySelector() {
             {/* All Relays option */}
             <button
               onClick={() => handleRelaySelect(null)}
-              className="w-full flex items-center justify-between px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200
-                         hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-all mb-1"
+              className="w-full flex items-center justify-between px-3 py-2.5 text-sm text-neutral-700 dark:text-neutral-200
+                         hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-all mb-1"
             >
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
                   <Globe className="h-4 w-4 text-white" />
                 </div>
                 <div className="text-left">
                   <div className="font-medium">Home (All Relays)</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">{enabledRelays.length} relays connected</div>
+                  <div className="text-xs text-neutral-500 dark:text-neutral-400">{enabledRelays.length} relays connected</div>
                 </div>
               </div>
-              {!selectedRelay && <Check className="h-5 w-5 text-purple-500" />}
+              {!selectedRelay && <Check className="h-5 w-5 text-orange-500" />}
             </button>
 
             {/* Divider */}
@@ -169,7 +169,7 @@ export function RelaySelector() {
                   />
                 ))
               ) : (
-                <div className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center">
+                <div className="px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400 text-center">
                   <p>No relays enabled</p>
                 </div>
               )}
@@ -185,7 +185,7 @@ export function RelaySelector() {
                 navigate('/settings');
               }}
               className="w-full flex items-center justify-center px-3 py-2.5 text-sm font-medium
-                         bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all"
+                         bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-all"
             >
               Manage Relays →
             </button>
@@ -234,7 +234,7 @@ function RelayItem({
       return <Shield className="h-4 w-4 text-blue-500" />;
     }
     if (info?.software) {
-      return <Server className="h-4 w-4 text-purple-500" />;
+      return <Server className="h-4 w-4 text-orange-500" />;
     }
 
     // Default status indicator
@@ -252,7 +252,7 @@ function RelayItem({
     if (info?.icon) return 'bg-neutral-100 dark:bg-neutral-800';
     if (info?.limitation?.payment_required) return 'bg-yellow-100 dark:bg-yellow-900/20';
     if (info?.limitation?.auth_required) return 'bg-blue-100 dark:bg-blue-900/20';
-    if (info?.software) return 'bg-purple-100 dark:bg-purple-900/20';
+    if (info?.software) return 'bg-orange-100 dark:bg-orange-900/20';
 
     return relay.write && relay.read ? 'bg-green-100 dark:bg-green-900/20' :
            relay.read ? 'bg-blue-100 dark:bg-blue-900/20' :
@@ -312,7 +312,7 @@ function RelayItem({
   return (
     <button
       onClick={onSelect}
-      className="w-full flex items-center justify-between px-3 py-2 text-sm text-gray-700 dark:text-gray-200
+      className="w-full flex items-center justify-between px-3 py-2 text-sm text-neutral-700 dark:text-neutral-200
                  hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg transition-all mb-1 group"
       title={getTooltip()}
     >
@@ -324,12 +324,12 @@ function RelayItem({
           <div className="font-medium truncate">
             {info?.name || getDisplayName(relay.url)}
           </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">
+          <div className="text-xs text-neutral-500 dark:text-neutral-400">
             {getStatusText()}
           </div>
         </div>
       </div>
-      {isSelected && <Check className="h-5 w-5 text-purple-500 flex-shrink-0 ml-2" />}
+      {isSelected && <Check className="h-5 w-5 text-orange-500 flex-shrink-0 ml-2" />}
     </button>
   );
 }

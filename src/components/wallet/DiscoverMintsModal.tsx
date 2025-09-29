@@ -199,7 +199,7 @@ export function DiscoverMintsModal({ isOpen, onClose }: DiscoverMintsModalProps)
         <div className="flex-1 overflow-y-auto -mx-6 px-6">
           {isDiscovering && discoveredMints.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 text-purple-600 animate-spin mb-4" />
+              <Loader2 className="w-8 h-8 text-orange-600 animate-spin mb-4" />
               <p className="text-sm text-neutral-500 dark:text-neutral-400">
                 Discovering mints from the network...
               </p>
@@ -214,7 +214,7 @@ export function DiscoverMintsModal({ isOpen, onClose }: DiscoverMintsModalProps)
               </p>
               <button
                 onClick={handleDiscoverMints}
-                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-colors"
+                className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors"
               >
                 Try Again
               </button>
@@ -298,7 +298,7 @@ export function DiscoverMintsModal({ isOpen, onClose }: DiscoverMintsModalProps)
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => handleAddMint(mint)}
-                      className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-colors flex-shrink-0"
+                      className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors flex-shrink-0"
                     >
                       Add
                     </motion.button>
@@ -323,7 +323,7 @@ export function DiscoverMintsModal({ isOpen, onClose }: DiscoverMintsModalProps)
               </button>
               <button
                 onClick={handleClose}
-                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-colors"
+                className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors"
               >
                 Done
               </button>

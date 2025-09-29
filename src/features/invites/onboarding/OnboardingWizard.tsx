@@ -44,7 +44,7 @@ export function OnboardingWizard({ theme, decryptedPayload }: OnboardingWizardPr
           <motion.div key="welcome" custom={direction} variants={variants} initial="enter" animate="center" exit="exit" className="text-center">
             <InviterBranding inviter={MOCK_INVITER} />
             {decryptedPayload?.message && (
-                <div className="bg-purple-100 border-l-4 border-purple-500 text-purple-700 p-4 mt-6 text-left">
+                <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 mt-6 text-left">
                     <p className="font-bold">A message from {MOCK_INVITER.name}:</p>
                     <p>&ldquo;{decryptedPayload.message}&rdquo;</p>
                 </div>
@@ -78,7 +78,7 @@ export function OnboardingWizard({ theme, decryptedPayload }: OnboardingWizardPr
             <motion.div key="complete" custom={direction} variants={variants} initial="enter" animate="center" exit="exit" className="text-center">
                 <PartyPopper size={64} className="mx-auto text-yellow-500 mb-4"/>
                 <h2 className="text-2xl font-bold">Welcome to Voces!</h2>
-                <p className="text-gray-600 mt-2">Your profile is live and your first post is out in the wild.</p>
+                <p className="text-neutral-600 mt-2">Your profile is live and your first post is out in the wild.</p>
                 <Button size="lg" className="mt-8">Explore Voces</Button>
             </motion.div>
         );
@@ -90,9 +90,9 @@ export function OnboardingWizard({ theme, decryptedPayload }: OnboardingWizardPr
 
   const themeClasses = {
       minimal: 'bg-neutral-50',
-      playful: 'bg-gradient-to-br from-purple-50 to-pink-50',
+      playful: 'bg-gradient-to-br from-orange-50 to-red-50',
       modern: 'bg-black text-white',
-      luxury: 'bg-gradient-to-br from-gray-800 via-black to-black text-white'
+      luxury: 'bg-gradient-to-br from-neutral-800 via-black to-black text-white'
   }[theme];
 
   return (

@@ -43,10 +43,10 @@ export function ArticlePreviewCard({ article, variant = 'default' }: ArticlePrev
             <FileText className="w-5 h-5 text-accent-600 dark:text-accent-400" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-sm text-gray-900 dark:text-white line-clamp-2 mb-1">
+            <h3 className="font-semibold text-sm text-neutral-900 dark:text-white line-clamp-2 mb-1">
               {title}
             </h3>
-            <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
               <span>{authorProfile?.name || authorProfile?.displayName || 'Anonymous'}</span>
               {publishedAt && (
                 <>
@@ -64,17 +64,17 @@ export function ArticlePreviewCard({ article, variant = 'default' }: ArticlePrev
   return (
     <Link
       to={`/article/${naddr}`}
-      className="block p-4 sm:p-6 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors border-b border-gray-200 dark:border-gray-800 last:border-b-0"
+      className="block p-4 sm:p-6 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors border-b border-neutral-200 dark:border-neutral-800 last:border-b-0"
     >
       <div className="flex gap-4 sm:gap-6">
         <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-xl sm:text-2xl text-gray-900 dark:text-white mb-2 line-clamp-2 font-serif">
+          <h3 className="font-bold text-xl sm:text-2xl text-neutral-900 dark:text-white mb-2 line-clamp-2 font-serif">
             {title}
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base mb-4 line-clamp-3 leading-relaxed">
+          <p className="text-neutral-600 dark:text-neutral-400 text-sm sm:text-base mb-4 line-clamp-3 leading-relaxed">
             {excerpt}
           </p>
-          <div className="flex items-center gap-3 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-3 text-xs sm:text-sm text-neutral-500 dark:text-neutral-400">
             <span className="font-medium">{authorProfile?.name || authorProfile?.displayName || 'Anonymous'}</span>
             {publishedAt && (
               <>

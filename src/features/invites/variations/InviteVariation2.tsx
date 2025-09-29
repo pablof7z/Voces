@@ -70,14 +70,14 @@ const InviteVariation2 = () => {
         className="p-4 border rounded-lg cursor-pointer hover:bg-neutral-50 mb-3"
       >
         <p className="font-bold">Everyone</p>
-        <p className="text-sm text-gray-500">Create a generic link to share anywhere.</p>
+        <p className="text-sm text-neutral-500">Create a generic link to share anywhere.</p>
       </div>
       <div
         onClick={() => { setInviteType(InviteType.Personalized); handleNext(); }}
         className="p-4 border rounded-lg cursor-pointer hover:bg-neutral-50"
       >
         <p className="font-bold">Someone Specific</p>
-        <p className="text-sm text-gray-500">Personalize the invite with a name and message.</p>
+        <p className="text-sm text-neutral-500">Personalize the invite with a name and message.</p>
       </div>
     </motion.div>
   );

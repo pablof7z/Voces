@@ -8,7 +8,7 @@ export function ComposePage() {
   return (
     <div className="max-w-2xl mx-auto">
       {/* Page header */}
-      <div className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+      <div className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-800">
         <div className="flex items-center gap-4 px-4 py-3 sm:px-6">
           <button
             onClick={() => navigate(-1)}
@@ -16,7 +16,7 @@ export function ComposePage() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Compose</h2>
+          <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Compose</h2>
         </div>
       </div>
       

@@ -135,7 +135,7 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-black rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 p-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-white dark:bg-black border-b border-neutral-200 dark:border-neutral-800 p-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold">Edit Profile</h2>
           <button
             onClick={onClose}
@@ -153,7 +153,7 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
             <Label>Banner</Label>
             <div className="mt-2">
               <div
-                className="h-32 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg relative overflow-hidden cursor-pointer group"
+                className="h-32 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg relative overflow-hidden cursor-pointer group"
                 onClick={() => bannerInputRef.current?.click()}
                 style={formData.banner ? { backgroundImage: `url(${formData.banner})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
               >
@@ -178,7 +178,7 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
             <div className="mt-2">
               <div className="flex items-center space-x-4">
                 <div
-                  className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 relative overflow-hidden cursor-pointer group"
+                  className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 to-red-500 relative overflow-hidden cursor-pointer group"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   {formData.picture ? (
@@ -243,8 +243,8 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
           {/* About - WYSIWYG */}
           <div>
             <Label htmlFor="about">About</Label>
-            <div className="mt-2 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-              <div className="bg-neutral-50 dark:bg-black px-3 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-2">
+            <div className="mt-2 border border-neutral-200 dark:border-neutral-700 rounded-lg overflow-hidden">
+              <div className="bg-neutral-50 dark:bg-black px-3 py-2 border-b border-neutral-200 dark:border-neutral-700 flex items-center space-x-2">
                 <button
                   type="button"
                   className="px-2 py-1 text-sm font-medium hover:bg-neutral-200 dark:hover:bg-neutral-900 rounded"
@@ -285,7 +285,7 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
                 rows={5}
               />
             </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
               Supports markdown formatting
             </p>
           </div>
@@ -328,10 +328,10 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 p-4 flex justify-end space-x-3">
+        <div className="sticky bottom-0 bg-white dark:bg-black border-t border-neutral-200 dark:border-neutral-800 p-4 flex justify-end space-x-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg transition-colors"
+            className="px-4 py-2 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg transition-colors"
             disabled={isSubmitting}
           >
             Cancel
@@ -339,7 +339,7 @@ export function ProfileEditor({ pubkey, onClose, onSave }: ProfileEditorProps) {
           <button
             onClick={handleSubmit}
             disabled={isSubmitting || isUploading}
-            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+            className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
           >
             {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
             <span>{isSubmitting ? 'Saving...' : 'Save Changes'}</span>

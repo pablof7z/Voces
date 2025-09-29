@@ -13,7 +13,7 @@ interface CompactFiltersProps {
 }
 
 const orderTypes = [
-  { value: 'all', label: 'All', color: 'text-gray-700' },
+  { value: 'all', label: 'All', color: 'text-neutral-700' },
   { value: 'buy', label: 'Buy', color: 'text-green-600' },
   { value: 'sell', label: 'Sell', color: 'text-red-600' },
 ];
@@ -44,14 +44,14 @@ function Dropdown({
     <div ref={dropdownRef} className={`relative ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 px-3 py-1.5 bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded-lg text-sm font-medium hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+        className="flex items-center gap-1 px-3 py-1.5 bg-white dark:bg-black border border-neutral-300 dark:border-neutral-700 rounded-lg text-sm font-medium hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
       >
         {renderValue(value)}
         <ChevronDown className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full mt-1 left-0 w-max min-w-[120px] bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-[100] max-h-64 overflow-y-auto">
+        <div className="absolute top-full mt-1 left-0 w-max min-w-[120px] bg-white dark:bg-black border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg z-[100] max-h-64 overflow-y-auto">
           {options.map((option: any) => (
             <button
               key={option.value || option.code || option.id}
@@ -78,7 +78,7 @@ export function CompactFilters({ filters, onFiltersChange }: CompactFiltersProps
   const selectedPayment = paymentMethods.find(p => p.id === filters.paymentMethod);
 
   return (
-    <div className="relative flex items-center gap-2 p-3 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 overflow-visible">
+    <div className="relative flex items-center gap-2 p-3 bg-white dark:bg-black border-b border-neutral-200 dark:border-neutral-800 overflow-visible">
       {/* Order Type Dropdown */}
       <Dropdown
         value={filters.orderType}
@@ -143,7 +143,7 @@ export function CompactFilters({ filters, onFiltersChange }: CompactFiltersProps
             paymentMethod: 'all',
             orderType: 'all'
           })}
-          className="ml-auto px-2 py-1 text-xs text-purple-600 dark:text-purple-400 hover:underline"
+          className="ml-auto px-2 py-1 text-xs text-orange-600 dark:text-orange-500 hover:underline"
         >
           Clear
         </button>

@@ -57,9 +57,9 @@ export function NavItems() {
               key={path}
               to={path}
               className={cn(
-                'relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium text-sm group',
+                'relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium text-lg group',
                 isActive
-                  ? 'bg-orange-700/20 text-white border border-orange-600/30'
+                  ? 'text-orange-500'
                   : 'text-neutral-400 hover:bg-neutral-900/50 hover:text-neutral-200'
               )}
             >
@@ -84,9 +84,9 @@ export function NavItems() {
           <button
             onClick={() => setShowMoreMenu(!showMoreMenu)}
             className={cn(
-              'w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium text-sm group',
+              'w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium text-lg group',
               isMoreActive
-                ? 'bg-orange-700/20 text-white border border-orange-600/30'
+                ? 'text-orange-500'
                 : 'text-neutral-400 hover:bg-neutral-900/50 hover:text-neutral-200'
             )}
           >
@@ -114,9 +114,9 @@ export function NavItems() {
                     to={path}
                     onClick={() => setShowMoreMenu(false)}
                     className={cn(
-                      'flex items-center gap-3 px-4 py-3 transition-all duration-200 font-medium text-sm',
+                      'flex items-center gap-3 px-4 py-3 transition-all duration-200 font-medium text-lg',
                       isActive
-                        ? 'bg-orange-700/20 text-white'
+                        ? 'text-orange-500'
                         : 'text-neutral-400 hover:bg-neutral-800/50 hover:text-neutral-200'
                     )}
                   >
@@ -134,7 +134,7 @@ export function NavItems() {
 
         <button
           onClick={() => setIsComposeOpen(true)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 mt-6 rounded-full bg-orange-600 hover:bg-orange-700 text-white font-semibold text-sm transition-all duration-300"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 mt-6 rounded-full bg-orange-600 hover:bg-orange-700 text-white font-semibold text-lg transition-all duration-300"
         >
           <Edit3 className="w-5 h-5" strokeWidth={2} />
           <span>{t('navigation.compose')}</span>

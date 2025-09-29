@@ -26,7 +26,7 @@ export function MobileFilters({
   return (
     <>
       {/* Compact Filter Bar */}
-      <div className="flex gap-2 p-3 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
+      <div className="flex gap-2 p-3 bg-white dark:bg-black border-b border-neutral-200 dark:border-neutral-800">
         <button
           onClick={() => setShowFilters(true)}
           className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-neutral-100 dark:bg-black rounded-lg text-sm"
@@ -34,7 +34,7 @@ export function MobileFilters({
           <Filter className="w-4 h-4" />
           <span className="font-medium">Filters</span>
           {(selectedCurrency !== 'all' || selectedPaymentMethod !== 'all') && (
-            <span className="px-2 py-0.5 bg-purple-600 text-white rounded-full text-xs">
+            <span className="px-2 py-0.5 bg-orange-600 text-white rounded-full text-xs">
               {[selectedCurrency !== 'all' && selectedCurrency, selectedPaymentMethod !== 'all' && selectedPaymentMethod].filter(Boolean).length}
             </span>
           )}
@@ -43,7 +43,7 @@ export function MobileFilters({
         {selectedCurrency !== 'all' && (
           <button
             onClick={() => onCurrencyChange('all')}
-            className="flex items-center gap-1 px-3 py-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-sm"
+            className="flex items-center gap-1 px-3 py-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg text-sm"
           >
             <span>{selectedCurrencyData?.flag}</span>
             <span className="font-medium">{selectedCurrency}</span>
@@ -54,7 +54,7 @@ export function MobileFilters({
         {selectedPaymentMethod !== 'all' && (
           <button
             onClick={() => onPaymentMethodChange('all')}
-            className="flex items-center gap-1 px-3 py-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-sm"
+            className="flex items-center gap-1 px-3 py-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg text-sm"
           >
             <span>{selectedPaymentData?.icon}</span>
             <span className="font-medium">{selectedPaymentMethod}</span>
@@ -67,7 +67,7 @@ export function MobileFilters({
       {showFilters && (
         <div className="fixed inset-0 z-50 bg-white dark:bg-black">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
+          <div className="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-800">
             <h2 className="text-lg font-semibold">Filters</h2>
             <button
               onClick={() => setShowFilters(false)}
@@ -81,7 +81,7 @@ export function MobileFilters({
           <div className="p-4 space-y-6 overflow-y-auto max-h-[calc(100vh-140px)]">
             {/* Currency */}
             <div>
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Currency</h3>
+              <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-3">Currency</h3>
               <div className="grid grid-cols-4 gap-2">
                 {currencies.map((currency) => (
                   <button
@@ -90,7 +90,7 @@ export function MobileFilters({
                     className={`
                       flex flex-col items-center gap-1 p-3 rounded-lg transition-all
                       ${selectedCurrency === currency.code
-                        ? 'bg-purple-600 text-white'
+                        ? 'bg-orange-600 text-white'
                         : 'bg-neutral-100 dark:bg-black hover:bg-neutral-200 dark:hover:bg-neutral-900'
                       }
                     `}
@@ -104,7 +104,7 @@ export function MobileFilters({
 
             {/* Payment Method */}
             <div>
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Payment Method</h3>
+              <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-3">Payment Method</h3>
               <div className="space-y-2">
                 {paymentMethods.map((method) => (
                   <button
@@ -113,7 +113,7 @@ export function MobileFilters({
                     className={`
                       w-full flex items-center gap-3 p-3 rounded-lg transition-all
                       ${selectedPaymentMethod === method.id
-                        ? 'bg-purple-600 text-white'
+                        ? 'bg-orange-600 text-white'
                         : 'bg-neutral-100 dark:bg-black hover:bg-neutral-200 dark:hover:bg-neutral-900'
                       }
                     `}
@@ -127,20 +127,20 @@ export function MobileFilters({
           </div>
 
           {/* Footer */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800">
+          <div className="absolute bottom-0 left-0 right-0 p-4 bg-white dark:bg-black border-t border-neutral-200 dark:border-neutral-800">
             <div className="flex gap-2">
               <button
                 onClick={() => {
                   onCurrencyChange('all');
                   onPaymentMethodChange('all');
                 }}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900"
+                className="flex-1 px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900"
               >
                 Clear All
               </button>
               <button
                 onClick={() => setShowFilters(false)}
-                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700"
               >
                 Apply Filters
               </button>

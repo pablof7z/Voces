@@ -19,9 +19,9 @@ export function GeneratedLink({ url }: GeneratedLinkProps) {
 
   return (
     <div className="mt-6 text-center">
-      <h3 className="font-semibold text-gray-700 mb-2">Your Invite is Ready!</h3>
-      <div className="relative bg-neutral-100 border-2 border-dashed border-gray-300 rounded-lg p-3 flex items-center justify-between">
-        <span className="text-purple-600 font-mono text-sm truncate pr-16">{url}</span>
+      <h3 className="font-semibold text-neutral-700 mb-2">Your Invite is Ready!</h3>
+      <div className="relative bg-neutral-100 border-2 border-dashed border-neutral-300 rounded-lg p-3 flex items-center justify-between">
+        <span className="text-orange-600 font-mono text-sm truncate pr-16">{url}</span>
         <button
           onClick={handleCopy}
           className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-neutral-50"
@@ -35,13 +35,13 @@ export function GeneratedLink({ url }: GeneratedLinkProps) {
               exit={{ scale: 0.5, opacity: 0, rotate: 45 }}
               transition={{ duration: 0.2 }}
             >
-              {copied ? <Check className="text-green-500" size={20} /> : <Copy className="text-gray-500" size={20} />}
+              {copied ? <Check className="text-green-500" size={20} /> : <Copy className="text-neutral-500" size={20} />}
             </motion.div>
           </AnimatePresence>
         </button>
       </div>
       <div className="mt-4">
-        <button className="bg-purple-600 text-white font-bold py-2 px-4 rounded-full w-full max-w-xs mx-auto flex items-center justify-center gap-2 hover:bg-purple-700 transition-all transform hover:scale-105">
+        <button className="bg-orange-600 text-white font-bold py-2 px-4 rounded-full w-full max-w-xs mx-auto flex items-center justify-center gap-2 hover:bg-orange-700 transition-all transform hover:scale-105">
           <Share2 size={18} />
           Share Invite
         </button>

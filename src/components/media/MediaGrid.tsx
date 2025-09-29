@@ -69,23 +69,23 @@ function MediaItem({ event, imeta }: MediaItemProps) {
             />
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="w-16 h-16 bg-white/90 dark:bg-black/90 rounded-full flex items-center justify-center">
-                <Play className="w-8 h-8 text-gray-900 dark:text-white ml-1" />
+                <Play className="w-8 h-8 text-neutral-900 dark:text-white ml-1" />
               </div>
             </div>
           </div>
         )}
 
         {mediaType === 'audio' && (
-          <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
             <Music className="w-16 h-16 text-white" />
           </div>
         )}
 
         {mediaType === 'file' && (
           <div className="w-full h-full bg-neutral-200 dark:bg-black flex flex-col items-center justify-center gap-2">
-            <FileImage className="w-16 h-16 text-gray-500" />
+            <FileImage className="w-16 h-16 text-neutral-500" />
             {imeta.url && (
-              <span className="text-xs text-gray-600 dark:text-gray-400 px-2 text-center">
+              <span className="text-xs text-neutral-600 dark:text-neutral-400 px-2 text-center">
                 {imeta.url.split('/').pop()?.substring(0, 20)}...
               </span>
             )}
@@ -168,7 +168,7 @@ export function MediaGrid({ events }: MediaGridProps) {
 
   if (mediaItems.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+      <div className="text-center py-8 text-neutral-500 dark:text-neutral-400">
         No media uploaded yet
       </div>
     );

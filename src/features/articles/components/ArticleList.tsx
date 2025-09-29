@@ -12,7 +12,7 @@ export function ArticleList({
 }: ArticleListProps) {
   if (articles.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+      <div className="text-center py-12 text-neutral-500 dark:text-neutral-400">
         {emptyMessage}
       </div>
     );

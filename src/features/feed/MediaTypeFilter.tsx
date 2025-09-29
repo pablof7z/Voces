@@ -21,15 +21,15 @@ export function MediaTypeFilter({ selected, onSelect, showArticles = true }: Med
   const filteredTypes = showArticles ? mediaTypes : mediaTypes.filter(t => t.id !== 'articles');
 
   return (
-    <div className="flex gap-2 px-4 sm:px-6 py-3 overflow-x-auto scrollbar-hide border-b border-gray-200 dark:border-gray-800">
+    <div className="flex gap-2 px-4 sm:px-6 py-3 overflow-x-auto scrollbar-hide border-b border-neutral-200 dark:border-neutral-800">
       {filteredTypes.map(({ id, icon: Icon }) => (
         <button
           key={id}
           onClick={() => onSelect(id)}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all whitespace-nowrap text-sm ${
             selected === id
-              ? 'bg-purple-600 dark:bg-purple-500 text-white'
-              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/50'
+              ? 'bg-orange-600 dark:bg-orange-500 text-white'
+              : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/50'
           }`}
         >
           <Icon className="w-4 h-4" />

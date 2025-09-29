@@ -31,12 +31,12 @@ export function ConversationListItem({ conversation }: ConversationListItemProps
               className="w-12 h-12 rounded-full object-cover"
             />
           ) : (
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white font-semibold">
               {displayName.charAt(0).toUpperCase()}
             </div>
           )}
           {conversation.unreadCount > 0 && (
-            <div className="absolute -top-1 -right-1 w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-orange-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
               {conversation.unreadCount}
             </div>
           )}
@@ -47,12 +47,12 @@ export function ConversationListItem({ conversation }: ConversationListItemProps
             <h3
               className={cn(
                 'font-semibold truncate',
-                conversation.unreadCount > 0 ? 'text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'
+                conversation.unreadCount > 0 ? 'text-neutral-900 dark:text-white' : 'text-neutral-700 dark:text-neutral-300'
               )}
             >
               {displayName}
             </h3>
-            <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">
+            <span className="text-xs text-neutral-500 dark:text-neutral-400 flex-shrink-0 ml-2">
               {timeAgo}
             </span>
           </div>
@@ -60,8 +60,8 @@ export function ConversationListItem({ conversation }: ConversationListItemProps
             className={cn(
               'text-sm truncate',
               conversation.unreadCount > 0
-                ? 'text-gray-900 dark:text-white font-medium'
-                : 'text-gray-600 dark:text-gray-400'
+                ? 'text-neutral-900 dark:text-white font-medium'
+                : 'text-neutral-600 dark:text-neutral-400'
             )}
           >
             {lastMessagePreview}

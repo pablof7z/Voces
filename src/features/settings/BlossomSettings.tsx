@@ -83,7 +83,7 @@ export function BlossomSettings() {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-semibold mb-2">Blossom Media Servers</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
           Configure your Blossom servers for uploading images and media. The first server is your primary upload destination, and additional servers are used as mirrors for redundancy.
         </p>
       </div>
@@ -102,7 +102,7 @@ export function BlossomSettings() {
                   <button
                     onClick={() => moveServerUp(index)}
                     disabled={index === 0}
-                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed p-0.5"
+                    className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 disabled:opacity-30 disabled:cursor-not-allowed p-0.5"
                     aria-label="Move up"
                   >
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +112,7 @@ export function BlossomSettings() {
                   <button
                     onClick={() => moveServerDown(index)}
                     disabled={index === servers.length - 1}
-                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed p-0.5"
+                    className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 disabled:opacity-30 disabled:cursor-not-allowed p-0.5"
                     aria-label="Move down"
                   >
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,7 +124,7 @@ export function BlossomSettings() {
                   <div className="flex items-center space-x-2">
                     <span className="font-medium">{server}</span>
                     {index === 0 && (
-                      <span className="text-xs bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded">
+                      <span className="text-xs bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 px-2 py-0.5 rounded">
                         Primary
                       </span>
                     )}
@@ -133,7 +133,7 @@ export function BlossomSettings() {
                     href={server}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 flex items-center space-x-1"
+                    className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-orange-600 dark:hover:text-orange-500 flex items-center space-x-1"
                   >
                     <span>Visit server</span>
                     <ExternalLink className="w-3 h-3" />
@@ -156,7 +156,7 @@ export function BlossomSettings() {
 
       {/* Add server */}
       {isAddingServer ? (
-        <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+        <div className="border border-neutral-200 dark:border-neutral-700 rounded-lg p-4">
           <Label htmlFor="new-server">Add Blossom Server</Label>
           <div className="flex space-x-2 mt-2">
             <Input
@@ -168,7 +168,7 @@ export function BlossomSettings() {
             />
             <button
               onClick={addServer}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+              className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
             >
               Add
             </button>
@@ -177,7 +177,7 @@ export function BlossomSettings() {
                 setIsAddingServer(false);
                 setNewServer('');
               }}
-              className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              className="p-2 text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
             >
               <X className="w-5 h-5" />
             </button>
@@ -186,7 +186,7 @@ export function BlossomSettings() {
       ) : (
         <button
           onClick={() => setIsAddingServer(true)}
-          className="flex items-center space-x-2 px-4 py-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-colors"
+          className="flex items-center space-x-2 px-4 py-2 text-orange-600 dark:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors"
         >
           <Plus className="w-4 h-4" />
           <span>Add Server</span>
@@ -194,9 +194,9 @@ export function BlossomSettings() {
       )}
 
       {/* Suggested servers */}
-      <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+      <div className="border-t border-neutral-200 dark:border-neutral-700 pt-4">
         <Label>Suggested Servers</Label>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
           Popular public Blossom servers you can add to your list
         </p>
         <div className="space-y-2">
@@ -208,14 +208,14 @@ export function BlossomSettings() {
               <span className="text-sm">{server}</span>
               <button
                 onClick={() => saveServers([...servers, server])}
-                className="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
+                className="text-sm text-orange-600 dark:text-orange-500 hover:text-orange-700 dark:hover:text-orange-300"
               >
                 Add
               </button>
             </div>
           ))}
           {DEFAULT_SERVERS.every(s => servers.includes(s)) && (
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
               All suggested servers have been added
             </p>
           )}

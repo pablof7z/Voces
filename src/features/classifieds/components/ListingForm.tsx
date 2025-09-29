@@ -243,13 +243,13 @@ export function ListingForm({ onSubmit, initialData, isSubmitting }: ListingForm
               {formData.categories.map(category => (
                 <div
                   key={category}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400 rounded-full text-sm"
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-500 rounded-full text-sm"
                 >
                   <span>{category}</span>
                   <button
                     type="button"
                     onClick={() => removeCategory(category)}
-                    className="hover:text-purple-600"
+                    className="hover:text-orange-600"
                   >
                     <X className="w-3 h-3" />
                   </button>

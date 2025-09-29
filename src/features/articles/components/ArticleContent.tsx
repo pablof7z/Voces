@@ -35,17 +35,17 @@ export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
           components={{
             // Headings
             h1: ({ children }) => (
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mt-12 mb-6 font-serif">
+              <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white mt-12 mb-6 font-serif">
                 {children}
               </h1>
             ),
             h2: ({ children }) => (
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mt-10 mb-5 font-serif">
+              <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-white mt-10 mb-5 font-serif">
                 {children}
               </h2>
             ),
             h3: ({ children }) => (
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4 font-serif">
+              <h3 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white mt-8 mb-4 font-serif">
                 {children}
               </h3>
             ),
@@ -59,7 +59,7 @@ export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
               // If we have text content, use ContentRenderer for Nostr entity support
               if (textContent) {
                 return (
-                  <div className="text-lg leading-[1.8] text-gray-800 dark:text-gray-200 mb-6 font-serif">
+                  <div className="text-lg leading-[1.8] text-neutral-800 dark:text-neutral-200 mb-6 font-serif">
                     <ContentRenderer content={textContent.trim()} emojiTags={emojiTags} />
                   </div>
                 );
@@ -67,7 +67,7 @@ export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
 
               // Otherwise render normally
               return (
-                <p className="text-lg leading-[1.8] text-gray-800 dark:text-gray-200 mb-6 font-serif">
+                <p className="text-lg leading-[1.8] text-neutral-800 dark:text-neutral-200 mb-6 font-serif">
                   {children}
                 </p>
               );
@@ -75,12 +75,12 @@ export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
 
             // Lists
             ul: ({ children }) => (
-              <ul className="list-disc pl-6 mb-6 space-y-2 text-lg text-gray-800 dark:text-gray-200 font-serif">
+              <ul className="list-disc pl-6 mb-6 space-y-2 text-lg text-neutral-800 dark:text-neutral-200 font-serif">
                 {children}
               </ul>
             ),
             ol: ({ children }) => (
-              <ol className="list-decimal pl-6 mb-6 space-y-2 text-lg text-gray-800 dark:text-gray-200 font-serif">
+              <ol className="list-decimal pl-6 mb-6 space-y-2 text-lg text-neutral-800 dark:text-neutral-200 font-serif">
                 {children}
               </ol>
             ),
@@ -92,8 +92,8 @@ export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
 
             // Blockquotes
             blockquote: ({ children }) => (
-              <blockquote className="border-l-4 border-gray-300 dark:border-gray-700 pl-6 my-8 italic">
-                <div className="text-xl text-gray-700 dark:text-gray-300 font-serif leading-[1.8]">
+              <blockquote className="border-l-4 border-neutral-300 dark:border-neutral-700 pl-6 my-8 italic">
+                <div className="text-xl text-neutral-700 dark:text-neutral-300 font-serif leading-[1.8]">
                   {children}
                 </div>
               </blockquote>
@@ -105,14 +105,14 @@ export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
 
               if (isInline) {
                 return (
-                  <code className="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-900 text-gray-800 dark:text-gray-200 rounded text-sm font-mono">
+                  <code className="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 rounded text-sm font-mono">
                     {children}
                   </code>
                 );
               }
 
               return (
-                <code className="block bg-neutral-50 dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg p-4 overflow-x-auto text-sm font-mono leading-relaxed mb-6">
+                <code className="block bg-neutral-50 dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-lg p-4 overflow-x-auto text-sm font-mono leading-relaxed mb-6">
                   {children}
                 </code>
               );
@@ -145,7 +145,7 @@ export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
                   loading="lazy"
                 />
                 {alt && (
-                  <figcaption className="text-center text-sm text-gray-600 dark:text-gray-400 mt-3 font-sans">
+                  <figcaption className="text-center text-sm text-neutral-600 dark:text-neutral-400 mt-3 font-sans">
                     {alt}
                   </figcaption>
                 )}
@@ -154,12 +154,12 @@ export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
 
             // Horizontal rule
             hr: () => (
-              <hr className="my-12 border-t border-gray-200 dark:border-gray-800" />
+              <hr className="my-12 border-t border-neutral-200 dark:border-neutral-800" />
             ),
 
             // Strong/Bold
             strong: ({ children }) => (
-              <strong className="font-bold text-gray-900 dark:text-white">
+              <strong className="font-bold text-neutral-900 dark:text-white">
                 {children}
               </strong>
             ),
@@ -180,7 +180,7 @@ export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
 
   // If no markdown, use ContentRenderer directly for plain text with Nostr entities
   return (
-    <div className="article-content text-lg leading-[1.8] text-gray-800 dark:text-gray-200 font-serif">
+    <div className="article-content text-lg leading-[1.8] text-neutral-800 dark:text-neutral-200 font-serif">
       <ContentRenderer content={content.trim()} emojiTags={emojiTags} className="space-y-6" />
     </div>
   );

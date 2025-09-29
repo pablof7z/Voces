@@ -144,7 +144,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               <div className="relative pt-20">
                 <div className="text-center mb-6">
                   <h2 className="text-3xl font-bold mb-3">Your Voice Matters</h2>
-                  <p className="text-gray-600 dark:text-gray-400 text-lg">
+                  <p className="text-neutral-600 dark:text-neutral-400 text-lg">
                     Join a global community where every story counts
                   </p>
                 </div>
@@ -157,7 +157,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Own Your Voice</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400">
                         No censorship. No gatekeepers. Your content, your control, forever.
                       </p>
                     </div>
@@ -169,7 +169,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Earn From Your Stories</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400">
                         Get paid instantly in Bitcoin for valuable content. No banks, no fees.
                       </p>
                     </div>
@@ -181,7 +181,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Connect With Your Community</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400">
                         Trade, share, and build with people who understand your journey.
                       </p>
                     </div>
@@ -200,15 +200,15 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
                   <button
                     onClick={() => setModalState('login')}
-                    className="w-full text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+                    className="w-full text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors"
                   >
                     Already have a Nostr account? <span className="font-semibold underline">Sign in here</span>
                   </button>
                 </div>
 
                 {/* Trust Signals */}
-                <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-800">
-                  <p className="text-xs text-center text-gray-500 dark:text-gray-500">
+                <div className="mt-6 pt-6 border-t border-neutral-200 dark:border-neutral-800">
+                  <p className="text-xs text-center text-neutral-500 dark:text-neutral-500">
                     Built on Nostr protocol • No personal data required • Leave anytime with your content
                   </p>
                 </div>
@@ -283,7 +283,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
                   <button
                     onClick={() => setModalState('signup')}
-                    className="w-full text-center text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+                    className="w-full text-center text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors"
                   >
                     <span className="font-semibold underline">Create a new account</span>
                   </button>

@@ -38,7 +38,7 @@ export function TransactionButton({
           p-3 rounded-full transition-all
           ${isSend 
             ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-            : 'bg-neutral-100 hover:bg-neutral-200 text-gray-700'
+            : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
           }
           ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `}
@@ -59,7 +59,7 @@ export function TransactionButton({
           flex flex-col items-center justify-center p-6 rounded-2xl transition-all w-full
           ${isSend 
             ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/20' 
-            : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-gray-300'
+            : 'bg-white border-2 border-neutral-200 text-neutral-700 hover:border-neutral-300'
           }
           ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `}
@@ -88,7 +88,7 @@ export function TransactionButton({
         flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all
         ${isSend 
           ? 'bg-black hover:bg-neutral-950 text-white' 
-          : 'bg-white hover:bg-neutral-50 text-gray-900 border border-gray-200'
+          : 'bg-white hover:bg-neutral-50 text-neutral-900 border border-neutral-200'
         }
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
       `}

@@ -48,7 +48,7 @@ export function CommentForm({ article, onCommentPublished, onError }: CommentFor
             value={replyContent}
             onChange={(e) => setReplyContent(e.target.value)}
             placeholder="Share your thoughts..."
-            className="w-full p-3 bg-neutral-50 dark:bg-neutral-900 border border-gray-200 dark:border-gray-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all min-h-[100px] text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
+            className="w-full p-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all min-h-[100px] text-neutral-900 dark:text-white placeholder:text-neutral-500 dark:placeholder:text-neutral-400"
             disabled={isSubmitting}
           />
           <div className="flex justify-end mt-2">

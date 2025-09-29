@@ -93,7 +93,7 @@ export function FollowPacksPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-          <Package className="w-8 h-8 text-purple-500" />
+          <Package className="w-8 h-8 text-orange-500" />
           Follow Packs
         </h1>
         <p className="text-neutral-400">
@@ -148,9 +148,9 @@ export function FollowPacksPage() {
               >
                 {isLoadingMore ? (
                   <div className="flex items-center justify-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-purple-500 animate-pulse" />
-                    <div className="w-3 h-3 rounded-full bg-purple-500 animate-pulse" style={{ animationDelay: '0.2s' }} />
-                    <div className="w-3 h-3 rounded-full bg-purple-500 animate-pulse" style={{ animationDelay: '0.4s' }} />
+                    <div className="w-3 h-3 rounded-full bg-orange-500 animate-pulse" />
+                    <div className="w-3 h-3 rounded-full bg-orange-500 animate-pulse" style={{ animationDelay: '0.2s' }} />
+                    <div className="w-3 h-3 rounded-full bg-orange-500 animate-pulse" style={{ animationDelay: '0.4s' }} />
                   </div>
                 ) : (
                   <button

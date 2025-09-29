@@ -112,16 +112,16 @@ export function CreateInviteModal({ isOpen, onClose }: CreateInviteModalProps) {
               <div className="space-y-6">
                 {/* Welcome Message */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                     Welcome Message
                   </label>
                   <textarea
                     value={welcomeMessage}
                     onChange={(e) => setWelcomeMessage(e.target.value)}
                     rows={6}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl
-                             bg-white dark:bg-neutral-900 text-gray-900 dark:text-white
-                             focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                    className="w-full px-4 py-3 border border-neutral-300 dark:border-neutral-700 rounded-xl
+                             bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white
+                             focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
                     placeholder="Write a welcome message..."
                   />
                 </div>
@@ -133,11 +133,11 @@ export function CreateInviteModal({ isOpen, onClose }: CreateInviteModalProps) {
                     id="personalize"
                     checked={isPersonalized}
                     onChange={(e) => setIsPersonalized(e.target.checked)}
-                    className="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                    className="w-5 h-5 text-orange-600 border-neutral-300 rounded focus:ring-orange-500"
                   />
                   <label
                     htmlFor="personalize"
-                    className="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer"
+                    className="text-sm font-medium text-neutral-700 dark:text-neutral-300 cursor-pointer"
                   >
                     Personalize this invite
                   </label>
@@ -149,10 +149,10 @@ export function CreateInviteModal({ isOpen, onClose }: CreateInviteModalProps) {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="space-y-4 border-l-4 border-purple-500 pl-4"
+                    className="space-y-4 border-l-4 border-orange-500 pl-4"
                   >
                     <div>
-                      <label className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="flex items-center text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                         <User className="w-4 h-4 mr-2" />
                         Recipient's Name
                       </label>
@@ -160,15 +160,15 @@ export function CreateInviteModal({ isOpen, onClose }: CreateInviteModalProps) {
                         type="text"
                         value={recipientName}
                         onChange={(e) => setRecipientName(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-xl
-                                 bg-white dark:bg-neutral-900 text-gray-900 dark:text-white
-                                 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-xl
+                                 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white
+                                 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                         placeholder="John Doe"
                       />
                     </div>
 
                     <div>
-                      <label className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="flex items-center text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                         <Zap className="w-4 h-4 mr-2" />
                         Include Cashu Token (sats)
                       </label>
@@ -176,12 +176,12 @@ export function CreateInviteModal({ isOpen, onClose }: CreateInviteModalProps) {
                         type="number"
                         value={cashuAmount}
                         onChange={(e) => setCashuAmount(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-xl
-                                 bg-white dark:bg-neutral-900 text-gray-900 dark:text-white
-                                 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-xl
+                                 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white
+                                 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                         placeholder="Amount in sats (optional)"
                       />
-                      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
                         Add sats to help them get started on Nostr
                       </p>
                     </div>
@@ -192,7 +192,7 @@ export function CreateInviteModal({ isOpen, onClose }: CreateInviteModalProps) {
                 <button
                   onClick={generateInvite}
                   disabled={isGenerating || !welcomeMessage.trim()}
-                  className="w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 disabled:bg-neutral-400
+                  className="w-full py-3 px-4 bg-orange-600 hover:bg-orange-700 disabled:bg-neutral-400
                            text-white font-semibold rounded-xl transition-colors
                            disabled:cursor-not-allowed flex items-center justify-center"
                 >
@@ -217,10 +217,10 @@ export function CreateInviteModal({ isOpen, onClose }: CreateInviteModalProps) {
                                 flex items-center justify-center mx-auto mb-4">
                     <Check className="w-8 h-8 text-green-600 dark:text-green-400" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
                     Invite Created!
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
                     {isPersonalized && recipientName ?
                       `Your personalized invite for ${recipientName} is ready` :
                       'Your invite link is ready to share'}
@@ -233,12 +233,12 @@ export function CreateInviteModal({ isOpen, onClose }: CreateInviteModalProps) {
                       type="text"
                       value={inviteLink}
                       readOnly
-                      className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-300
+                      className="flex-1 bg-transparent text-sm text-neutral-700 dark:text-neutral-300
                                outline-none truncate"
                     />
                     <button
                       onClick={copyToClipboard}
-                      className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white
+                      className="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white
                                rounded-lg transition-colors flex items-center space-x-1 text-sm"
                     >
                       {isCopied ? (
@@ -259,15 +259,15 @@ export function CreateInviteModal({ isOpen, onClose }: CreateInviteModalProps) {
                 <div className="flex space-x-3">
                   <button
                     onClick={() => setInviteLink('')}
-                    className="flex-1 py-2.5 px-4 border border-gray-300 dark:border-gray-700
-                             text-gray-700 dark:text-gray-300 font-medium rounded-xl
+                    className="flex-1 py-2.5 px-4 border border-neutral-300 dark:border-neutral-700
+                             text-neutral-700 dark:text-neutral-300 font-medium rounded-xl
                              hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
                   >
                     Create Another
                   </button>
                   <button
                     onClick={handleClose}
-                    className="flex-1 py-2.5 px-4 bg-purple-600 hover:bg-purple-700
+                    className="flex-1 py-2.5 px-4 bg-orange-600 hover:bg-orange-700
                              text-white font-medium rounded-xl transition-colors"
                   >
                     Done

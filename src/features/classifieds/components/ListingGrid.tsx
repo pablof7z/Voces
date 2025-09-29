@@ -10,7 +10,7 @@ export function ListingGrid({ listings }: ListingGridProps) {
   if (listings.length === 0) {
     return (
       <div className="text-center py-12 px-4">
-        <p className="text-gray-500 dark:text-gray-400">
+        <p className="text-neutral-500 dark:text-neutral-400">
           No listings found. Be the first to post something!
         </p>
       </div>

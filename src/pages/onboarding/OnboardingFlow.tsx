@@ -95,7 +95,7 @@ export function OnboardingFlow() {
       {currentStep > 1 && (
         <button
           onClick={goBack}
-          className="fixed top-6 left-6 z-50 w-9 h-9 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-full flex items-center justify-center hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+          className="fixed top-6 left-6 z-50 w-9 h-9 bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-full flex items-center justify-center hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M19 12H5M12 19l-7-7 7-7"/>

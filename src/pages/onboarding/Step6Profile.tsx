@@ -43,7 +43,7 @@ export function Step6Profile({ profileData, onUpdateProfile, onNext }: Step6Prof
     <div className="min-h-screen flex flex-col items-center justify-center p-8">
       <div className="text-center mb-8 max-w-2xl">
         <h1 className="text-4xl font-bold mb-3">You&apos;re joining these leaders</h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400">
+        <p className="text-lg text-neutral-600 dark:text-neutral-400">
           Create your profile to stand alongside influential voices in your community.
         </p>
       </div>
@@ -51,17 +51,22 @@ export function Step6Profile({ profileData, onUpdateProfile, onNext }: Step6Prof
       {/* Profile cards deck */}
       <div className="relative flex items-center justify-center gap-6 mb-12">
         {/* Left card - Example profile */}
-        <div className="w-80 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden transform -rotate-3 scale-95 opacity-80">
-          <div className="h-32 bg-gradient-to-br from-neutral-700 to-neutral-800" />
+        <div className="w-80 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden transform -rotate-3 scale-95 opacity-80">
+          <div
+            className="h-32 bg-cover bg-center"
+            style={{ backgroundImage: 'url(https://m.primal.net/OQwX.jpg)' }}
+          />
           <div className="relative -mt-12 px-6 pb-6">
-            <div className="w-24 h-24 bg-neutral-800 text-white rounded-full border-4 border-white dark:border-neutral-900 flex items-center justify-center text-2xl font-bold">
-              MR
-            </div>
+            <img
+              src="https://m.primal.net/OQwW.jpg"
+              alt="Leopoldo López"
+              className="w-24 h-24 rounded-full border-4 border-white dark:border-neutral-900 object-cover"
+            />
             <div className="mt-4">
-              <h3 className="text-xl font-bold">María Rodríguez</h3>
-              <p className="text-sm text-gray-500 mb-2">📍 Caracas · 5.2K followers</p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Community organizer. Fighting for a better tomorrow. Building networks of mutual aid.
+              <h3 className="text-xl font-bold">Leopoldo López</h3>
+              <p className="text-sm text-neutral-500 mb-2">📍 In exile · Verified</p>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                Former Mayor of Caracas (2000-08). Political prisoner 2014-21. Co-founder of World Liberty Congress.
               </p>
             </div>
           </div>
@@ -89,7 +94,7 @@ export function Step6Profile({ profileData, onUpdateProfile, onNext }: Step6Prof
                   value={profileData.name}
                   onChange={(e) => updateField('name', e.target.value)}
                   placeholder="Your name"
-                  className="text-2xl font-bold bg-transparent border-b-2 border-transparent hover:border-gray-300 focus:border-neutral-900 dark:focus:border-white outline-none transition-colors w-full text-neutral-900 dark:text-white"
+                  className="text-2xl font-bold bg-transparent border-b-2 border-transparent hover:border-neutral-300 focus:border-neutral-900 dark:focus:border-white outline-none transition-colors w-full text-neutral-900 dark:text-white"
                 />
               </div>
               <div>
@@ -98,7 +103,7 @@ export function Step6Profile({ profileData, onUpdateProfile, onNext }: Step6Prof
                   value={profileData.location}
                   onChange={(e) => updateField('location', e.target.value)}
                   placeholder="📍 Your location (optional)"
-                  className="text-sm text-gray-500 dark:text-gray-400 bg-transparent border-b border-transparent hover:border-gray-300 focus:border-neutral-900 dark:focus:border-white outline-none transition-colors w-full"
+                  className="text-sm text-neutral-500 dark:text-neutral-400 bg-transparent border-b border-transparent hover:border-neutral-300 focus:border-neutral-900 dark:focus:border-white outline-none transition-colors w-full"
                 />
               </div>
               <div>
@@ -106,7 +111,7 @@ export function Step6Profile({ profileData, onUpdateProfile, onNext }: Step6Prof
                   value={profileData.bio}
                   onChange={(e) => updateField('bio', e.target.value)}
                   placeholder="Tell your community about yourself..."
-                  className="text-sm text-gray-600 dark:text-gray-400 bg-transparent border border-transparent hover:border-gray-300 focus:border-neutral-900 dark:focus:border-white outline-none transition-colors w-full resize-none rounded p-2"
+                  className="text-sm text-neutral-600 dark:text-neutral-400 bg-transparent border border-transparent hover:border-neutral-300 focus:border-neutral-900 dark:focus:border-white outline-none transition-colors w-full resize-none rounded p-2"
                   rows={3}
                 />
               </div>
@@ -115,17 +120,22 @@ export function Step6Profile({ profileData, onUpdateProfile, onNext }: Step6Prof
         </div>
 
         {/* Right card - Example profile */}
-        <div className="w-80 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden transform rotate-3 scale-95 opacity-80">
-          <div className="h-32 bg-gradient-to-br from-neutral-600 to-neutral-700" />
+        <div className="w-80 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden transform rotate-3 scale-95 opacity-80">
+          <div
+            className="h-32 bg-cover bg-center"
+            style={{ backgroundImage: 'url(https://m.primal.net/OTue.jpg)' }}
+          />
           <div className="relative -mt-12 px-6 pb-6">
-            <div className="w-24 h-24 bg-neutral-700 text-white rounded-full border-4 border-white dark:border-neutral-900 flex items-center justify-center text-2xl font-bold">
-              JG
-            </div>
+            <img
+              src="https://m.primal.net/OTkq.jpg"
+              alt="Enderson Sequera"
+              className="w-24 h-24 rounded-full border-4 border-white dark:border-neutral-900 object-cover"
+            />
             <div className="mt-4">
-              <h3 className="text-xl font-bold">Jorge García</h3>
-              <p className="text-sm text-gray-500 mb-2">📍 Valencia · 8K followers</p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Independent journalist. Building tech tools for community empowerment.
+              <h3 className="text-xl font-bold">Enderson Sequera</h3>
+              <p className="text-sm text-neutral-500 mb-2">🇻🇪 Political Scientist</p>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                Political advisor & freedom fighter. Bitcoin is freedom - in the fight against dictatorship it saves lives.
               </p>
             </div>
           </div>
@@ -139,7 +149,7 @@ export function Step6Profile({ profileData, onUpdateProfile, onNext }: Step6Prof
           px-8 py-3 rounded-lg font-medium transition-all
           ${profileData.name
             ? 'bg-neutral-900 dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-100'
-            : 'bg-neutral-100 dark:bg-neutral-800 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+            : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500 cursor-not-allowed'
           }
         `}
       >

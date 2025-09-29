@@ -22,7 +22,7 @@ function InviteOnboarding6() {
     <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
       {/* Sophisticated background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-950/20 via-black to-purple-950/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-950/20 via-black to-orange-950/20" />
         <motion.div
           className="absolute inset-0 opacity-10"
           animate={{
@@ -53,7 +53,7 @@ function InviteOnboarding6() {
               transition={{ delay: 0.3 }}
               className="flex justify-center"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/20 to-purple-500/20 backdrop-blur-xl border border-amber-500/30 rounded-full">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 backdrop-blur-xl border border-amber-500/30 rounded-full">
                 <Crown className="w-4 h-4 text-amber-400" />
                 <span className="text-amber-100 text-sm font-medium tracking-wide uppercase">
                   Exclusive Invitation
@@ -90,7 +90,7 @@ function InviteOnboarding6() {
                   <p className="text-white text-2xl font-bold mb-1">
                     {MOCK_INVITER.name}
                   </p>
-                  <p className="text-gray-500 text-sm">
+                  <p className="text-neutral-500 text-sm">
                     Curator & Community Leader
                   </p>
                 </div>
@@ -102,7 +102,7 @@ function InviteOnboarding6() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7 }}
-                  className="text-6xl font-serif font-black text-transparent bg-gradient-to-r from-amber-200 via-white to-purple-200 bg-clip-text mb-4 tracking-tight"
+                  className="text-6xl font-serif font-black text-transparent bg-gradient-to-r from-amber-200 via-white to-orange-200 bg-clip-text mb-4 tracking-tight"
                 >
                   Voces
                 </motion.h1>
@@ -110,7 +110,7 @@ function InviteOnboarding6() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.9 }}
-                  className="text-gray-400 text-lg leading-relaxed max-w-lg mx-auto"
+                  className="text-neutral-400 text-lg leading-relaxed max-w-lg mx-auto"
                 >
                   {SCENARIO.welcomeMessage}
                 </motion.p>
@@ -122,7 +122,7 @@ function InviteOnboarding6() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.1 }}
-                  className="relative p-6 bg-gradient-to-br from-amber-500/10 to-purple-500/10 rounded-2xl border border-amber-500/20 mb-8"
+                  className="relative p-6 bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-2xl border border-amber-500/20 mb-8"
                 >
                   <div className="absolute top-4 right-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center">
@@ -132,7 +132,7 @@ function InviteOnboarding6() {
                   <p className="text-amber-400 text-sm font-medium mb-3 tracking-wide uppercase">
                     For {SCENARIO.decryptedPayload.name}
                   </p>
-                  <p className="text-gray-200 text-lg leading-relaxed">
+                  <p className="text-neutral-200 text-lg leading-relaxed">
                     {SCENARIO.decryptedPayload.message}
                   </p>
                 </motion.div>
@@ -155,7 +155,7 @@ function InviteOnboarding6() {
                     className="text-center p-4 bg-white/5 rounded-xl border border-white/10"
                   >
                     <p className="text-2xl font-bold text-white mb-1">{item.value}</p>
-                    <p className="text-gray-500 text-xs">{item.label}</p>
+                    <p className="text-neutral-500 text-xs">{item.label}</p>
                   </div>
                 ))}
               </motion.div>
@@ -173,7 +173,7 @@ function InviteOnboarding6() {
                   Accept Invitation
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
-                <p className="text-center text-xs text-gray-600 mt-4">
+                <p className="text-center text-xs text-neutral-600 mt-4">
                   By continuing, you agree to join the Voces community
                 </p>
               </motion.div>
@@ -194,7 +194,7 @@ function InviteOnboarding6() {
               <h2 className="text-3xl font-bold text-white mb-2">
                 Complete Your Profile
               </h2>
-              <p className="text-gray-400">
+              <p className="text-neutral-400">
                 Make your mark on Voces
               </p>
             </div>
@@ -207,7 +207,7 @@ function InviteOnboarding6() {
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="h-12 bg-white/5 border-white/20 text-white placeholder:text-gray-600 focus:border-amber-500/50"
+                  className="h-12 bg-white/5 border-white/20 text-white placeholder:text-neutral-600 focus:border-amber-500/50"
                   placeholder="Your name"
                 />
               </div>
@@ -219,7 +219,7 @@ function InviteOnboarding6() {
                 <Textarea
                   value={about}
                   onChange={(e) => setAbout(e.target.value)}
-                  className="min-h-[100px] bg-white/5 border-white/20 text-white placeholder:text-gray-600 resize-none focus:border-amber-500/50"
+                  className="min-h-[100px] bg-white/5 border-white/20 text-white placeholder:text-neutral-600 resize-none focus:border-amber-500/50"
                   placeholder="Share your story..."
                 />
               </div>
@@ -291,7 +291,7 @@ function InviteOnboarding6() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
-                className="text-xl text-gray-400"
+                className="text-xl text-neutral-400"
               >
                 Your exclusive access is now active
               </motion.p>
@@ -307,7 +307,7 @@ function InviteOnboarding6() {
               {[
                 { label: 'Identity Verified', icon: Check, color: 'from-green-400 to-emerald-500' },
                 { label: 'Network Connected', icon: Check, color: 'from-blue-400 to-blue-500' },
-                { label: 'Wallet Configured', icon: Check, color: 'from-purple-400 to-purple-500' },
+                { label: 'Wallet Configured', icon: Check, color: 'from-orange-500 to-orange-500' },
                 { label: 'Premium Features Unlocked', icon: Crown, color: 'from-amber-400 to-orange-500' },
               ].map((item, index) => (
                 <motion.div

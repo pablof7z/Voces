@@ -248,7 +248,7 @@ export function NoteDetailPage() {
   if (!event) {
     return (
       <div className="min-h-screen bg-neutral-50 dark:bg-black">
-        <header className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+        <header className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800">
           <div className="flex items-center gap-4 px-4 py-3">
             <button
               onClick={() => navigate(-1)}
@@ -261,7 +261,7 @@ export function NoteDetailPage() {
         </header>
         <div className="flex flex-col items-center justify-center mt-20">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-600"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading note...</p>
+          <p className="mt-4 text-neutral-600 dark:text-neutral-400">Loading note...</p>
         </div>
       </div>
     );
@@ -270,7 +270,7 @@ export function NoteDetailPage() {
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-black">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+      <header className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800">
         <div className="flex items-center gap-4 px-4 py-3">
           <button
             onClick={() => navigate(-1)}
@@ -303,7 +303,7 @@ export function NoteDetailPage() {
 
         {/* Reply Box */}
         {currentUser && (
-          <div className="border-b border-gray-200 dark:border-gray-800 p-4">
+          <div className="border-b border-neutral-200 dark:border-neutral-800 p-4">
             <div className="flex gap-3">
               <UserAvatar
                 pubkey={currentUser.pubkey}
@@ -315,7 +315,7 @@ export function NoteDetailPage() {
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
                   placeholder={`Reply to ${profile?.name || 'this note'}...`}
-                  className="w-full min-h-[100px] p-3 bg-neutral-50 dark:bg-black border border-gray-200 dark:border-gray-700 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-accent-500"
+                  className="w-full min-h-[100px] p-3 bg-neutral-50 dark:bg-black border border-neutral-200 dark:border-neutral-700 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-accent-500"
                   disabled={isSubmitting}
                 />
                 <div className="flex justify-end mt-2">
@@ -336,8 +336,8 @@ export function NoteDetailPage() {
         <div>
           {replies.length > 0 ? (
             <>
-              <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-800">
-                <h2 className="font-semibold text-gray-900 dark:text-white">
+              <div className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+                <h2 className="font-semibold text-neutral-900 dark:text-white">
                   {replies.length} {replies.length === 1 ? 'Reply' : 'Replies'}
                 </h2>
               </div>
@@ -346,7 +346,7 @@ export function NoteDetailPage() {
               ))}
             </>
           ) : (
-            <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+            <div className="p-8 text-center text-neutral-500 dark:text-neutral-400">
               No replies yet. Be the first to reply!
             </div>
           )}

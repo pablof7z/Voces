@@ -176,9 +176,9 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="bg-white dark:bg-black rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 p-6">
+        <div className="sticky top-0 bg-white dark:bg-black border-b border-neutral-200 dark:border-neutral-800 p-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
               Create P2P Order
             </h2>
             <button
@@ -193,7 +193,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
         <div className="p-6 space-y-6">
           {/* Order Type */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
               Order Type
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -202,7 +202,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
                 className={`px-4 py-3 rounded-lg border-2 transition-colors ${
                   orderType === 'buy'
                     ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                    : 'border-gray-300 dark:border-gray-700'
+                    : 'border-neutral-300 dark:border-neutral-700'
                 }`}
               >
                 I want to buy Bitcoin
@@ -212,7 +212,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
                 className={`px-4 py-3 rounded-lg border-2 transition-colors ${
                   orderType === 'sell'
                     ? 'border-red-500 bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                    : 'border-gray-300 dark:border-gray-700'
+                    : 'border-neutral-300 dark:border-neutral-700'
                 }`}
               >
                 I want to sell Bitcoin
@@ -222,7 +222,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
 
           {/* Bitcoin Amount */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
               Bitcoin Amount (sats)
             </label>
             <div className="relative">
@@ -231,11 +231,11 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
                 type="number"
                 value={satsAmount}
                 onChange={(e) => setSatsAmount(e.target.value)}
-                className="w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
+                className="w-full pl-10 pr-3 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
                 placeholder="100000"
               />
             </div>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
               = {btcAmount.toFixed(8)} BTC
             </p>
           </div>
@@ -243,28 +243,28 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
           {/* Fiat Amount & Currency */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                 Fiat Amount
               </label>
               <input
                 type="number"
                 value={fiatAmount}
                 onChange={(e) => setFiatAmount(e.target.value)}
-                className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
+                className="w-full px-3 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
                 placeholder="50"
               />
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
                 ≈ ${pricePerBtc.toFixed(2)}/BTC
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                 Currency
               </label>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
+                className="w-full px-3 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
               >
                 {currencies.map((curr) => (
                   <option key={curr.code} value={curr.code}>
@@ -277,7 +277,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
 
           {/* Payment Method */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
               Payment Method
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -287,8 +287,8 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
                   onClick={() => setPaymentMethod(method.id)}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-colors ${
                     paymentMethod === method.id
-                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30'
-                      : 'border-gray-300 dark:border-gray-700'
+                      ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/30'
+                      : 'border-neutral-300 dark:border-neutral-700'
                   }`}
                 >
                   <span className="text-lg">{method.icon}</span>
@@ -303,7 +303,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
                   type="text"
                   value={customPaymentMethod}
                   onChange={(e) => setCustomPaymentMethod(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
                   placeholder="Enter payment method (e.g., Bank Transfer, PayPal, etc.)"
                   autoFocus
                 />
@@ -314,7 +314,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
           {/* Location for F2F */}
           {showLocationPicker && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                 <MapPin className="inline w-4 h-4 mr-1" />
                 Location (Required for F2F)
               </label>
@@ -324,20 +324,20 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
                     type="text"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
+                    className="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
                     placeholder="City, neighborhood, or area"
                   />
                   <button
                     type="button"
                     onClick={handleLocationRequest}
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+                    className="px-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
                     title="Use current location"
                   >
                     <MapPin className="w-5 h-5" />
                   </button>
                 </div>
                 {geohash && (
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
                     Geohash: {geohash} (approximate location)
                   </p>
                 )}
@@ -347,30 +347,30 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
 
           {/* Premium */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
               Premium (%)
             </label>
             <input
               type="number"
               value={premium}
               onChange={(e) => setPremium(e.target.value)}
-              className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
+              className="w-full px-3 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
               placeholder="0"
             />
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
               Positive for above market, negative for below
             </p>
           </div>
 
           {/* Expiration */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
               Expiration (hours)
             </label>
             <select
               value={expirationHours}
               onChange={(e) => setExpirationHours(e.target.value)}
-              className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
+              className="w-full px-3 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
             >
               <option value="1">1 hour</option>
               <option value="6">6 hours</option>
@@ -385,14 +385,14 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+              className="flex-1 px-4 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleCreate}
               disabled={creating || !satsAmount || !fiatAmount}
-              className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 px-4 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {creating ? 'Creating...' : 'Create Order'}
             </button>

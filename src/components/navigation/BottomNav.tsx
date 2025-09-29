@@ -27,7 +27,7 @@ export function BottomNav() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 md:hidden z-40">
       {/* Clean bottom nav */}
-      <div className="bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800">
+      <div className="bg-white dark:bg-black border-t border-neutral-200 dark:border-neutral-800">
         <div className="flex items-center justify-around h-16 px-3">
           {navItems.map(({ path, icon: Icon, key }) => {
             const isActive = key === 'profile'
@@ -47,8 +47,8 @@ export function BottomNav() {
                     <div className={cn(
                       "w-7 h-7 rounded-full overflow-hidden ring-2 transition-all duration-200",
                       isActive
-                        ? 'ring-gray-900 dark:ring-white'
-                        : 'ring-gray-400 dark:ring-gray-500'
+                        ? 'ring-neutral-900 dark:ring-white'
+                        : 'ring-neutral-400 dark:ring-neutral-500'
                     )}>
                       <img
                         src={profile.picture}
@@ -61,8 +61,8 @@ export function BottomNav() {
                       className={cn(
                         'w-6 h-6 transition-colors duration-200',
                         isActive
-                          ? 'text-gray-900 dark:text-white'
-                          : 'text-gray-400 dark:text-gray-500'
+                          ? 'text-neutral-900 dark:text-white'
+                          : 'text-neutral-400 dark:text-neutral-500'
                       )}
                       strokeWidth={isActive ? 2 : 1.5}
                     />

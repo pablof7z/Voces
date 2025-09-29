@@ -89,12 +89,12 @@ export function MarketplacePage() {
           <div className="flex gap-2 sm:gap-3">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-5 h-5 pointer-events-none" />
                 <Input
                   placeholder="Search listings..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-12 bg-white/80 dark:bg-black/80 backdrop-blur border-gray-200 dark:border-gray-700 rounded-xl text-base focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+                  className="pl-10 h-12 bg-white/80 dark:bg-black/80 backdrop-blur border-neutral-200 dark:border-neutral-700 rounded-xl text-base focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
                 />
               </div>
             </div>
@@ -113,10 +113,10 @@ export function MarketplacePage() {
           <div>
             {selectedCategory && (
               <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">
                   {CATEGORIES.find(c => c.value === selectedCategory)?.label || selectedCategory}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
                   {filteredListings.length} listings found
                 </p>
               </div>

@@ -17,13 +17,13 @@ export function CategorySection({ category, listings, showViewAll = true }: Cate
   return (
     <section className="mb-8">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">
           {displayName}
         </h2>
         {showViewAll && listings.length > 4 && (
           <Link
             to={`/marketplace?category=${category}`}
-            className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+            className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700 dark:text-orange-500 dark:hover:text-orange-300"
           >
             View All
             <ChevronRight className="w-4 h-4" />

@@ -35,8 +35,8 @@ export function WalletBalance({
   if (variant === 'compact') {
     return (
       <div className="flex items-baseline gap-1">
-        <span className="text-2xl font-light text-gray-900">{formatAmount(displayAmount)}</span>
-        <span className="text-sm text-gray-500">{unit}</span>
+        <span className="text-2xl font-light text-neutral-900">{formatAmount(displayAmount)}</span>
+        <span className="text-sm text-neutral-500">{unit}</span>
       </div>
     );
   }
@@ -49,11 +49,11 @@ export function WalletBalance({
             key={displayAmount}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl font-thin text-gray-900"
+            className="text-5xl font-thin text-neutral-900"
           >
             {formatAmount(displayAmount)}
           </motion.span>
-          <span className="text-lg text-gray-600 mb-2">{unit}</span>
+          <span className="text-lg text-neutral-600 mb-2">{unit}</span>
         </div>
         {showChange && changeAmount !== 0 && (
           <motion.div
@@ -78,11 +78,11 @@ export function WalletBalance({
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="text-4xl font-light text-gray-900"
+        className="text-4xl font-light text-neutral-900"
       >
         {formatAmount(displayAmount)}
       </motion.div>
-      <div className="text-sm text-gray-500 mt-1">{unit}</div>
+      <div className="text-sm text-neutral-500 mt-1">{unit}</div>
     </div>
   );
 }

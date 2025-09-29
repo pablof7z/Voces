@@ -30,22 +30,22 @@ const InviteVariation3 = () => {
 
   if (generatedUrl) {
     return (
-        <div className="p-4 rounded-xl bg-gradient-to-br from-gray-900 to-gray-800">
+        <div className="p-4 rounded-xl bg-gradient-to-br from-neutral-900 to-neutral-800">
             <GeneratedLink url={generatedUrl} />
         </div>
     );
   }
 
   return (
-    <div className="p-4 rounded-xl bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+    <div className="p-4 rounded-xl bg-gradient-to-br from-neutral-900 to-neutral-800 text-white">
       <div className="grid grid-cols-2 gap-4 mb-6">
-        <GlassCard className={`cursor-pointer transition-all duration-300 ${inviteType === InviteType.General ? 'border-purple-400 border-2' : ''}`}>
+        <GlassCard className={`cursor-pointer transition-all duration-300 ${inviteType === InviteType.General ? 'border-orange-500 border-2' : ''}`}>
           <button onClick={() => setInviteType(InviteType.General)} className="w-full text-center">
             <Users className="mx-auto mb-2" />
             <p className="font-bold">General</p>
           </button>
         </GlassCard>
-        <GlassCard className={`cursor-pointer transition-all duration-300 ${inviteType === InviteType.Personalized ? 'border-purple-400 border-2' : ''}`}>
+        <GlassCard className={`cursor-pointer transition-all duration-300 ${inviteType === InviteType.Personalized ? 'border-orange-500 border-2' : ''}`}>
           <button onClick={() => setInviteType(InviteType.Personalized)} className="w-full text-center">
             <UserPlus className="mx-auto mb-2" />
             <p className="font-bold">Personal</p>
@@ -60,16 +60,16 @@ const InviteVariation3 = () => {
           transition={{ duration: 0.4, ease: 'easeInOut' }}
           className="space-y-4 mb-6 overflow-hidden"
         >
-            <Input placeholder="Invitee's Name" value={name} onChange={e => setName(e.target.value)} className="bg-white/10 border-white/20 text-white placeholder:text-gray-300" />
-            <Textarea placeholder="Welcome message..." value={message} onChange={e => setMessage(e.target.value)} className="bg-white/10 border-white/20 text-white placeholder:text-gray-300" />
+            <Input placeholder="Invitee's Name" value={name} onChange={e => setName(e.target.value)} className="bg-white/10 border-white/20 text-white placeholder:text-neutral-300" />
+            <Textarea placeholder="Welcome message..." value={message} onChange={e => setMessage(e.target.value)} className="bg-white/10 border-white/20 text-white placeholder:text-neutral-300" />
             <div className="flex items-center space-x-3 p-3 bg-white/10 border border-white/20 rounded-lg">
                   <Gift className="text-yellow-300" />
-                  <p className="text-gray-200 text-sm font-medium">Gifting sats coming soon!</p>
+                  <p className="text-neutral-200 text-sm font-medium">Gifting sats coming soon!</p>
             </div>
         </motion.div>
       )}
 
-      <Button onClick={handleGenerate} disabled={isLoading} size="lg" className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-lg">
+      <Button onClick={handleGenerate} disabled={isLoading} size="lg" className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold text-lg">
         {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
         {isLoading ? 'Creating Magic Link...' : 'Generate Invite'}
       </Button>

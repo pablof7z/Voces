@@ -30,7 +30,7 @@ export function FollowPacksPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-          <Package className="w-8 h-8 text-purple-500" />
+          <Package className="w-8 h-8 text-orange-500" />
           Follow Packs
         </h1>
         <p className="text-neutral-400">
@@ -122,7 +122,7 @@ function PackCard({ pack }: { pack: NDKFollowPack }) {
       <div className="p-5">
         {/* Header */}
         <div className="mb-4">
-          <h3 className="font-semibold text-white group-hover:text-purple-400 transition-colors">
+          <h3 className="font-semibold text-white group-hover:text-orange-500 transition-colors">
             {pack.title}
           </h3>
           <p className="text-sm text-neutral-500 mt-1">

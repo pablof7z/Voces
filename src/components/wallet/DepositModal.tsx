@@ -85,7 +85,7 @@ export function DepositModal({ isOpen, onClose, onDeposit, mints }: DepositModal
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                    className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
                     placeholder="100"
                     min="1"
                   />
@@ -98,7 +98,7 @@ export function DepositModal({ isOpen, onClose, onDeposit, mints }: DepositModal
                   <select
                     value={selectedMint}
                     onChange={(e) => setSelectedMint(e.target.value)}
-                    className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                    className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
                   >
                     {mints.map((mint) => (
                       <option key={mint} value={mint}>
@@ -135,7 +135,7 @@ export function DepositModal({ isOpen, onClose, onDeposit, mints }: DepositModal
                     className={`flex-1 py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 text-sm ${
                       copied
                         ? 'bg-emerald-500 text-white'
-                        : 'bg-purple-600 hover:bg-purple-700 text-white'
+                        : 'bg-orange-600 hover:bg-orange-700 text-white'
                     }`}
                   >
                     {copied ? (
@@ -169,7 +169,7 @@ export function DepositModal({ isOpen, onClose, onDeposit, mints }: DepositModal
                 whileTap={{ scale: 0.98 }}
                 onClick={handleDeposit}
                 disabled={isLoading}
-                className="w-full py-3.5 bg-purple-600 hover:bg-purple-700 disabled:bg-neutral-400 text-white rounded-xl font-medium transition-all flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-orange-600 hover:bg-orange-700 disabled:bg-neutral-400 text-white rounded-xl font-medium transition-all flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <>

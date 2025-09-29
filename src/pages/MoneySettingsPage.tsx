@@ -129,13 +129,13 @@ export function MoneySettingsPage() {
                   onChange={(e) => setNewMint(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddMint()}
                   placeholder="https://mint.example.com"
-                  className="w-full px-4 py-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none mb-2"
+                  className="w-full px-4 py-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none mb-2"
                   autoFocus
                 />
                 <div className="flex gap-2">
                   <button
                     onClick={handleAddMint}
-                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-colors"
+                    className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors"
                   >
                     Add
                   </button>
@@ -216,13 +216,13 @@ export function MoneySettingsPage() {
                   onChange={(e) => setNewRelay(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddRelay()}
                   placeholder="wss://relay.example.com"
-                  className="w-full px-4 py-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none mb-2"
+                  className="w-full px-4 py-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none mb-2"
                   autoFocus
                 />
                 <div className="flex gap-2">
                   <button
                     onClick={handleAddRelay}
-                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-colors"
+                    className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors"
                   >
                     Add
                   </button>
@@ -263,11 +263,11 @@ export function MoneySettingsPage() {
               {/* Selected Currency Display - Always visible */}
               <button
                 onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
-                className="w-full px-4 py-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl text-left transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-900/80 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl text-left transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-900/80 focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-purple-600 text-white flex items-center justify-center font-semibold text-lg">
+                    <div className="w-10 h-10 rounded-lg bg-orange-600 text-white flex items-center justify-center font-semibold text-lg">
                       {FIAT_CURRENCIES.find(c => c.code === currency)?.symbol || '$'}
                     </div>
                     <div>
@@ -293,7 +293,7 @@ export function MoneySettingsPage() {
                       className="w-full px-4 py-3 text-left hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors flex items-center justify-between group"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-neutral-200 dark:bg-neutral-800 group-hover:bg-purple-600 group-hover:text-white flex items-center justify-center font-semibold transition-colors">
+                        <div className="w-8 h-8 rounded-lg bg-neutral-200 dark:bg-neutral-800 group-hover:bg-orange-600 group-hover:text-white flex items-center justify-center font-semibold transition-colors">
                           {curr.symbol}
                         </div>
                         <div>

@@ -24,8 +24,8 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         className={cn(
           'max-w-[70%] rounded-2xl px-4 py-2',
           isOwnMessage
-            ? 'bg-purple-600 text-white rounded-br-sm'
-            : 'bg-neutral-200 dark:bg-neutral-800 text-gray-900 dark:text-white rounded-bl-sm'
+            ? 'bg-orange-600 text-white rounded-br-sm'
+            : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-bl-sm'
         )}
       >
         <ContentRenderer
@@ -36,7 +36,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         <div
           className={cn(
             'text-xs mt-1',
-            isOwnMessage ? 'text-purple-100' : 'text-gray-500 dark:text-gray-400'
+            isOwnMessage ? 'text-orange-100' : 'text-neutral-500 dark:text-neutral-400'
           )}
         >
           {timeAgo}

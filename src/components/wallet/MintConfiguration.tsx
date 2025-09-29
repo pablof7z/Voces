@@ -50,17 +50,17 @@ export function MintConfiguration({ variant = 'minimal' }: MintConfigurationProp
   if (variant === 'card') {
     return (
       <motion.div
-        className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
+        className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-6"
         whileHover={{ y: -2 }}
         transition={{ type: "spring", stiffness: 300 }}
       >
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-medium text-gray-900">Cashu Mints</h3>
+          <h3 className="text-lg font-medium text-neutral-900">Cashu Mints</h3>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="p-2 hover:bg-neutral-50 rounded-lg transition-colors"
           >
-            <Settings className="w-5 h-5 text-gray-600" />
+            <Settings className="w-5 h-5 text-neutral-600" />
           </button>
         </div>
         
@@ -90,7 +90,7 @@ export function MintConfiguration({ variant = 'minimal' }: MintConfigurationProp
         </AnimatePresence>
 
         {!isExpanded && (
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-neutral-600">
             {mints.filter(m => m.isActive).length} active mints
           </div>
         )}
@@ -103,13 +103,13 @@ export function MintConfiguration({ variant = 'minimal' }: MintConfigurationProp
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-medium text-gray-700">Mints</h3>
+            <h3 className="text-sm font-medium text-neutral-700">Mints</h3>
             <button
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
               className="relative"
             >
-              <Info className="w-4 h-4 text-gray-400" />
+              <Info className="w-4 h-4 text-neutral-400" />
               <AnimatePresence>
                 {showTooltip && (
                   <motion.div
@@ -181,7 +181,7 @@ export function MintConfiguration({ variant = 'minimal' }: MintConfigurationProp
       onClick={() => setIsExpanded(!isExpanded)}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
-      className="relative flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-neutral-50 rounded-lg transition-colors"
+      className="relative flex items-center gap-2 px-3 py-2 text-sm text-neutral-700 hover:bg-neutral-50 rounded-lg transition-colors"
     >
       <Settings className="w-4 h-4" />
       <span>Mint</span>
@@ -222,16 +222,16 @@ function MintItem({ mint, onToggle, onRemove, variant = 'compact' }: MintItemPro
             className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
               mint.isActive
                 ? 'bg-green-500 border-green-500'
-                : 'bg-white border-gray-300'
+                : 'bg-white border-neutral-300'
             }`}
           >
             {mint.isActive && <Check className="w-3 h-3 text-white" />}
           </button>
           <div>
-            <div className="text-sm font-medium text-gray-900">{mint.name}</div>
-            <div className="text-xs text-gray-500">{mint.url}</div>
+            <div className="text-sm font-medium text-neutral-900">{mint.name}</div>
+            <div className="text-xs text-neutral-500">{mint.url}</div>
             {mint.balance && (
-              <div className="text-xs text-gray-600 mt-1">
+              <div className="text-xs text-neutral-600 mt-1">
                 Balance: {mint.balance.toLocaleString()} sats
               </div>
             )}
@@ -241,7 +241,7 @@ function MintItem({ mint, onToggle, onRemove, variant = 'compact' }: MintItemPro
           onClick={onRemove}
           className="p-1 hover:bg-neutral-200 rounded transition-colors"
         >
-          <Trash2 className="w-4 h-4 text-gray-500" />
+          <Trash2 className="w-4 h-4 text-neutral-500" />
         </button>
       </motion.div>
     );
@@ -259,16 +259,16 @@ function MintItem({ mint, onToggle, onRemove, variant = 'compact' }: MintItemPro
           className={`w-4 h-4 rounded-full border-2 ${
             mint.isActive
               ? 'bg-green-500 border-green-500'
-              : 'bg-white border-gray-300'
+              : 'bg-white border-neutral-300'
           }`}
         />
-        <span className="text-sm text-gray-700">{mint.name}</span>
+        <span className="text-sm text-neutral-700">{mint.name}</span>
       </div>
       <button
         onClick={onRemove}
         className="p-1 hover:bg-neutral-100 rounded"
       >
-        <X className="w-3 h-3 text-gray-500" />
+        <X className="w-3 h-3 text-neutral-500" />
       </button>
     </motion.div>
   );
@@ -290,7 +290,7 @@ function AddMintInput({ value, onChange, onAdd, variant = 'default' }: AddMintIn
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="https://mint.example.com"
-          className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500"
+          className="flex-1 px-3 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:border-blue-500"
         />
         <button
           onClick={onAdd}
@@ -304,8 +304,8 @@ function AddMintInput({ value, onChange, onAdd, variant = 'default' }: AddMintIn
   }
 
   return (
-    <div className="flex items-center gap-2 p-2 border border-dashed border-gray-300 rounded-lg">
-      <Plus className="w-4 h-4 text-gray-400" />
+    <div className="flex items-center gap-2 p-2 border border-dashed border-neutral-300 rounded-lg">
+      <Plus className="w-4 h-4 text-neutral-400" />
       <input
         type="url"
         value={value}

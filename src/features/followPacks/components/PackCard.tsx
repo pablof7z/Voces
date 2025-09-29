@@ -42,7 +42,7 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
     return (
       <Link
         to={`/packs/${pack.encode()}`}
-        className="block bg-black/40 backdrop-blur-sm border border-neutral-800 rounded-xl overflow-hidden hover:border-purple-500/50 hover:bg-black/60 transition-all group"
+        className="block bg-black/40 backdrop-blur-sm border border-neutral-800 rounded-xl overflow-hidden hover:border-orange-500/50 hover:bg-black/60 transition-all group"
       >
         <div className="relative">
           {/* Background image */}
@@ -59,7 +59,7 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
 
           {/* Content */}
           <div className="relative p-4">
-            <h4 className="font-semibold text-white group-hover:text-purple-400 transition-colors mb-2 text-lg">
+            <h4 className="font-semibold text-white group-hover:text-orange-500 transition-colors mb-2 text-lg">
               {pack.title}
             </h4>
             <p className="text-sm text-neutral-400 mb-2">
@@ -91,7 +91,7 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
                 </div>
               ))}
               {(pack.pubkeys?.length || 0) > 5 && (
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-purple-700 border-2 border-black/60 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-600 to-orange-700 border-2 border-black/60 flex items-center justify-center flex-shrink-0">
                   <span className="text-xs text-white font-bold">
                     +{(pack.pubkeys?.length || 0) - 5}
                   </span>
@@ -107,7 +107,7 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
   return (
     <Link
       to={`/packs/${pack.encode()}`}
-      className="block bg-black/40 backdrop-blur-sm border border-neutral-800 rounded-2xl overflow-hidden hover:border-purple-500/50 hover:bg-black/60 transition-all duration-300 group relative"
+      className="block bg-black/40 backdrop-blur-sm border border-neutral-800 rounded-2xl overflow-hidden hover:border-orange-500/50 hover:bg-black/60 transition-all duration-300 group relative"
     >
       {/* Favorite button */}
       <button
@@ -146,8 +146,8 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
           </div>
         </div>
       ) : (
-        <div className="relative h-32 bg-gradient-to-br from-purple-600/10 via-purple-500/5 to-pink-600/10 flex items-center justify-center">
-          <Package className="w-14 h-14 text-purple-500/30" />
+        <div className="relative h-32 bg-gradient-to-br from-orange-600/10 via-orange-500/5 to-red-600/10 flex items-center justify-center">
+          <Package className="w-14 h-14 text-orange-500/30" />
 
           {/* Title for packs without image */}
           <div className="absolute bottom-3 left-5 right-5">
@@ -193,7 +193,7 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
               </div>
             ))}
             {(pack.pubkeys?.length || 0) > 5 && (
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-purple-700 border-2 border-black/20 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-600 to-orange-700 border-2 border-black/20 flex items-center justify-center">
                 <span className="text-xs text-white font-bold">
                   +{(pack.pubkeys?.length || 0) - 5}
                 </span>
@@ -208,8 +208,8 @@ export function PackCard({ pack, variant = 'default' }: PackCardProps) {
             className={cn(
               "min-w-[90px] transition-all",
               subscribed
-                ? "border border-purple-500/30 hover:bg-purple-500/10 text-purple-400"
-                : "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-lg shadow-purple-500/20"
+                ? "border border-orange-500/30 hover:bg-orange-500/10 text-orange-500"
+                : "bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white shadow-lg shadow-orange-500/20"
             )}
           >
             {subscribed ? 'Following' : 'Follow'}

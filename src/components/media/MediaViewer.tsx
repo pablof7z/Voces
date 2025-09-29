@@ -138,10 +138,10 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
           {mediaType === 'audio' && (
             <div className="bg-white dark:bg-black rounded-lg p-8 min-w-[400px]">
               <div className="flex items-center gap-4 mb-4">
-                <Music className="w-12 h-12 text-purple-600" />
+                <Music className="w-12 h-12 text-orange-600" />
                 <div>
                   <h3 className="font-semibold">{imeta.alt || 'Audio File'}</h3>
-                  {fileSize && <p className="text-sm text-gray-500">{fileSize} MB</p>}
+                  {fileSize && <p className="text-sm text-neutral-500">{fileSize} MB</p>}
                 </div>
               </div>
               <audio src={imeta.url} controls autoPlay className="w-full" />
@@ -150,13 +150,13 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
 
           {mediaType === 'file' && imeta.url && (
             <div className="bg-white dark:bg-black rounded-lg p-8">
-              <FileImage className="w-16 h-16 text-gray-500 mb-4" />
+              <FileImage className="w-16 h-16 text-neutral-500 mb-4" />
               <h3 className="font-semibold mb-2">{imeta.url.split('/').pop()}</h3>
-              {fileSize && <p className="text-sm text-gray-500 mb-4">{fileSize} MB</p>}
+              {fileSize && <p className="text-sm text-neutral-500 mb-4">{fileSize} MB</p>}
               <a
                 href={imeta.url}
                 download
-                className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700"
               >
                 <Download className="w-4 h-4" />
                 Download
@@ -166,16 +166,16 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
         </div>
 
         {/* Right side - Details and Comments (fixed width, fully right-aligned) */}
-        <div className="w-[400px] bg-white dark:bg-black flex flex-col border-l border-gray-800">
+        <div className="w-[400px] bg-white dark:bg-black flex flex-col border-l border-neutral-800">
           {/* Header with user info */}
-          <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+          <div className="p-4 border-b border-neutral-200 dark:border-neutral-800">
             <div className="flex items-center gap-3">
               <UserAvatar pubkey={event.pubkey} size="md" />
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-gray-900 dark:text-white truncate">
+                <div className="font-semibold text-neutral-900 dark:text-white truncate">
                   <UserName pubkey={event.pubkey} />
                 </div>
-                <div className="text-sm text-gray-500">
+                <div className="text-sm text-neutral-500">
                   <TimeAgo timestamp={event.created_at || 0} />
                 </div>
               </div>
@@ -184,17 +184,17 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
 
           {/* Caption/Content */}
           {caption && (
-            <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+            <div className="p-4 border-b border-neutral-200 dark:border-neutral-800">
               <div className="flex gap-3">
                 <UserAvatar pubkey={event.pubkey} size="sm" />
                 <div className="flex-1">
-                  <div className="font-semibold text-sm text-gray-900 dark:text-white mb-1">
+                  <div className="font-semibold text-sm text-neutral-900 dark:text-white mb-1">
                     <UserName pubkey={event.pubkey} />
                   </div>
                   <ContentRenderer
                     content={caption}
                     emojiTags={event.tags}
-                    className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap break-words"
+                    className="text-neutral-800 dark:text-neutral-200 whitespace-pre-wrap break-words"
                   />
                 </div>
               </div>
@@ -203,8 +203,8 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
 
           {/* Media metadata */}
           {(fileSize || imeta.dim) && (
-            <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-800">
-              <div className="flex items-center gap-4 text-xs text-gray-500">
+            <div className="px-4 py-2 border-b border-neutral-200 dark:border-neutral-800">
+              <div className="flex items-center gap-4 text-xs text-neutral-500">
                 {fileSize && <span>{fileSize} MB</span>}
                 {imeta.dim && <span>{imeta.dim}</span>}
                 {imeta.m && <span>{imeta.m}</span>}
@@ -215,11 +215,11 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
           {/* Comments section */}
           <div className="flex-1 overflow-y-auto">
             {sortedReplies.length === 0 ? (
-              <div className="p-8 text-center text-gray-500">
+              <div className="p-8 text-center text-neutral-500">
                 No comments yet. Be the first to comment!
               </div>
             ) : (
-              <div className="divide-y divide-gray-200 dark:divide-gray-800">
+              <div className="divide-y divide-neutral-200 dark:divide-neutral-800">
                 {sortedReplies.map((reply) => (
                   <CommentItem key={reply.id} event={reply} />
                 ))}
@@ -229,7 +229,7 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
 
           {/* Comment input */}
           {currentUser && (
-            <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+            <div className="p-4 border-t border-neutral-200 dark:border-neutral-800">
               <div className="flex gap-2">
                 <textarea
                   ref={commentInputRef}
@@ -242,13 +242,13 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
                     }
                   }}
                   placeholder="Add a comment..."
-                  className="flex-1 px-3 py-2 bg-neutral-100 dark:bg-neutral-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-600"
+                  className="flex-1 px-3 py-2 bg-neutral-100 dark:bg-neutral-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-orange-600"
                   rows={1}
                 />
                 <button
                   onClick={handleSubmitComment}
                   disabled={!comment.trim() || isSubmitting}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <Send className="w-4 h-4" />
                 </button>
@@ -269,17 +269,17 @@ function CommentItem({ event }: { event: NDKEvent }) {
         <UserAvatar pubkey={event.pubkey} size="sm" />
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2">
-            <span className="font-semibold text-sm text-gray-900 dark:text-white">
+            <span className="font-semibold text-sm text-neutral-900 dark:text-white">
               <UserName pubkey={event.pubkey} />
             </span>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-neutral-500">
               <TimeAgo timestamp={event.created_at || 0} />
             </span>
           </div>
           <ContentRenderer
             content={event.content.trim()}
             emojiTags={event.tags}
-            className="text-gray-800 dark:text-gray-200 mt-1 break-words"
+            className="text-neutral-800 dark:text-neutral-200 mt-1 break-words"
           />
         </div>
       </div>

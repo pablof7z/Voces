@@ -58,8 +58,8 @@ const sectionConfigs: Omit<SectionConfig, 'label' | 'description'>[] = [
   {
     id: 'blossom',
     icon: Image,
-    iconColor: 'text-purple-400',
-    iconBg: 'bg-purple-400/10',
+    iconColor: 'text-orange-500',
+    iconBg: 'bg-orange-500/10',
     component: BlossomSettings,
     available: true,
   },
@@ -74,8 +74,8 @@ const sectionConfigs: Omit<SectionConfig, 'label' | 'description'>[] = [
   {
     id: 'theme',
     icon: Palette,
-    iconColor: 'text-pink-400',
-    iconBg: 'bg-pink-400/10',
+    iconColor: 'text-red-400',
+    iconBg: 'bg-red-400/10',
     component: ThemeSettings,
     available: true,
   },

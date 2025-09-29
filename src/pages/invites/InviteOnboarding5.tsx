@@ -22,7 +22,7 @@ function InviteOnboarding5() {
   const cardIndex = ['intro', 'why', 'setup', 'ready'].indexOf(currentCard);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-red-50 to-pink-50 dark:from-gray-950 dark:via-orange-950/20 dark:to-pink-950/20 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-red-50 to-red-50 dark:from-neutral-950 dark:via-orange-950/20 dark:to-red-950/20 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         {/* Card Stack Indicator */}
         <div className="flex justify-center gap-2 mb-6">
@@ -31,7 +31,7 @@ function InviteOnboarding5() {
               key={card}
               className={`h-1.5 rounded-full transition-all ${
                 index <= cardIndex
-                  ? 'w-12 bg-gradient-to-r from-orange-500 to-pink-500'
+                  ? 'w-12 bg-gradient-to-r from-orange-500 to-red-500'
                   : 'w-8 bg-neutral-300 dark:bg-neutral-700'
               }`}
             />
@@ -49,7 +49,7 @@ function InviteOnboarding5() {
               className="bg-white dark:bg-black rounded-3xl shadow-2xl overflow-hidden"
             >
               {/* Card Header with gradient */}
-              <div className="h-40 bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600 relative overflow-hidden">
+              <div className="h-40 bg-gradient-to-br from-orange-400 via-red-500 to-orange-600 relative overflow-hidden">
                 <motion.div
                   animate={{
                     scale: [1, 1.2, 1],
@@ -78,25 +78,25 @@ function InviteOnboarding5() {
                   <p className="text-orange-500 dark:text-orange-400 font-semibold mb-2">
                     {MOCK_INVITER.name} invited you to join
                   </p>
-                  <h1 className="text-5xl font-black text-transparent bg-gradient-to-r from-orange-600 via-pink-600 to-purple-600 bg-clip-text mb-4">
+                  <h1 className="text-5xl font-black text-transparent bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 bg-clip-text mb-4">
                     Voces
                   </h1>
-                  <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+                  <p className="text-neutral-600 dark:text-neutral-400 text-lg leading-relaxed">
                     {SCENARIO.welcomeMessage}
                   </p>
                 </div>
 
                 {SCENARIO.decryptedPayload && (
-                  <div className="bg-gradient-to-br from-orange-50 to-pink-50 dark:from-orange-950/30 dark:to-pink-950/30 rounded-2xl p-6 border-2 border-orange-200 dark:border-orange-800">
+                  <div className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/30 dark:to-red-950/30 rounded-2xl p-6 border-2 border-orange-200 dark:border-orange-800">
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center flex-shrink-0">
                         <Star className="w-5 h-5 text-white fill-white" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-bold text-gray-900 dark:text-white mb-2">
+                        <p className="font-bold text-neutral-900 dark:text-white mb-2">
                           Hey {SCENARIO.decryptedPayload.name}! 👋
                         </p>
-                        <p className="text-gray-700 dark:text-gray-300 text-sm">
+                        <p className="text-neutral-700 dark:text-neutral-300 text-sm">
                           {SCENARIO.decryptedPayload.message}
                         </p>
                       </div>
@@ -106,7 +106,7 @@ function InviteOnboarding5() {
 
                 <Button
                   onClick={() => setCurrentCard('why')}
-                  className="w-full h-14 text-lg font-bold bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white rounded-xl"
+                  className="w-full h-14 text-lg font-bold bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl"
                 >
                   Continue
                   <ArrowRight className="w-5 h-5 ml-2" />
@@ -125,10 +125,10 @@ function InviteOnboarding5() {
               className="bg-white dark:bg-black rounded-3xl shadow-2xl p-8 md:p-12 space-y-8"
             >
               <div className="text-center">
-                <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-4">
+                <h2 className="text-4xl font-black text-neutral-900 dark:text-white mb-4">
                   Why Voces?
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400 text-lg">
+                <p className="text-neutral-600 dark:text-neutral-400 text-lg">
                   Here&apos;s what makes us different
                 </p>
               </div>
@@ -145,13 +145,13 @@ function InviteOnboarding5() {
                     icon: Users,
                     title: 'Real Connections',
                     description: 'Build genuine relationships without the noise.',
-                    color: 'from-purple-500 to-purple-600',
+                    color: 'from-orange-500 to-orange-600',
                   },
                   {
                     icon: Coins,
                     title: 'Earn & Support',
                     description: 'Send and receive value directly, no middlemen.',
-                    color: 'from-orange-500 to-pink-500',
+                    color: 'from-orange-500 to-red-500',
                   },
                 ].map((feature, index) => (
                   <motion.div
@@ -165,10 +165,10 @@ function InviteOnboarding5() {
                       <feature.icon className="w-7 h-7 text-white" />
                     </div>
                     <div className="flex-1 pt-1">
-                      <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1">
+                      <h3 className="font-bold text-lg text-neutral-900 dark:text-white mb-1">
                         {feature.title}
                       </h3>
-                      <p className="text-gray-600 dark:text-gray-400 text-sm">
+                      <p className="text-neutral-600 dark:text-neutral-400 text-sm">
                         {feature.description}
                       </p>
                     </div>
@@ -178,7 +178,7 @@ function InviteOnboarding5() {
 
               <Button
                 onClick={() => setCurrentCard('setup')}
-                className="w-full h-14 text-lg font-bold bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white rounded-xl"
+                className="w-full h-14 text-lg font-bold bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl"
               >
                 I&apos;m Ready!
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -196,17 +196,17 @@ function InviteOnboarding5() {
               className="bg-white dark:bg-black rounded-3xl shadow-2xl p-8 md:p-12 space-y-8"
             >
               <div className="text-center">
-                <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-4">
+                <h2 className="text-4xl font-black text-neutral-900 dark:text-white mb-4">
                   Let&apos;s Set You Up
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400 text-lg">
+                <p className="text-neutral-600 dark:text-neutral-400 text-lg">
                   Just a couple quick details
                 </p>
               </div>
 
               <div className="space-y-5">
                 <div className="space-y-2">
-                  <label className="text-gray-900 dark:text-white font-semibold text-base">
+                  <label className="text-neutral-900 dark:text-white font-semibold text-base">
                     What should we call you?
                   </label>
                   <Input
@@ -218,7 +218,7 @@ function InviteOnboarding5() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-gray-900 dark:text-white font-semibold text-base">
+                  <label className="text-neutral-900 dark:text-white font-semibold text-base">
                     Tell us about yourself
                   </label>
                   <Textarea
@@ -227,13 +227,13 @@ function InviteOnboarding5() {
                     className="min-h-[100px] text-base resize-none"
                     placeholder="I'm passionate about..."
                   />
-                  <p className="text-sm text-gray-500 dark:text-gray-500">
+                  <p className="text-sm text-neutral-500 dark:text-neutral-500">
                     This helps others connect with you
                   </p>
                 </div>
 
-                <div className="p-5 bg-gradient-to-br from-orange-50 to-pink-50 dark:from-orange-950/30 dark:to-pink-950/30 rounded-xl border border-orange-200 dark:border-orange-800">
-                  <p className="text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <div className="p-5 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/30 dark:to-red-950/30 rounded-xl border border-orange-200 dark:border-orange-800">
+                  <p className="text-sm text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
                     <Star className="w-4 h-4 text-orange-500 fill-orange-500" />
                     We&apos;re copying {MOCK_INVITER.name}&apos;s follows and wallet settings
                   </p>
@@ -243,7 +243,7 @@ function InviteOnboarding5() {
               <Button
                 onClick={() => setCurrentCard('ready')}
                 disabled={!name}
-                className="w-full h-14 text-lg font-bold bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white rounded-xl"
+                className="w-full h-14 text-lg font-bold bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl"
               >
                 Create Account
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -263,7 +263,7 @@ function InviteOnboarding5() {
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', duration: 1 }}
               >
-                <div className="w-28 h-28 mx-auto bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600 rounded-full flex items-center justify-center shadow-2xl mb-6">
+                <div className="w-28 h-28 mx-auto bg-gradient-to-br from-orange-400 via-red-500 to-orange-600 rounded-full flex items-center justify-center shadow-2xl mb-6">
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 2, ease: 'linear', repeat: Infinity }}
@@ -274,13 +274,13 @@ function InviteOnboarding5() {
               </motion.div>
 
               <div>
-                <h2 className="text-5xl font-black text-gray-900 dark:text-white mb-4">
+                <h2 className="text-5xl font-black text-neutral-900 dark:text-white mb-4">
                   You&apos;re In! 🎉
                 </h2>
-                <p className="text-2xl text-gray-600 dark:text-gray-400 mb-2">
+                <p className="text-2xl text-neutral-600 dark:text-neutral-400 mb-2">
                   Welcome, {name}
                 </p>
-                <p className="text-gray-500 dark:text-gray-500">
+                <p className="text-neutral-500 dark:text-neutral-500">
                   Your decentralized journey begins now
                 </p>
               </div>
@@ -289,8 +289,8 @@ function InviteOnboarding5() {
                 {[
                   { icon: Check, label: 'Account Created', bg: 'from-green-400 to-emerald-500' },
                   { icon: Users, label: 'Network Ready', bg: 'from-blue-400 to-blue-500' },
-                  { icon: MessageCircle, label: 'Ready to Post', bg: 'from-purple-400 to-purple-500' },
-                  { icon: Coins, label: 'Wallet Active', bg: 'from-orange-400 to-pink-500' },
+                  { icon: MessageCircle, label: 'Ready to Post', bg: 'from-orange-500 to-orange-500' },
+                  { icon: Coins, label: 'Wallet Active', bg: 'from-orange-400 to-red-500' },
                 ].map((item, index) => (
                   <motion.div
                     key={index}
@@ -302,7 +302,7 @@ function InviteOnboarding5() {
                     <div className={`w-10 h-10 mx-auto bg-gradient-to-br ${item.bg} rounded-xl flex items-center justify-center mb-2 shadow-md`}>
                       <item.icon className="w-5 h-5 text-white" />
                     </div>
-                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
                       {item.label}
                     </p>
                   </motion.div>
@@ -316,14 +316,14 @@ function InviteOnboarding5() {
               >
                 <Button
                   onClick={() => navigate('/')}
-                  className="w-full h-16 text-xl font-black bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 hover:from-orange-600 hover:via-pink-600 hover:to-purple-700 text-white rounded-2xl shadow-xl shadow-pink-500/30"
+                  className="w-full h-16 text-xl font-black bg-gradient-to-r from-orange-500 via-red-500 to-orange-600 hover:from-orange-600 hover:via-red-600 hover:to-orange-700 text-white rounded-2xl shadow-xl shadow-red-500/30"
                 >
                   Start Exploring
                   <ArrowRight className="w-6 h-6 ml-2" />
                 </Button>
               </motion.div>
 
-              <p className="text-sm text-gray-500 dark:text-gray-500">
+              <p className="text-sm text-neutral-500 dark:text-neutral-500">
                 {SCENARIO.decryptedPayload?.cashu && '🎁 Your welcome sats are already in your wallet!'}
               </p>
             </motion.div>

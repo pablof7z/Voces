@@ -22,10 +22,10 @@ export function CommentCard({ event }: CommentCardProps) {
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="font-semibold text-gray-900 dark:text-white">
+            <span className="font-semibold text-neutral-900 dark:text-white">
               {displayName}
             </span>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-sm text-neutral-500 dark:text-neutral-400">
               {event.created_at && formatDistanceToNow(new Date(event.created_at * 1000), { addSuffix: true })}
             </span>
           </div>
@@ -33,7 +33,7 @@ export function CommentCard({ event }: CommentCardProps) {
             content={event.content.trim()}
             emojiTags={event.tags}
             event={event}
-            className="text-gray-800 dark:text-gray-200 leading-relaxed"
+            className="text-neutral-800 dark:text-neutral-200 leading-relaxed"
           />
         </div>
       </div>

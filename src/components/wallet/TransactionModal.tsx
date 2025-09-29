@@ -47,7 +47,7 @@ export function TransactionModal({
       case 'dark':
         return 'bg-black text-white';
       case 'gradient':
-        return 'bg-gradient-to-br from-purple-600 to-pink-600 text-white';
+        return 'bg-gradient-to-br from-orange-600 to-red-600 text-white';
       default:
         return 'bg-white';
     }
@@ -56,11 +56,11 @@ export function TransactionModal({
   const getInputStyles = () => {
     switch (variant) {
       case 'dark':
-        return 'bg-neutral-800 border-gray-700 text-white placeholder-gray-400';
+        return 'bg-neutral-800 border-neutral-700 text-white placeholder-neutral-400';
       case 'gradient':
         return 'bg-white/20 border-white/30 text-white placeholder-white/70 backdrop-blur-sm';
       default:
-        return 'bg-white border-gray-200 text-gray-900';
+        return 'bg-white border-neutral-200 text-neutral-900';
     }
   };
 
@@ -100,24 +100,24 @@ export function TransactionModal({
             {isSend ? (
               <div className="space-y-4">
                 <div>
-                  <label className={`text-sm ${variant === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-1 block`}>
+                  <label className={`text-sm ${variant === 'dark' ? 'text-neutral-400' : 'text-neutral-600'} mb-1 block`}>
                     Invoice
                   </label>
                   <textarea
                     value={invoice}
                     onChange={(e) => setInvoice(e.target.value)}
                     placeholder="Paste Lightning invoice or LNURL..."
-                    className={`w-full p-3 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 ${getInputStyles()}`}
+                    className={`w-full p-3 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 ${getInputStyles()}`}
                     rows={3}
                   />
                 </div>
 
                 <div className="text-center py-2">
-                  <span className={`text-sm ${variant === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>or</span>
+                  <span className={`text-sm ${variant === 'dark' ? 'text-neutral-500' : 'text-neutral-400'}`}>or</span>
                 </div>
 
                 <div>
-                  <label className={`text-sm ${variant === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-1 block`}>
+                  <label className={`text-sm ${variant === 'dark' ? 'text-neutral-400' : 'text-neutral-600'} mb-1 block`}>
                     Amount (sats)
                   </label>
                   <input
@@ -125,15 +125,15 @@ export function TransactionModal({
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="0"
-                    className={`w-full p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 ${getInputStyles()}`}
+                    className={`w-full p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 ${getInputStyles()}`}
                   />
-                  <div className={`text-xs mt-1 ${variant === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
+                  <div className={`text-xs mt-1 ${variant === 'dark' ? 'text-neutral-500' : 'text-neutral-500'}`}>
                     Available: {balance.toLocaleString()} sats
                   </div>
                 </div>
 
                 <div>
-                  <label className={`text-sm ${variant === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-1 block`}>
+                  <label className={`text-sm ${variant === 'dark' ? 'text-neutral-400' : 'text-neutral-600'} mb-1 block`}>
                     Note (optional)
                   </label>
                   <input
@@ -141,7 +141,7 @@ export function TransactionModal({
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Coffee tip"
-                    className={`w-full p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 ${getInputStyles()}`}
+                    className={`w-full p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 ${getInputStyles()}`}
                   />
                 </div>
 
@@ -152,9 +152,9 @@ export function TransactionModal({
                   disabled={!invoice && !amount}
                   className={`w-full py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                     variant === 'gradient'
-                      ? 'bg-white text-purple-600 hover:bg-white/90'
+                      ? 'bg-white text-orange-600 hover:bg-white/90'
                       : variant === 'dark'
-                      ? 'bg-yellow-500 text-gray-900 hover:bg-yellow-400'
+                      ? 'bg-yellow-500 text-neutral-900 hover:bg-yellow-400'
                       : 'bg-black text-white hover:bg-neutral-800'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
@@ -174,7 +174,7 @@ export function TransactionModal({
             ) : (
               <div className="space-y-4">
                 <div>
-                  <label className={`text-sm ${variant === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-1 block`}>
+                  <label className={`text-sm ${variant === 'dark' ? 'text-neutral-400' : 'text-neutral-600'} mb-1 block`}>
                     Amount (sats)
                   </label>
                   <input
@@ -182,12 +182,12 @@ export function TransactionModal({
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="0"
-                    className={`w-full p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 ${getInputStyles()}`}
+                    className={`w-full p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 ${getInputStyles()}`}
                   />
                 </div>
 
                 <div>
-                  <label className={`text-sm ${variant === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-1 block`}>
+                  <label className={`text-sm ${variant === 'dark' ? 'text-neutral-400' : 'text-neutral-600'} mb-1 block`}>
                     Description
                   </label>
                   <input
@@ -195,7 +195,7 @@ export function TransactionModal({
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="What's this payment for?"
-                    className={`w-full p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 ${getInputStyles()}`}
+                    className={`w-full p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 ${getInputStyles()}`}
                   />
                 </div>
 
@@ -210,11 +210,11 @@ export function TransactionModal({
                     }`}>
                       <div className="flex items-center justify-center mb-4">
                         <div className="p-8 bg-white rounded-2xl">
-                          <QrCode className="w-32 h-32 text-gray-900" />
+                          <QrCode className="w-32 h-32 text-neutral-900" />
                         </div>
                       </div>
                       <div className={`text-xs ${
-                        variant === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                        variant === 'dark' ? 'text-neutral-400' : 'text-neutral-500'
                       } text-center break-all`}>
                         lnbc{amount}n1pj9xyz...mockInvoice
                       </div>
@@ -227,7 +227,7 @@ export function TransactionModal({
                           ? 'bg-white/20 text-white hover:bg-white/30'
                           : variant === 'dark'
                           ? 'bg-neutral-800 text-white hover:bg-neutral-700'
-                          : 'bg-neutral-100 text-gray-700 hover:bg-neutral-200'
+                          : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
                       }`}
                     >
                       {copied ? (
@@ -252,9 +252,9 @@ export function TransactionModal({
                     onClick={() => setAmount('1000')}
                     className={`w-full py-3 rounded-xl font-medium transition-all ${
                       variant === 'gradient'
-                        ? 'bg-white text-purple-600 hover:bg-white/90'
+                        ? 'bg-white text-orange-600 hover:bg-white/90'
                         : variant === 'dark'
-                        ? 'bg-yellow-500 text-gray-900 hover:bg-yellow-400'
+                        ? 'bg-yellow-500 text-neutral-900 hover:bg-yellow-400'
                         : 'bg-black text-white hover:bg-neutral-800'
                     }`}
                   >

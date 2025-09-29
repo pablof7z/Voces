@@ -40,10 +40,10 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+          className="bg-white rounded-2xl p-6 shadow-sm border border-neutral-100"
         >
           <div className="flex justify-between items-start mb-6">
-            <h2 className="text-lg font-medium text-gray-900">Wallet</h2>
+            <h2 className="text-lg font-medium text-neutral-900">Wallet</h2>
             <div className="flex items-center gap-2">
               <QRScanner onScan={handleScan} variant="minimal" />
               <MintConfiguration variant="minimal" />
@@ -59,7 +59,7 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
 
           <button
             onClick={() => setShowHistory(!showHistory)}
-            className="w-full mt-4 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            className="w-full mt-4 text-sm text-neutral-500 hover:text-neutral-700 transition-colors"
           >
             View History
           </button>
@@ -93,12 +93,12 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
           <div className="flex justify-between items-center mb-8">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
-                <Zap className="w-5 h-5 text-gray-900" />
+                <Zap className="w-5 h-5 text-neutral-900" />
               </div>
               <h2 className="text-white font-light text-xl">Lightning Wallet</h2>
             </div>
             <button className="p-2 hover:bg-neutral-800 rounded-lg transition-colors">
-              <MoreHorizontal className="w-5 h-5 text-gray-400" />
+              <MoreHorizontal className="w-5 h-5 text-neutral-400" />
             </button>
           </div>
 
@@ -106,7 +106,7 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
             <div className="text-5xl font-thin text-white mb-2">
               {balance.toLocaleString()}
             </div>
-            <div className="text-gray-400 text-sm">satoshis</div>
+            <div className="text-neutral-400 text-sm">satoshis</div>
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-6">
@@ -114,7 +114,7 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleSend}
-              className="py-4 bg-yellow-500 text-gray-900 rounded-xl font-medium hover:bg-yellow-400 transition-colors"
+              className="py-4 bg-yellow-500 text-neutral-900 rounded-xl font-medium hover:bg-yellow-400 transition-colors"
             >
               Send
             </motion.button>
@@ -128,15 +128,15 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
             </motion.button>
           </div>
 
-          <div className="flex items-center justify-between pt-6 border-t border-gray-800">
+          <div className="flex items-center justify-between pt-6 border-t border-neutral-800">
             <button
               onClick={() => setShowHistory(!showHistory)}
-              className="flex items-center gap-2 text-gray-400 hover:text-gray-300 text-sm"
+              className="flex items-center gap-2 text-neutral-400 hover:text-neutral-300 text-sm"
             >
               <History className="w-4 h-4" />
               <span>History</span>
             </button>
-            <button className="text-gray-400 hover:text-gray-300 text-sm">
+            <button className="text-neutral-400 hover:text-neutral-300 text-sm">
               Settings
             </button>
           </div>
@@ -171,18 +171,18 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
           className="max-w-md mx-auto"
         >
           <motion.div
-            className="bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 shadow-xl border border-gray-100"
+            className="bg-gradient-to-br from-white to-neutral-50 rounded-3xl p-8 shadow-xl border border-neutral-100"
             whileHover={{ y: -5 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
                   <Zap className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900">NIP-60 Wallet</h2>
-                  <p className="text-xs text-gray-500">Lightning Network</p>
+                  <h2 className="text-xl font-semibold text-neutral-900">NIP-60 Wallet</h2>
+                  <p className="text-xs text-neutral-500">Lightning Network</p>
                 </div>
               </div>
             </div>
@@ -199,10 +199,10 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
               <TransactionButton type="receive" onClick={handleReceive} variant="detailed" />
             </div>
 
-            <div className="mt-8 pt-6 border-t border-gray-200">
+            <div className="mt-8 pt-6 border-t border-neutral-200">
               <button
                 onClick={() => setShowHistory(!showHistory)}
-                className="w-full flex items-center justify-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                className="w-full flex items-center justify-center gap-2 text-sm text-neutral-600 hover:text-neutral-900 transition-colors"
               >
                 <History className="w-4 h-4" />
                 <span>Transaction History</span>
@@ -237,9 +237,9 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
           className="relative overflow-hidden rounded-3xl"
         >
           {/* Animated gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-500">
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-600 via-red-500 to-orange-500">
             <motion.div
-              className="absolute inset-0 bg-gradient-to-tr from-blue-600/30 via-purple-600/30 to-pink-600/30"
+              className="absolute inset-0 bg-gradient-to-tr from-blue-600/30 via-orange-600/30 to-red-600/30"
               animate={{
                 x: [0, 100, 0],
                 y: [0, -100, 0],
@@ -302,7 +302,7 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleSend}
-                className="flex-1 py-4 bg-white text-purple-600 rounded-2xl font-semibold hover:bg-white/90 transition-all"
+                className="flex-1 py-4 bg-white text-orange-600 rounded-2xl font-semibold hover:bg-white/90 transition-all"
               >
                 Send
               </motion.button>
@@ -343,7 +343,7 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-white rounded-xl p-4 shadow-sm border border-gray-100"
+          className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100"
         >
           <div className="flex items-center justify-between">
             <WalletBalance amount={balance} variant="compact" />

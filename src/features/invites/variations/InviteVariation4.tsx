@@ -10,7 +10,7 @@ import { Loader2, Mail, Users, Star } from 'lucide-react';
 const Card = ({ children, selected, onClick }: { children: React.ReactNode, selected: boolean, onClick: () => void }) => (
   <motion.div
     onClick={onClick}
-    className={`cursor-pointer border-2 rounded-xl p-6 text-center transition-all duration-300 ${selected ? 'border-purple-500 bg-purple-50' : 'border-gray-200 bg-white hover:border-gray-300'}`}
+    className={`cursor-pointer border-2 rounded-xl p-6 text-center transition-all duration-300 ${selected ? 'border-orange-500 bg-orange-50' : 'border-neutral-200 bg-white hover:border-neutral-300'}`}
     whileHover={{ scale: 1.03 }}
   >
     {children}
@@ -38,19 +38,19 @@ const InviteVariation4 = () => {
     <div>
       <div className="text-center mb-6">
         <h3 className="font-bold text-xl">Choose Your Invite Method</h3>
-        <p className="text-gray-500">How do you want to share Voces?</p>
+        <p className="text-neutral-500">How do you want to share Voces?</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <Card selected={inviteType === InviteType.General} onClick={() => setInviteType(InviteType.General)}>
-          <Users className="mx-auto mb-3 text-purple-500" size={32} />
+          <Users className="mx-auto mb-3 text-orange-500" size={32} />
           <h4 className="font-semibold">Public Invite</h4>
-          <p className="text-sm text-gray-500">A single link for anyone to use.</p>
+          <p className="text-sm text-neutral-500">A single link for anyone to use.</p>
         </Card>
         <Card selected={inviteType === InviteType.Personalized} onClick={() => setInviteType(InviteType.Personalized)}>
           <Mail className="mx-auto mb-3 text-blue-500" size={32} />
           <h4 className="font-semibold">Personal Invite</h4>
-          <p className="text-sm text-gray-500">A special link for one person.</p>
+          <p className="text-sm text-neutral-500">A special link for one person.</p>
         </Card>
       </div>
 
@@ -66,7 +66,7 @@ const InviteVariation4 = () => {
             <h4 className="font-semibold text-lg text-center">Make it Special ✨</h4>
             <Input placeholder="Invitee's Name" value={name} onChange={e => setName(e.target.value)} />
             <Textarea placeholder="Add a personal note..." value={message} onChange={e => setMessage(e.target.value)} />
-            <div className="flex items-center space-x-3 text-sm text-gray-600 p-3 bg-white border rounded-lg">
+            <div className="flex items-center space-x-3 text-sm text-neutral-600 p-3 bg-white border rounded-lg">
                 <Star className="text-yellow-400" />
                 <span>A personal touch makes all the difference!</span>
             </div>

@@ -10,7 +10,7 @@ export function HomePage() {
   return (
     <div className="max-w-2xl mx-auto">
       {/* Desktop relay selector - hidden on mobile since mobile has it in the header */}
-      <div className="hidden md:block sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+      <div className="hidden md:block sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-800">
         <div className="px-4 py-3 sm:px-6">
           <RelaySelector />
         </div>

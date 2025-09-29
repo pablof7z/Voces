@@ -60,7 +60,7 @@ export function ListingDetailPage() {
             Back to Marketplace
           </Button>
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
+            <Loader2 className="w-8 h-8 animate-spin text-neutral-500" />
           </div>
         </div>
       </div>
@@ -95,7 +95,7 @@ export function ListingDetailPage() {
               <CardContent className="p-6">
                 <div className="mb-6">
                   <div className="flex items-start justify-between mb-4">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">
                       {listing.title}
                     </h1>
                     {listing.price && (
@@ -109,7 +109,7 @@ export function ListingDetailPage() {
                     </div>
                   )}
 
-                  <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400 mb-6">
+                  <div className="flex flex-wrap gap-4 text-sm text-neutral-500 dark:text-neutral-400 mb-6">
                     {listing.location && (
                       <div className="flex items-center gap-1">
                         <MapPin className="w-4 h-4" />
@@ -127,7 +127,7 @@ export function ListingDetailPage() {
                       {listing.tags.filter(t => t[0] === 't').map(([_, category]) => (
                         <span
                           key={category}
-                          className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400 rounded-full text-sm"
+                          className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-500 rounded-full text-sm"
                         >
                           <Tag className="w-3 h-3" />
                           {category}
@@ -151,7 +151,7 @@ export function ListingDetailPage() {
                 <div className="flex items-center gap-3 mb-6">
                   <UserAvatar pubkey={listing.pubkey} size="lg" />
                   <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Listed by</p>
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400">Listed by</p>
                     <p className="font-medium">User</p>
                   </div>
                 </div>
