@@ -129,7 +129,7 @@ function InviteOnboarding5() {
                   Why Voces?
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400 text-lg">
-                  Here's what makes us different
+                  Here&apos;s what makes us different
                 </p>
               </div>
 
@@ -180,7 +180,7 @@ function InviteOnboarding5() {
                 onClick={() => setCurrentCard('setup')}
                 className="w-full h-14 text-lg font-bold bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white rounded-xl"
               >
-                I'm Ready!
+                I&apos;m Ready!
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </motion.div>
@@ -197,7 +197,7 @@ function InviteOnboarding5() {
             >
               <div className="text-center">
                 <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-4">
-                  Let's Set You Up
+                  Let&apos;s Set You Up
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400 text-lg">
                   Just a couple quick details
@@ -235,7 +235,7 @@ function InviteOnboarding5() {
                 <div className="p-5 bg-gradient-to-br from-orange-50 to-pink-50 dark:from-orange-950/30 dark:to-pink-950/30 rounded-xl border border-orange-200 dark:border-orange-800">
                   <p className="text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2">
                     <Star className="w-4 h-4 text-orange-500 fill-orange-500" />
-                    We're copying {MOCK_INVITER.name}'s follows and wallet settings
+                    We&apos;re copying {MOCK_INVITER.name}&apos;s follows and wallet settings
                   </p>
                 </div>
               </div>
@@ -275,7 +275,7 @@ function InviteOnboarding5() {
 
               <div>
                 <h2 className="text-5xl font-black text-gray-900 dark:text-white mb-4">
-                  You're In! 🎉
+                  You&apos;re In! 🎉
                 </h2>
                 <p className="text-2xl text-gray-600 dark:text-gray-400 mb-2">
                   Welcome, {name}

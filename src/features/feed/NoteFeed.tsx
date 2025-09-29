@@ -5,6 +5,7 @@ import { useSettingsStore } from '@/stores/settingsStore';
 import { useWoTFilter } from '@/hooks/useWoT';
 import { MediaTypeFilter, type MediaType } from './MediaTypeFilter';
 import { MediaGrid } from '@/components/media/MediaGrid';
+import { ArticlesFeed } from '@/features/articles/components/ArticlesFeed';
 
 const INITIAL_LOAD = 20;
 const BATCH_SIZE = 10;
@@ -21,12 +22,14 @@ export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors
   const [mediaType, setMediaType] = useState<MediaType>('conversations');
 
   // Fetch different kinds based on media type
-  const kinds = mediaType === 'images' || mediaType === 'videos' || mediaType === 'audio'
+  const kinds = mediaType === 'articles'
+    ? [] // Articles are handled separately
+    : mediaType === 'images' || mediaType === 'videos' || mediaType === 'audio'
     ? [NDKKind.Text, NDKKind.Image, NDKKind.Video, NDKKind.ShortVideo]
     : [NDKKind.Text];
 
   const { events: subscribedEvents } = useSubscribe(
-    externalEvents ? false : [{
+    externalEvents || mediaType === 'articles' ? false : [{
       kinds,
       ...(authors && authors.length > 0 && !selectedRelay ? { authors } : {}),
     }],
@@ -88,6 +91,10 @@ export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors
         return unfilteredEvents.filter(event =>
           event.kind === NDKKind.Text && hasMediaUrl(event.content, 'audio')
         );
+
+      case 'articles':
+        // Articles are handled by ArticlesFeed component
+        return [];
 
       default:
         return unfilteredEvents;
@@ -159,7 +166,7 @@ export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors
     }
   }, [events.length, visibleCount]);
 
-  if (events.length === 0) {
+  if (events.length === 0 && mediaType !== 'articles') {
     return (
       <div className="text-center py-12 px-4">
         <p className="text-gray-500 dark:text-gray-400">
@@ -178,7 +185,9 @@ export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors
         />
       )}
 
-      {mediaType === 'images' || mediaType === 'videos' ? (
+      {mediaType === 'articles' ? (
+        <ArticlesFeed authors={authors} />
+      ) : mediaType === 'images' || mediaType === 'videos' ? (
         <MediaGrid events={events} />
       ) : (
         <div className="divide-y divide-gray-200 dark:divide-gray-800">

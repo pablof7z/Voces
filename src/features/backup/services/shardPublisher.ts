@@ -4,7 +4,7 @@
 
 import NDK, { NDKEvent, NDKPrivateKeySigner, NDKUser } from '@nostr-dev-kit/ndk';
 import type { EncryptedShard } from '../utils/shamir';
-import { BackupError, BackupErrorCode, withBackupErrorHandling } from '../errors';
+import { BackupErrorCode, withBackupErrorHandling } from '../errors';
 
 /**
  * Configuration for publishing a single shard

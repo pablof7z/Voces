@@ -2,7 +2,6 @@ import { NDKArticle } from '@nostr-dev-kit/ndk';
 import { CommentForm } from './CommentForm';
 import { CommentList } from './CommentList';
 import { useArticleComments } from '../hooks/useArticleComments';
-import { ARTICLE_STYLES } from '../constants/styles';
 
 interface CommentSectionProps {
   article: NDKArticle;
@@ -13,11 +12,14 @@ export function CommentSection({ article, onError }: CommentSectionProps) {
   const { comments, isLoading, addComment } = useArticleComments(article);
 
   return (
-    <div className={`mt-8 ${ARTICLE_STYLES.CARD_BG} rounded-xl ${ARTICLE_STYLES.CARD_BORDER} overflow-hidden`}>
-      <div className={`px-8 py-6 ${ARTICLE_STYLES.SECTION_DIVIDER}`}>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white font-serif">
-          Comments ({comments.length})
+    <div className="border-t border-gray-200 dark:border-gray-800 pt-12">
+      <div className="mb-8">
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white font-serif mb-2">
+          Discussion
         </h2>
+        <p className="text-gray-600 dark:text-gray-400">
+          {comments.length} {comments.length === 1 ? 'comment' : 'comments'}
+        </p>
       </div>
 
       <CommentForm

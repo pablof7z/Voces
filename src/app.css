@@ -45,11 +45,15 @@
   }
 
   body {
-    background-color: hsl(var(--color-background));
+    background: #FFFFFF !important;
     color: hsl(var(--color-foreground));
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  .dark body {
+    background: #000000 !important;
   }
 
   /* Dark mode */
@@ -155,6 +159,22 @@
 }
 
 @layer utilities {
+  /* True neutral backgrounds without blue tint */
+  .bg-neutral-card {
+    background-color: #FFFFFF;
+  }
+
+  .dark .bg-neutral-card {
+    background-color: #0a0a0a;
+  }
+
+  .bg-neutral-card-hover {
+    background-color: #F5F5F5;
+  }
+
+  .dark .bg-neutral-card-hover {
+    background-color: #141414;
+  }
   /* Text selection */
   ::selection {
     background-color: rgb(233 213 255);

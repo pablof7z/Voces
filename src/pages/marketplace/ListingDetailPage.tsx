@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { UserAvatar } from '@/components/ui/UserAvatar';
 import { PriceTag } from '@/features/classifieds/components/PriceTag';
-import { useSubscribe, useNDKCurrentUser, useEvent, useNDKCurrentPubkey } from '@nostr-dev-kit/ndk-hooks';
+import { useEvent, useNDKCurrentPubkey } from '@nostr-dev-kit/ndk-hooks';
 import { NDKClassified } from '@nostr-dev-kit/ndk';
 import { formatDistanceToNow } from 'date-fns';
 import { Loader2 } from 'lucide-react';

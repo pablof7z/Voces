@@ -145,7 +145,7 @@ export const useWalletStore = create<WalletState>()(
         } catch (err) {
           const walletError = err instanceof WalletError ? err : new WalletError(
             err instanceof Error ? err.message : 'Unknown error',
-            err instanceof Error ? (err as any).code : 'UNKNOWN_ERROR'
+            err instanceof Error && 'code' in err ? (err.code as string) : 'UNKNOWN_ERROR'
           );
 
           const friendlyMessage = getUserFriendlyErrorMessage(walletError);
@@ -287,7 +287,7 @@ export const useWalletStore = create<WalletState>()(
         walletRelays: state.walletRelays,
         nutzaps: Array.from(state.nutzaps.entries()),
       }),
-      merge: (persistedState: any, currentState) => {
+      merge: (persistedState: { mints?: string[]; selectedMint?: string; walletRelays?: string[]; nutzaps?: [string, NDKNutzap][] }, currentState) => {
         const nutzapsArray = persistedState?.nutzaps || [];
         const nutzapsMap = new Map(nutzapsArray);
 

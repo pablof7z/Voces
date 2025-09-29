@@ -1,6 +1,6 @@
 import { useSubscribe } from '@nostr-dev-kit/ndk-hooks';
 import { NDKClassified, NDKKind } from '@nostr-dev-kit/ndk';
-import { CLASSIFIED_LISTING_KIND } from '../types';
+import type { NDKFilter } from '@nostr-dev-kit/ndk';
 import { useMemo } from 'react';
 
 interface UseListingsOptions {
@@ -14,7 +14,7 @@ export function useListings(options: UseListingsOptions = {}) {
 
   // Build filter based on options
   const filters = useMemo(() => {
-    const filter: any = {
+    const filter: NDKFilter = {
       kinds: [NDKKind.Classified],
       limit
     };

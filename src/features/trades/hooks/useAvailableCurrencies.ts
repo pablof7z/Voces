@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNDK } from '@nostr-dev-kit/ndk-hooks';
-import { NDKEvent, type NDKFilter } from '@nostr-dev-kit/ndk';
+import { NDKEvent } from '@nostr-dev-kit/ndk';
 
 interface CurrencyInfo {
   code: string;

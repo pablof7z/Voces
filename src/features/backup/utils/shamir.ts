@@ -77,7 +77,7 @@ function splitSecret(
     () => Promise.resolve(split(secret, threshold, totalShards)),
     BackupErrorCode.SHAMIR_SPLIT_FAILED,
     'Failed to split secret into shards'
-  ) as any; // shakespeare split is sync but we wrap for consistency
+  ) as unknown as string[]; // shakespeare split is sync but we wrap for consistency
 }
 
 /**
@@ -171,7 +171,7 @@ function joinShards(shards: string[]): string {
     () => Promise.resolve(join(shards)),
     BackupErrorCode.SHAMIR_JOIN_FAILED,
     'Failed to reconstruct secret from shards'
-  ) as any; // shakespeare join is sync but we wrap for consistency
+  ) as unknown as string; // shakespeare join is sync but we wrap for consistency
 }
 
 /**

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNDK, useFollows, useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
-import { NDKUser } from '@nostr-dev-kit/ndk';
 import { Button } from './button';
 import { UserPlus, UserMinus, Loader2 } from 'lucide-react';
 

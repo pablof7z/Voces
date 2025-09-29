@@ -17,13 +17,11 @@ import { useWallet } from '../hooks/useWallet';
 import { useWalletStore } from '../stores/walletStore';
 import { DepositModal } from '../components/wallet/DepositModal';
 import { useListings } from '@/features/classifieds/hooks/useListings';
-import { useTranslation } from 'react-i18next';
 import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
 import { useSubscribe } from '@nostr-dev-kit/ndk-hooks';
 import type { NDKFilter, NDKEvent, NDKKind } from '@nostr-dev-kit/ndk';
 
 export function MoneyPage() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const { balance: walletBalance, isReady, error, deposit } = useWallet();
   const mints = useWalletStore((state) => state.mints);

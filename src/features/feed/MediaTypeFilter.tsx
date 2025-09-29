@@ -17,7 +17,7 @@ const mediaTypes = [
   { id: 'articles' as const, icon: FileText },
 ];
 
-export function MediaTypeFilter({ selected, onSelect, showArticles = false }: MediaTypeFilterProps) {
+export function MediaTypeFilter({ selected, onSelect, showArticles = true }: MediaTypeFilterProps) {
   const { t } = useTranslation();
   const filteredTypes = showArticles ? mediaTypes : mediaTypes.filter(t => t.id !== 'articles');
 

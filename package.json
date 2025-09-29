@@ -4,10 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "node server.js",
+    "dev:client": "vite",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "vite build --outDir dist/client",
+    "build:server": "vite build --ssr src/entry-server.tsx --outDir dist/server",
+    "preview": "NODE_ENV=production node server.js",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@cashu/cashu-ts": "^2.7.2",
@@ -24,7 +27,9 @@
     "blossom-client-sdk": "^4.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "compression": "^1.8.1",
     "date-fns": "^4.1.0",
+    "express": "^5.1.0",
     "framer-motion": "^12.23.22",
     "i18next": "^25.5.2",
     "i18next-browser-languagedetector": "^8.2.0",
@@ -38,6 +43,7 @@
     "react-router-dom": "^7.9.1",
     "remark-gfm": "^4.0.1",
     "shakespeare": "^0.0.4",
+    "sirv": "^3.0.2",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",

@@ -2,7 +2,7 @@
  * Passphrase strength validation and KDF utilities for backup encryption
  */
 
-import { BackupError, BackupErrorCode, withBackupErrorHandling } from '../errors';
+import { BackupErrorCode, withBackupErrorHandling } from '../errors';
 
 /**
  * Security constants for passphrase validation and encryption

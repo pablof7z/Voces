@@ -99,7 +99,7 @@ export const useMessagesStore = create<MessagesState>()(
         conversations: Array.from(state.conversations.entries()),
         messages: Array.from(state.messages.entries()),
       }),
-      merge: (persistedState: any, currentState) => {
+      merge: (persistedState: { conversations?: [string, Conversation][]; messages?: [string, Message[]][] }, currentState) => {
         const conversationsArray = persistedState?.conversations || [];
         const messagesArray = persistedState?.messages || [];
 

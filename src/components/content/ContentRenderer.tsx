@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { EmbeddedNote } from './EmbeddedNote';
 import { EmbeddedArticle } from './EmbeddedArticle';
 import { MediaEmbed } from './MediaEmbed';
+import { ImageGrid } from './ImageGrid';
 
 const EMOJI_TAG = 'emoji';
 const EMOJI_IMG_CLASS = 'inline-block w-5 h-5 align-middle mx-0.5';
@@ -37,9 +38,9 @@ interface ContentRendererProps {
 }
 
 interface ParsedSegment {
-  type: 'text' | 'npub' | 'nprofile' | 'note' | 'nevent' | 'naddr' | 'link' | 'media' | 'emoji';
+  type: 'text' | 'npub' | 'nprofile' | 'note' | 'nevent' | 'naddr' | 'link' | 'media' | 'emoji' | 'image-grid';
   content: string;
-  data?: any;
+  data?: string | nip19.ProfilePointer | nip19.EventPointer | nip19.AddressPointer | string[];
 }
 
 /**
@@ -278,16 +279,69 @@ function parseContentToSegments(
   return parsed;
 }
 
+/**
+ * Groups consecutive image segments into image-grid segments for better display.
+ * Non-image media (video, audio) and other content types remain separate.
+ *
+ * @param segments - Array of parsed segments
+ * @returns Array of segments with consecutive images grouped
+ */
+function groupConsecutiveImages(segments: ParsedSegment[]): ParsedSegment[] {
+  const grouped: ParsedSegment[] = [];
+  let imageBuffer: string[] = [];
+
+  const isImage = (url: string) => {
+    return /\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i.test(url.toLowerCase());
+  };
+
+  const flushImageBuffer = () => {
+    if (imageBuffer.length > 0) {
+      if (imageBuffer.length === 1) {
+        // Single image remains as media segment
+        grouped.push({
+          type: 'media',
+          content: imageBuffer[0],
+        });
+      } else {
+        // Multiple images become image-grid segment
+        grouped.push({
+          type: 'image-grid',
+          content: '',
+          data: imageBuffer,
+        });
+      }
+      imageBuffer = [];
+    }
+  };
+
+  for (const segment of segments) {
+    if (segment.type === 'media' && isImage(segment.content)) {
+      // Add image to buffer
+      imageBuffer.push(segment.content);
+    } else {
+      // Non-image segment: flush buffer first, then add segment
+      flushImageBuffer();
+      grouped.push(segment);
+    }
+  }
+
+  // Flush any remaining images
+  flushImageBuffer();
+
+  return grouped;
+}
+
 export function ContentRenderer({ content, className = '', emojiTags = [] }: ContentRendererProps) {
   // Remove legacy image labels from content
   const cleanedContent = useMemo(() => {
     return content.replace(/\[Image #\d+\]/gi, '').trim();
   }, [content]);
 
-  // Parse content into segments, memoized for performance
+  // Parse content into segments and group images, memoized for performance
   const segments = useMemo(() => {
     const emojiMap = buildEmojiMap(emojiTags);
-    return parseContentToSegments(cleanedContent, emojiMap);
+    const parsed = parseContentToSegments(cleanedContent, emojiMap);
+    return groupConsecutiveImages(parsed);
   }, [cleanedContent, emojiTags]);
 
   return (
@@ -303,7 +357,7 @@ export function ContentRenderer({ content, className = '', emojiTags = [] }: Con
           )}
 
           {segment.type === 'nprofile' && (
-            <UserMention pubkey={(segment.data as any).pubkey} />
+            <UserMention pubkey={(segment.data as nip19.ProfilePointer).pubkey} />
           )}
 
           {segment.type === 'note' && (
@@ -311,11 +365,11 @@ export function ContentRenderer({ content, className = '', emojiTags = [] }: Con
           )}
 
           {segment.type === 'nevent' && (
-            <EmbeddedNote eventId={(segment.data as any).id} />
+            <EmbeddedNote eventId={(segment.data as nip19.EventPointer).id} />
           )}
 
           {segment.type === 'naddr' && (
-            <EmbeddedArticle naddr={segment.data} />
+            <EmbeddedArticle naddr={segment.data as nip19.AddressPointer} />
           )}
 
           {segment.type === 'link' && (
@@ -332,6 +386,10 @@ export function ContentRenderer({ content, className = '', emojiTags = [] }: Con
 
           {segment.type === 'media' && (
             <MediaEmbed url={segment.content} />
+          )}
+
+          {segment.type === 'image-grid' && (
+            <ImageGrid images={segment.data as string[]} />
           )}
 
           {segment.type === 'emoji' && (

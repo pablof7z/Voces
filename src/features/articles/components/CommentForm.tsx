@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
 import { NDKArticle, NDKEvent } from '@nostr-dev-kit/ndk';
 import { UserAvatar } from '@/components/ui/UserAvatar';
-import { ARTICLE_STYLES } from '../constants/styles';
 
 interface CommentFormProps {
   article: NDKArticle;
@@ -37,28 +36,28 @@ export function CommentForm({ article, onCommentPublished, onError }: CommentFor
   if (!currentUser) return null;
 
   return (
-    <div className={`px-8 py-6 ${ARTICLE_STYLES.SECTION_DIVIDER}`}>
-      <div className="flex gap-4">
+    <div className="mb-8">
+      <div className="flex gap-3">
         <UserAvatar
           pubkey={currentUser.pubkey}
           size="md"
-          className={ARTICLE_STYLES.AVATAR_SMALL}
+          className="w-10 h-10 flex-shrink-0"
         />
         <div className="flex-1">
           <textarea
             value={replyContent}
             onChange={(e) => setReplyContent(e.target.value)}
-            placeholder="Write a comment..."
-            className={`${ARTICLE_STYLES.INPUT_BASE} ${ARTICLE_STYLES.TEXTAREA_MIN_HEIGHT} font-sans`}
+            placeholder="Share your thoughts..."
+            className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all min-h-[100px] text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
             disabled={isSubmitting}
           />
-          <div className="flex justify-end mt-3">
+          <div className="flex justify-end mt-2">
             <button
               onClick={handleCommentPublish}
               disabled={!replyContent.trim() || isSubmitting}
-              className={ARTICLE_STYLES.BUTTON_PRIMARY}
+              className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-black rounded-full hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
             >
-              {isSubmitting ? 'Posting...' : 'Post Comment'}
+              {isSubmitting ? 'Posting...' : 'Comment'}
             </button>
           </div>
         </div>

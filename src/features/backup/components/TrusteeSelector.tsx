@@ -8,7 +8,6 @@ import { Search, X } from 'lucide-react';
 import { UserAvatar } from '@/components/ui/UserAvatar';
 import { useProfile, useFollows } from '@nostr-dev-kit/ndk-hooks';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import type { Trustee } from '../types';
 
 interface TrusteeSelectorProps {
@@ -105,13 +104,8 @@ interface FollowsListProps {
 
 function FollowsList({ follows, searchValue, selectedPubkeys, onSelect }: FollowsListProps) {
   const filteredFollows = useMemo(() => {
-    if (!searchValue.trim()) {
-      return follows.filter(pubkey => !selectedPubkeys.has(pubkey));
-    }
-
-    const searchLower = searchValue.toLowerCase();
     return follows.filter(pubkey => !selectedPubkeys.has(pubkey));
-  }, [follows, searchValue, selectedPubkeys]);
+  }, [follows, selectedPubkeys]);
 
   if (filteredFollows.length === 0) {
     return (

@@ -128,7 +128,7 @@ export async function setupNutzapMonitoring(
     console.error('❌ Failed to redeem nutzap:', nutzap.id.substring(0, 8), errorMessage);
   });
 
-  monitor.on('state_changed', (nutzapId: string, newState: any) => {
+  monitor.on('state_changed', (nutzapId: string, newState: string) => {
     console.log(`🔄 Nutzap ${nutzapId.substring(0, 8)} state changed to:`, newState);
   });
 
@@ -165,7 +165,7 @@ export async function sendNutzapToRecipient(
 
     const zapResults = await zapper.zap(["nip61"]);
 
-    for (const [zapSplit, zapResult] of zapResults) {
+    for (const [, zapResult] of zapResults) {
       if (zapResult instanceof Error) {
         return {
           success: false,

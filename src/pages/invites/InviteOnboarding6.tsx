@@ -226,7 +226,7 @@ function InviteOnboarding6() {
 
               <div className="p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
                 <p className="text-sm text-amber-200/90 leading-relaxed">
-                  You'll be connected to {MOCK_INVITER.name}'s curated network and inherit their trusted wallet configuration.
+                  You&apos;ll be connected to {MOCK_INVITER.name}&apos;s curated network and inherit their trusted wallet configuration.
                 </p>
               </div>
             </div>

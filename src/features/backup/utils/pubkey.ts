@@ -61,7 +61,7 @@ export function parsePubkey(input: string): PubkeyParseResult {
       success: false,
       error: 'Please enter a valid npub or hex public key'
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       error: 'Invalid public key format'

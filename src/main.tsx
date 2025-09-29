@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { createRoot } from 'react-dom/client';
+import React, { useRef } from 'react';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import { NDKHeadless, NDKSessionLocalStorage } from '@nostr-dev-kit/ndk-hooks';
 import NDKCacheAdapterSqliteWasm from '@nostr-dev-kit/ndk-cache-sqlite-wasm';
 import { useSettingsStore } from './stores/settingsStore';
@@ -7,7 +7,7 @@ import './i18n/config';
 import './app.css';
 import App from './App.tsx';
 
-const root = createRoot(document.getElementById('root')!);
+const container = document.getElementById('root')!;
 
 function AppWithNDK() {
   const relays = useSettingsStore((state) => state.relays);
@@ -54,8 +54,16 @@ function AppWithNDK() {
 		);
 }
 
-root.render(
+const app = (
   <React.StrictMode>
     <AppWithNDK />
   </React.StrictMode>
 );
+
+// Use hydrateRoot if we have server-rendered content
+if (container.children.length > 0 && container.children[0].innerHTML !== '') {
+  hydrateRoot(container, app);
+} else {
+  const root = createRoot(container);
+  root.render(app);
+}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Copy, Check, Loader2, AlertCircle, Zap } from 'lucide-react';
+import { Copy, Check, Loader2, AlertCircle } from 'lucide-react';
 import { Dialog, DialogContent } from '../ui/dialog';
 import { QRCodeSVG } from 'qrcode.react';
 import type { DepositResult } from '../../hooks/wallet/operations';

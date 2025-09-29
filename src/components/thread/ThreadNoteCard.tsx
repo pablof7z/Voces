@@ -1,6 +1,5 @@
 import { NDKEvent } from '@nostr-dev-kit/ndk-hooks';
 import { NoteCard } from '@/features/feed/NoteCard';
-import { cn } from '@/lib/utils';
 
 interface ThreadNoteCardProps {
   event: NDKEvent;

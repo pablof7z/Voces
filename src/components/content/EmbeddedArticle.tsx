@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { nip19 } from 'nostr-tools';
 
 interface EmbeddedArticleProps {
-  naddr: any; // naddr decoded data
+  naddr: nip19.AddressPointer;
 }
 
 export function EmbeddedArticle({ naddr }: EmbeddedArticleProps) {

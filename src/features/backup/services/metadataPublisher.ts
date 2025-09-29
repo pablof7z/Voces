@@ -2,7 +2,7 @@
  * Service for publishing kind:1115 backup metadata events
  */
 
-import NDK, { NDKEvent, NDKPrivateKeySigner, NDKUser } from '@nostr-dev-kit/ndk';
+import NDK, { NDKEvent, NDKPrivateKeySigner, NDKUser, NDKKind } from '@nostr-dev-kit/ndk';
 import type { PublishedShard } from './shardPublisher';
 import { MetadataBuilder, type BackupMetadata } from './metadataBuilder';
 import { BackupError, BackupErrorCode, withBackupErrorHandling } from '../errors';
@@ -26,7 +26,7 @@ const METADATA_CONSTANTS = {
  */
 function createMetadataEvent(ndk: NDK): NDKEvent {
   const event = new NDKEvent(ndk);
-  event.kind = METADATA_CONSTANTS.EVENT_KIND as any;
+  event.kind = METADATA_CONSTANTS.EVENT_KIND as NDKKind;
   event.created_at = Math.floor(Date.now() / 1000);
   event.tags = [['d', METADATA_CONSTANTS.D_TAG]];
   return event;
@@ -165,7 +165,7 @@ export async function fetchBackupMetadata(
   return withBackupErrorHandling(async () => {
     // Fetch kind:1115 events authored by the user
     const events = await ndk.fetchEvents({
-      kinds: [METADATA_CONSTANTS.EVENT_KIND as any],
+      kinds: [METADATA_CONSTANTS.EVENT_KIND as NDKKind],
       authors: [userPubkey],
       '#d': [METADATA_CONSTANTS.D_TAG]
     });

@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 
 interface ProfileAvatarProps {
   pubkey: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   showName?: boolean;
   className?: string;
   style?: React.CSSProperties;
@@ -19,6 +19,7 @@ export function ProfileAvatar({
   const profile = useProfile(pubkey);
 
   const sizeClasses = {
+    xs: 'w-5 h-5 text-[9px]',
     sm: 'w-8 h-8 text-xs',
     md: 'w-10 h-10 text-sm',
     lg: 'w-12 h-12 text-base'

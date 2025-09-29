@@ -121,7 +121,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         <DialogHeader>
           <DialogTitle>Login to Nostr</DialogTitle>
           <DialogDescription>
-            Choose how you'd like to connect to the Nostr network
+            Choose how you&apos;d like to connect to the Nostr network
           </DialogDescription>
         </DialogHeader>
 

@@ -19,6 +19,7 @@ import { MessagesPage } from './pages/MessagesPage';
 import { ConversationPage } from './pages/ConversationPage';
 import { NewConversationPage } from './pages/NewConversationPage';
 import { ArticlePage } from './pages/ArticlePage';
+import { OnboardingFlow } from './pages/onboarding/OnboardingFlow';
 import InviteOnboarding1 from './pages/invites/InviteOnboarding1';
 import InviteOnboarding2 from './pages/invites/InviteOnboarding2';
 import InviteOnboarding3 from './pages/invites/InviteOnboarding3';
@@ -35,6 +36,9 @@ function AppRoutes() {
 
   return (
     <Routes>
+      {/* Main onboarding flow - standalone without layout */}
+      <Route path="/onboarding" element={<OnboardingFlow />} />
+
       {/* Invite onboarding routes - standalone without layout */}
       <Route path="/i-1/:code" element={<InviteOnboarding1 />} />
       <Route path="/i-2/:code" element={<InviteOnboarding2 />} />
@@ -42,7 +46,7 @@ function AppRoutes() {
       <Route path="/i-4/:code" element={<InviteOnboarding4 />} />
       <Route path="/i-5/:code" element={<InviteOnboarding5 />} />
       <Route path="/i-6/:code" element={<InviteOnboarding6 />} />
-      
+
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="compose" element={currentUser ? <ComposePage /> : <Navigate to="/" />} />

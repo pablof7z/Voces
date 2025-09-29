@@ -1,7 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEvent, useProfile, useNDK, useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
 import { NDKEvent, NDKKind } from '@nostr-dev-kit/ndk-hooks';
-import { nip19 } from 'nostr-tools';
 import { ArrowLeft } from 'lucide-react';
 import { NoteCard } from '@/features/feed/NoteCard';
 import { ThreadNoteCard } from '@/components/thread/ThreadNoteCard';

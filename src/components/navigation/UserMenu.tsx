@@ -1,4 +1,4 @@
-import { Settings, LogOut, UserPlus, User } from 'lucide-react';
+import { Settings, LogOut, UserPlus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNDKCurrentUser, useNDKSessionLogout } from '@nostr-dev-kit/ndk-hooks';

@@ -1,19 +1,187 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ARTICLE_STYLES } from '../constants/styles';
+import { ContentRenderer } from '@/components/content/ContentRenderer';
+import { useMemo } from 'react';
 
 interface ArticleContentProps {
   content: string;
+  emojiTags?: string[][];
 }
 
-export function ArticleContent({ content }: ArticleContentProps) {
-  return (
-    <div className={`${ARTICLE_STYLES.CONTENT_PADDING} py-12`}>
-      <div className={ARTICLE_STYLES.PROSE_STYLES}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
+  // Check if content contains markdown indicators
+  const hasMarkdown = useMemo(() => {
+    // Common markdown patterns
+    const markdownPatterns = [
+      /^#{1,6}\s/m,        // Headers
+      /\*\*[^*]+\*\*/,     // Bold
+      /\*[^*]+\*/,         // Italic
+      /\[([^\]]+)\]\([^)]+\)/, // Links
+      /^[-*+]\s/m,         // Lists
+      /^>\s/m,             // Blockquotes
+      /```[\s\S]*?```/,    // Code blocks
+      /^\d+\.\s/m,         // Ordered lists
+    ];
+
+    return markdownPatterns.some(pattern => pattern.test(content));
+  }, [content]);
+
+  // If content has markdown, render with ReactMarkdown but with Nostr entity support
+  if (hasMarkdown) {
+    return (
+      <div className="article-content">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            // Headings
+            h1: ({ children }) => (
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mt-12 mb-6 font-serif">
+                {children}
+              </h1>
+            ),
+            h2: ({ children }) => (
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mt-10 mb-5 font-serif">
+                {children}
+              </h2>
+            ),
+            h3: ({ children }) => (
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4 font-serif">
+                {children}
+              </h3>
+            ),
+
+            // Paragraphs - Use ContentRenderer for Nostr entities
+            p: ({ children }) => {
+              // Check if children contains only text
+              const textContent = typeof children === 'string' ? children :
+                Array.isArray(children) ? children.filter(c => typeof c === 'string').join('') : '';
+
+              // If we have text content, use ContentRenderer for Nostr entity support
+              if (textContent) {
+                return (
+                  <div className="text-lg leading-[1.8] text-gray-800 dark:text-gray-200 mb-6 font-serif">
+                    <ContentRenderer content={textContent} emojiTags={emojiTags} />
+                  </div>
+                );
+              }
+
+              // Otherwise render normally
+              return (
+                <p className="text-lg leading-[1.8] text-gray-800 dark:text-gray-200 mb-6 font-serif">
+                  {children}
+                </p>
+              );
+            },
+
+            // Lists
+            ul: ({ children }) => (
+              <ul className="list-disc pl-6 mb-6 space-y-2 text-lg text-gray-800 dark:text-gray-200 font-serif">
+                {children}
+              </ul>
+            ),
+            ol: ({ children }) => (
+              <ol className="list-decimal pl-6 mb-6 space-y-2 text-lg text-gray-800 dark:text-gray-200 font-serif">
+                {children}
+              </ol>
+            ),
+            li: ({ children }) => (
+              <li className="leading-[1.8]">
+                {children}
+              </li>
+            ),
+
+            // Blockquotes
+            blockquote: ({ children }) => (
+              <blockquote className="border-l-4 border-gray-300 dark:border-gray-700 pl-6 my-8 italic">
+                <div className="text-xl text-gray-700 dark:text-gray-300 font-serif leading-[1.8]">
+                  {children}
+                </div>
+              </blockquote>
+            ),
+
+            // Code
+            code: ({ children, className }) => {
+              const isInline = !className;
+
+              if (isInline) {
+                return (
+                  <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded text-sm font-mono">
+                    {children}
+                  </code>
+                );
+              }
+
+              return (
+                <code className="block bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg p-4 overflow-x-auto text-sm font-mono leading-relaxed mb-6">
+                  {children}
+                </code>
+              );
+            },
+            pre: ({ children }) => (
+              <pre className="mb-6 overflow-hidden rounded-lg">
+                {children}
+              </pre>
+            ),
+
+            // Links
+            a: ({ href, children }) => (
+              <a
+                href={href}
+                className="text-blue-600 dark:text-blue-400 underline underline-offset-2 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {children}
+              </a>
+            ),
+
+            // Images
+            img: ({ src, alt }) => (
+              <figure className="my-8">
+                <img
+                  src={src}
+                  alt={alt}
+                  className="w-full rounded-lg shadow-sm"
+                  loading="lazy"
+                />
+                {alt && (
+                  <figcaption className="text-center text-sm text-gray-600 dark:text-gray-400 mt-3 font-sans">
+                    {alt}
+                  </figcaption>
+                )}
+              </figure>
+            ),
+
+            // Horizontal rule
+            hr: () => (
+              <hr className="my-12 border-t border-gray-200 dark:border-gray-800" />
+            ),
+
+            // Strong/Bold
+            strong: ({ children }) => (
+              <strong className="font-bold text-gray-900 dark:text-white">
+                {children}
+              </strong>
+            ),
+
+            // Emphasis/Italic
+            em: ({ children }) => (
+              <em className="italic">
+                {children}
+              </em>
+            ),
+          }}
+        >
           {content}
         </ReactMarkdown>
       </div>
+    );
+  }
+
+  // If no markdown, use ContentRenderer directly for plain text with Nostr entities
+  return (
+    <div className="article-content text-lg leading-[1.8] text-gray-800 dark:text-gray-200 font-serif">
+      <ContentRenderer content={content} emojiTags={emojiTags} className="space-y-6" />
     </div>
   );
 }

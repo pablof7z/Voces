@@ -29,7 +29,7 @@ export function BottomNav() {
       {/* Clean bottom nav */}
       <div className="bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800">
         <div className="flex items-center justify-around h-16 px-3">
-          {navItems.map(({ path, icon: Icon, label, key }) => {
+          {navItems.map(({ path, icon: Icon, key }) => {
             const isActive = key === 'profile'
               ? location.pathname.startsWith('/p/')
               : location.pathname === path;

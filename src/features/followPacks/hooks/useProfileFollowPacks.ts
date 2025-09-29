@@ -1,10 +1,7 @@
 import { useMemo } from 'react';
 import { useSubscribe, NDKFollowPack } from '@nostr-dev-kit/ndk-hooks';
-import { useFollowPacksStore } from '@/stores/followPacksStore';
-import type { FollowPackWithMetadata } from '../types';
 
 export function useProfileFollowPacks(profilePubkey: string) {
-  const { isSubscribed, isFavorite } = useFollowPacksStore();
 
   // Single subscription: get packs created by user OR where user appears
   const filter = [{
@@ -47,7 +44,7 @@ export function useProfileFollowPacks(profilePubkey: string) {
       appearsPacks: appears,
       allPacks: processed
     };
-  }, [events, profilePubkey, isSubscribed, isFavorite]);
+  }, [events, profilePubkey]);
 
   return {
     createdPacks,

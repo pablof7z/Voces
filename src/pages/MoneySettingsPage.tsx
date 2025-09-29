@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { ChevronLeft, Check, Plus, Trash2, Search, AlertCircle } from 'lucide-react';
+import { ChevronLeft, Check, Plus, Trash2, Search, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { usePreferredCurrency } from '../hooks/usePreferredCurrency';
 import { useWalletStore } from '../stores/walletStore';
-import { useNDK } from '@nostr-dev-kit/ndk-hooks';
-import type { NDKFilter, NDKKind } from '@nostr-dev-kit/ndk';
+import { DiscoverMintsModal } from '../components/wallet/DiscoverMintsModal';
 
 const FIAT_CURRENCIES = [
   { code: 'USD', name: 'US Dollar', symbol: '$' },
@@ -32,7 +31,6 @@ const FIAT_CURRENCIES = [
 export function MoneySettingsPage() {
   const navigate = useNavigate();
   const { currency, updateCurrency } = usePreferredCurrency();
-  const { ndk } = useNDK();
 
   const mints = useWalletStore((state) => state.mints);
   const walletRelays = useWalletStore((state) => state.walletRelays);
@@ -45,11 +43,12 @@ export function MoneySettingsPage() {
   const [newRelay, setNewRelay] = useState('');
   const [showMintInput, setShowMintInput] = useState(false);
   const [showRelayInput, setShowRelayInput] = useState(false);
-  const [isDiscovering, setIsDiscovering] = useState(false);
-  const [discoveredMints, setDiscoveredMints] = useState<string[]>([]);
+  const [showDiscoverModal, setShowDiscoverModal] = useState(false);
+  const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
 
   const handleSelectCurrency = (code: string) => {
     updateCurrency(code);
+    setShowCurrencyDropdown(false);
   };
 
   const handleAddMint = () => {
@@ -65,81 +64,6 @@ export function MoneySettingsPage() {
       addWalletRelay(newRelay.trim());
       setNewRelay('');
       setShowRelayInput(false);
-    }
-  };
-
-  const handleDiscoverMints = async () => {
-    if (!ndk) return;
-
-    setIsDiscovering(true);
-    setDiscoveredMints([]);
-
-    try {
-      // NIP-87: Discover Cashu mints
-      // Kind 38000: Cashu mint announcements
-      // Kind 38172: Mint recommendations (from users you follow)
-      const filters: NDKFilter[] = [
-        {
-          kinds: [38000 as NDKKind], // Mint announcements
-          limit: 100
-        },
-        {
-          kinds: [38172 as NDKKind], // Mint recommendations
-          limit: 50
-        }
-      ];
-
-      const events = await ndk.fetchEvents(filters);
-      const mintUrls = new Set<string>();
-      const mintInfo = new Map<string, { name?: string; description?: string; pubkey?: string }>();
-
-      events.forEach((event) => {
-        if (event.kind === 38000) {
-          // Mint announcement event
-          // Should have 'u' tag with mint URL
-          const uTag = event.tags.find((t) => t[0] === 'u');
-          if (uTag && uTag[1]) {
-            mintUrls.add(uTag[1]);
-
-            // Get additional info from content or tags
-            const dTag = event.tags.find((t) => t[0] === 'd');
-            const nameTag = event.tags.find((t) => t[0] === 'name');
-
-            mintInfo.set(uTag[1], {
-              name: nameTag?.[1] || dTag?.[1],
-              description: event.content,
-              pubkey: event.pubkey
-            });
-          }
-        } else if (event.kind === 38172) {
-          // Mint recommendation event
-          // Should have 'u' tag with recommended mint URL
-          const uTag = event.tags.find((t) => t[0] === 'u');
-          if (uTag && uTag[1]) {
-            mintUrls.add(uTag[1]);
-          }
-        }
-      });
-
-      // Also check for mints in kind 10019 (wallet info) for backwards compatibility
-      const walletInfoFilter: NDKFilter = {
-        kinds: [10019 as NDKKind],
-        limit: 20
-      };
-
-      const walletEvents = await ndk.fetchEvents(walletInfoFilter);
-      walletEvents.forEach((event) => {
-        const mintTag = event.tags.find((t) => t[0] === 'mint');
-        if (mintTag && mintTag[1]) {
-          mintUrls.add(mintTag[1]);
-        }
-      });
-
-      setDiscoveredMints(Array.from(mintUrls));
-    } catch (error) {
-      console.error('Failed to discover mints:', error);
-    } finally {
-      setIsDiscovering(false);
     }
   };
 
@@ -238,46 +162,13 @@ export function MoneySettingsPage() {
                 Add Mint
               </button>
               <button
-                onClick={handleDiscoverMints}
-                disabled={isDiscovering}
-                className="flex items-center gap-2 px-4 py-2 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-900 dark:text-neutral-100 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                onClick={() => setShowDiscoverModal(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-900 dark:text-neutral-100 rounded-lg text-sm font-medium transition-colors"
               >
                 <Search className="w-4 h-4" />
-                {isDiscovering ? 'Discovering...' : 'Discover'}
+                Discover
               </button>
             </div>
-
-            {discoveredMints.length > 0 && (
-              <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-xl">
-                <div className="flex items-center gap-2 mb-3">
-                  <AlertCircle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                  <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100">
-                    Discovered Mints (NIP-87)
-                  </h3>
-                </div>
-                <div className="space-y-2">
-                  {discoveredMints.map((mint) => (
-                    <div
-                      key={mint}
-                      className="flex items-center justify-between p-2 bg-white dark:bg-neutral-900 rounded-lg"
-                    >
-                      <span className="text-xs text-neutral-700 dark:text-neutral-300 font-mono truncate flex-1 mr-2">
-                        {mint}
-                      </span>
-                      <button
-                        onClick={() => {
-                          addMint(mint);
-                          setDiscoveredMints((prev) => prev.filter((m) => m !== mint));
-                        }}
-                        className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-xs font-medium transition-colors"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </section>
 
           <section>
@@ -369,45 +260,68 @@ export function MoneySettingsPage() {
             </div>
 
             <div className="relative">
-              <select
-                value={currency}
-                onChange={(e) => handleSelectCurrency(e.target.value)}
-                className="w-full px-4 py-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none appearance-none pr-10 text-base font-medium"
+              {/* Selected Currency Display - Always visible */}
+              <button
+                onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
+                className="w-full px-4 py-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl text-left transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-900/80 focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
-                {FIAT_CURRENCIES.map((curr) => (
-                  <option key={curr.code} value={curr.code}>
-                    {curr.symbol} {curr.code} - {curr.name}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-
-              {currency && (
-                <div className="mt-3 p-3 bg-neutral-100 dark:bg-neutral-800 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-lg bg-purple-600 text-white flex items-center justify-center font-semibold">
-                      {FIAT_CURRENCIES.find(c => c.code === currency)?.symbol}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-purple-600 text-white flex items-center justify-center font-semibold text-lg">
+                      {FIAT_CURRENCIES.find(c => c.code === currency)?.symbol || '$'}
                     </div>
                     <div>
                       <div className="font-medium text-neutral-900 dark:text-neutral-100">
-                        {currency}
+                        {currency || 'USD'}
                       </div>
                       <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                        {FIAT_CURRENCIES.find(c => c.code === currency)?.name}
+                        {FIAT_CURRENCIES.find(c => c.code === currency)?.name || 'US Dollar'}
                       </div>
                     </div>
-                    <Check className="ml-auto w-5 h-5 text-green-600 dark:text-green-400" />
                   </div>
+                  <ChevronDown className={`w-5 h-5 text-neutral-500 transition-transform ${showCurrencyDropdown ? 'rotate-180' : ''}`} />
+                </div>
+              </button>
+
+              {/* Dropdown Menu */}
+              {showCurrencyDropdown && (
+                <div className="absolute top-full mt-2 w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto">
+                  {FIAT_CURRENCIES.map((curr) => (
+                    <button
+                      key={curr.code}
+                      onClick={() => handleSelectCurrency(curr.code)}
+                      className="w-full px-4 py-3 text-left hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors flex items-center justify-between group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-neutral-200 dark:bg-neutral-800 group-hover:bg-purple-600 group-hover:text-white flex items-center justify-center font-semibold transition-colors">
+                          {curr.symbol}
+                        </div>
+                        <div>
+                          <div className="font-medium text-neutral-900 dark:text-neutral-100">
+                            {curr.code}
+                          </div>
+                          <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                            {curr.name}
+                          </div>
+                        </div>
+                      </div>
+                      {currency === curr.code && (
+                        <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
+                      )}
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
           </section>
         </div>
       </div>
+
+      {/* Discover Mints Modal */}
+      <DiscoverMintsModal
+        isOpen={showDiscoverModal}
+        onClose={() => setShowDiscoverModal(false)}
+      />
     </div>
   );
 }

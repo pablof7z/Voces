@@ -51,14 +51,14 @@ async function performWalletSetup(): Promise<WalletSetupResult> {
 
 async function handleDepositCreation(walletSetup: WalletSetupResult): Promise<void> {
   console.log(`\n📥 Creating deposit for ${TEST_DEPOSIT_AMOUNT} sats...`);
-  
+
   try {
-    const depositResult = await createWalletDeposit(
+    await createWalletDeposit(
       walletSetup.wallet,
       TEST_DEPOSIT_AMOUNT,
       TESTNUT_MINT_URL
     );
-    
+
     console.log("✅ Deposit successful!");
     console.log("🎫 Token received");
     console.log("\n💵 Balance after deposit:", walletSetup.wallet.balance?.amount || 0, "sats");
