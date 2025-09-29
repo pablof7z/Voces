@@ -241,7 +241,7 @@ function generateMetaTags(type, data, identifier) {
       const userProfile = profile || {};
       tags.push(`<meta property="og:title" content="${escapeHtml(userProfile.name || 'Nostr User')}">`);
       tags.push(`<meta property="og:description" content="${escapeHtml(userProfile.about || 'Nostr profile on Voces')}">`);
-      tags.push(`<meta property="og:url" content="${baseUrl}/profile/${identifier}">`);
+      tags.push(`<meta property="og:url" content="${baseUrl}/p/${identifier}">`);
 
       if (userProfile.picture) {
         tags.push(`<meta property="og:image" content="${userProfile.picture}">`);

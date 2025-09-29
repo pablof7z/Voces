@@ -10,7 +10,7 @@ const communities = [
     name: 'Venezuela',
     flag: '🇻🇪',
     description: 'Connect with the resilient Venezuelan community',
-    image: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1570067813279-78efa7f7e81f?w=800&q=80', // Angel Falls - iconic Venezuelan landmark
     leaders: ['María Rodríguez', 'Carlos Mendoza', 'Ana Lucia'],
   },
   {
@@ -18,7 +18,7 @@ const communities = [
     name: 'Cambodia',
     flag: '🇰🇭',
     description: 'Join voices from the Kingdom of Wonder',
-    image: 'https://images.unsplash.com/photo-1554290712-e640351074bd?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=800&q=80', // Angkor Wat at sunrise
     leaders: ['Sokha Chen', 'Dara Vong', 'Srey Mom'],
   },
   {
@@ -26,7 +26,7 @@ const communities = [
     name: 'Nicaragua',
     flag: '🇳🇮',
     description: 'Unite with Nicaraguan changemakers',
-    image: 'https://images.unsplash.com/photo-1512813389649-acb9131ced20?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1600056926106-78f915b94f63?w=800&q=80', // Granada Cathedral - colonial architecture
     leaders: ['Roberto Silva', 'Elena Martinez', 'Juan Carlos'],
   },
   {
@@ -34,7 +34,7 @@ const communities = [
     name: 'Zimbabwe',
     flag: '🇿🇼',
     description: 'Connect with Zimbabwe\'s innovators',
-    image: 'https://images.unsplash.com/photo-1577948000111-9c970dfe3743?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1564758866811-4780aa0a1f49?w=800&q=80', // Victoria Falls
     leaders: ['Tendai Moyo', 'Grace Ndlovu', 'David Chuma'],
   },
   {
@@ -42,7 +42,7 @@ const communities = [
     name: 'Afghanistan',
     flag: '🇦🇫',
     description: 'Support Afghan voices of hope',
-    image: 'https://images.unsplash.com/photo-1604134967494-8a9ed3adea0d?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1609021974670-7a08a19e0126?w=800&q=80', // Band-e Amir lakes - natural beauty
     leaders: ['Ahmad Shah', 'Fatima Rashidi', 'Nasir Khan'],
   },
   {
@@ -50,7 +50,7 @@ const communities = [
     name: 'Iran',
     flag: '🇮🇷',
     description: 'Join the Persian community',
-    image: 'https://images.unsplash.com/photo-1553603227-2358aabe821e?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1583416256223-459cfb0e553e?w=800&q=80', // Nasir al-Mulk Mosque - Persian architecture
     leaders: ['Reza Hosseini', 'Maryam Azadi', 'Ali Karimi'],
   },
 ];

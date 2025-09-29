@@ -25,79 +25,154 @@ export function NoteDetailPage() {
   const rootEventId = useMemo(() => {
     if (!event) return null;
 
+    console.log('===== Analyzing event tags for root =====');
+    console.log('Event ID:', event.id);
+    console.log('Event tags:', event.tags);
+
     // Find root tag
     const rootTag = event.tags.find(tag => tag[0] === 'e' && tag[3] === 'root');
     if (rootTag) {
+      console.log('Found root tag:', rootTag);
+      console.log('Root event ID:', rootTag[1]);
       return rootTag[1];
     }
 
     // If no root tag, check if there's a reply tag (this might be the root itself)
     const replyTag = event.tags.find(tag => tag[0] === 'e' && tag[3] === 'reply');
     if (replyTag) {
+      console.log('No root tag, but found reply tag:', replyTag);
+      console.log('Using reply as potential root:', replyTag[1]);
       return replyTag[1];
     }
 
     // Fallback for older format - first 'e' tag might be the root
     const eTags = event.tags.filter(tag => tag[0] === 'e');
     if (eTags.length > 0) {
+      console.log('Fallback: using first e-tag as root:', eTags[0]);
       return eTags[0][1];
     }
 
+    console.log('No root event found - this might be a root event itself');
     return null;
   }, [event]);
 
   // Subscribe to root event and all events in the thread
-  const { events: threadEvents } = useSubscribe(
-    rootEventId ? [
+  const subscriptionFilters = useMemo(() => {
+    if (!rootEventId) {
+      console.log('No root ID, skipping thread subscription');
+      return false;
+    }
+
+    const filters = [
       { ids: [rootEventId] }, // Get the root event
       { kinds: [1], '#e': [rootEventId] } // Get all events replying to root
-    ] : false,
+    ];
+
+    console.log('===== Thread subscription filters =====');
+    console.log('Subscribing with filters:', JSON.stringify(filters, null, 2));
+
+    return filters;
+  }, [rootEventId]);
+
+  const { events: threadEvents } = useSubscribe(
+    subscriptionFilters,
     {
-      closeOnEose: true // Close after initial fetch since thread structure won't change
+      closeOnEose: false, // Close after initial fetch since thread structure won't change
+      subId: 'note-detail-page'
     }
   );
 
+  // Log thread events as they come in
+  useMemo(() => {
+    if (threadEvents && threadEvents.length > 0) {
+      console.log('===== Thread events received =====');
+      console.log('Total thread events:', threadEvents.length);
+      threadEvents.forEach(e => {
+        console.log(`Event ${e.id.slice(0, 8)}...`, {
+          created_at: e.created_at,
+          content: e.content.slice(0, 50) + '...',
+          tags: e.tags.filter(t => t[0] === 'e')
+        });
+      });
+    }
+  }, [threadEvents]);
+
   // Build the parent thread chain by walking back from the target event
   const parentNotes = useMemo(() => {
-    if (!event || !threadEvents || threadEvents.length === 0) return [];
+    console.log('===== Building parent chain =====');
+
+    if (!event) {
+      console.log('No target event yet');
+      return [];
+    }
+
+    if (!threadEvents || threadEvents.length === 0) {
+      console.log('No thread events loaded yet');
+      return [];
+    }
+
+    console.log('Building parent chain from', threadEvents.length, 'thread events');
 
     const parents: NDKEvent[] = [];
     const eventMap = new Map(threadEvents.map(e => [e.id, e]));
+    console.log('Event map size:', eventMap.size);
 
     // Start from our target event and walk back to root
     let currentEvent = event;
+    let iteration = 0;
 
-    while (currentEvent) {
+    while (currentEvent && iteration < 20) { // Safety limit
+      iteration++;
+      console.log(`\nIteration ${iteration}: Checking event ${currentEvent.id.slice(0, 8)}...`);
+
       // Find the parent of the current event
       const replyTag = currentEvent.tags.find(tag => tag[0] === 'e' && tag[3] === 'reply');
       const rootTag = currentEvent.tags.find(tag => tag[0] === 'e' && tag[3] === 'root');
+
+      console.log('Reply tag:', replyTag);
+      console.log('Root tag:', rootTag);
 
       let parentId: string | null = null;
 
       if (replyTag) {
         // If there's a reply tag, that's the immediate parent
         parentId = replyTag[1];
+        console.log('Using reply tag for parent:', parentId.slice(0, 8));
       } else if (rootTag && rootTag[1] !== currentEvent.id) {
         // If only root tag exists and it's not self, that's the parent
         parentId = rootTag[1];
+        console.log('Using root tag for parent:', parentId.slice(0, 8));
       } else {
         // Fallback: check for any 'e' tags (older format)
         const eTags = currentEvent.tags.filter(tag => tag[0] === 'e');
         if (eTags.length > 0) {
           // The last e-tag is usually the immediate parent in older format
           parentId = eTags[eTags.length - 1][1];
+          console.log('Using last e-tag for parent (old format):', parentId.slice(0, 8));
+        } else {
+          console.log('No parent tags found');
         }
       }
 
       if (parentId && eventMap.has(parentId)) {
         const parentEvent = eventMap.get(parentId)!;
+        console.log('✓ Found parent event in map:', parentId.slice(0, 8));
         parents.unshift(parentEvent);
         currentEvent = parentEvent;
+      } else if (parentId) {
+        console.log('✗ Parent ID not found in event map:', parentId.slice(0, 8));
+        break;
       } else {
-        // No more parents found or parent not in our event map
+        console.log('No more parents - reached root or standalone event');
         break;
       }
     }
+
+    console.log('\n===== Final parent chain =====');
+    console.log('Parent chain length:', parents.length);
+    parents.forEach((p, i) => {
+      console.log(`${i + 1}. ${p.id.slice(0, 8)}... - "${p.content.slice(0, 30)}..."`);
+    });
 
     return parents;
   }, [event, threadEvents]);

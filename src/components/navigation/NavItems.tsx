@@ -43,8 +43,8 @@ export function NavItems() {
   const isMoreActive = MORE_ITEMS_CONFIG.some(({ path }) => location.pathname.startsWith(path));
 
   return (
-    <nav className="flex-1 px-3 py-6">
-      <div className="space-y-1">
+    <nav className="flex-1 px-4 py-6">
+      <div className="space-y-2">
         {NAV_ITEMS_CONFIG.map(({ path, icon: Icon, labelKey }) => {
           const isActive = location.pathname === path ||
                          (path === '/packs' && location.pathname.startsWith('/packs/')) ||
@@ -57,21 +57,24 @@ export function NavItems() {
               key={path}
               to={path}
               className={cn(
-                'relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-medium text-sm',
+                'relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium text-sm group',
                 isActive
-                  ? 'bg-neutral-900 text-white'
+                  ? 'bg-orange-700/20 text-white border border-orange-600/30'
                   : 'text-neutral-400 hover:bg-neutral-900/50 hover:text-neutral-200'
               )}
             >
-              <Icon className="w-5 h-5" strokeWidth={isActive ? 2 : 1.5} />
+              <Icon className={cn(
+                "w-5 h-5 transition-all",
+                isActive && "text-orange-500"
+              )} strokeWidth={isActive ? 2.5 : 1.5} />
               <span>{t(`navigation.${labelKey}`)}</span>
               {isMoney && (
-                <span className="ml-auto text-xs font-normal text-orange-500">
+                <span className="ml-auto px-2 py-1 text-xs font-medium bg-orange-500/20 text-orange-400 rounded-lg border border-orange-500/30">
                   {balance.toLocaleString()} sats
                 </span>
               )}
               {path === '/notifications' && unreadCount > 0 && (
-                <span className="absolute top-2 left-7 w-2 h-2 bg-red-500 rounded-full" />
+                <span className="absolute top-2.5 left-8 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse" />
               )}
             </Link>
           );
@@ -81,13 +84,16 @@ export function NavItems() {
           <button
             onClick={() => setShowMoreMenu(!showMoreMenu)}
             className={cn(
-              'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-medium text-sm',
+              'w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium text-sm group',
               isMoreActive
-                ? 'bg-neutral-900 text-white'
+                ? 'bg-orange-700/20 text-white border border-orange-600/30'
                 : 'text-neutral-400 hover:bg-neutral-900/50 hover:text-neutral-200'
             )}
           >
-            <MoreHorizontal className="w-5 h-5" strokeWidth={isMoreActive ? 2 : 1.5} />
+            <MoreHorizontal className={cn(
+              "w-5 h-5 transition-all",
+              isMoreActive && "text-orange-500"
+            )} strokeWidth={isMoreActive ? 2.5 : 1.5} />
             <span>More</span>
             <ChevronDown
               className={cn(
@@ -98,7 +104,7 @@ export function NavItems() {
           </button>
 
           {showMoreMenu && (
-            <div className="absolute left-0 right-0 mt-1 bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden shadow-lg z-50">
+            <div className="absolute left-0 right-0 mt-2 bg-neutral-900 border border-neutral-800/50 rounded-xl overflow-hidden shadow-xl z-50">
               {MORE_ITEMS_CONFIG.map(({ path, icon: Icon, labelKey }) => {
                 const isActive = location.pathname.startsWith(path);
 
@@ -108,13 +114,16 @@ export function NavItems() {
                     to={path}
                     onClick={() => setShowMoreMenu(false)}
                     className={cn(
-                      'flex items-center gap-3 px-3 py-2.5 transition-all font-medium text-sm',
+                      'flex items-center gap-3 px-4 py-3 transition-all duration-200 font-medium text-sm',
                       isActive
-                        ? 'bg-neutral-800 text-white'
+                        ? 'bg-orange-700/20 text-white'
                         : 'text-neutral-400 hover:bg-neutral-800/50 hover:text-neutral-200'
                     )}
                   >
-                    <Icon className="w-5 h-5" strokeWidth={isActive ? 2 : 1.5} />
+                    <Icon className={cn(
+                "w-5 h-5 transition-all",
+                isActive && "text-orange-500"
+              )} strokeWidth={isActive ? 2.5 : 1.5} />
                     <span>{t(`navigation.${labelKey}`)}</span>
                   </Link>
                 );
@@ -125,7 +134,7 @@ export function NavItems() {
 
         <button
           onClick={() => setIsComposeOpen(true)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 mt-4 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-semibold text-sm transition-all shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 mt-6 rounded-full bg-orange-600 hover:bg-orange-700 text-white font-semibold text-sm transition-all duration-300"
         >
           <Edit3 className="w-5 h-5" strokeWidth={2} />
           <span>{t('navigation.compose')}</span>

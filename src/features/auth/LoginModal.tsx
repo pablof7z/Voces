@@ -138,7 +138,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
           <>
             <div className="relative">
               {/* Hero Banner */}
-              <div className="absolute inset-x-0 -top-6 h-32 bg-gradient-to-br from-purple-600 via-purple-500 to-indigo-600 rounded-t-lg" />
+              <div className="absolute inset-x-0 -top-6 h-32 bg-gradient-to-br from-orange-700 via-orange-600 to-red-700 rounded-t-lg" />
 
               {/* Content */}
               <div className="relative pt-20">
@@ -152,8 +152,8 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 {/* Value Props */}
                 <div className="space-y-4 mb-8">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
-                      <Globe className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                    <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center flex-shrink-0">
+                      <Globe className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Own Your Voice</h3>
@@ -192,7 +192,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 <div className="space-y-3">
                   <Button
                     onClick={handleStartOnboarding}
-                    className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+                    className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-orange-600 to-red-700 hover:from-orange-700 hover:to-red-800 text-white"
                   >
                     Start Your Journey
                     <ArrowRight className="w-5 h-5 ml-2" />

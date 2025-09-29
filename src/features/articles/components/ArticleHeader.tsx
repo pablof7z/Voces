@@ -44,7 +44,7 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
 
       {/* Author Section */}
       <div className="flex items-start sm:items-center gap-4 mb-8">
-        <Link to={`/profile/${npub}`} className="flex-shrink-0">
+        <Link to={`/p/${npub}`} className="flex-shrink-0">
           <UserAvatar
             pubkey={article.pubkey}
             size="lg"
@@ -54,7 +54,7 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
 
         <div className="flex-1">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-            <Link to={`/profile/${npub}`} className="group">
+            <Link to={`/p/${npub}`} className="group">
               <div className="font-semibold text-lg text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                 {authorName}
               </div>
