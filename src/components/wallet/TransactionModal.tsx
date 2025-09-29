@@ -56,7 +56,7 @@ export function TransactionModal({
   const getInputStyles = () => {
     switch (variant) {
       case 'dark':
-        return 'bg-gray-800 border-gray-700 text-white placeholder-gray-400';
+        return 'bg-neutral-800 border-gray-700 text-white placeholder-gray-400';
       case 'gradient':
         return 'bg-white/20 border-white/30 text-white placeholder-white/70 backdrop-blur-sm';
       default:
@@ -89,7 +89,7 @@ export function TransactionModal({
               <button
                 onClick={onClose}
                 className={`p-2 rounded-lg transition-colors ${
-                  variant === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-100'
+                  variant === 'dark' ? 'hover:bg-neutral-800' : 'hover:bg-neutral-100'
                 }`}
               >
                 <X className="w-5 h-5" />
@@ -155,7 +155,7 @@ export function TransactionModal({
                       ? 'bg-white text-purple-600 hover:bg-white/90'
                       : variant === 'dark'
                       ? 'bg-yellow-500 text-gray-900 hover:bg-yellow-400'
-                      : 'bg-black text-white hover:bg-gray-800'
+                      : 'bg-black text-white hover:bg-neutral-800'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {isProcessing ? (
@@ -206,7 +206,7 @@ export function TransactionModal({
                     className="space-y-4"
                   >
                     <div className={`p-4 rounded-xl ${
-                      variant === 'dark' ? 'bg-gray-800' : 'bg-gray-50'
+                      variant === 'dark' ? 'bg-neutral-800' : 'bg-neutral-50'
                     }`}>
                       <div className="flex items-center justify-center mb-4">
                         <div className="p-8 bg-white rounded-2xl">
@@ -226,8 +226,8 @@ export function TransactionModal({
                         variant === 'gradient'
                           ? 'bg-white/20 text-white hover:bg-white/30'
                           : variant === 'dark'
-                          ? 'bg-gray-800 text-white hover:bg-gray-700'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          ? 'bg-neutral-800 text-white hover:bg-neutral-700'
+                          : 'bg-neutral-100 text-gray-700 hover:bg-neutral-200'
                       }`}
                     >
                       {copied ? (
@@ -255,7 +255,7 @@ export function TransactionModal({
                         ? 'bg-white text-purple-600 hover:bg-white/90'
                         : variant === 'dark'
                         ? 'bg-yellow-500 text-gray-900 hover:bg-yellow-400'
-                        : 'bg-black text-white hover:bg-gray-800'
+                        : 'bg-black text-white hover:bg-neutral-800'
                     }`}
                   >
                     Generate Invoice

@@ -65,7 +65,7 @@ function CurrencyDropdown({
                   setIsOpen(false);
                 }}
                 className={`
-                  w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors text-left
+                  w-full flex items-center gap-3 px-4 py-2.5 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors text-left
                   ${selectedCurrency === currency.code ? 'bg-purple-50 dark:bg-purple-900/30' : ''}
                 `}
               >
@@ -144,7 +144,7 @@ function PaymentMethodDropdown({
                   setIsOpen(false);
                 }}
                 className={`
-                  w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors text-left
+                  w-full flex items-center gap-3 px-4 py-2.5 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors text-left
                   ${selectedPaymentMethod === method.id ? 'bg-purple-50 dark:bg-purple-900/30' : ''}
                 `}
               >

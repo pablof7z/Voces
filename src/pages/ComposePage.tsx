@@ -12,7 +12,7 @@ export function ComposePage() {
         <div className="flex items-center gap-4 px-4 py-3 sm:px-6">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors"
+            className="p-2 -ml-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useNDK, useFollows, useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
+import { useNDK, useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
+import { useValidFollows } from '@/hooks/useValidFollows';
 import { Button } from './button';
 import { UserPlus, UserMinus, Loader2 } from 'lucide-react';
 
@@ -20,7 +21,7 @@ export function FollowButton({
 }: FollowButtonProps) {
   const { ndk } = useNDK();
   const currentUser = useNDKCurrentUser();
-  const follows = useFollows();
+  const follows = useValidFollows();
   const [isLoading, setIsLoading] = useState(false);
 
   const isFollowing = follows.has(pubkey);

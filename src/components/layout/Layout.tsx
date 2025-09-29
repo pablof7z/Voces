@@ -6,13 +6,15 @@ import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
 import { FAB } from '@/components/ui/FAB';
 import { Bell } from 'lucide-react';
 import { RelaySelector } from '@/components/navigation/RelaySelector';
+import { useNotificationStore } from '@/stores/notificationStore';
 
 export function Layout() {
   const currentUser = useNDKCurrentUser();
   const navigate = useNavigate();
+  const unreadCount = useNotificationStore(state => state.unreadCount);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black">
+    <div className="min-h-screen bg-neutral-50 dark:bg-black">
       {/* Sidebar for desktop */}
       <Sidebar />
       
@@ -29,8 +31,10 @@ export function Layout() {
                   className="relative p-2 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg transition-all duration-200"
                 >
                   <Bell className="w-5 h-5 text-neutral-600 dark:text-neutral-400" />
-                  {/* Subtle notification dot */}
-                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-accent-500 rounded-full" />
+                  {/* Notification dot if unread */}
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
+                  )}
                 </button>
               )}
               {!currentUser && <LoginButton />}

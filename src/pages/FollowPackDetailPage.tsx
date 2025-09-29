@@ -206,7 +206,7 @@ export function FollowPackDetailPage() {
 
       {/* Content */}
       {activeTab === 'feed' ? (
-        <NoteFeed events={feedEvents} showDebugInfo={false} />
+        <NoteFeed events={feedEvents} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {pubkeys.map(pubkey => (

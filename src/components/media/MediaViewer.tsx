@@ -6,6 +6,7 @@ import { X, Send, Music, FileImage, Download } from 'lucide-react';
 import { UserAvatar } from '@/components/ui/UserAvatar';
 import { UserName } from '@/components/ui/UserName';
 import { TimeAgo } from '@/components/ui/TimeAgo';
+import { ContentRenderer } from '@/components/content/ContentRenderer';
 import { toast } from 'sonner';
 
 interface MediaViewerProps {
@@ -105,7 +106,7 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 bg-black/95 flex">
       {/* Close button */}
       <button
         onClick={onClose}
@@ -114,9 +115,9 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
         <X className="w-5 h-5" />
       </button>
 
-      <div className="w-full h-full max-w-7xl mx-auto flex">
-        {/* Left side - Media */}
-        <div className="flex-1 flex items-center justify-center p-4 relative">
+      <div className="w-full h-full flex">
+        {/* Left side - Media (takes up remaining space) */}
+        <div className="flex-1 flex items-center justify-center p-8 relative">
           {mediaType === 'image' && (
             <img
               src={imeta.url}
@@ -135,7 +136,7 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
           )}
 
           {mediaType === 'audio' && (
-            <div className="bg-white dark:bg-gray-950 rounded-lg p-8 min-w-[400px]">
+            <div className="bg-white dark:bg-black rounded-lg p-8 min-w-[400px]">
               <div className="flex items-center gap-4 mb-4">
                 <Music className="w-12 h-12 text-purple-600" />
                 <div>
@@ -148,7 +149,7 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
           )}
 
           {mediaType === 'file' && imeta.url && (
-            <div className="bg-white dark:bg-gray-950 rounded-lg p-8">
+            <div className="bg-white dark:bg-black rounded-lg p-8">
               <FileImage className="w-16 h-16 text-gray-500 mb-4" />
               <h3 className="font-semibold mb-2">{imeta.url.split('/').pop()}</h3>
               {fileSize && <p className="text-sm text-gray-500 mb-4">{fileSize} MB</p>}
@@ -164,8 +165,8 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
           )}
         </div>
 
-        {/* Right side - Details and Comments */}
-        <div className="w-96 bg-white dark:bg-gray-950 flex flex-col">
+        {/* Right side - Details and Comments (fixed width, fully right-aligned) */}
+        <div className="w-[400px] bg-white dark:bg-black flex flex-col border-l border-gray-800">
           {/* Header with user info */}
           <div className="p-4 border-b border-gray-200 dark:border-gray-800">
             <div className="flex items-center gap-3">
@@ -190,9 +191,11 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
                   <div className="font-semibold text-sm text-gray-900 dark:text-white mb-1">
                     <UserName pubkey={event.pubkey} />
                   </div>
-                  <div className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap break-words">
-                    {caption}
-                  </div>
+                  <ContentRenderer
+                    content={caption}
+                    emojiTags={event.tags}
+                    className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap break-words"
+                  />
                 </div>
               </div>
             </div>
@@ -239,7 +242,7 @@ export function MediaViewer({ event, imeta, onClose }: MediaViewerProps) {
                     }
                   }}
                   placeholder="Add a comment..."
-                  className="flex-1 px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-600"
+                  className="flex-1 px-3 py-2 bg-neutral-100 dark:bg-neutral-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-600"
                   rows={1}
                 />
                 <button
@@ -273,9 +276,11 @@ function CommentItem({ event }: { event: NDKEvent }) {
               <TimeAgo timestamp={event.created_at || 0} />
             </span>
           </div>
-          <div className="text-gray-800 dark:text-gray-200 mt-1 break-words">
-            {event.content}
-          </div>
+          <ContentRenderer
+            content={event.content.trim()}
+            emojiTags={event.tags}
+            className="text-gray-800 dark:text-gray-200 mt-1 break-words"
+          />
         </div>
       </div>
     </div>

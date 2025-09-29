@@ -2,7 +2,8 @@
  * Shamir's Secret Sharing utilities using the shakespeare library
  */
 
-import { split, join } from 'shakespeare';
+import shakespeare from 'shakespeare';
+const { split, join } = shakespeare;
 import { symmetricEncrypt, symmetricDecrypt } from './passphrase';
 import { BackupError, BackupErrorCode, withBackupErrorHandling } from '../errors';
 

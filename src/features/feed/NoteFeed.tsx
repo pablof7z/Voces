@@ -12,29 +12,29 @@ const BATCH_SIZE = 10;
 
 interface NoteFeedProps {
   events?: NDKEvent[];
-  showDebugInfo?: boolean;
   authors?: string[];
   showMediaFilter?: boolean;
 }
 
-export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors, showMediaFilter = false }: NoteFeedProps = {}) {
+export function NoteFeed({ events: externalEvents, authors, showMediaFilter = false }: NoteFeedProps = {}) {
   const selectedRelay = useSettingsStore((state) => state.selectedRelay);
   const [mediaType, setMediaType] = useState<MediaType>('conversations');
 
   // Fetch different kinds based on media type
   const kinds = mediaType === 'articles'
     ? [] // Articles are handled separately
-    : mediaType === 'images' || mediaType === 'videos' || mediaType === 'audio'
+    : mediaType === 'images' || mediaType === 'videos'
     ? [NDKKind.Text, NDKKind.Image, NDKKind.Video, NDKKind.ShortVideo]
     : [NDKKind.Text];
 
   const { events: subscribedEvents } = useSubscribe(
     externalEvents || mediaType === 'articles' ? false : [{
       kinds,
-      ...(authors && authors.length > 0 && !selectedRelay ? { authors } : {}),
+      ...(authors && authors.length > 0 ? { authors } : {}),
     }],
     {
       subId: 'note-feed',
+      groupable: false,
       ...(selectedRelay ? { relays: [selectedRelay] } : {}),
       cacheUsage: selectedRelay ? NDKSubscriptionCacheUsage.ONLY_RELAY : undefined,
     },
@@ -45,7 +45,7 @@ export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors
   const unfilteredEvents = useWoTFilter(rawEvents);
 
   // Helper to check if content has media URLs
-  const hasMediaUrl = (content: string, type: 'image' | 'video' | 'audio'): boolean => {
+  const hasMediaUrl = (content: string, type: 'image' | 'video'): boolean => {
     let regex: RegExp;
     switch (type) {
       case 'image':
@@ -54,15 +54,13 @@ export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors
       case 'video':
         regex = /(https?:\/\/[^\s]+\.(mp4|webm|mov|avi|mkv))/gi;
         break;
-      case 'audio':
-        regex = /(https?:\/\/[^\s]+\.(mp3|wav|ogg|flac|m4a))/gi;
-        break;
     }
     return regex.test(content);
   };
 
   // Filter events based on media type
   const events = (() => {
+    return unfilteredEvents;
     switch (mediaType) {
       case 'conversations':
         // Only text notes without 'e' tags (not replies)
@@ -84,12 +82,6 @@ export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors
           event.kind === NDKKind.Video ||
           event.kind === NDKKind.ShortVideo ||
           (event.kind === NDKKind.Text && hasMediaUrl(event.content, 'video'))
-        );
-
-      case 'audio':
-        // Kind 1 with audio URLs
-        return unfilteredEvents.filter(event =>
-          event.kind === NDKKind.Text && hasMediaUrl(event.content, 'audio')
         );
 
       case 'articles':
@@ -170,7 +162,7 @@ export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors
     return (
       <div className="text-center py-12 px-4">
         <p className="text-gray-500 dark:text-gray-400">
-            No notes yet. Be the first to share something!
+            No notes yet. Be the first to share something! {unfilteredEvents.length}
         </p>
       </div>
     );
@@ -191,12 +183,6 @@ export function NoteFeed({ events: externalEvents, showDebugInfo = true, authors
         <MediaGrid events={events} />
       ) : (
         <div className="divide-y divide-gray-200 dark:divide-gray-800">
-          {/* Show count for debugging - remove in production */}
-          {showDebugInfo && (
-            <div className="text-xs text-gray-500 dark:text-gray-400 px-4 py-2 bg-gray-50 dark:bg-black/50">
-              Showing {sortedEvents.length} of {events.length} notes
-            </div>
-          )}
 
           {sortedEvents.map((event) => (
             <NoteCard key={event.id} event={event} />

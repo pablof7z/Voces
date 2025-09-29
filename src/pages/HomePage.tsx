@@ -1,10 +1,11 @@
 import { NoteFeed } from '@/features/feed/NoteFeed';
-import { useNDKCurrentUser, useFollows } from '@nostr-dev-kit/ndk-hooks';
+import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
 import { RelaySelector } from '@/components/navigation/RelaySelector';
+import { useValidFollows } from '@/hooks/useValidFollows';
 
 export function HomePage() {
   const currentUser = useNDKCurrentUser();
-  const follows = useFollows();
+  const follows = useValidFollows();
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -14,6 +15,8 @@ export function HomePage() {
           <RelaySelector />
         </div>
       </div>
+
+      {follows.size}
       
       <NoteFeed
         authors={currentUser ? Array.from(follows) : undefined}

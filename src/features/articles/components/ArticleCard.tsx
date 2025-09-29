@@ -42,10 +42,10 @@ export function ArticleCard({ article }: ArticleCardProps) {
   return (
     <Link
       to={`/article/${article.dTag}`}
-      className="group block bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 dark:border-gray-800"
+      className="group block bg-white dark:bg-neutral-900 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 dark:border-gray-800"
     >
       {image && (
-        <div className="aspect-[2/1] overflow-hidden bg-gray-100 dark:bg-gray-800">
+        <div className="aspect-[2/1] overflow-hidden bg-neutral-100 dark:bg-neutral-800">
           <img
             src={image}
             alt={article.title || 'Article cover'}

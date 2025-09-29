@@ -16,7 +16,7 @@ export function ArticlePage() {
   const { article, isLoading, error: fetchError } = useArticle(naddr);
   const { error: userError, handleError, clearError } = useErrorHandler();
   const currentUser = useNDKCurrentUser();
-  const ndk = useNDK();
+  const { ndk } = useNDK();
 
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -159,7 +159,7 @@ export function ArticlePage() {
         <p className="text-gray-600 dark:text-gray-400 mb-4">{fetchError || 'The article could not be loaded.'}</p>
         <button
           onClick={() => navigate('/')}
-          className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-black rounded-full hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors text-sm font-medium"
+          className="px-4 py-2 bg-neutral-900 dark:bg-white text-white dark:text-black rounded-full hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors text-sm font-medium"
         >
           Go Home
         </button>
@@ -175,7 +175,7 @@ export function ArticlePage() {
           <div className="flex items-center justify-between h-16">
             <button
               onClick={() => navigate(-1)}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-full transition-colors"
+              className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-full transition-colors"
               aria-label="Go back"
             >
               <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
@@ -189,7 +189,7 @@ export function ArticlePage() {
                 className={`p-2 rounded-full transition-colors ${
                   isBookmarked
                     ? 'text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-700 dark:text-gray-300'
+                    : 'hover:bg-neutral-100 dark:hover:bg-neutral-900 text-gray-700 dark:text-gray-300'
                 } ${!currentUser ? 'opacity-50 cursor-not-allowed' : ''}`}
                 title={currentUser ? (isBookmarked ? 'Remove bookmark' : 'Add bookmark') : 'Login to bookmark'}
               >
@@ -200,30 +200,30 @@ export function ArticlePage() {
               <div className="relative" ref={shareMenuRef}>
                 <button
                   onClick={() => setShowShareMenu(!showShareMenu)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-full transition-colors"
+                  className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-full transition-colors"
                 >
                   <Share2 className="w-5 h-5 text-gray-700 dark:text-gray-300" />
                 </button>
 
                 {showShareMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800">
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-neutral-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800">
                     <button
                       onClick={() => handleShare('twitter')}
-                      className="w-full px-4 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-3"
+                      className="w-full px-4 py-2 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800 flex items-center gap-3"
                     >
                       <Twitter className="w-4 h-4" />
                       Share on X
                     </button>
                     <button
                       onClick={() => handleShare('facebook')}
-                      className="w-full px-4 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-3"
+                      className="w-full px-4 py-2 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800 flex items-center gap-3"
                     >
                       <Facebook className="w-4 h-4" />
                       Share on Facebook
                     </button>
                     <button
                       onClick={() => handleShare('linkedin')}
-                      className="w-full px-4 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-3"
+                      className="w-full px-4 py-2 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800 flex items-center gap-3"
                     >
                       <Linkedin className="w-4 h-4" />
                       Share on LinkedIn
@@ -236,16 +236,16 @@ export function ArticlePage() {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setShowDropdown(!showDropdown)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-full transition-colors"
+                  className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-full transition-colors"
                 >
                   <MoreHorizontal className="w-5 h-5 text-gray-700 dark:text-gray-300" />
                 </button>
 
                 {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800">
+                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-neutral-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800">
                     <button
                       onClick={handleCopyIdentifier}
-                      className="w-full px-4 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-3"
+                      className="w-full px-4 py-2 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800 flex items-center gap-3"
                     >
                       {copied ? (
                         <>

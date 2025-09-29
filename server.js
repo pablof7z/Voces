@@ -320,7 +320,7 @@ if (!isProduction) {
 }
 
 // SSR middleware
-app.use('*', async (req, res) => {
+app.use(async (req, res) => {
   try {
     const url = req.originalUrl.replace(base, '');
 

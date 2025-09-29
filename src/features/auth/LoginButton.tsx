@@ -23,7 +23,7 @@ export function LoginButton() {
       <div className="flex items-center gap-4">
         <button
           onClick={handleLogout}
-          className="px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-black dark:hover:bg-neutral-900 transition-colors text-sm font-medium flex items-center gap-2"
+          className="px-4 py-2 rounded-full bg-neutral-100 hover:bg-neutral-200 dark:bg-black dark:hover:bg-neutral-900 transition-colors text-sm font-medium flex items-center gap-2"
         >
           <LogOut className="w-4 h-4" />
           <span className="hidden sm:inline">Logout</span>

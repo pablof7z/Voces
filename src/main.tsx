@@ -54,11 +54,7 @@ function AppWithNDK() {
 		);
 }
 
-const app = (
-  <React.StrictMode>
-    <AppWithNDK />
-  </React.StrictMode>
-);
+const app = <AppWithNDK />;
 
 // Use hydrateRoot if we have server-rendered content
 if (container.children.length > 0 && container.children[0].innerHTML !== '') {

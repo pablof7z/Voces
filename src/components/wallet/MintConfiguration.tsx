@@ -58,7 +58,7 @@ export function MintConfiguration({ variant = 'minimal' }: MintConfigurationProp
           <h3 className="text-lg font-medium text-gray-900">Cashu Mints</h3>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-2 hover:bg-gray-50 rounded-lg transition-colors"
+            className="p-2 hover:bg-neutral-50 rounded-lg transition-colors"
           >
             <Settings className="w-5 h-5 text-gray-600" />
           </button>
@@ -116,7 +116,7 @@ export function MintConfiguration({ variant = 'minimal' }: MintConfigurationProp
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 5 }}
-                    className="absolute left-6 top-0 bg-gray-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap z-10"
+                    className="absolute left-6 top-0 bg-neutral-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap z-10"
                   >
                     Cashu mint (server)
                   </motion.div>
@@ -181,7 +181,7 @@ export function MintConfiguration({ variant = 'minimal' }: MintConfigurationProp
       onClick={() => setIsExpanded(!isExpanded)}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
-      className="relative flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+      className="relative flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-neutral-50 rounded-lg transition-colors"
     >
       <Settings className="w-4 h-4" />
       <span>Mint</span>
@@ -191,7 +191,7 @@ export function MintConfiguration({ variant = 'minimal' }: MintConfigurationProp
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="absolute left-0 top-10 bg-gray-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap z-10"
+            className="absolute left-0 top-10 bg-neutral-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap z-10"
           >
             Cashu mint (server)
           </motion.div>
@@ -214,7 +214,7 @@ function MintItem({ mint, onToggle, onRemove, variant = 'compact' }: MintItemPro
       <motion.div
         initial={{ x: -10, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+        className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg"
       >
         <div className="flex items-center gap-3">
           <button
@@ -239,7 +239,7 @@ function MintItem({ mint, onToggle, onRemove, variant = 'compact' }: MintItemPro
         </div>
         <button
           onClick={onRemove}
-          className="p-1 hover:bg-gray-200 rounded transition-colors"
+          className="p-1 hover:bg-neutral-200 rounded transition-colors"
         >
           <Trash2 className="w-4 h-4 text-gray-500" />
         </button>
@@ -251,7 +251,7 @@ function MintItem({ mint, onToggle, onRemove, variant = 'compact' }: MintItemPro
     <motion.div
       initial={{ x: -10, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg"
+      className="flex items-center justify-between p-2 hover:bg-neutral-50 rounded-lg"
     >
       <div className="flex items-center gap-2">
         <button
@@ -266,7 +266,7 @@ function MintItem({ mint, onToggle, onRemove, variant = 'compact' }: MintItemPro
       </div>
       <button
         onClick={onRemove}
-        className="p-1 hover:bg-gray-100 rounded"
+        className="p-1 hover:bg-neutral-100 rounded"
       >
         <X className="w-3 h-3 text-gray-500" />
       </button>

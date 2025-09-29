@@ -97,7 +97,7 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
               </div>
               <h2 className="text-white font-light text-xl">Lightning Wallet</h2>
             </div>
-            <button className="p-2 hover:bg-gray-800 rounded-lg transition-colors">
+            <button className="p-2 hover:bg-neutral-800 rounded-lg transition-colors">
               <MoreHorizontal className="w-5 h-5 text-gray-400" />
             </button>
           </div>
@@ -122,7 +122,7 @@ export function Wallet({ variant = 'minimal-light' }: WalletProps) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleReceive}
-              className="py-4 bg-gray-800 text-white rounded-xl font-medium hover:bg-gray-700 transition-colors"
+              className="py-4 bg-neutral-800 text-white rounded-xl font-medium hover:bg-neutral-700 transition-colors"
             >
               Receive
             </motion.button>

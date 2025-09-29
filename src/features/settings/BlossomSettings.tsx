@@ -95,7 +95,7 @@ export function BlossomSettings() {
           {servers.map((server, index) => (
             <div
               key={server}
-              className="flex items-center justify-between p-3 bg-gray-50 dark:bg-black rounded-lg"
+              className="flex items-center justify-between p-3 bg-neutral-50 dark:bg-black rounded-lg"
             >
               <div className="flex items-center space-x-3">
                 <div className="flex flex-col space-y-1">
@@ -203,7 +203,7 @@ export function BlossomSettings() {
           {DEFAULT_SERVERS.filter(s => !servers.includes(s)).map(server => (
             <div
               key={server}
-              className="flex items-center justify-between p-3 bg-gray-50 dark:bg-black rounded-lg"
+              className="flex items-center justify-between p-3 bg-neutral-50 dark:bg-black rounded-lg"
             >
               <span className="text-sm">{server}</span>
               <button

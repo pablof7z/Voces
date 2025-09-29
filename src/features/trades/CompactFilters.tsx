@@ -44,7 +44,7 @@ function Dropdown({
     <div ref={dropdownRef} className={`relative ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 px-3 py-1.5 bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors"
+        className="flex items-center gap-1 px-3 py-1.5 bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded-lg text-sm font-medium hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
       >
         {renderValue(value)}
         <ChevronDown className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -59,7 +59,7 @@ function Dropdown({
                 onChange(option);
                 setIsOpen(false);
               }}
-              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors text-left"
+              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors text-left"
             >
               {renderOption(option)}
             </button>

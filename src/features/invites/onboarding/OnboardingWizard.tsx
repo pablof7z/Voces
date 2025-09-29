@@ -89,7 +89,7 @@ export function OnboardingWizard({ theme, decryptedPayload }: OnboardingWizardPr
   };
 
   const themeClasses = {
-      minimal: 'bg-gray-50',
+      minimal: 'bg-neutral-50',
       playful: 'bg-gradient-to-br from-purple-50 to-pink-50',
       modern: 'bg-black text-white',
       luxury: 'bg-gradient-to-br from-gray-800 via-black to-black text-white'

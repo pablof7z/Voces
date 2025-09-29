@@ -6,7 +6,8 @@ import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, X } from 'lucide-react';
 import { UserAvatar } from '@/components/ui/UserAvatar';
-import { useProfile, useFollows } from '@nostr-dev-kit/ndk-hooks';
+import { useProfile } from '@nostr-dev-kit/ndk-hooks';
+import { useValidFollows } from '@/hooks/useValidFollows';
 import { Input } from '@/components/ui/input';
 import type { Trustee } from '../types';
 
@@ -19,7 +20,7 @@ interface TrusteeSelectorProps {
 export function TrusteeSelector({ trustees, maxTrustees, onTrusteesChange }: TrusteeSelectorProps) {
   const { t } = useTranslation();
   const [searchValue, setSearchValue] = useState('');
-  const follows = useFollows();
+  const follows = useValidFollows();
 
   const followsList = useMemo(() => Array.from(follows), [follows]);
 

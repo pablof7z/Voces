@@ -2,7 +2,7 @@
  * Service for publishing encrypted shards to Nostr relays
  */
 
-import NDK, { NDKEvent, NDKPrivateKeySigner, NDKUser } from '@nostr-dev-kit/ndk';
+import NDK, { NDKEvent, NDKPrivateKeySigner, type NDKUser } from '@nostr-dev-kit/ndk';
 import type { EncryptedShard } from '../utils/shamir';
 import { BackupErrorCode, withBackupErrorHandling } from '../errors';
 

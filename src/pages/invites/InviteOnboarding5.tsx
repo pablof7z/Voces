@@ -32,7 +32,7 @@ function InviteOnboarding5() {
               className={`h-1.5 rounded-full transition-all ${
                 index <= cardIndex
                   ? 'w-12 bg-gradient-to-r from-orange-500 to-pink-500'
-                  : 'w-8 bg-gray-300 dark:bg-gray-700'
+                  : 'w-8 bg-neutral-300 dark:bg-neutral-700'
               }`}
             />
           ))}
@@ -159,7 +159,7 @@ function InviteOnboarding5() {
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.2 }}
-                    className="flex items-start gap-4 p-5 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:shadow-lg transition-shadow"
+                    className="flex items-start gap-4 p-5 bg-neutral-50 dark:bg-neutral-800 rounded-2xl hover:shadow-lg transition-shadow"
                   >
                     <div className={`w-14 h-14 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg`}>
                       <feature.icon className="w-7 h-7 text-white" />
@@ -297,7 +297,7 @@ function InviteOnboarding5() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 + index * 0.1 }}
-                    className="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl"
+                    className="p-4 bg-neutral-50 dark:bg-neutral-800 rounded-2xl"
                   >
                     <div className={`w-10 h-10 mx-auto bg-gradient-to-br ${item.bg} rounded-xl flex items-center justify-center mb-2 shadow-md`}>
                       <item.icon className="w-5 h-5 text-white" />

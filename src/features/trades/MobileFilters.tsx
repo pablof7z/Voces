@@ -29,7 +29,7 @@ export function MobileFilters({
       <div className="flex gap-2 p-3 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
         <button
           onClick={() => setShowFilters(true)}
-          className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 dark:bg-black rounded-lg text-sm"
+          className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-neutral-100 dark:bg-black rounded-lg text-sm"
         >
           <Filter className="w-4 h-4" />
           <span className="font-medium">Filters</span>
@@ -71,7 +71,7 @@ export function MobileFilters({
             <h2 className="text-lg font-semibold">Filters</h2>
             <button
               onClick={() => setShowFilters(false)}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-900 rounded-lg"
+              className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg"
             >
               <X className="w-5 h-5" />
             </button>
@@ -91,7 +91,7 @@ export function MobileFilters({
                       flex flex-col items-center gap-1 p-3 rounded-lg transition-all
                       ${selectedCurrency === currency.code
                         ? 'bg-purple-600 text-white'
-                        : 'bg-gray-100 dark:bg-black hover:bg-gray-200 dark:hover:bg-neutral-900'
+                        : 'bg-neutral-100 dark:bg-black hover:bg-neutral-200 dark:hover:bg-neutral-900'
                       }
                     `}
                   >
@@ -114,7 +114,7 @@ export function MobileFilters({
                       w-full flex items-center gap-3 p-3 rounded-lg transition-all
                       ${selectedPaymentMethod === method.id
                         ? 'bg-purple-600 text-white'
-                        : 'bg-gray-100 dark:bg-black hover:bg-gray-200 dark:hover:bg-neutral-900'
+                        : 'bg-neutral-100 dark:bg-black hover:bg-neutral-200 dark:hover:bg-neutral-900'
                       }
                     `}
                   >
@@ -134,7 +134,7 @@ export function MobileFilters({
                   onCurrencyChange('all');
                   onPaymentMethodChange('all');
                 }}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-900"
+                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900"
               >
                 Clear All
               </button>

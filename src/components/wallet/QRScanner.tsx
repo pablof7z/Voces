@@ -65,14 +65,14 @@ export function QRScanner({ onScan, variant = 'minimal' }: QRScannerProps) {
                   <h3 className="text-xl font-semibold text-gray-900">Scan or Paste</h3>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
                   >
                     <X className="w-5 h-5 text-gray-500" />
                   </button>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="bg-gray-100 rounded-2xl p-8 flex flex-col items-center justify-center">
+                  <div className="bg-neutral-100 rounded-2xl p-8 flex flex-col items-center justify-center">
                     <Camera className="w-12 h-12 text-gray-400 mb-3" />
                     <p className="text-sm text-gray-600 text-center">
                       Camera access needed for QR scanning
@@ -94,7 +94,7 @@ export function QRScanner({ onScan, variant = 'minimal' }: QRScannerProps) {
                   <div className="space-y-3">
                     <button
                       onClick={handleQuickPaste}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                      className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-neutral-50 hover:bg-neutral-100 rounded-xl transition-colors"
                     >
                       <Clipboard className="w-4 h-4 text-gray-600" />
                       <span className="text-gray-700">Paste from Clipboard</span>
@@ -187,7 +187,7 @@ export function QRScanner({ onScan, variant = 'minimal' }: QRScannerProps) {
     <div className="relative">
       <button
         onClick={() => setShowPasteInput(!showPasteInput)}
-        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-neutral-50 rounded-lg transition-colors"
       >
         <Camera className="w-4 h-4" />
         <span>Scan</span>

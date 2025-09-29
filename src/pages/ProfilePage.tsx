@@ -291,7 +291,7 @@ export function ProfilePage() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   packFilter === 'all'
                     ? 'bg-purple-600 text-white'
-                    : 'bg-gray-100 dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-900'
+                    : 'bg-neutral-100 dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-neutral-200 dark:hover:bg-neutral-900'
                 }`}
               >
                 All
@@ -301,7 +301,7 @@ export function ProfilePage() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   packFilter === 'created'
                     ? 'bg-purple-600 text-white'
-                    : 'bg-gray-100 dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-900'
+                    : 'bg-neutral-100 dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-neutral-200 dark:hover:bg-neutral-900'
                 }`}
               >
                 {isOwnProfile ? 'by you' : `by @${profile?.name || profile?.displayName || user.pubkey.slice(0, 8)}`}
@@ -311,7 +311,7 @@ export function ProfilePage() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   packFilter === 'appears'
                     ? 'bg-purple-600 text-white'
-                    : 'bg-gray-100 dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-900'
+                    : 'bg-neutral-100 dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-neutral-200 dark:hover:bg-neutral-900'
                 }`}
               >
                 {isOwnProfile ? 'with you' : `with @${profile?.name || profile?.displayName || user.pubkey.slice(0, 8)}`}

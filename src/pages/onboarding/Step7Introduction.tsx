@@ -20,7 +20,7 @@ interface Step7IntroductionProps {
 export function Step7Introduction({ publicKey, profileData, introductionPosts, onNext, onSkip }: Step7IntroductionProps) {
   const [introText, setIntroText] = useState('');
   const [publishing, setPublishing] = useState(false);
-  const ndk = useNDK();
+  const { ndk } = useNDK();
 
   const hasValidIntro = introText.length > 10;
   const charCount = introText.length;
@@ -36,7 +36,7 @@ export function Step7Introduction({ publicKey, profileData, introductionPosts, o
         content = content.trim() + ' #introductions';
       }
 
-      const event = new NDKEvent(ndk.ndk);
+      const event = new NDKEvent(ndk);
       event.kind = 1; // Regular note
       event.content = content;
       event.tags = [['t', 'introductions']]; // Add hashtag
@@ -109,7 +109,7 @@ export function Step7Introduction({ publicKey, profileData, introductionPosts, o
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={onSkip}
-                  className="flex-1 py-3 px-6 border border-gray-300 dark:border-gray-700 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+                  className="flex-1 py-3 px-6 border border-gray-300 dark:border-gray-700 rounded-lg font-medium hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
                 >
                   Skip for now
                 </button>
@@ -119,8 +119,8 @@ export function Step7Introduction({ publicKey, profileData, introductionPosts, o
                   className={`
                     flex-1 py-3 px-6 rounded-lg font-medium transition-all
                     ${hasValidIntro && !publishing
-                      ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200'
-                      : 'bg-gray-100 dark:bg-black text-gray-400 cursor-not-allowed'
+                      ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200'
+                      : 'bg-neutral-100 dark:bg-black text-gray-400 cursor-not-allowed'
                     }
                   `}
                 >

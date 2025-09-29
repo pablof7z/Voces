@@ -18,7 +18,7 @@ export function ThreadNoteCard({
     <div className="relative">
       {/* Thread connector line before the note */}
       {showConnector && !isMainNote && (
-        <div className="absolute left-[29px] -top-px h-[73px] w-0.5 bg-gray-300 dark:bg-black" />
+        <div className="absolute left-[29px] -top-px h-[73px] w-0.5 bg-neutral-300 dark:bg-black" />
       )}
 
       {/* The note itself with larger text for main note */}
@@ -28,7 +28,7 @@ export function ThreadNoteCard({
 
       {/* Thread connector line after the note */}
       {!isLastInThread && !isMainNote && (
-        <div className="absolute left-[29px] top-[73px] bottom-0 w-0.5 bg-gray-300 dark:bg-black" />
+        <div className="absolute left-[29px] top-[73px] bottom-0 w-0.5 bg-neutral-300 dark:bg-black" />
       )}
     </div>
   );

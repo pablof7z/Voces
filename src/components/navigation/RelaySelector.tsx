@@ -45,12 +45,77 @@ export function RelaySelector() {
     ? (selectedRelayInfo?.name || getRelayDisplayName(selectedRelay))
     : "Home";
 
+  // Get the current relay for icon display
+  const currentRelay = selectedRelay
+    ? relays.find(r => r.url === selectedRelay)
+    : null;
+
+  // Get relay icon for header display - similar logic to RelayItem
+  const getHeaderRelayIcon = () => {
+    if (!selectedRelay) {
+      // Home icon for all relays
+      return (
+        <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+          <Globe className="h-3.5 w-3.5 text-white" />
+        </div>
+      );
+    }
+
+    if (selectedRelayInfo?.icon) {
+      return (
+        <img
+          src={selectedRelayInfo.icon}
+          alt={selectedRelayInfo.name || ''}
+          className="w-6 h-6 rounded-lg object-cover"
+          onError={(e) => {
+            // Hide on error and show default
+            (e.target as HTMLImageElement).style.display = 'none';
+          }}
+        />
+      );
+    }
+
+    // Use different icons based on relay features
+    const iconClass = "h-3.5 w-3.5";
+    let icon;
+    let bgColor;
+
+    if (selectedRelayInfo?.limitation?.payment_required) {
+      icon = <Zap className={`${iconClass} text-yellow-600`} />;
+      bgColor = 'bg-yellow-100 dark:bg-yellow-900/30';
+    } else if (selectedRelayInfo?.limitation?.auth_required) {
+      icon = <Shield className={`${iconClass} text-blue-600`} />;
+      bgColor = 'bg-blue-100 dark:bg-blue-900/30';
+    } else if (selectedRelayInfo?.software) {
+      icon = <Server className={`${iconClass} text-purple-600`} />;
+      bgColor = 'bg-purple-100 dark:bg-purple-900/30';
+    } else if (currentRelay) {
+      // Default status indicator
+      const isFullAccess = currentRelay.write && currentRelay.read;
+      const color = isFullAccess ? 'text-green-500' : currentRelay.read ? 'text-blue-500' : 'text-orange-500';
+      icon = <Circle className={`h-2.5 w-2.5 fill-current ${color}`} />;
+      bgColor = isFullAccess ? 'bg-green-100 dark:bg-green-900/30' :
+                currentRelay.read ? 'bg-blue-100 dark:bg-blue-900/30' :
+                'bg-orange-100 dark:bg-orange-900/30';
+    } else {
+      icon = <Server className={`${iconClass} text-gray-600`} />;
+      bgColor = 'bg-gray-100 dark:bg-gray-800';
+    }
+
+    return (
+      <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${bgColor}`}>
+        {icon}
+      </div>
+    );
+  };
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 group"
+        className="flex items-center gap-2 group"
       >
+        {getHeaderRelayIcon()}
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           {currentRelayDisplay}
         </h2>
@@ -89,7 +154,7 @@ export function RelaySelector() {
             </button>
 
             {/* Divider */}
-            <div className="h-px bg-gray-200 dark:bg-neutral-800 my-2" />
+            <div className="h-px bg-neutral-200 dark:bg-neutral-800 my-2" />
 
             {/* Individual relays */}
             <div className="max-h-64 overflow-y-auto">
@@ -111,7 +176,7 @@ export function RelaySelector() {
             </div>
 
             {/* Divider */}
-            <div className="h-px bg-gray-200 dark:bg-neutral-800 my-2" />
+            <div className="h-px bg-neutral-200 dark:bg-neutral-800 my-2" />
 
             {/* Settings link */}
             <button
@@ -184,7 +249,7 @@ function RelayItem({
 
   // Get background color based on relay features
   const getBackgroundColor = () => {
-    if (info?.icon) return 'bg-gray-100 dark:bg-gray-800';
+    if (info?.icon) return 'bg-neutral-100 dark:bg-neutral-800';
     if (info?.limitation?.payment_required) return 'bg-yellow-100 dark:bg-yellow-900/20';
     if (info?.limitation?.auth_required) return 'bg-blue-100 dark:bg-blue-900/20';
     if (info?.software) return 'bg-purple-100 dark:bg-purple-900/20';
@@ -248,7 +313,7 @@ function RelayItem({
     <button
       onClick={onSelect}
       className="w-full flex items-center justify-between px-3 py-2 text-sm text-gray-700 dark:text-gray-200
-                 hover:bg-gray-50 dark:hover:bg-neutral-800 rounded-lg transition-all mb-1 group"
+                 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg transition-all mb-1 group"
       title={getTooltip()}
     >
       <div className="flex items-center gap-2.5 min-w-0 flex-1">

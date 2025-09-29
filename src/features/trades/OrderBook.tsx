@@ -15,6 +15,7 @@ interface Order {
   premium?: number;
   rating?: number;
   platform?: string;
+  geohash?: string;
   createdAt: number;
   event: NDKEvent;
 }
@@ -59,6 +60,7 @@ export function OrderBook({ pair, filters }: OrderBookProps) {
       const premium = parseFloat(tags.find((t: string[]) => t[0] === 'premium')?.[1] || '0');
       const rating = parseFloat(tags.find((t: string[]) => t[0] === 'rating')?.[1] || '0');
       const platform = tags.find((t: string[]) => t[0] === 'y')?.[1];
+      const geohash = tags.find((t: string[]) => t[0] === 'g')?.[1];
       const dTag = tags.find((t: string[]) => t[0] === 'd')?.[1];
 
       // Only include active orders
@@ -75,6 +77,7 @@ export function OrderBook({ pair, filters }: OrderBookProps) {
           premium,
           rating,
           platform,
+          geohash,
           createdAt: event.created_at || Date.now() / 1000,
           event
         });

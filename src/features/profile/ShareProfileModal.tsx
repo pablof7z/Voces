@@ -65,7 +65,7 @@ export function ShareProfileModal({ isOpen, onClose, pubkey, npub }: ShareProfil
       <div className="bg-white dark:bg-neutral-900 rounded-2xl max-w-md w-full relative animate-in fade-in zoom-in-95 duration-200">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-full transition-colors"
+          className="absolute top-4 right-4 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
@@ -87,7 +87,7 @@ export function ShareProfileModal({ isOpen, onClose, pubkey, npub }: ShareProfil
           </div>
 
           {/* QR Code */}
-          <div className="flex justify-center mb-6 p-4 bg-gray-50 dark:bg-neutral-800 rounded-xl">
+          <div className="flex justify-center mb-6 p-4 bg-neutral-50 dark:bg-neutral-800 rounded-xl">
             <QRCodeSVG
               value={profileUrl}
               size={200}
@@ -103,7 +103,7 @@ export function ShareProfileModal({ isOpen, onClose, pubkey, npub }: ShareProfil
           <div className="space-y-3 mb-6">
             <button
               onClick={() => copyToClipboard(profileUrl, 'url')}
-              className="w-full flex items-center justify-between px-4 py-3 bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 rounded-lg transition-colors"
+              className="w-full flex items-center justify-between px-4 py-3 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-lg transition-colors"
             >
               <span className="text-sm font-medium">voces.xyz/p/{npub.slice(0, 8)}...</span>
               {copiedUrl ? (
@@ -115,7 +115,7 @@ export function ShareProfileModal({ isOpen, onClose, pubkey, npub }: ShareProfil
 
             <button
               onClick={() => copyToClipboard(npub, 'npub')}
-              className="w-full flex items-center justify-between px-4 py-3 bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 rounded-lg transition-colors"
+              className="w-full flex items-center justify-between px-4 py-3 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-lg transition-colors"
             >
               <span className="text-sm font-medium">Copy npub</span>
               {copiedNpub ? (

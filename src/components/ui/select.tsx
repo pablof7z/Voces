@@ -122,8 +122,8 @@ export function SelectItem({ value, className, children }: SelectItemProps) {
         setOpen(false);
       }}
       className={cn(
-        'relative cursor-pointer select-none px-3 py-2 hover:bg-gray-100 dark:hover:bg-neutral-900',
-        isSelected && 'bg-gray-100 dark:bg-black',
+        'relative cursor-pointer select-none px-3 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-900',
+        isSelected && 'bg-neutral-100 dark:bg-black',
         className
       )}
     >

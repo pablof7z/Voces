@@ -38,7 +38,7 @@ export function TransactionButton({
           p-3 rounded-full transition-all
           ${isSend 
             ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-            : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+            : 'bg-neutral-100 hover:bg-neutral-200 text-gray-700'
           }
           ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `}
@@ -88,7 +88,7 @@ export function TransactionButton({
         flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all
         ${isSend 
           ? 'bg-black hover:bg-neutral-950 text-white' 
-          : 'bg-white hover:bg-gray-50 text-gray-900 border border-gray-200'
+          : 'bg-white hover:bg-neutral-50 text-gray-900 border border-gray-200'
         }
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
       `}

@@ -111,25 +111,25 @@ export function Step2FollowPacks({ selectedCommunity, selectedPacks, onSelectPac
       </div>
 
       {/* Right Panel - Follow Packs Grid */}
-      <div className="flex-1 flex items-center justify-center p-8 lg:p-12">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-12">
         <div className="max-w-xl w-full">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-3">Build Your Network</h1>
-            <p className="text-gray-600 dark:text-gray-400">
+          <div className="mb-6 lg:mb-8">
+            <h1 className="text-2xl lg:text-3xl font-bold mb-2 lg:mb-3">Build Your Network</h1>
+            <p className="text-sm lg:text-base text-gray-600 dark:text-gray-400">
               Follow curated packs from the {communityInfo.name} community
             </p>
           </div>
 
           {loading ? (
-            <div className="space-y-3 mb-8">
+            <div className="space-y-2 mb-8">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="h-24 bg-gray-100 dark:bg-black rounded-xl animate-pulse" />
+                <div key={i} className="h-20 bg-neutral-100 dark:bg-black rounded-xl animate-pulse" />
               ))}
             </div>
           ) : (
             <>
               {/* Follow Pack List */}
-              <div className="space-y-3 mb-8 max-h-[450px] overflow-y-auto">
+              <div className="space-y-2 mb-6 lg:mb-8 max-h-[50vh] lg:max-h-[60vh] overflow-y-auto p-2 -m-2">
                 {followPacks.map((pack) => {
                   const isSelected = selectedPacks.includes(pack.encode());
                   return (
@@ -154,7 +154,7 @@ export function Step2FollowPacks({ selectedCommunity, selectedPacks, onSelectPac
 
                       {/* Selection checkmark */}
                       {isSelected && (
-                        <div className="absolute top-1/2 right-4 -translate-y-1/2 bg-purple-500 text-white rounded-full p-1.5">
+                        <div className="absolute top-1/2 right-4 -translate-y-1/2 bg-purple-500 text-white rounded-full p-1.5 z-10">
                           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
@@ -177,10 +177,10 @@ export function Step2FollowPacks({ selectedCommunity, selectedPacks, onSelectPac
             onClick={handleNext}
             disabled={selectedPacks.length === 0 || loading}
             className={`
-              w-full py-4 px-6 rounded-lg font-medium transition-all
+              w-full py-3 lg:py-4 px-6 rounded-lg font-medium transition-all text-sm lg:text-base
               ${selectedPacks.length > 0 && !loading
-                ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200'
-                : 'bg-gray-100 dark:bg-black text-gray-400 cursor-not-allowed'
+                ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200'
+                : 'bg-neutral-100 dark:bg-black text-gray-400 cursor-not-allowed'
               }
             `}
           >

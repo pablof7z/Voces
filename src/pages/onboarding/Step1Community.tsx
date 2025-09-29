@@ -134,8 +134,8 @@ export function Step1Community({ selectedCommunity, onSelectCommunity, onNext }:
             className={`
               w-full py-4 px-6 rounded-lg font-medium transition-all
               ${selectedCommunity
-                ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200'
-                : 'bg-gray-100 dark:bg-black text-gray-400 cursor-not-allowed'
+                ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200'
+                : 'bg-neutral-100 dark:bg-black text-gray-400 cursor-not-allowed'
               }
             `}
           >

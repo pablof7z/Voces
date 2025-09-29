@@ -36,7 +36,7 @@ export function ArticlePreviewCard({ article, variant = 'default' }: ArticlePrev
     return (
       <Link
         to={`/article/${naddr}`}
-        className="block p-3 hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors rounded-lg"
+        className="block p-3 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors rounded-lg"
       >
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0 w-10 h-10 bg-accent-100 dark:bg-accent-900/20 rounded-lg flex items-center justify-center">
@@ -64,7 +64,7 @@ export function ArticlePreviewCard({ article, variant = 'default' }: ArticlePrev
   return (
     <Link
       to={`/article/${naddr}`}
-      className="block p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors border-b border-gray-200 dark:border-gray-800 last:border-b-0"
+      className="block p-4 sm:p-6 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors border-b border-gray-200 dark:border-gray-800 last:border-b-0"
     >
       <div className="flex gap-4 sm:gap-6">
         <div className="flex-1 min-w-0">
@@ -89,7 +89,7 @@ export function ArticlePreviewCard({ article, variant = 'default' }: ArticlePrev
         </div>
 
         {imageUrl ? (
-          <div className={`flex-shrink-0 ${THUMBNAIL_SIZE} rounded-lg overflow-hidden bg-gray-100 dark:bg-neutral-800`}>
+          <div className={`flex-shrink-0 ${THUMBNAIL_SIZE} rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-800`}>
             <img
               src={imageUrl}
               alt={title}

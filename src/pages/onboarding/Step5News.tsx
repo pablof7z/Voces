@@ -15,7 +15,7 @@ export function Step5News({ onNext }: Step5NewsProps) {
         {/* News example */}
         <div className="bg-neutral-card rounded-xl p-6 mb-8 text-left max-w-md mx-auto">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center text-sm font-medium">
+            <div className="w-10 h-10 bg-neutral-300 dark:bg-neutral-700 rounded-full flex items-center justify-center text-sm font-medium">
               CM
             </div>
             <div className="flex-1">
@@ -43,7 +43,7 @@ export function Step5News({ onNext }: Step5NewsProps) {
 
         <button
           onClick={onNext}
-          className="bg-black dark:bg-white text-white dark:text-black px-8 py-3 rounded-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+          className="bg-black dark:bg-white text-white dark:text-black px-8 py-3 rounded-lg font-medium hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
         >
           Continue →
         </button>

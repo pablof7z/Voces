@@ -2,7 +2,7 @@
  * Service for publishing kind:1115 backup metadata events
  */
 
-import NDK, { NDKEvent, NDKPrivateKeySigner, NDKUser, NDKKind } from '@nostr-dev-kit/ndk';
+import NDK, { NDKEvent, NDKPrivateKeySigner, type NDKUser, NDKKind } from '@nostr-dev-kit/ndk';
 import type { PublishedShard } from './shardPublisher';
 import { MetadataBuilder, type BackupMetadata } from './metadataBuilder';
 import { BackupError, BackupErrorCode, withBackupErrorHandling } from '../errors';

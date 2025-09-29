@@ -1,4 +1,5 @@
 import { useProfile } from '@nostr-dev-kit/ndk-hooks';
+import { NDKEvent } from '@nostr-dev-kit/ndk';
 import { nip19 } from 'nostr-tools';
 import { Fragment, useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -21,8 +22,8 @@ const PATTERNS = {
   /** NIP-19/27: Nostr entity URIs (npub, nprofile, note, nevent, naddr) */
   NOSTR_URI: /nostr:(npub1[a-z0-9]{58}|nprofile1[a-z0-9]+|note1[a-z0-9]{58}|nevent1[a-z0-9]+|naddr1[a-z0-9]+)/gi,
   
-  /** Direct media file URLs (images, videos, audio) */
-  MEDIA_FILE: /https?:\/\/[^\s<>"]+\.(jpg|jpeg|png|gif|webp|svg|mp4|webm|mov|mp3|wav|ogg|m4a)(\?[^\s<>"]*)?/gi,
+  /** Direct media file URLs (images, videos) */
+  MEDIA_FILE: /https?:\/\/[^\s<>"]+\.(jpg|jpeg|png|gif|webp|svg|mp4|webm|mov)(\?[^\s<>"]*)?/gi,
   
   /** YouTube video URLs (various formats) */
   YOUTUBE: /https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})[^\s<>"]*/gi,
@@ -35,6 +36,7 @@ interface ContentRendererProps {
   content: string;
   className?: string;
   emojiTags?: string[][];
+  event?: NDKEvent;
 }
 
 interface ParsedSegment {
@@ -152,7 +154,7 @@ function handleNostrUriMatch(matchedText: string): ParsedSegment {
 }
 
 /**
- * Handles media URL matches (images, videos, audio).
+ * Handles media URL matches (images, videos).
  * 
  * Creates media segments that will be rendered as embedded media players or image viewers.
  * 
@@ -250,7 +252,7 @@ function parseContentToSegments(
     } else if (matchedText.startsWith('nostr:')) {
       // Nostr entity URI (NIP-19/27)
       segment = handleNostrUriMatch(matchedText);
-    } else if (/\.(jpg|jpeg|png|gif|webp|svg|mp4|webm|mov|mp3|wav|ogg|m4a)(\?|$)/i.test(matchedText)) {
+    } else if (/\.(jpg|jpeg|png|gif|webp|svg|mp4|webm|mov)(\?|$)/i.test(matchedText)) {
       // Direct media file URL
       segment = handleMediaMatch(matchedText);
     } else if (/youtube\.com|youtu\.be/i.test(matchedText)) {
@@ -281,7 +283,7 @@ function parseContentToSegments(
 
 /**
  * Groups consecutive image segments into image-grid segments for better display.
- * Non-image media (video, audio) and other content types remain separate.
+ * Non-image media (video) and other content types remain separate.
  *
  * @param segments - Array of parsed segments
  * @returns Array of segments with consecutive images grouped
@@ -331,7 +333,7 @@ function groupConsecutiveImages(segments: ParsedSegment[]): ParsedSegment[] {
   return grouped;
 }
 
-export function ContentRenderer({ content, className = '', emojiTags = [] }: ContentRendererProps) {
+export function ContentRenderer({ content, className = '', emojiTags = [], event }: ContentRendererProps) {
   // Remove legacy image labels from content
   const cleanedContent = useMemo(() => {
     return content.replace(/\[Image #\d+\]/gi, '').trim();
@@ -385,11 +387,11 @@ export function ContentRenderer({ content, className = '', emojiTags = [] }: Con
           )}
 
           {segment.type === 'media' && (
-            <MediaEmbed url={segment.content} />
+            <MediaEmbed url={segment.content} event={event} />
           )}
 
           {segment.type === 'image-grid' && (
-            <ImageGrid images={segment.data as string[]} />
+            <ImageGrid images={segment.data as string[]} event={event} />
           )}
 
           {segment.type === 'emoji' && (

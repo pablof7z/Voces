@@ -48,14 +48,14 @@ export function CommentForm({ article, onCommentPublished, onError }: CommentFor
             value={replyContent}
             onChange={(e) => setReplyContent(e.target.value)}
             placeholder="Share your thoughts..."
-            className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all min-h-[100px] text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
+            className="w-full p-3 bg-neutral-50 dark:bg-neutral-900 border border-gray-200 dark:border-gray-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all min-h-[100px] text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
             disabled={isSubmitting}
           />
           <div className="flex justify-end mt-2">
             <button
               onClick={handleCommentPublish}
               disabled={!replyContent.trim() || isSubmitting}
-              className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-black rounded-full hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+              className="px-4 py-2 bg-neutral-900 dark:bg-white text-white dark:text-black rounded-full hover:bg-neutral-800 dark:hover:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
             >
               {isSubmitting ? 'Posting...' : 'Comment'}
             </button>

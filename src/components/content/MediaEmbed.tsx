@@ -10,6 +10,7 @@ export function MediaEmbed({ url, className = '' }: MediaEmbedProps) {
   const [showMedia, setShowMedia] = useState(false);
   const [muted, setMuted] = useState(true);
   const [imageError, setImageError] = useState(false);
+  const [showViewer, setShowViewer] = useState(false);
 
   const mediaType = useMemo(() => {
     const lowerUrl = url.toLowerCase();
@@ -22,11 +23,6 @@ export function MediaEmbed({ url, className = '' }: MediaEmbedProps) {
     // Video formats
     if (/\.(mp4|webm|mov)(\?|$)/i.test(lowerUrl)) {
       return 'video';
-    }
-
-    // Audio formats
-    if (/\.(mp3|wav|ogg|m4a)(\?|$)/i.test(lowerUrl)) {
-      return 'audio';
     }
 
     // YouTube
@@ -111,19 +107,6 @@ export function MediaEmbed({ url, className = '' }: MediaEmbedProps) {
         >
           {muted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
         </button>
-      </div>
-    );
-  }
-
-  if (mediaType === 'audio') {
-    return (
-      <div className={`my-2 ${className}`}>
-        <audio
-          src={url}
-          controls
-          className="w-full max-w-md"
-          onClick={(e) => e.stopPropagation()}
-        />
       </div>
     );
   }

@@ -1,7 +1,7 @@
-import { Image, MessageCircle, Video, Music, FileText } from 'lucide-react';
+import { Image, MessageCircle, Video, FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-export type MediaType = 'conversations' | 'images' | 'videos' | 'audio' | 'articles';
+export type MediaType = 'conversations' | 'images' | 'videos' | 'articles';
 
 interface MediaTypeFilterProps {
   selected: MediaType;
@@ -13,7 +13,6 @@ const mediaTypes = [
   { id: 'conversations' as const, icon: MessageCircle },
   { id: 'images' as const, icon: Image },
   { id: 'videos' as const, icon: Video },
-  { id: 'audio' as const, icon: Music },
   { id: 'articles' as const, icon: FileText },
 ];
 
@@ -30,7 +29,7 @@ export function MediaTypeFilter({ selected, onSelect, showArticles = true }: Med
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all whitespace-nowrap text-sm ${
             selected === id
               ? 'bg-purple-600 dark:bg-purple-500 text-white'
-              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/50'
+              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/50'
           }`}
         >
           <Icon className="w-4 h-4" />

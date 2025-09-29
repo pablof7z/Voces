@@ -60,7 +60,7 @@ export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
               if (textContent) {
                 return (
                   <div className="text-lg leading-[1.8] text-gray-800 dark:text-gray-200 mb-6 font-serif">
-                    <ContentRenderer content={textContent} emojiTags={emojiTags} />
+                    <ContentRenderer content={textContent.trim()} emojiTags={emojiTags} />
                   </div>
                 );
               }
@@ -105,14 +105,14 @@ export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
 
               if (isInline) {
                 return (
-                  <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded text-sm font-mono">
+                  <code className="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-900 text-gray-800 dark:text-gray-200 rounded text-sm font-mono">
                     {children}
                   </code>
                 );
               }
 
               return (
-                <code className="block bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg p-4 overflow-x-auto text-sm font-mono leading-relaxed mb-6">
+                <code className="block bg-neutral-50 dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg p-4 overflow-x-auto text-sm font-mono leading-relaxed mb-6">
                   {children}
                 </code>
               );
@@ -172,7 +172,7 @@ export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
             ),
           }}
         >
-          {content}
+          {content.trim()}
         </ReactMarkdown>
       </div>
     );
@@ -181,7 +181,7 @@ export function ArticleContent({ content, emojiTags }: ArticleContentProps) {
   // If no markdown, use ContentRenderer directly for plain text with Nostr entities
   return (
     <div className="article-content text-lg leading-[1.8] text-gray-800 dark:text-gray-200 font-serif">
-      <ContentRenderer content={content} emojiTags={emojiTags} className="space-y-6" />
+      <ContentRenderer content={content.trim()} emojiTags={emojiTags} className="space-y-6" />
     </div>
   );
 }

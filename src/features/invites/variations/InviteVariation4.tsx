@@ -61,7 +61,7 @@ const InviteVariation4 = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="p-6 bg-gray-50 rounded-xl space-y-4 mb-6"
+            className="p-6 bg-neutral-50 rounded-xl space-y-4 mb-6"
           >
             <h4 className="font-semibold text-lg text-center">Make it Special ✨</h4>
             <Input placeholder="Invitee's Name" value={name} onChange={e => setName(e.target.value)} />

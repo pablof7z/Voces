@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { useWallet } from '@/hooks/useWallet';
 import { ComposeModal } from '@/features/feed/ComposeModal';
+import { useNotificationStore } from '@/stores/notificationStore';
 
 const NAV_ITEMS_CONFIG = [
   { path: '/', icon: Home, labelKey: 'feed' },
@@ -23,6 +24,7 @@ export function NavItems() {
   const { t } = useTranslation();
   const location = useLocation();
   const { balance } = useWallet();
+  const unreadCount = useNotificationStore(state => state.unreadCount);
   const [isComposeOpen, setIsComposeOpen] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
@@ -55,7 +57,7 @@ export function NavItems() {
               key={path}
               to={path}
               className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-medium text-sm',
+                'relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-medium text-sm',
                 isActive
                   ? 'bg-neutral-900 text-white'
                   : 'text-neutral-400 hover:bg-neutral-900/50 hover:text-neutral-200'
@@ -67,6 +69,9 @@ export function NavItems() {
                 <span className="ml-auto text-xs font-normal text-orange-500">
                   {balance.toLocaleString()} sats
                 </span>
+              )}
+              {path === '/notifications' && unreadCount > 0 && (
+                <span className="absolute top-2 left-7 w-2 h-2 bg-red-500 rounded-full" />
               )}
             </Link>
           );

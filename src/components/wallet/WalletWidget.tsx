@@ -37,7 +37,7 @@ export function WalletWidget() {
               e.stopPropagation();
               // Quick send action
             }}
-            className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-white dark:bg-black rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors"
+            className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-white dark:bg-black rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
           >
             <Send className="w-3 h-3" />
             {t('wallet.send')}
@@ -48,7 +48,7 @@ export function WalletWidget() {
               e.stopPropagation();
               // Quick receive action
             }}
-            className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-white dark:bg-black rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors"
+            className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-white dark:bg-black rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
           >
             <Download className="w-3 h-3" />
             {t('wallet.receive')}

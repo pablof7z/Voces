@@ -69,8 +69,9 @@ export function EmbeddedNote({ eventId }: EmbeddedNoteProps) {
 
           <div className="mt-1">
             <ContentRenderer
-              content={event.content}
+              content={event.content.trim()}
               emojiTags={event.tags}
+              event={event}
               className="text-neutral-700 dark:text-neutral-300 text-sm leading-relaxed line-clamp-4"
             />
           </div>

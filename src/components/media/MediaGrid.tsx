@@ -44,7 +44,7 @@ function MediaItem({ event, imeta }: MediaItemProps) {
   return (
     <>
       <div
-        className="group relative aspect-square overflow-hidden bg-gray-100 dark:bg-black cursor-pointer"
+        className="group relative aspect-square overflow-hidden bg-neutral-100 dark:bg-black cursor-pointer"
         onClick={() => setShowViewer(true)}
       >
         {mediaType === 'image' && (
@@ -82,7 +82,7 @@ function MediaItem({ event, imeta }: MediaItemProps) {
         )}
 
         {mediaType === 'file' && (
-          <div className="w-full h-full bg-gray-200 dark:bg-black flex flex-col items-center justify-center gap-2">
+          <div className="w-full h-full bg-neutral-200 dark:bg-black flex flex-col items-center justify-center gap-2">
             <FileImage className="w-16 h-16 text-gray-500" />
             {imeta.url && (
               <span className="text-xs text-gray-600 dark:text-gray-400 px-2 text-center">
@@ -96,7 +96,7 @@ function MediaItem({ event, imeta }: MediaItemProps) {
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 opacity-0 group-hover:opacity-100 transition-opacity">
           {event.content && (
             <p className="text-white text-sm line-clamp-2 mb-1">
-              {event.content}
+              {event.content.trim()}
             </p>
           )}
           <div className="flex items-center gap-2 text-white/80 text-xs">

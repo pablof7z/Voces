@@ -9,12 +9,12 @@ export interface IntroductionPost {
 }
 
 export function useIntroductionPosts() {
-  const ndk = useNDK();
+  const {ndk} = useNDK();
   const [posts, setPosts] = useState<IntroductionPost[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!ndk.ndk) return;
+    if (!ndk) return;
 
     const fetchIntroductionPosts = async () => {
       try {
@@ -26,11 +26,10 @@ export function useIntroductionPosts() {
         const filter: NDKFilter = {
           kinds: [1],
           "#t": ["introductions"],
-          until: twelveHoursAgo,
-          limit: 100
+          since: twelveHoursAgo,
         };
 
-        const introEvents = await ndk.ndk.fetchEvents(filter);
+        const introEvents = await ndk.fetchEvents(filter);
 
         if (introEvents.size === 0) {
           setPosts([]);
@@ -46,7 +45,7 @@ export function useIntroductionPosts() {
           "#e": eventIds,
         };
 
-        const taggingEvents = await ndk.ndk.fetchEvents(tagsFilter);
+        const taggingEvents = await ndk.fetchEvents(tagsFilter);
 
         // Count how many times each introduction post has been tagged
         const engagementMap = new Map<string, number>();
@@ -80,7 +79,7 @@ export function useIntroductionPosts() {
     };
 
     fetchIntroductionPosts();
-  }, [ndk.ndk]);
+  }, [ndk]);
 
   return { posts, loading };
 }

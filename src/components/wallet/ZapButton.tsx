@@ -161,7 +161,7 @@ export function ZapButton({
                       handleZap(amount);
                     }}
                     disabled={isZapping}
-                    className="px-3 py-2 bg-gray-50 dark:bg-black hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-lg transition-colors disabled:opacity-50"
+                    className="px-3 py-2 bg-neutral-50 dark:bg-black hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-lg transition-colors disabled:opacity-50"
                   >
                     <div className="flex items-center gap-1">
                       <Zap className="w-3 h-3 text-yellow-600 dark:text-yellow-500" />

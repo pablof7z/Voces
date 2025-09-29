@@ -1,7 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { NDKPrivateKeySigner } from '@nostr-dev-kit/ndk';
-import { useNDK } from '@nostr-dev-kit/ndk-hooks';
+import { useNDK, useNDKSessionLogin, NDKPrivateKeySigner } from '@nostr-dev-kit/ndk-hooks';
 import { generateSecretKey, getPublicKey } from 'nostr-tools/pure';
 import { bytesToHex } from '@noble/hashes/utils';
 import { followPackUsers } from '@/utils/followPacks';
@@ -28,21 +27,35 @@ export function OnboardingFlow() {
   const [privateKey, setPrivateKey] = useState<string | null>(null);
   const [publicKey, setPublicKey] = useState<string | null>(null);
   const navigate = useNavigate();
-  const ndk = useNDK();
+  const { ndk } = useNDK();
+  const login = useNDKSessionLogin();
 
   // Start fetching introduction posts early
   const { posts: introductionPosts } = useIntroductionPosts();
 
   const totalSteps = 8;
 
-  const generateKeys = useCallback(() => {
-    const secretKey = generateSecretKey();
-    const privKey = bytesToHex(secretKey);
-    const pubKey = getPublicKey(secretKey);
-    setPrivateKey(privKey);
-    setPublicKey(pubKey);
-    return { privateKey: privKey, publicKey: pubKey };
-  }, []);
+  // Generate keys and login on mount
+  useEffect(() => {
+    const initializeKeys = async () => {
+      const secretKey = generateSecretKey();
+      const privKey = bytesToHex(secretKey);
+      const pubKey = getPublicKey(secretKey);
+      setPrivateKey(privKey);
+      setPublicKey(pubKey);
+
+      // Create signer and login
+      const newSigner = new NDKPrivateKeySigner(privKey);
+      try {
+        await login(newSigner, true);
+        console.log('Logged in with new keypair:', pubKey);
+      } catch (err) {
+        console.error('Error logging in with new keypair:', err);
+      }
+    };
+
+    initializeKeys();
+  }, [login]);
 
   const goToStep = (step: number) => {
     setCurrentStep(step);
@@ -57,24 +70,7 @@ export function OnboardingFlow() {
 
   const completeOnboarding = async () => {
     try {
-      // Login with the generated keys
-      if (privateKey) {
-        const signer = new NDKPrivateKeySigner(privateKey);
-        await ndk.login(signer);
-
-        // Follow users from selected packs
-        if (selectedPacks.length > 0) {
-          try {
-            await followPackUsers(ndk.ndk, selectedPacks);
-            console.log(`Successfully followed users from ${selectedPacks.length} packs`);
-          } catch (err) {
-            console.error('Error following pack users:', err);
-            // Continue even if following fails
-          }
-        }
-      }
-
-      // Navigate to home
+      // All events have already been published, just navigate home
       navigate('/');
     } catch (error) {
       console.error('Error completing onboarding:', error);
@@ -87,7 +83,7 @@ export function OnboardingFlow() {
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Progress Bar */}
       <div className="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-black">
-        <div className="h-1 bg-gray-200 dark:bg-gray-800">
+        <div className="h-1 bg-neutral-200 dark:bg-neutral-800">
           <div
             className="h-full bg-black dark:bg-white transition-all duration-300 ease-out"
             style={{ width: `${progressPercentage}%` }}
@@ -99,7 +95,7 @@ export function OnboardingFlow() {
       {currentStep > 1 && (
         <button
           onClick={goBack}
-          className="fixed top-6 left-6 z-50 w-9 h-9 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-full flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+          className="fixed top-6 left-6 z-50 w-9 h-9 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-full flex items-center justify-center hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
@@ -122,7 +118,18 @@ export function OnboardingFlow() {
             selectedCommunity={selectedCommunity}
             selectedPacks={selectedPacks}
             onSelectPacks={setSelectedPacks}
-            onNext={() => goToStep(3)}
+            onNext={async () => {
+              // Publish kind:3 contact list when follow packs are selected
+              if (selectedPacks.length > 0 && ndk.ndk && publicKey) {
+                try {
+                  await followPackUsers(ndk.ndk, selectedPacks);
+                  console.log(`Published kind:3 with follows from ${selectedPacks.length} packs`);
+                } catch (err) {
+                  console.error('Error publishing contact list:', err);
+                }
+              }
+              goToStep(3);
+            }}
           />
         )}
 
@@ -148,8 +155,24 @@ export function OnboardingFlow() {
           <Step6Profile
             profileData={profileData}
             onUpdateProfile={setProfileData}
-            onNext={() => {
-              generateKeys();
+            onNext={async () => {
+              // Publish kind:0 profile metadata
+              if (ndk.ndk && publicKey && profileData.name) {
+                try {
+                  const { NDKEvent } = await import('@nostr-dev-kit/ndk');
+                  const profileEvent = new NDKEvent(ndk.ndk);
+                  profileEvent.kind = 0;
+                  profileEvent.content = JSON.stringify({
+                    name: profileData.name,
+                    about: profileData.bio,
+                    ...(profileData.location && { location: profileData.location })
+                  });
+                  await profileEvent.publish();
+                  console.log('Published kind:0 profile metadata');
+                } catch (err) {
+                  console.error('Error publishing profile:', err);
+                }
+              }
               goToStep(7);
             }}
           />

@@ -50,7 +50,7 @@ export function WalletIntegration() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleZap('npub1...example', amount)}
-                className="flex-1 px-3 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm font-medium text-gray-700 transition-colors"
+                className="flex-1 px-3 py-2 bg-neutral-50 hover:bg-neutral-100 rounded-lg text-sm font-medium text-gray-700 transition-colors"
               >
                 <Zap className="w-4 h-4 inline mr-1" />
                 {amount}
@@ -67,7 +67,7 @@ export function WalletIntegration() {
                   key={zap.id}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg"
                 >
                   <div className="flex items-center gap-3">
                     {zap.status === 'success' ? (

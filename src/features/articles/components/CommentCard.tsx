@@ -30,8 +30,9 @@ export function CommentCard({ event }: CommentCardProps) {
             </span>
           </div>
           <ContentRenderer
-            content={event.content}
+            content={event.content.trim()}
             emojiTags={event.tags}
+            event={event}
             className="text-gray-800 dark:text-gray-200 leading-relaxed"
           />
         </div>

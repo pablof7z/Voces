@@ -27,9 +27,10 @@ export function useInviteGenerator() {
 
       if (inviteType === InviteType.Personalized) {
         const key = generateRandomString(24);
-        url = `${url}?key=${key}`;
+        // Append the key directly to the URL after the 12-char dTag
+        url = `https://voces.xyz/i/${dTag}${key}`;
       }
-      
+
       setGeneratedUrl(url);
       setIsLoading(false);
     }, 1000);

@@ -20,7 +20,7 @@ export function ConversationListItem({ conversation }: ConversationListItemProps
   return (
     <Link
       to={`/messages/${conversation.pubkey}`}
-      className="block hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+      className="block hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
     >
       <div className="flex items-center gap-3 p-4">
         <div className="relative flex-shrink-0">

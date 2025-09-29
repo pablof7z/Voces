@@ -20,6 +20,7 @@ import { ConversationPage } from './pages/ConversationPage';
 import { NewConversationPage } from './pages/NewConversationPage';
 import { ArticlePage } from './pages/ArticlePage';
 import { OnboardingFlow } from './pages/onboarding/OnboardingFlow';
+import InviteLandingPage from './pages/InviteLandingPage';
 import InviteOnboarding1 from './pages/invites/InviteOnboarding1';
 import InviteOnboarding2 from './pages/invites/InviteOnboarding2';
 import InviteOnboarding3 from './pages/invites/InviteOnboarding3';
@@ -28,6 +29,7 @@ import InviteOnboarding5 from './pages/invites/InviteOnboarding5';
 import InviteOnboarding6 from './pages/invites/InviteOnboarding6';
 import { useNDKCurrentUser } from '@nostr-dev-kit/ndk-hooks';
 import { WalletInitializer } from './components/wallet/WalletInitializer';
+import { NotificationProvider } from './components/notifications/NotificationProvider';
 
 const queryClient = new QueryClient();
 
@@ -39,7 +41,10 @@ function AppRoutes() {
       {/* Main onboarding flow - standalone without layout */}
       <Route path="/onboarding" element={<OnboardingFlow />} />
 
-      {/* Invite onboarding routes - standalone without layout */}
+      {/* Main invite route that parses the code */}
+      <Route path="/i/:code" element={<InviteLandingPage />} />
+
+      {/* Test invite onboarding routes - standalone without layout */}
       <Route path="/i-1/:code" element={<InviteOnboarding1 />} />
       <Route path="/i-2/:code" element={<InviteOnboarding2 />} />
       <Route path="/i-3/:code" element={<InviteOnboarding3 />} />
@@ -71,13 +76,22 @@ function AppRoutes() {
   );
 }
 
-function App() {
+function App({ isSSR = false }: { isSSR?: boolean }) {
+  const content = (
+    <>
+      <WalletInitializer />
+      <NotificationProvider />
+      <AppRoutes />
+    </>
+  );
+
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <WalletInitializer />
-        <AppRoutes />
-      </BrowserRouter>
+      {isSSR ? content : (
+        <BrowserRouter>
+          {content}
+        </BrowserRouter>
+      )}
     </QueryClientProvider>
   );
 }

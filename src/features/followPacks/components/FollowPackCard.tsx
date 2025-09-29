@@ -38,7 +38,7 @@ export function FollowPackCard({ pack, variant = 'default' }: FollowPackCardProp
   if (variant === 'compact') {
     return (
       <div
-        className="flex gap-4 p-4 bg-white dark:bg-black hover:bg-gray-50 dark:hover:bg-neutral-900 border border-gray-200 dark:border-gray-800 rounded-xl transition-all cursor-pointer"
+        className="flex gap-3 sm:gap-4 p-3 sm:p-4 bg-white dark:bg-black hover:bg-neutral-50 dark:hover:bg-neutral-900 border border-gray-200 dark:border-gray-800 rounded-xl transition-all cursor-pointer"
         onClick={handleCardClick}
       >
         {/* Image on left */}
@@ -46,48 +46,48 @@ export function FollowPackCard({ pack, variant = 'default' }: FollowPackCardProp
           <img
             src={pack.image}
             alt={pack.title}
-            className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
+            className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover flex-shrink-0"
           />
         ) : (
-          <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-            <span className="text-2xl">📦</span>
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+            <span className="text-xl sm:text-2xl">📦</span>
           </div>
         )}
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-gray-900 dark:text-gray-100 truncate">
+          <h4 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 truncate">
             {pack.title}
           </h4>
           {pack.description && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-1 sm:truncate">
               {pack.description}
             </p>
           )}
-          <div className="flex items-center gap-3 mt-2">
-            <span className="text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-2">
+            <span className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
               {pack.pubkeys?.length || 0} members
             </span>
-            {/* Member preview avatars */}
+            {/* Member preview avatars - show fewer on mobile */}
             <div className="flex -space-x-1">
-              {previewPubkeys.slice(0, 4).map((pubkey, index) => (
+              {previewPubkeys.slice(0, 3).map((pubkey, index) => (
                 <ProfileAvatar
                   key={pubkey}
                   pubkey={pubkey}
                   size="xs"
-                  style={{ zIndex: 4 - index }}
+                  style={{ zIndex: 3 - index }}
                 />
               ))}
-              {(pack.pubkeys?.length || 0) > 4 && (
-                <div className="w-5 h-5 rounded-full border border-white dark:border-black bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-[9px] font-medium text-gray-600 dark:text-gray-300">
-                  +{(pack.pubkeys?.length || 0) - 4}
+              {(pack.pubkeys?.length || 0) > 3 && (
+                <div className="w-5 h-5 rounded-full border border-white dark:border-black bg-neutral-200 dark:bg-neutral-600 flex items-center justify-center text-[9px] font-medium text-gray-600 dark:text-gray-300">
+                  +{(pack.pubkeys?.length || 0) - 3}
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* Favorite button */}
+        {/* Favorite button - hidden on mobile to avoid clutter */}
         {currentUser && (
           <button
             onClick={(e) => {
@@ -95,10 +95,10 @@ export function FollowPackCard({ pack, variant = 'default' }: FollowPackCardProp
               handleFavorite(e);
             }}
             className={cn(
-              "p-2 rounded-lg transition-colors",
+              "hidden sm:block p-2 rounded-lg transition-colors",
               favorited
                 ? "text-red-600 dark:text-red-400"
-                : "hover:bg-gray-100 dark:hover:bg-neutral-800 text-gray-400"
+                : "hover:bg-neutral-100 dark:hover:bg-neutral-800 text-gray-400"
             )}
             aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
           >
@@ -116,7 +116,7 @@ export function FollowPackCard({ pack, variant = 'default' }: FollowPackCardProp
     >
       {/* Fixed height header image */}
       {pack.image && (
-        <div className="h-32 bg-gray-100 dark:bg-black">
+        <div className="h-32 bg-neutral-100 dark:bg-black">
           <img
             src={pack.image}
             alt={pack.title}
@@ -167,7 +167,7 @@ export function FollowPackCard({ pack, variant = 'default' }: FollowPackCardProp
               />
             ))}
             {(pack.pubkeys?.length || 0) > 5 && (
-              <div className="w-8 h-8 rounded-full border-2 border-white dark:border-black bg-gray-200 dark:bg-black flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300">
+              <div className="w-8 h-8 rounded-full border-2 border-white dark:border-black bg-neutral-200 dark:bg-black flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300">
                 +{(pack.pubkeys?.length || 0) - 5}
               </div>
             )}
@@ -184,7 +184,7 @@ export function FollowPackCard({ pack, variant = 'default' }: FollowPackCardProp
             "absolute top-4 right-4 p-2 rounded-lg transition-colors bg-white/90 dark:bg-black/90 backdrop-blur-sm",
             favorited
               ? "text-red-600 dark:text-red-400"
-              : "hover:bg-gray-100 dark:hover:bg-neutral-900 text-gray-500"
+              : "hover:bg-neutral-100 dark:hover:bg-neutral-900 text-gray-500"
           )}
           aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
         >

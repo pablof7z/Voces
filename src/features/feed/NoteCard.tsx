@@ -166,7 +166,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
   return (
     <>
     <article
-      className="bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-neutral-900/50 transition-all duration-150 cursor-pointer"
+      className="bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800 hover:bg-neutral-50/50 dark:hover:bg-neutral-900/50 transition-all duration-150 cursor-pointer"
       onClick={handleNoteClick}>
       <div className="px-4 py-3 sm:px-5 sm:py-4 relative">
         {/* Timestamp in top right corner */}
@@ -252,8 +252,9 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                 )}
               >
                 <ContentRenderer
-                  content={event.content}
+                  content={event.content.trim()}
                   emojiTags={event.tags}
+                  event={event}
                   className={cn(
                     "text-gray-800 dark:text-gray-200 leading-relaxed",
                     isLargeText ? "text-lg sm:text-xl" : "text-[15px] sm:text-base"
@@ -272,7 +273,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                     e.stopPropagation();
                     setIsExpanded(!isExpanded);
                   }}
-                  className="mt-3 flex items-center gap-1.5 px-4 py-2 bg-black dark:bg-white text-white dark:text-black text-sm font-medium rounded-full hover:bg-gray-800 dark:hover:bg-neutral-800 transition-all duration-200"
+                  className="mt-3 flex items-center gap-1.5 px-4 py-2 bg-black dark:bg-white text-white dark:text-black text-sm font-medium rounded-full hover:bg-neutral-800 dark:hover:bg-neutral-800 transition-all duration-200"
                 >
                   <span>{isExpanded ? 'Read Less' : 'Read More'}</span>
                   {isExpanded ? (
@@ -372,7 +373,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                         e.stopPropagation();
                         handleCopyId();
                       }}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-neutral-800 flex items-center gap-2 rounded-t-lg"
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-50 dark:hover:bg-neutral-800 flex items-center gap-2 rounded-t-lg"
                     >
                       <Copy className="w-4 h-4" />
                       Copy ID
@@ -382,7 +383,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
                         e.stopPropagation();
                         handleViewRaw();
                       }}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 dark:hover:bg-neutral-800 flex items-center gap-2 rounded-b-lg"
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-50 dark:hover:bg-neutral-800 flex items-center gap-2 rounded-b-lg"
                     >
                       <Code2 className="w-4 h-4" />
                       View Raw Event
@@ -409,7 +410,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
               <h3 className="text-lg font-semibold">Raw Event</h3>
               <button
                 onClick={() => setShowRawEvent(false)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-800"
+                className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -417,7 +418,7 @@ export function NoteCard({ event, isLargeText = false }: NoteCardProps) {
               </button>
             </div>
             <div className="p-4 overflow-auto flex-1">
-              <pre className="text-xs font-mono whitespace-pre-wrap break-all bg-gray-50 dark:bg-black p-4 rounded-lg">
+              <pre className="text-xs font-mono whitespace-pre-wrap break-all bg-neutral-50 dark:bg-black p-4 rounded-lg">
                 <code className="language-json">
                   {event.inspect}
                 </code>

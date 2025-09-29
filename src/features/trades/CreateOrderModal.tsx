@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { X, Bitcoin } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Bitcoin, MapPin, Plus } from 'lucide-react';
 import { useNDK } from '@nostr-dev-kit/ndk-hooks';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 
@@ -17,13 +17,56 @@ const currencies = [
 ];
 
 const paymentMethods = [
-  { id: 'Cash', name: 'Cash (F2F)', icon: '💵' },
+  { id: 'Cash (F2F)', name: 'Cash (F2F)', icon: '💵', requiresLocation: true },
   { id: 'Revolut', name: 'Revolut', icon: '💳' },
   { id: 'PIX', name: 'PIX (Brazil)', icon: '🔄' },
   { id: 'BLIK', name: 'BLIK (Poland)', icon: '📱' },
   { id: 'Zelle', name: 'Zelle', icon: '🏦' },
   { id: 'CashApp', name: 'Cash App', icon: '📲' },
+  { id: 'custom', name: 'Other...', icon: '✏️' },
 ];
+
+function encodeGeohash(lat: number, lon: number, precision = 5): string {
+  const base32 = '0123456789bcdefghjkmnpqrstuvwxyz';
+  let idx = 0;
+  let bit = 0;
+  let evenBit = true;
+  let geohash = '';
+
+  let latRange = [-90.0, 90.0];
+  let lonRange = [-180.0, 180.0];
+
+  while (geohash.length < precision) {
+    if (evenBit) {
+      const mid = (lonRange[0] + lonRange[1]) / 2;
+      if (lon >= mid) {
+        idx |= (1 << (4 - bit));
+        lonRange[0] = mid;
+      } else {
+        lonRange[1] = mid;
+      }
+    } else {
+      const mid = (latRange[0] + latRange[1]) / 2;
+      if (lat >= mid) {
+        idx |= (1 << (4 - bit));
+        latRange[0] = mid;
+      } else {
+        latRange[1] = mid;
+      }
+    }
+
+    evenBit = !evenBit;
+    bit++;
+
+    if (bit === 5) {
+      geohash += base32[idx];
+      bit = 0;
+      idx = 0;
+    }
+  }
+
+  return geohash;
+}
 
 export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
   const { ndk } = useNDK();
@@ -31,13 +74,60 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
   const [currency, setCurrency] = useState('USD');
   const [satsAmount, setSatsAmount] = useState('100000');
   const [fiatAmount, setFiatAmount] = useState('50');
-  const [paymentMethod, setPaymentMethod] = useState('Cash');
+  const [paymentMethod, setPaymentMethod] = useState('Cash (F2F)');
+  const [customPaymentMethod, setCustomPaymentMethod] = useState('');
+  const [location, setLocation] = useState('');
+  const [geohash, setGeohash] = useState('');
   const [premium, setPremium] = useState('0');
   const [expirationHours, setExpirationHours] = useState('24');
   const [creating, setCreating] = useState(false);
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
+
+  useEffect(() => {
+    const selectedMethod = paymentMethods.find(m => m.id === paymentMethod);
+    if (selectedMethod?.requiresLocation) {
+      setShowLocationPicker(true);
+    } else {
+      setShowLocationPicker(false);
+      setLocation('');
+      setGeohash('');
+    }
+  }, [paymentMethod]);
+
+  const handleLocationRequest = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const gh = encodeGeohash(lat, lon, 5);
+          setGeohash(gh);
+          setLocation(`Near ${gh} (auto-detected)`);
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          alert('Could not get your location. Please enter city/area manually.');
+        }
+      );
+    } else {
+      alert('Geolocation is not supported by your browser. Please enter location manually.');
+    }
+  };
 
   const handleCreate = async () => {
     if (!ndk) return;
+
+    const actualPaymentMethod = paymentMethod === 'custom' ? customPaymentMethod : paymentMethod;
+
+    if (!actualPaymentMethod) {
+      alert('Please specify a payment method');
+      return;
+    }
+
+    if (paymentMethod === 'Cash (F2F)' && !location && !geohash) {
+      alert('Please provide a location for face-to-face trades');
+      return;
+    }
 
     setCreating(true);
 
@@ -45,17 +135,16 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
       const event = new NDKEvent(ndk);
       event.kind = 38383;
 
-      // Generate unique ID
       const orderId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-      event.tags = [
+      const tags = [
         ['d', orderId],
         ['k', orderType],
         ['f', currency],
         ['s', 'pending'],
         ['amt', satsAmount],
         ['fa', fiatAmount],
-        ['pm', paymentMethod],
+        ['pm', actualPaymentMethod],
         ['premium', premium],
         ['y', 'Voces'],
         ['z', 'order'],
@@ -64,6 +153,11 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
         ['expiration', (Math.floor(Date.now() / 1000) + parseInt(expirationHours) * 3600).toString()]
       ];
 
+      if (geohash) {
+        tags.push(['g', geohash]);
+      }
+
+      event.tags = tags;
       event.content = '';
 
       await event.publish();
@@ -89,7 +183,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
             </h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-neutral-900 rounded-lg transition-colors"
+              className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -202,7 +296,54 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
                 </button>
               ))}
             </div>
+
+            {paymentMethod === 'custom' && (
+              <div className="mt-3">
+                <input
+                  type="text"
+                  value={customPaymentMethod}
+                  onChange={(e) => setCustomPaymentMethod(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
+                  placeholder="Enter payment method (e.g., Bank Transfer, PayPal, etc.)"
+                  autoFocus
+                />
+              </div>
+            )}
           </div>
+
+          {/* Location for F2F */}
+          {showLocationPicker && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <MapPin className="inline w-4 h-4 mr-1" />
+                Location (Required for F2F)
+              </label>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white"
+                    placeholder="City, neighborhood, or area"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleLocationRequest}
+                    className="px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+                    title="Use current location"
+                  >
+                    <MapPin className="w-5 h-5" />
+                  </button>
+                </div>
+                {geohash && (
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Geohash: {geohash} (approximate location)
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Premium */}
           <div>
@@ -244,7 +385,7 @@ export function CreateOrderModal({ onClose }: CreateOrderModalProps) {
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors"
+              className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
             >
               Cancel
             </button>

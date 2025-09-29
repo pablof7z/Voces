@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Bitcoin, Star, MessageSquare, ArrowRight, Shield } from 'lucide-react';
+import { Bitcoin, Star, MessageSquare, ArrowRight, Shield, MapPin } from 'lucide-react';
 import { useProfile } from '@nostr-dev-kit/ndk-hooks';
 import { formatDistanceToNow } from 'date-fns';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
@@ -18,6 +18,7 @@ interface OrderCardProps {
     premium?: number;
     rating?: number;
     platform?: string;
+    geohash?: string;
     createdAt: number;
     event: NDKEvent;
   };
@@ -44,6 +45,7 @@ const currencyData: { [key: string]: { symbol: string; flag: string } } = {
 
 const paymentMethodData: { [key: string]: { icon: string; region: string } } = {
   'Cash': { icon: '💵', region: 'Universal' },
+  'Cash (F2F)': { icon: '💵', region: 'Local' },
   'PIX': { icon: '🔄', region: 'Brazil' },
   'BLIK': { icon: '📱', region: 'Poland' },
   'Revolut': { icon: '💳', region: 'Europe' },
@@ -96,6 +98,12 @@ export function OrderCard({ order }: OrderCardProps) {
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 {formatDistanceToNow(order.createdAt * 1000, { addSuffix: true })}
                 {order.platform && ` • ${order.platform}`}
+                {order.geohash && order.paymentMethod.includes('F2F') && (
+                  <span className="inline-flex items-center gap-1 ml-2">
+                    <MapPin className="w-3 h-3" />
+                    <span>Near {order.geohash.substring(0, 4)}</span>
+                  </span>
+                )}
               </p>
             </div>
           </div>
@@ -173,10 +181,10 @@ export function OrderCard({ order }: OrderCardProps) {
             <span className="hidden md:inline">{order.type === 'buy' ? 'Sell to User' : 'Buy from User'}</span>
             <span className="md:hidden">{order.type === 'buy' ? 'Sell' : 'Buy'}</span>
           </button>
-          <button className="p-1.5 md:p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors">
+          <button className="p-1.5 md:p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors">
             <MessageSquare className="w-3 h-3 md:w-4 md:h-4" />
           </button>
-          <button className="p-1.5 md:p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-neutral-900 transition-colors hidden md:block">
+          <button className="p-1.5 md:p-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors hidden md:block">
             <Shield className="w-3 h-3 md:w-4 md:h-4" />
           </button>
         </div>

@@ -71,7 +71,7 @@ export function RelaySettings() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2 md:gap-4">
-        <div className="bg-gray-50 dark:bg-black rounded-lg p-3 md:p-4">
+        <div className="bg-neutral-50 dark:bg-black rounded-lg p-3 md:p-4">
           <div className="flex items-center gap-1 md:gap-2 text-green-600 dark:text-green-400 mb-1">
             <Wifi className="w-3 h-3 md:w-4 md:h-4" />
             <span className="text-xs md:text-sm font-medium">Active</span>
@@ -80,7 +80,7 @@ export function RelaySettings() {
             {relays.filter(r => r.enabled).length}
           </div>
         </div>
-        <div className="bg-gray-50 dark:bg-black rounded-lg p-3 md:p-4">
+        <div className="bg-neutral-50 dark:bg-black rounded-lg p-3 md:p-4">
           <div className="flex items-center gap-1 md:gap-2 text-blue-600 dark:text-blue-400 mb-1">
             <BookOpen className="w-3 h-3 md:w-4 md:h-4" />
             <span className="text-xs md:text-sm font-medium">Read</span>
@@ -89,7 +89,7 @@ export function RelaySettings() {
             {relays.filter(r => r.enabled && r.read).length}
           </div>
         </div>
-        <div className="bg-gray-50 dark:bg-black rounded-lg p-3 md:p-4">
+        <div className="bg-neutral-50 dark:bg-black rounded-lg p-3 md:p-4">
           <div className="flex items-center gap-1 md:gap-2 text-purple-600 dark:text-purple-400 mb-1">
             <Edit2 className="w-3 h-3 md:w-4 md:h-4" />
             <span className="text-xs md:text-sm font-medium">Write</span>
@@ -115,7 +115,7 @@ export function RelaySettings() {
                   'border rounded-lg p-4 transition-all',
                   relay.enabled
                     ? 'bg-white dark:bg-black border-gray-200 dark:border-gray-700'
-                    : 'bg-gray-50 dark:bg-black border-gray-200 dark:border-gray-800 opacity-60'
+                    : 'bg-neutral-50 dark:bg-black border-gray-200 dark:border-gray-800 opacity-60'
                 )}
               >
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
@@ -144,7 +144,7 @@ export function RelaySettings() {
                     <button
                       onClick={() => testRelayConnection(relay.url)}
                       disabled={testingRelay === relay.url}
-                      className="p-1.5 md:p-2 hover:bg-gray-100 dark:hover:bg-neutral-900 rounded-lg transition-colors disabled:opacity-50"
+                      className="p-1.5 md:p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg transition-colors disabled:opacity-50"
                       title="Test connection"
                     >
                       <Zap className="w-4 h-4 text-gray-500" />
@@ -214,7 +214,7 @@ export function RelaySettings() {
                       setIsAdding(false);
                       setNewRelay({ url: '', read: true, write: true });
                     }}
-                    className="px-4 py-2 bg-gray-200 dark:bg-black text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-neutral-900 transition-colors"
+                    className="px-4 py-2 bg-neutral-200 dark:bg-black text-gray-700 dark:text-gray-300 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-900 transition-colors"
                   >
                     Cancel
                   </button>
@@ -357,7 +357,7 @@ function RelayDetails({
               </span>
             )}
             {info.contact && (
-              <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-400 px-2 py-0.5 rounded-full">
+              <span className="text-xs bg-neutral-100 dark:bg-neutral-800 text-gray-700 dark:text-gray-400 px-2 py-0.5 rounded-full">
                 📧 {info.contact}
               </span>
             )}

@@ -1,4 +1,4 @@
-import NDK, { NDKEvent, NDKKind, NDKUser } from "@nostr-dev-kit/ndk";
+import NDK, { NDKEvent, NDKKind, type NDKUser } from "@nostr-dev-kit/ndk";
 
 export async function followMultipleUsers(
   ndk: NDK,

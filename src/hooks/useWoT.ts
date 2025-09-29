@@ -50,19 +50,23 @@ export function useWoT() {
 }
 
 export function useWoTFilter(events: NDKEvent[]): NDKEvent[] {
-  const { enabled, minTrustLevel, getTrustScore } = useWoTStore();
+  const { enabled, minTrustLevel, getTrustScore, trustScores } = useWoTStore();
   const currentUser = useNDKCurrentUser();
 
   return useMemo(() => {
     if (!enabled) return events;
 
+    // If trust scores are empty, let everything through
+    if (Object.keys(trustScores).length === 0) return events;
+
     return events.filter(event => {
       if (event.pubkey === currentUser?.pubkey) return true;
 
       const score = getTrustScore(event.pubkey);
+      console.log({score})
       return score >= minTrustLevel;
     });
-  }, [events, enabled, minTrustLevel, getTrustScore, currentUser?.pubkey]);
+  }, [events, enabled, minTrustLevel, getTrustScore, trustScores, currentUser?.pubkey]);
 }
 
 export function useWoTScore(pubkey: string): number {

@@ -1,14 +1,19 @@
 import { useState } from 'react';
+import { NDKEvent } from '@nostr-dev-kit/ndk';
+import type { NDKImetaTag } from '@nostr-dev-kit/ndk';
 import { cn } from '@/lib/utils';
 import { Image as ImageIcon } from 'lucide-react';
+import { MediaViewer } from '@/components/media/MediaViewer';
 
 interface ImageGridProps {
   images: string[];
   className?: string;
+  event?: NDKEvent;
 }
 
-export function ImageGrid({ images, className = '' }: ImageGridProps) {
+export function ImageGrid({ images, className = '', event }: ImageGridProps) {
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleImageError = (index: number) => {
     setImageErrors(prev => ({ ...prev, [index]: true }));
@@ -16,7 +21,11 @@ export function ImageGrid({ images, className = '' }: ImageGridProps) {
 
   const handleImageClick = (url: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    window.open(url, '_blank');
+    if (event) {
+      setSelectedImage(url);
+    } else {
+      window.open(url, '_blank');
+    }
   };
 
   // Filter out images that failed to load
@@ -35,16 +44,28 @@ export function ImageGrid({ images, className = '' }: ImageGridProps) {
   // Single image - display normally
   if (imageCount === 1) {
     return (
-      <div className={`my-2 ${className}`}>
-        <img
-          src={validImages[0]}
-          alt="Embedded content"
-          className="max-w-full h-auto rounded-lg cursor-pointer hover:opacity-95 transition-opacity"
-          loading="lazy"
-          onError={() => handleImageError(0)}
-          onClick={(e) => handleImageClick(validImages[0], e)}
-        />
-      </div>
+      <>
+        <div className={`my-2 ${className}`}>
+          <img
+            src={validImages[0]}
+            alt="Embedded content"
+            className="max-w-full h-auto rounded-lg cursor-pointer hover:opacity-95 transition-opacity"
+            loading="lazy"
+            onError={() => handleImageError(0)}
+            onClick={(e) => handleImageClick(validImages[0], e)}
+          />
+        </div>
+        {selectedImage && event && (
+          <MediaViewer
+            event={event}
+            imeta={{
+              url: selectedImage,
+              m: `image/${selectedImage.split('.').pop()?.toLowerCase()}`,
+            } as NDKImetaTag}
+            onClose={() => setSelectedImage(null)}
+          />
+        )}
+      </>
     );
   }
 
@@ -59,39 +80,51 @@ export function ImageGrid({ images, className = '' }: ImageGridProps) {
   );
 
   return (
-    <div className={gridClass}>
-      {images.map((url, index) => {
-        if (imageErrors[index]) return null;
+    <>
+      <div className={gridClass}>
+        {images.map((url, index) => {
+          if (imageErrors[index]) return null;
 
-        // For 3 images: first image spans 2 columns
-        const isFirstOfThree = imageCount === 3 && index === 0;
-        const imageClass = cn(
-          'w-full h-full object-cover rounded-lg cursor-pointer hover:opacity-95 transition-opacity',
-          {
-            'col-span-2': isFirstOfThree,
-            'aspect-square': !isFirstOfThree && imageCount > 2,
-            'aspect-auto': imageCount === 2,
-          }
-        );
-
-        return (
-          <div
-            key={index}
-            className={cn('overflow-hidden rounded-lg', {
+          // For 3 images: first image spans 2 columns
+          const isFirstOfThree = imageCount === 3 && index === 0;
+          const imageClass = cn(
+            'w-full h-full object-cover rounded-lg cursor-pointer hover:opacity-95 transition-opacity',
+            {
               'col-span-2': isFirstOfThree,
-            })}
-          >
-            <img
-              src={url}
-              alt={`Image ${index + 1}`}
-              className={imageClass}
-              loading="lazy"
-              onError={() => handleImageError(index)}
-              onClick={(e) => handleImageClick(url, e)}
-            />
-          </div>
-        );
-      })}
-    </div>
+              'aspect-square': !isFirstOfThree && imageCount > 2,
+              'aspect-auto': imageCount === 2,
+            }
+          );
+
+          return (
+            <div
+              key={index}
+              className={cn('overflow-hidden rounded-lg', {
+                'col-span-2': isFirstOfThree,
+              })}
+            >
+              <img
+                src={url}
+                alt={`Image ${index + 1}`}
+                className={imageClass}
+                loading="lazy"
+                onError={() => handleImageError(index)}
+                onClick={(e) => handleImageClick(url, e)}
+              />
+            </div>
+          );
+        })}
+      </div>
+      {selectedImage && event && (
+        <MediaViewer
+          event={event}
+          imeta={{
+            url: selectedImage,
+            m: `image/${selectedImage.split('.').pop()?.toLowerCase()}`,
+          } as NDKImetaTag}
+          onClose={() => setSelectedImage(null)}
+        />
+      )}
+    </>
   );
 }

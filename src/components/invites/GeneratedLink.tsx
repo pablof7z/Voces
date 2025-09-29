@@ -20,11 +20,11 @@ export function GeneratedLink({ url }: GeneratedLinkProps) {
   return (
     <div className="mt-6 text-center">
       <h3 className="font-semibold text-gray-700 mb-2">Your Invite is Ready!</h3>
-      <div className="relative bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-3 flex items-center justify-between">
+      <div className="relative bg-neutral-100 border-2 border-dashed border-gray-300 rounded-lg p-3 flex items-center justify-between">
         <span className="text-purple-600 font-mono text-sm truncate pr-16">{url}</span>
         <button
           onClick={handleCopy}
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-50"
+          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-neutral-50"
           aria-label="Copy invite link"
         >
           <AnimatePresence mode="wait">

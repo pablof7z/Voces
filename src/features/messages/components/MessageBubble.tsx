@@ -25,11 +25,11 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           'max-w-[70%] rounded-2xl px-4 py-2',
           isOwnMessage
             ? 'bg-purple-600 text-white rounded-br-sm'
-            : 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white rounded-bl-sm'
+            : 'bg-neutral-200 dark:bg-neutral-800 text-gray-900 dark:text-white rounded-bl-sm'
         )}
       >
         <ContentRenderer
-          content={message.content}
+          content={message.content.trim()}
           emojiTags={message.event.tags}
           className="text-sm"
         />
