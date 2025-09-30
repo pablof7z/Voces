@@ -1,10 +1,11 @@
-import { Clock, Sparkles } from 'lucide-react';
+import { Clock, Sparkles, PenTool } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { nip19 } from 'nostr-tools';
 import { useArticles } from '@/features/articles/hooks/useArticles';
 import { useMemo } from 'react';
 import { UserName } from '@/components/ui/UserName';
+import { UserAvatar } from '@/components/ui/UserAvatar';
 import { MarketplaceSidebar } from '@/components/wallet/MarketplaceSidebar';
 import { P2PTradeSidebar } from '@/components/wallet/P2PTradeSidebar';
 
@@ -30,6 +31,18 @@ export function RightSidebar() {
         pubkey: article.pubkey
       }));
   }, [articles]);
+
+  // Journalists profiles
+  const journalists = [
+    {
+      npub: 'npub1q6wrnf7ue6wdxwjc2z5wxfwp7eykahady78hjh7wvqkmjsvwva2qcypndn',
+      pubkey: nip19.decode('npub1q6wrnf7ue6wdxwjc2z5wxfwp7eykahady78hjh7wvqkmjsvwva2qcypndn').data as string,
+    },
+    {
+      npub: 'npub147whqsr5vsj86x0ays70r0hgreklre3ey97uvcmxhum65skst56s30selt',
+      pubkey: nip19.decode('npub147whqsr5vsj86x0ays70r0hgreklre3ey97uvcmxhum65skst56s30selt').data as string,
+    }
+  ];
 
 
   return (
@@ -90,6 +103,46 @@ export function RightSidebar() {
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* Journalists Section */}
+            <div className="bg-neutral-900/50 rounded-2xl p-5 border border-neutral-800/50 backdrop-blur-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <PenTool className="w-5 h-5 text-orange-500" />
+                <h2 className="text-lg font-semibold text-white">Journalists</h2>
+              </div>
+              <div className="space-y-3">
+                {journalists.map((journalist) => (
+                  <Link
+                    key={journalist.npub}
+                    to={`/p/${journalist.npub}`}
+                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-neutral-800/50 transition-all duration-200 group"
+                  >
+                    <UserAvatar
+                      pubkey={journalist.pubkey}
+                      size="sm"
+                      showTrustIndicator={false}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <UserName
+                        pubkey={journalist.pubkey}
+                        className="text-sm font-medium text-white group-hover:text-orange-500 transition-colors"
+                        showNpub={false}
+                      />
+                      <p className="text-xs text-neutral-500 mt-1">Journalist</p>
+                    </div>
+                    <button className="px-3 py-1 text-xs bg-orange-500/10 text-orange-500 rounded-full hover:bg-orange-500/20 transition-colors">
+                      Follow
+                    </button>
+                  </Link>
+                ))}
+              </div>
+              <Link
+                to="/journalists"
+                className="mt-3 block text-center text-sm text-orange-500 hover:text-orange-400 transition-colors"
+              >
+                View all journalists →
+              </Link>
             </div>
 
             {/* Footer Links */}

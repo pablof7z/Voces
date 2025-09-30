@@ -15,8 +15,6 @@ export function HomePage() {
           <RelaySelector />
         </div>
       </div>
-
-      {follows.size}
       
       <NoteFeed
         authors={currentUser ? Array.from(follows) : undefined}

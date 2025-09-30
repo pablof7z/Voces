@@ -21,21 +21,23 @@ export function MediaTypeFilter({ selected, onSelect, showArticles = true }: Med
   const filteredTypes = showArticles ? mediaTypes : mediaTypes.filter(t => t.id !== 'articles');
 
   return (
-    <div className="flex gap-2 px-4 sm:px-6 py-3 overflow-x-auto scrollbar-hide border-b border-neutral-200 dark:border-neutral-800">
-      {filteredTypes.map(({ id, icon: Icon }) => (
-        <button
-          key={id}
-          onClick={() => onSelect(id)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all whitespace-nowrap text-sm ${
-            selected === id
-              ? 'bg-orange-600 dark:bg-orange-500 text-white'
-              : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/50'
-          }`}
-        >
-          <Icon className="w-4 h-4" />
-          <span className="font-medium">{t(`feed.mediaTypes.${id}`)}</span>
-        </button>
-      ))}
+    <div className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-800">
+      <div className="flex px-4 sm:px-6 overflow-x-auto">
+        {filteredTypes.map(({ id, icon: Icon }) => (
+          <button
+            key={id}
+            onClick={() => onSelect(id)}
+            className={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
+              selected === id
+                ? 'text-orange-600 dark:text-orange-500 border-b-2 border-orange-600 dark:border-orange-500'
+                : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300'
+            }`}
+          >
+            <Icon className="w-4 h-4" />
+            {t(`feed.mediaTypes.${id}`)}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

@@ -50,7 +50,7 @@ export function Step6Profile({ profileData, onUpdateProfile, onNext }: Step6Prof
 
       {/* Profile cards deck */}
       <div className="relative flex items-center justify-center gap-6 mb-12">
-        {/* Left card - Example profile */}
+        {/* Left card - Leopoldo López profile */}
         <div className="w-80 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden transform -rotate-3 scale-95 opacity-80">
           <div
             className="h-32 bg-cover bg-center"
@@ -64,7 +64,7 @@ export function Step6Profile({ profileData, onUpdateProfile, onNext }: Step6Prof
             />
             <div className="mt-4">
               <h3 className="text-xl font-bold">Leopoldo López</h3>
-              <p className="text-sm text-neutral-500 mb-2">📍 In exile · Verified</p>
+              <p className="text-sm text-neutral-500 mb-2">✓ leo@primal.net</p>
               <p className="text-sm text-neutral-600 dark:text-neutral-400">
                 Former Mayor of Caracas (2000-08). Political prisoner 2014-21. Co-founder of World Liberty Congress.
               </p>
@@ -119,7 +119,7 @@ export function Step6Profile({ profileData, onUpdateProfile, onNext }: Step6Prof
           </div>
         </div>
 
-        {/* Right card - Example profile */}
+        {/* Right card - Enderson Sequera profile */}
         <div className="w-80 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden transform rotate-3 scale-95 opacity-80">
           <div
             className="h-32 bg-cover bg-center"
