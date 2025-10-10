@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { ndk } from '$lib/ndk.svelte';
+  import { ndk, hashtagInterests } from '$lib/ndk.svelte';
   import { settings } from '$lib/stores/settings.svelte';
   import { relayFilter } from '$lib/stores/relayFilter.svelte';
+  import { hashtagFilter } from '$lib/stores/hashtagFilter.svelte';
   import { NDKKind, type NDKEvent, NDKArticle } from '@nostr-dev-kit/ndk';
   import NoteCard from '$lib/components/NoteCard.svelte';
   import ArticlePreviewCard from '$lib/components/ArticlePreviewCard.svelte';
@@ -9,6 +10,8 @@
   import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
   import { Avatar } from '@nostr-dev-kit/svelte';
+  import Hashtag from '$lib/components/Hashtag.svelte';
+  import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
 
   type MediaFilter = 'conversations' | 'images' | 'videos' | 'articles';
   let selectedFilter = $state<MediaFilter>('conversations');
@@ -35,10 +38,20 @@
       kinds: [NDKKind.Text],
       limit: 200
     };
-    // When no specific relay is selected (Following mode), filter by follows
-    if (!relayFilter.selectedRelay && followsArray.length > 0) {
+
+    // Add hashtag filters if any are selected
+    if (hashtagFilter.hasFilters) {
+      filter['#t'] = hashtagFilter.selectedHashtags;
+    }
+
+    // When no specific relay is selected (Following mode) AND no hashtag filters, filter by follows
+    if (!relayFilter.selectedRelay && followsArray.length > 0 && !hashtagFilter.hasFilters) {
+      filter.authors = followsArray;
+    } else if (!relayFilter.selectedRelay && followsArray.length > 0 && hashtagFilter.hasFilters) {
+      // When hashtag filters are active in Following mode, combine with authors
       filter.authors = followsArray;
     }
+
     console.log('Using filter:', filter);
     return {
       filters: [filter],
@@ -55,6 +68,12 @@
       kinds: [NDKKind.Text, NDKKind.Image, NDKKind.Video, NDKKind.ShortVideo],
       limit: 300
     };
+
+    // Add hashtag filters if any are selected
+    if (hashtagFilter.hasFilters) {
+      filter['#t'] = hashtagFilter.selectedHashtags;
+    }
+
     // When no specific relay is selected (Following mode), filter by follows
     if (!relayFilter.selectedRelay && followsArray.length > 0) {
       filter.authors = followsArray;
@@ -73,6 +92,12 @@
       kinds: [NDKKind.Article],
       limit: 100
     };
+
+    // Add hashtag filters if any are selected
+    if (hashtagFilter.hasFilters) {
+      filter['#t'] = hashtagFilter.selectedHashtags;
+    }
+
     // When no specific relay is selected (Following mode), filter by follows
     if (!relayFilter.selectedRelay && followsArray.length > 0) {
       filter.authors = followsArray;
@@ -142,13 +167,57 @@
     }
     return Array.from(authors);
   });
+
+  // Fetch relay info when a relay is selected
+  const relayInfo = useRelayInfoCached(relayFilter.selectedRelay);
 </script>
 
 <div class="max-w-full mx-auto">
   <!-- Header -->
   <div class="sticky top-0 z-10 bg-black/90 backdrop-blur-xl border-b border-neutral-800/50">
     <div class="px-4 py-4">
-      <h1 class="text-xl font-bold text-white">Home</h1>
+      {#if hashtagInterests.interests.length > 0}
+        <div class="flex flex-wrap items-center gap-2">
+          {#if relayFilter.selectedRelay}
+            <!-- Show relay icon when a specific relay is selected -->
+            {#if relayInfo.info?.icon}
+              <img src={relayInfo.info.icon} alt="" class="w-5 h-5 rounded" />
+            {:else}
+              <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+              </svg>
+            {/if}
+          {:else}
+            <span class="text-sm text-neutral-400 mr-1">Following:</span>
+          {/if}
+          {#each hashtagInterests.interests as hashtag}
+            <button
+              onclick={() => hashtagFilter.toggleHashtag(hashtag)}
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all {
+                hashtagFilter.isSelected(hashtag)
+                  ? 'bg-orange-500 text-white border-2 border-orange-400'
+                  : 'bg-neutral-800 text-neutral-300 border-2 border-neutral-700 hover:border-neutral-600'
+              }"
+            >
+              <span class="text-xs">#</span>
+              <span>{hashtag}</span>
+            </button>
+          {/each}
+          {#if hashtagFilter.hasFilters}
+            <button
+              onclick={() => hashtagFilter.clearAll()}
+              class="inline-flex items-center gap-1 px-2 py-1.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-all"
+              title="Clear all filters"
+            >
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          {/if}
+        </div>
+      {:else}
+        <h1 class="text-xl font-bold text-white">Home</h1>
+      {/if}
     </div>
 
     <!-- Media Type Filters -->
