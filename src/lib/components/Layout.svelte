@@ -6,6 +6,7 @@
   import { relayFilter } from '$lib/stores/relayFilter.svelte';
   import { sidebarStore } from '$lib/stores/sidebar.svelte';
   import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
+  import { NDKKind, NDKArticle } from '@nostr-dev-kit/ndk';
   import LoginButton from './LoginButton.svelte';
   import UserMenu from './UserMenu.svelte';
   import MarketplaceSidebar from './MarketplaceSidebar.svelte';
@@ -24,11 +25,6 @@
 
   const path = $derived($page.url.pathname);
 
-  const selectedRelayInfo = $derived.by(() => {
-    if (!relayFilter.selectedRelay) return null;
-    return useRelayInfoCached(relayFilter.selectedRelay);
-  });
-
   const hideRightSidebar = $derived(
     path.startsWith('/article/') ||
     path.startsWith('/note/') ||
@@ -36,6 +32,31 @@
     path.startsWith('/p/') ||
     path.startsWith('/packs')
   );
+
+  // Subscribe to recent articles for the sidebar
+  const recentArticlesSubscription = $derived.by(() => {
+    if (!hideRightSidebar && !sidebarStore.rightSidebar) {
+      return ndk.$subscribe(() => ({
+        filters: [{ kinds: [NDKKind.Article], limit: 5 }],
+        bufferMs: 500,
+      }));
+    }
+    return null;
+  });
+
+  const recentArticles = $derived.by(() => {
+    if (!recentArticlesSubscription) return [];
+    return recentArticlesSubscription.events
+      .map(e => NDKArticle.from(e))
+      .filter(article => article.title && article.content)
+      .sort((a, b) => (b.published_at ?? b.created_at ?? 0) - (a.published_at ?? a.created_at ?? 0))
+      .slice(0, 5);
+  });
+
+  const selectedRelayInfo = $derived.by(() => {
+    if (!relayFilter.selectedRelay) return null;
+    return useRelayInfoCached(relayFilter.selectedRelay);
+  });
 
   // Auto-collapse sidebar when viewing articles
   $effect(() => {
@@ -273,10 +294,20 @@
                   <h2 class="text-lg font-semibold text-white">Recent Articles</h2>
                 </div>
                 <div class="space-y-3">
-                  <div class="h-4 bg-neutral-800 rounded animate-pulse"></div>
-                  <div class="h-4 bg-neutral-800 rounded animate-pulse w-3/4"></div>
-                  <div class="h-4 bg-neutral-800 rounded animate-pulse"></div>
-                  <div class="h-4 bg-neutral-800 rounded animate-pulse w-2/3"></div>
+                  {#if recentArticles.length === 0}
+                    <div class="h-4 bg-neutral-800 rounded animate-pulse"></div>
+                    <div class="h-4 bg-neutral-800 rounded animate-pulse w-3/4"></div>
+                    <div class="h-4 bg-neutral-800 rounded animate-pulse"></div>
+                  {:else}
+                    {#each recentArticles as article (article.id)}
+                      <a
+                        href="/article/{article.encode()}"
+                        class="block text-sm text-neutral-300 hover:text-orange-500 transition-colors line-clamp-2"
+                      >
+                        {article.title}
+                      </a>
+                    {/each}
+                  {/if}
                 </div>
               </div>
 
