@@ -1,57 +1,65 @@
-import { NDKSvelte, initStores } from '@nostr-dev-kit/ndk-svelte5';
-import { NDKNip07Signer, NDKPrivateKeySigner } from '@nostr-dev-kit/ndk';
+import NDKCacheSqliteWasm from "@nostr-dev-kit/cache-sqlite-wasm";
+import { NDKSvelte } from '@nostr-dev-kit/svelte';
+import { LocalStorage } from '@nostr-dev-kit/sessions';
+import { browser } from '$app/environment';
 
 const DEFAULT_RELAYS = [
-  'wss://relay.damus.io',
-  'wss://relay.nostr.band',
-  'wss://nos.lol',
-  'wss://relay.snort.social',
   'wss://relay.primal.net',
-  'wss://purplepag.es'
 ];
+
+// Initialize SQLite WASM cache with worker mode (browser only)
+const cacheAdapter = browser ? new NDKCacheSqliteWasm({
+  dbName: "voces-cache",
+  useWorker: true,
+  workerUrl: "/worker.js",
+  wasmUrl: "/sql-wasm.wasm",
+}) : undefined;
+
+// Initialize signature verification worker (only in browser)
+let sigVerifyWorker: Worker | undefined;
 
 console.log('[NDK] Creating NDK instance with relays:', DEFAULT_RELAYS);
 
 export const ndk = new NDKSvelte({
   explicitRelayUrls: DEFAULT_RELAYS,
-  autoConnectUserRelays: false,
-  autoFetchUserMutelist: false
+  autoConnectUserRelays: true,
+  cacheAdapter,
+  signatureVerificationWorker: sigVerifyWorker,
+  initialValidationRatio: 1.0,
+  lowestValidationRatio: 0.1,
+  aiGuardrails: true,
+  session: {
+    storage: new LocalStorage(),
+    autoSave: true,
+    fetches: {
+      follows: true,
+      mutes: true,
+      wallet: true,
+      relayList: true
+    }
+  }
 });
 
-console.log('[NDK] Initializing stores');
-initStores(ndk);
+// Initialize the cache and connect
+export const ndkReady = (async () => {
+  if (!browser) return;
 
-export async function initializeSigner() {
-  if (typeof window === 'undefined') return;
+  try {
+    // Initialize worker
+    const SigVerifyWorker = (await import('./sig-verify.worker.ts?worker')).default;
+    sigVerifyWorker = new SigVerifyWorker();
+    ndk.signatureVerificationWorker = sigVerifyWorker;
 
-  if (window.nostr) {
-    const signer = new NDKNip07Signer();
-    ndk.signer = signer;
-    return signer;
+    // Initialize cache
+    if (cacheAdapter) {
+      await cacheAdapter.initializeAsync(ndk);
+      console.log("✅ SQLite WASM cache initialized");
+    }
+
+    ndk.connect();
+  } catch (error) {
+    console.error("❌ Failed to initialize cache:", error);
   }
+})();
 
-  const privateKey = localStorage.getItem('nostr_private_key');
-  if (privateKey) {
-    const signer = new NDKPrivateKeySigner(privateKey);
-    ndk.signer = signer;
-    return signer;
-  }
-
-  return null;
-}
-
-if (typeof window !== 'undefined') {
-  console.log('[NDK] Connecting to relays...');
-  ndk.connect().then(() => {
-    console.log('[NDK] Successfully connected to relays');
-    initializeSigner().then((signer) => {
-      if (signer) {
-        console.log('[NDK] Signer initialized');
-      } else {
-        console.log('[NDK] No signer available');
-      }
-    });
-  }).catch((error) => {
-    console.error('[NDK] Failed to connect:', error);
-  });
-}
+export default ndk;

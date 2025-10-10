@@ -20,11 +20,14 @@ interface AppSettings {
     hideReadReceipts: boolean;
     hideTypingIndicator: boolean;
   };
+  zap: {
+    defaultAmount: number;
+  };
 }
 
 const DEFAULT_RELAYS: Relay[] = [
+  { url: 'wss://ve.agorawlc.com', read: true, write: false, enabled: true },
   { url: 'wss://relay.damus.io', read: true, write: true, enabled: true },
-  { url: 'wss://relay.nostr.band', read: true, write: false, enabled: true },
   { url: 'wss://nos.lol', read: true, write: true, enabled: true },
   { url: 'wss://relay.snort.social', read: true, write: true, enabled: true },
   { url: 'wss://relay.primal.net', read: true, write: true, enabled: true },
@@ -44,6 +47,9 @@ const DEFAULT_SETTINGS: AppSettings = {
   privacy: {
     hideReadReceipts: false,
     hideTypingIndicator: false,
+  },
+  zap: {
+    defaultAmount: 21,
   },
 };
 
@@ -98,6 +104,10 @@ class SettingsStore {
 
   get privacy() {
     return this.state.privacy;
+  }
+
+  get zap() {
+    return this.state.zap;
   }
 
   addRelay(relay: Relay) {
@@ -159,6 +169,11 @@ class SettingsStore {
 
   updatePrivacy(settings: Partial<AppSettings['privacy']>) {
     this.state.privacy = { ...this.state.privacy, ...settings };
+    saveSettings(this.state);
+  }
+
+  updateZap(settings: Partial<AppSettings['zap']>) {
+    this.state.zap = { ...this.state.zap, ...settings };
     saveSettings(this.state);
   }
 

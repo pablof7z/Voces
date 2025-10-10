@@ -1,38 +1,40 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 
 @theme {
-  --color-background: 0 0% 100%;
-  --color-foreground: 222.2 84% 4.9%;
+  /* Agora Color System - Light Mode */
+  --color-background: 30 20% 95%;        /* Warm off-white #F4F2EE */
+  --color-foreground: 225 11% 8%;        /* Deep charcoal #121418 */
 
   --color-card: 0 0% 100%;
-  --color-card-foreground: 222.2 84% 4.9%;
+  --color-card-foreground: 225 11% 8%;
 
   --color-popover: 0 0% 100%;
-  --color-popover-foreground: 222.2 84% 4.9%;
+  --color-popover-foreground: 225 11% 8%;
 
-  --color-primary: 267 84% 60%;
+  --color-primary: 14 100% 60%;          /* Signal orange #FF6B35 */
   --color-primary-foreground: 0 0% 100%;
 
-  --color-secondary: 210 40% 96.1%;
-  --color-secondary-foreground: 222.2 47.4% 11.2%;
+  --color-secondary: 40 15% 85%;         /* Sand/olive gray */
+  --color-secondary-foreground: 225 11% 8%;
 
-  --color-muted: 210 40% 96.1%;
-  --color-muted-foreground: 215.4 16.3% 46.9%;
+  --color-muted: 40 10% 90%;
+  --color-muted-foreground: 225 8% 40%;
 
-  --color-accent: 210 40% 96.1%;
-  --color-accent-foreground: 222.2 47.4% 11.2%;
+  --color-accent: 31 92% 54%;          /* Orange rgb(246, 142, 29) */
+  --color-accent-foreground: 0 0% 100%;
+  --color-accent-dark: 28 90% 48%;     /* Darker shade for borders */
 
   --color-destructive: 0 84.2% 60.2%;
-  --color-destructive-foreground: 210 40% 98%;
+  --color-destructive-foreground: 0 0% 100%;
 
-  --color-border: 214.3 31.8% 91.4%;
-  --color-input: 214.3 31.8% 91.4%;
-  --color-ring: 267 84% 60%;
+  --color-border: 40 8% 82%;
+  --color-input: 40 8% 82%;
+  --color-ring: 14 100% 60%;
 
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
 }
 
 @layer base {
@@ -45,7 +47,7 @@
   }
 
   body {
-    background: #FFFFFF !important;
+    background: hsl(var(--color-background)) !important;
     color: hsl(var(--color-foreground));
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -53,73 +55,73 @@
   }
 
   .dark body {
-    background: #000000 !important;
+    background: #121418 !important;
   }
 
-  /* Dark mode */
+  /* Dark mode - Agora */
   @media (prefers-color-scheme: dark) {
     :root {
-      --color-background: 224 71% 4%;
-      --color-foreground: 213 31% 91%;
+      --color-background: 225 11% 8%;       /* Deep charcoal #121418 */
+      --color-foreground: 30 20% 95%;       /* Warm off-white #F4F2EE */
 
-      --color-card: 224 71% 4%;
-      --color-card-foreground: 213 31% 91%;
+      --color-card: 225 11% 10%;
+      --color-card-foreground: 30 20% 95%;
 
-      --color-popover: 224 71% 4%;
-      --color-popover-foreground: 213 31% 91%;
+      --color-popover: 225 11% 10%;
+      --color-popover-foreground: 30 20% 95%;
 
-      --color-primary: 267 84% 60%;
+      --color-primary: 14 100% 60%;         /* Signal orange */
       --color-primary-foreground: 0 0% 100%;
 
-      --color-secondary: 222.2 47.4% 11.2%;
-      --color-secondary-foreground: 210 40% 98%;
+      --color-secondary: 225 8% 20%;        /* Darker charcoal */
+      --color-secondary-foreground: 30 20% 95%;
 
-      --color-muted: 223 47% 11%;
-      --color-muted-foreground: 215 20.2% 65.1%;
+      --color-muted: 225 8% 15%;
+      --color-muted-foreground: 30 10% 65%;
 
-      --color-accent: 223 47% 11%;
-      --color-accent-foreground: 210 40% 98%;
+      --color-accent: 31 92% 54%;         /* Orange rgb(246, 142, 29) */
+      --color-accent-foreground: 0 0% 100%;
 
-      --color-destructive: 0 62.8% 30.6%;
-      --color-destructive-foreground: 210 40% 98%;
+      --color-destructive: 0 84.2% 60.2%;
+      --color-destructive-foreground: 0 0% 100%;
 
-      --color-border: 223 47% 11%;
-      --color-input: 223 47% 11%;
-      --color-ring: 267 84% 60%;
+      --color-border: 225 8% 18%;
+      --color-input: 225 8% 18%;
+      --color-ring: 14 100% 60%;
     }
   }
 
   .dark {
-    --color-background: 224 71% 4%;
-    --color-foreground: 213 31% 91%;
+    --color-background: 225 11% 8%;       /* Deep charcoal #121418 */
+    --color-foreground: 30 20% 95%;       /* Warm off-white #F4F2EE */
 
-    --color-card: 224 71% 4%;
-    --color-card-foreground: 213 31% 91%;
+    --color-card: 225 11% 10%;
+    --color-card-foreground: 30 20% 95%;
 
-    --color-popover: 224 71% 4%;
-    --color-popover-foreground: 213 31% 91%;
+    --color-popover: 225 11% 10%;
+    --color-popover-foreground: 30 20% 95%;
 
-    --color-primary: 267 84% 60%;
+    --color-primary: 14 100% 60%;         /* Signal orange */
     --color-primary-foreground: 0 0% 100%;
 
-    --color-secondary: 222.2 47.4% 11.2%;
-    --color-secondary-foreground: 210 40% 98%;
+    --color-secondary: 225 8% 20%;        /* Darker charcoal */
+    --color-secondary-foreground: 30 20% 95%;
 
-    --color-muted: 223 47% 11%;
-    --color-muted-foreground: 215 20.2% 65.1%;
+    --color-muted: 225 8% 15%;
+    --color-muted-foreground: 30 10% 65%;
 
-    --color-accent: 223 47% 11%;
-    --color-accent-foreground: 210 40% 98%;
+    --color-accent: 31 92% 54%;         /* Orange rgb(246, 142, 29) */
+    --color-accent-foreground: 0 0% 100%;
 
-    --color-destructive: 0 62.8% 30.6%;
-    --color-destructive-foreground: 210 40% 98%;
+    --color-destructive: 0 84.2% 60.2%;
+    --color-destructive-foreground: 0 0% 100%;
 
-    --color-border: 223 47% 11%;
-    --color-input: 223 47% 11%;
-    --color-ring: 267 84% 60%;
+    --color-border: 225 8% 18%;
+    --color-input: 225 8% 18%;
+    --color-ring: 14 100% 60%;
   }
 
-  /* Custom scrollbar */
+  /* Custom scrollbar - Agora style */
   ::-webkit-scrollbar {
     width: 0.5rem;
     height: 0.5rem;
@@ -130,20 +132,20 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: rgb(209 213 219);
+    background-color: hsl(40 8% 70%);
     border-radius: 9999px;
   }
 
   .dark ::-webkit-scrollbar-thumb {
-    background-color: rgb(55 65 81);
+    background-color: hsl(225 8% 25%);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(156 163 175);
+    background-color: hsl(14 100% 60%);
   }
 
   .dark ::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(75 85 99);
+    background-color: hsl(14 100% 60%);
   }
 
   /* Focus visible improvements */
@@ -159,34 +161,35 @@
 }
 
 @layer utilities {
-  /* True neutral backgrounds without blue tint */
+  /* Agora neutral backgrounds */
   .bg-neutral-card {
     background-color: #FFFFFF;
   }
 
   .dark .bg-neutral-card {
-    background-color: #0a0a0a;
+    background-color: #121418;
   }
 
   .bg-neutral-card-hover {
-    background-color: #F5F5F5;
+    background-color: hsl(30 20% 92%);
   }
 
   .dark .bg-neutral-card-hover {
-    background-color: #141414;
+    background-color: hsl(225 11% 12%);
   }
-  /* Text selection */
+
+  /* Text selection - Agora style */
   ::selection {
-    background-color: rgb(233 213 255);
-    color: rgb(88 28 135);
+    background-color: hsl(14 100% 85%);
+    color: hsl(225 11% 8%);
   }
 
   .dark ::selection {
-    background-color: rgb(88 28 135);
-    color: rgb(233 213 255);
+    background-color: hsl(14 100% 60%);
+    color: hsl(0 0% 100%);
   }
 
-  /* Animation utilities */
+  /* Animation utilities - Quick fades for Agora */
   @keyframes fade-in {
     from {
       opacity: 0;
@@ -208,10 +211,35 @@
   }
 
   .animate-fade-in {
-    animation: fade-in 0.5s ease-in-out;
+    animation: fade-in 0.2s ease-in-out;
   }
 
   .animate-slide-up {
-    animation: slide-up 0.3s ease-out;
+    animation: slide-up 0.15s ease-out;
+  }
+
+  /* Mention styles for EventContent / MentionPreview components */
+  :root {
+    --accent-color: hsl(31 92% 54%); /* Voces orange accent */
+    --text-primary: hsl(225 11% 8%); /* Voces foreground */
+    --text-muted: hsl(225 8% 40%);
+    --border-color: hsl(40 8% 82%);
+    --border-hover-color: hsl(40 8% 70%);
+    --card-background: hsl(0 0% 100%);
+    --card-hover-background: hsl(40 10% 90%);
+    --mention-background: hsl(31 92% 54% / 0.1); /* Subtle orange background */
+    --mention-background-hover: hsl(31 92% 54% / 0.15); /* Slightly stronger on hover */
+  }
+
+  .dark {
+    --accent-color: hsl(31 92% 54%); /* Voces orange accent */
+    --text-primary: hsl(30 20% 95%); /* Voces dark mode foreground */
+    --text-muted: hsl(30 10% 65%);
+    --border-color: hsl(225 8% 18%);
+    --border-hover-color: hsl(225 8% 25%);
+    --card-background: hsl(225 11% 10%);
+    --card-hover-background: hsl(225 8% 15%);
+    --mention-background: hsl(31 92% 54% / 0.15); /* Slightly stronger in dark mode */
+    --mention-background-hover: hsl(31 92% 54% / 0.2);
   }
 }

@@ -1,19 +1,17 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { ndk } from '$lib/ndk.svelte';
-  import type { NDKEvent, NDKUser } from '@nostr-dev-kit/ndk';
-  import { goto } from '$app/navigation';
+  import type { NDKEvent } from '@nostr-dev-kit/ndk';
   import { Avatar } from '@nostr-dev-kit/svelte';
-  import { EventContent } from '@nostr-dev-kit/svelte';
-  import { formatDistanceToNow } from 'date-fns';
-  import { nip19 } from 'nostr-tools';
-  import ComposeDialog from '$lib/components/ComposeDialog.svelte';
+  import { toast } from '$lib/stores/toast.svelte';
+  import NoteCard from '$lib/components/NoteCard.svelte';
 
   // Decode the nevent parameter
   const neventId = $derived($page.params.nevent);
 
   // Fetch the main event
   let mainEvent = $state<NDKEvent | null>(null);
+  const currentUser = ndk.$currentUser;
   const mainProfile = ndk.$fetchProfile(() => mainEvent?.pubkey);
 
   $effect(() => {
@@ -139,7 +137,6 @@
     return directReplies.sort((a, b) => (a.created_at || 0) - (b.created_at || 0));
   });
 
-  let showReplyDialog = $state(false);
   let replyContent = $state('');
   let isSubmitting = $state(false);
 
@@ -152,19 +149,14 @@
       const replyEvent = await mainEvent.reply(replyContent);
       await replyEvent.publish();
 
-      // Reset content
       replyContent = '';
+      toast.success('Reply published');
     } catch (error) {
       console.error('Failed to publish reply:', error);
-      alert('Failed to send reply.');
+      toast.error('Failed to send reply');
     } finally {
       isSubmitting = false;
     }
-  }
-
-  function formatTime(timestamp: number | undefined) {
-    if (!timestamp) return '';
-    return formatDistanceToNow(new Date(timestamp * 1000), { addSuffix: true });
   }
 </script>
 
@@ -186,138 +178,47 @@
 
   {#if !mainEvent}
     <div class="flex flex-col items-center justify-center mt-20">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
       <p class="mt-4 text-neutral-400">Loading note...</p>
     </div>
   {:else}
     <main class="max-w-2xl mx-auto">
       <!-- Parent Notes (Thread Context) -->
       {#each parentChain as parentNote, index}
-        {@const parentProfile = ndk.$fetchProfile(() => parentNote.pubkey)}
-        <div class="relative">
-          <!-- Thread connector line before the note -->
-          {#if index > 0}
-            <div class="absolute left-[29px] -top-px h-[73px] w-0.5 bg-neutral-700"></div>
-          {/if}
-
-          <article class="p-4 hover:bg-neutral-900/30 transition-colors cursor-pointer border-b border-neutral-800">
-            <div class="flex gap-3">
-              <a href="/p/{nip19.npubEncode(parentNote.pubkey)}" class="flex-shrink-0">
-                <Avatar {ndk} pubkey={parentNote.pubkey} class="w-12 h-12" />
-              </a>
-
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 mb-1">
-                  <span class="font-semibold text-white truncate">
-                    {parentProfile?.displayName || parentProfile?.name || `${parentNote.pubkey.slice(0, 8)}...`}
-                  </span>
-                  <span class="text-neutral-500 text-sm">·</span>
-                  <span class="text-neutral-500 text-sm">
-                    {formatTime(parentNote.created_at)}
-                  </span>
-                </div>
-
-                <div class="text-neutral-200 whitespace-pre-wrap break-words">
-                  <EventContent {ndk} content={parentNote.content} emojiTags={parentNote.tags} />
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- Thread connector line after the note -->
-          <div class="absolute left-[29px] top-[73px] bottom-0 w-0.5 bg-neutral-700"></div>
-        </div>
+        <NoteCard
+          event={parentNote}
+          variant="thread-parent"
+          showThreadLine={index < parentChain.length - 1}
+          showActions={false}
+        />
       {/each}
 
       <!-- Main Note - Highlighted with larger text -->
       {#if mainEvent}
-        <div class="relative">
-          <!-- Thread connector line before the main note -->
-          {#if parentChain.length > 0}
-            <div class="absolute left-[29px] -top-px h-[73px] w-0.5 bg-neutral-700"></div>
-          {/if}
-
-          <article class="p-4 bg-neutral-900/50 border-y-2 border-purple-600/50">
-          <div class="flex gap-3">
-            <a href="/p/{nip19.npubEncode(mainEvent.pubkey)}" class="flex-shrink-0">
-              <Avatar {ndk} pubkey={mainEvent.pubkey} class="w-14 h-14" />
-            </a>
-
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="font-bold text-white text-lg truncate">
-                  {mainProfile?.displayName || mainProfile?.name || `${mainEvent.pubkey.slice(0, 8)}...`}
-                </span>
-                <span class="text-neutral-500 text-sm">·</span>
-                <span class="text-neutral-500 text-sm">
-                  {formatTime(mainEvent.created_at)}
-                </span>
-              </div>
-
-              <!-- Larger text for main note -->
-              <div class="text-neutral-100 whitespace-pre-wrap break-words text-lg leading-relaxed">
-                <EventContent {ndk} content={mainEvent.content} emojiTags={mainEvent.tags} />
-              </div>
-
-              <!-- Actions for main note -->
-              <div class="flex items-center gap-6 mt-4 text-neutral-400 border-t border-neutral-700 pt-3">
-                <button
-                  onclick={() => showReplyDialog = true}
-                  class="flex items-center gap-2 hover:text-purple-400 transition-colors"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                  </svg>
-                  <span class="text-sm">Reply</span>
-                </button>
-
-                <button class="flex items-center gap-2 hover:text-green-400 transition-colors">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  <span class="text-sm">Repost</span>
-                </button>
-
-                <button class="flex items-center gap-2 hover:text-red-400 transition-colors">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                  <span class="text-sm">Like</span>
-                </button>
-
-                <button class="flex items-center gap-2 hover:text-yellow-400 transition-colors">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  <span class="text-sm">Zap</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </article>
-      </div>
+        <NoteCard
+          event={mainEvent}
+          variant="thread-main"
+          showThreadLine={false}
+        />
       {/if}
 
       <!-- Reply Box -->
-      {#if ndk.signer}
-        {@const currentUser = ndk.$currentUser()}
+      {#if ndk.signer && currentUser}
         <div class="border-b border-neutral-800 p-4">
           <div class="flex gap-3">
-            {#if currentUser}
-              <Avatar {ndk} pubkey={currentUser.pubkey} class="w-10 h-10 flex-shrink-0" />
-            {/if}
+            <Avatar {ndk} pubkey={currentUser.pubkey} class="w-10 h-10 flex-shrink-0" />
             <div class="flex-1">
               <textarea
                 bind:value={replyContent}
                 placeholder={`Reply to ${mainProfile?.name || 'this note'}...`}
-                class="w-full min-h-[100px] p-3 bg-black border border-neutral-700 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
+                class="w-full min-h-[100px] p-3 bg-black border border-neutral-700 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 text-white"
                 disabled={isSubmitting}
               />
               <div class="flex justify-end mt-2">
                 <button
                   onclick={handleReply}
                   disabled={!replyContent.trim() || isSubmitting}
-                  class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {isSubmitting ? 'Posting...' : 'Reply'}
                 </button>
@@ -336,30 +237,11 @@
             </h2>
           </div>
           {#each directReplies as reply}
-            {@const replyProfile = ndk.$fetchProfile(() => reply.pubkey)}
-            <article class="p-4 hover:bg-neutral-900/30 transition-colors border-b border-neutral-800">
-              <div class="flex gap-3">
-                <a href="/p/{nip19.npubEncode(reply.pubkey)}" class="flex-shrink-0">
-                  <Avatar {ndk} pubkey={reply.pubkey} class="w-10 h-10" />
-                </a>
-
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2 mb-1">
-                    <span class="font-semibold text-white text-sm truncate">
-                      {replyProfile?.displayName || replyProfile?.name || `${reply.pubkey.slice(0, 8)}...`}
-                    </span>
-                    <span class="text-neutral-500 text-xs">·</span>
-                    <span class="text-neutral-500 text-xs">
-                      {formatTime(reply.created_at)}
-                    </span>
-                  </div>
-
-                  <div class="text-neutral-200 text-sm whitespace-pre-wrap break-words">
-                    <EventContent {ndk} content={reply.content} emojiTags={reply.tags} />
-                  </div>
-                </div>
-              </div>
-            </article>
+            <NoteCard
+              event={reply}
+              variant="thread-reply"
+              showActions={false}
+            />
           {/each}
         {:else}
           <div class="p-8 text-center text-neutral-400">
@@ -370,5 +252,3 @@
     </main>
   {/if}
 </div>
-
-<ComposeDialog bind:open={showReplyDialog} replyTo={mainEvent} />

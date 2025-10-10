@@ -1,0 +1,93 @@
+<script lang="ts">
+  import { ndk } from '$lib/ndk.svelte';
+  import { NDKKind } from '@nostr-dev-kit/ndk';
+  import { goto } from '$app/navigation';
+
+  // Subscribe to recent marketplace listings
+  const subscription = ndk.$subscribe(() => ({
+    filters: [{ kinds: [30402 as NDKKind], limit: 5 }], // NDKKind.Classified
+    bufferMs: 100,
+  }));
+
+  const recentListings = $derived(
+    subscription.events
+      .filter(event => {
+        const status = event.tagValue('status') || 'active';
+        return status === 'active';
+      })
+      .slice(0, 5)
+  );
+
+  function getListingImage(listing: typeof subscription.events[0]): string | undefined {
+    return listing.tagValue('image');
+  }
+
+  function getListingPrice(listing: typeof subscription.events[0]): { amount: string; currency: string } | null {
+    const priceTag = listing.tags.find(t => t[0] === 'price');
+    if (!priceTag || !priceTag[1] || !priceTag[2]) return null;
+    return {
+      amount: priceTag[1],
+      currency: priceTag[2]
+    };
+  }
+</script>
+
+<div class="bg-neutral-900/50 rounded-2xl p-5 border border-neutral-800/50 backdrop-blur-sm">
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-2">
+      <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+      </svg>
+      <h3 class="text-lg font-semibold text-white">
+        Recent Marketplace
+      </h3>
+    </div>
+    <button
+      onclick={() => goto('/marketplace')}
+      class="flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-300 transition-colors"
+    >
+      View All
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="space-y-3">
+    {#if recentListings.length === 0}
+      <div class="text-center py-6 text-sm text-neutral-500">
+        No marketplace items yet
+      </div>
+    {:else}
+      {#each recentListings as listing (listing.id)}
+        {@const price = getListingPrice(listing)}
+        <button
+          onclick={() => goto(`/marketplace/${listing.encode()}`)}
+          class="w-full bg-neutral-800/30 rounded-lg p-3 transition-all hover:bg-neutral-800/50 hover:scale-[1.02] text-left"
+        >
+          <div class="flex gap-3">
+            {#if getListingImage(listing)}
+              <div class="w-12 h-12 bg-neutral-800 rounded-lg overflow-hidden flex-shrink-0">
+                <img
+                  src={getListingImage(listing)}
+                  alt={listing.tagValue('title') || 'Listing'}
+                  class="w-full h-full object-cover"
+                />
+              </div>
+            {/if}
+            <div class="flex-1 min-w-0">
+              <h4 class="text-sm font-medium text-white truncate">
+                {listing.tagValue('title') || 'Untitled'}
+              </h4>
+              {#if price}
+                <p class="text-xs text-neutral-500 mt-1">
+                  {price.amount} {price.currency}
+                </p>
+              {/if}
+            </div>
+          </div>
+        </button>
+      {/each}
+    {/if}
+  </div>
+</div>

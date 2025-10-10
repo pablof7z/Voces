@@ -1,30 +1,23 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
-  import { router } from '$lib/router.svelte';
+  import { goto } from '$app/navigation';
   import { followPacksStore } from '$lib/stores/followPacks.svelte';
   import { mockFollowPacks } from '$lib/data/mockFollowPacks';
   import { NDKKind, type NDKEvent } from '@nostr-dev-kit/ndk';
-  import Avatar from '@nostr-dev-kit/ndk-svelte5/components/Avatar.svelte';
+  import { Avatar } from '@nostr-dev-kit/svelte';
 
   let searchQuery = $state('');
 
   // Subscribe to follow packs from relays
-  const subscription = ndk.subscribeReactive(
-    [{ kinds: [39089, 39092] }],
-    { bufferMs: 100 }
+  const subscription = ndk.$subscribe(
+    () => ({
+      filters: [{ kinds: [39089, 39092] }],
+      bufferMs: 100,
+    })
   );
 
-  // Make subscription reactive
-  let packEvents = $state<NDKEvent[]>([]);
-  let eosed = $state(false);
-
-  $effect(() => {
-    const interval = setInterval(() => {
-      packEvents = subscription.events;
-      eosed = subscription.eosed;
-    }, 100);
-    return () => clearInterval(interval);
-  });
+  const packEvents = $derived(subscription.events);
+  const eosed = $derived(subscription.eosed);
 
   // Convert events to pack objects
   interface Pack {
@@ -70,7 +63,7 @@
   });
 
   function handlePackClick(pack: Pack) {
-    router.push(`/packs/${pack.encode()}`);
+    goto(`/packs/${pack.encode()}`);
   }
 
   function handleSubscribe(e: MouseEvent, pack: Pack) {
@@ -89,7 +82,7 @@
   <!-- Header -->
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-      <svg class="w-8 h-8 text-[#ff6b35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
       </svg>
       Follow Packs
@@ -109,7 +102,7 @@
         type="search"
         placeholder="Search follow packs..."
         bind:value={searchQuery}
-        class="w-full pl-10 pr-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#ff6b35]"
+        class="w-full pl-10 pr-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white placeholder:text-neutral-500 focus:outline-none focus:border-orange-500"
       />
     </div>
   </div>
@@ -139,7 +132,7 @@
 
             <div class="p-5">
               <div class="mb-4">
-                <h3 class="font-semibold text-white group-hover:text-[#ff6b35] transition-colors">
+                <h3 class="font-semibold text-white group-hover:text-orange-500 transition-colors">
                   {pack.title}
                 </h3>
                 <p class="text-sm text-neutral-500 mt-1">
@@ -156,9 +149,14 @@
               <div class="flex items-center justify-between">
                 <div class="flex -space-x-2">
                   {#each pack.pubkeys.slice(0, 4) as pubkey, index (pubkey)}
-                    <div class="relative" style="z-index: {4 - index}">
-                      <Avatar {ndk} {pubkey} class="w-8 h-8 rounded-full ring-2 ring-neutral-900" />
-                    </div>
+                    <button
+                      type="button"
+                      onclick={(e) => { e.stopPropagation(); goto(`/p/${pubkey}`); }}
+                      class="relative cursor-pointer"
+                      style="z-index: {4 - index}"
+                    >
+                      <Avatar {ndk} {pubkey} class="w-8 h-8 rounded-full ring-2 ring-neutral-900 hover:opacity-80 transition-opacity" />
+                    </button>
                   {/each}
                   {#if pack.pubkeys.length > 4}
                     <div class="w-8 h-8 rounded-full bg-neutral-800 ring-2 ring-neutral-900 flex items-center justify-center">
@@ -210,7 +208,7 @@
 
             <div class="p-5">
               <div class="mb-4">
-                <h3 class="font-semibold text-white group-hover:text-[#ff6b35] transition-colors">
+                <h3 class="font-semibold text-white group-hover:text-orange-500 transition-colors">
                   {pack.title}
                 </h3>
                 <p class="text-sm text-neutral-500 mt-1">
@@ -227,9 +225,14 @@
               <div class="flex items-center justify-between">
                 <div class="flex -space-x-2">
                   {#each pack.pubkeys.slice(0, 4) as pubkey, index (pubkey)}
-                    <div class="relative" style="z-index: {4 - index}">
-                      <Avatar {ndk} {pubkey} class="w-8 h-8 rounded-full ring-2 ring-neutral-900" />
-                    </div>
+                    <button
+                      type="button"
+                      onclick={(e) => { e.stopPropagation(); goto(`/p/${pubkey}`); }}
+                      class="relative cursor-pointer"
+                      style="z-index: {4 - index}"
+                    >
+                      <Avatar {ndk} {pubkey} class="w-8 h-8 rounded-full ring-2 ring-neutral-900 hover:opacity-80 transition-opacity" />
+                    </button>
                   {/each}
                   {#if pack.pubkeys.length > 4}
                     <div class="w-8 h-8 rounded-full bg-neutral-800 ring-2 ring-neutral-900 flex items-center justify-center">
@@ -242,7 +245,7 @@
 
                 <button
                   onclick={(e) => handleSubscribe(e, pack)}
-                  class="px-3 py-1.5 text-sm font-medium border rounded-lg transition-colors {followPacksStore.isSubscribed(pack.id) ? 'bg-neutral-800 border-neutral-700 text-neutral-300 hover:bg-neutral-700' : 'bg-[#ff6b35] border-[#ff6b35] text-white hover:bg-[#ff5722]'}"
+                  class="px-3 py-1.5 text-sm font-medium border rounded-lg transition-colors {followPacksStore.isSubscribed(pack.id) ? 'bg-neutral-800 border-neutral-700 text-neutral-300 hover:bg-neutral-700' : 'bg-orange-500 border-orange-500 text-white hover:bg-orange-500/90'}"
                 >
                   {followPacksStore.isSubscribed(pack.id) ? 'Following' : 'Follow'}
                 </button>

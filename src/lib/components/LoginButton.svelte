@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ndk, initializeSigner } from '$lib/ndk.svelte';
+  import { ndk } from '$lib/ndk.svelte';
   import { NDKNip07Signer, NDKPrivateKeySigner } from '@nostr-dev-kit/ndk';
 
   interface Props {
@@ -14,6 +14,10 @@
   let nsecInput = $state('');
   let error = $state('');
 
+  const currentUser = ndk.$currentUser;
+  const profile = ndk.$fetchProfile(() => currentUser?.pubkey);
+  const displayName = $derived(profile?.name || profile?.displayName || 'Anon');
+
   async function loginWithNip07() {
     if (!window.nostr) {
       error = 'No Nostr extension found. Please install Alby or nos2x.';
@@ -24,9 +28,7 @@
       isLoggingIn = true;
       error = '';
       const signer = new NDKNip07Signer();
-      ndk.signer = signer;
-      const user = await signer.user();
-      ndk.activeUser = user;
+      await ndk.$sessions.login(signer);
       showLoginModal = false;
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to login';
@@ -45,12 +47,8 @@
       isLoggingIn = true;
       error = '';
       const signer = new NDKPrivateKeySigner(nsecInput.trim());
-      ndk.signer = signer;
-      const user = await signer.user();
-      ndk.activeUser = user;
-
+      await ndk.$sessions.login(signer);
       localStorage.setItem('nostr_private_key', nsecInput.trim());
-
       showLoginModal = false;
       nsecInput = '';
     } catch (err) {
@@ -72,23 +70,47 @@
     nsecInput = '';
     error = '';
   }
+
+  function logout() {
+    ndk.$sessions.logout();
+    localStorage.removeItem('nostr_private_key');
+  }
 </script>
 
-<button
-  onclick={openLoginModal}
-  class={className}
->
-  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-  </svg>
-  <span>Login</span>
-</button>
+{#if currentUser}
+  <button
+    onclick={logout}
+    class="flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg transition-colors"
+  >
+    {#if profile?.image}
+      <img src={profile.image} alt={displayName} class="w-6 h-6 rounded-full object-cover" />
+    {:else}
+      <div class="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center">
+        <span class="text-xs font-bold">{displayName.charAt(0).toUpperCase()}</span>
+      </div>
+    {/if}
+    <span>{displayName}</span>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+    </svg>
+  </button>
+{:else}
+  <button
+    onclick={openLoginModal}
+    class={className}
+  >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+    </svg>
+    <span>Login</span>
+  </button>
+{/if}
 
 {#if showLoginModal}
   <div class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onclick={closeLoginModal}>
     <div class="bg-neutral-900 rounded-xl border border-neutral-800 max-w-md w-full p-6" onclick={(e) => e.stopPropagation()}>
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-white">Login to Voces</h2>
+        <h2 class="text-2xl font-bold text-white">Login to Agora</h2>
         <button onclick={closeLoginModal} class="text-neutral-400 hover:text-white">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

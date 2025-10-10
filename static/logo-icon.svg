@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 130 130" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#F68E1D;}
+	.st2{fill:#FDFDFD;}
+</style>
+<path class="st0" d="M109.5,196.1h66.7c17.5,0,31.6-14.2,31.6-31.6V97.8c0-17.5-14.2-31.6-31.6-31.6h-66.7
+	c-17.5,0-31.6,14.2-31.6,31.6v66.7C77.9,182,92,196.1,109.5,196.1z" transform="translate(-77.9, -66.2)"/>
+<polygon class="st2" points="66,31 23.1,43.1 23.1,47.6 108.9,47.6 108.9,43.1 " transform="translate(-22.1, -31)"/>
+<polygon class="st2" points="26.5,49.2 28.1,51.4 103.3,51.4 104.7,49.2 " transform="translate(-22.1, -31)"/>
+<path class="st2" d="M47.1,54.2H35.3h-0.8H22.7l-1.5,1.8l6.4,4.6h0.1v34.7h14.6V60.6h0.1l6.4-4.6L47.1,54.2z M33.3,90.8h-2.6V61.6
+	h2.6V90.8z M39.2,90.8h-2.6V61.6h2.6V90.8z" transform="translate(-22.1, -31)"/>
+<path class="st2" d="M107.4,54.2H95.6h-0.8H83l-1.5,1.8l6.4,4.6h0.1v34.7h14.6V60.6h0.1l6.4-4.6L107.4,54.2z M93.5,90.8h-2.6V61.6
+	h2.6V90.8z M99.4,90.8h-2.6V61.6h2.6V90.8z" transform="translate(-22.1, -31)"/>
+<path class="st2" d="M77.3,54.2H65.5h-0.8H52.9l-1.5,1.8l6.4,4.6h0.1v34.7h14.6V60.6h0.1l6.4-4.6L77.3,54.2z M63.4,90.8h-2.6V61.6
+	h2.6V90.8z M69.3,90.8h-2.6V61.6h2.6V90.8z" transform="translate(-22.1, -31)"/>
+</svg>

@@ -1,14 +1,15 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
-  import { router } from '$lib/router.svelte';
+  import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
+  import { toast } from '$lib/stores/toast.svelte';
   import { followPacksStore } from '$lib/stores/followPacks.svelte';
   import { mockFollowPacks } from '$lib/data/mockFollowPacks';
   import { NDKKind, type NDKEvent } from '@nostr-dev-kit/ndk';
-  import Avatar from '@nostr-dev-kit/ndk-svelte5/components/Avatar.svelte';
+  import { Avatar } from '@nostr-dev-kit/svelte';
   import NoteCard from '$lib/components/NoteCard.svelte';
-  import { profiles } from '@nostr-dev-kit/ndk-svelte5';
 
-  const packId = $derived(router.params.packId);
+  const packId = $derived($page.params.packId);
 
   type ActiveTab = 'feed' | 'members';
   let activeTab = $state<ActiveTab>('feed');
@@ -61,35 +62,27 @@
 
   let pubkeys = $derived(pack?.pubkeys || []);
 
+  // Fetch profile for pack creator
+  const packCreatorProfile = ndk.$fetchProfile(() => pack?.pubkey);
+
   let isFavorite = $derived(pack ? followPacksStore.isFavorite(pack.id) : false);
 
   // Subscribe to notes from pack members
-  let feedEvents = $state<NDKEvent[]>([]);
-  let feedEosed = $state(false);
-
-  $effect(() => {
+  const feedSubscription = $derived.by(() => {
     if (activeTab === 'feed' && pubkeys.length > 0) {
       console.log(`[FollowPackDetail] Creating subscription for ${pubkeys.length} members`);
-
-      const subscription = ndk.subscribeReactive(
-        [{ kinds: [NDKKind.Text], authors: pubkeys, limit: 50 }],
-        { bufferMs: 100 }
+      return ndk.$subscribe(
+        () => ({
+          filters: [{ kinds: [NDKKind.Text], authors: pubkeys, limit: 50 }],
+          bufferMs: 100,
+        })
       );
-
-      const interval = setInterval(() => {
-        feedEvents = subscription.events;
-        feedEosed = subscription.eosed;
-      }, 100);
-
-      return () => {
-        clearInterval(interval);
-        subscription.stop();
-      };
-    } else {
-      feedEvents = [];
-      feedEosed = false;
     }
+    return null;
   });
+
+  const feedEvents = $derived(feedSubscription?.events || []);
+  const feedEosed = $derived(feedSubscription?.eosed || false);
 
   function handleFavorite() {
     if (!pack) return;
@@ -98,7 +91,7 @@
 
   async function handleFollowAll() {
     if (!pack || !ndk.activeUser || pubkeys.length === 0) {
-      alert('Please login to follow users');
+      toast.error('Please login to follow users');
       return;
     }
 
@@ -106,16 +99,18 @@
     try {
       // This would actually follow all users in the pack
       console.log('Following all users:', pubkeys);
+      toast.success(`Following ${pubkeys.length} users`);
       // TODO: Implement actual follow logic
     } catch (error) {
       console.error('Error following all users:', error);
+      toast.error('Failed to follow users');
     } finally {
       isFollowingAll = false;
     }
   }
 
   function handleBack() {
-    router.push('/packs');
+    goto('/packs');
   }
 </script>
 
@@ -158,7 +153,7 @@
             <button
               onclick={handleFollowAll}
               disabled={isFollowingAll}
-              class="flex items-center gap-2 px-4 py-2 bg-[#ff6b35] hover:bg-[#ff5722] disabled:bg-neutral-700 text-white font-medium rounded-lg transition-colors"
+              class="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-500/90 disabled:bg-neutral-700 text-white font-medium rounded-lg transition-colors"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -196,14 +191,20 @@
 
         <!-- Creator -->
         <div class="flex items-center gap-3">
-          <Avatar {ndk} pubkey={pack.pubkey} class="w-10 h-10 rounded-full" />
+          <button
+            type="button"
+            onclick={() => goto(`/p/${pack.pubkey}`)}
+            class="flex-shrink-0"
+          >
+            <Avatar {ndk} pubkey={pack.pubkey} class="w-10 h-10 rounded-full cursor-pointer hover:opacity-80 transition-opacity" />
+          </button>
           <div>
             <p class="text-sm text-neutral-500">Created by</p>
             <button
-              onclick={() => router.push(`/p/${pack.pubkey}`)}
-              class="font-medium text-white hover:text-[#ff6b35] transition-colors"
+              onclick={() => goto(`/p/${pack.pubkey}`)}
+              class="font-medium text-white hover:text-orange-500 transition-colors"
             >
-              {profiles.get(pack.pubkey)?.name || 'Anonymous'}
+              {packCreatorProfile?.name || 'Anonymous'}
             </button>
           </div>
         </div>
@@ -219,7 +220,7 @@
         >
           Feed
           {#if activeTab === 'feed'}
-            <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-[#ff6b35]"></div>
+            <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"></div>
           {/if}
         </button>
         <button
@@ -228,7 +229,7 @@
         >
           Members ({pubkeys.length})
           {#if activeTab === 'members'}
-            <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-[#ff6b35]"></div>
+            <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"></div>
           {/if}
         </button>
       </div>
@@ -254,23 +255,24 @@
     {:else}
       <div class="grid gap-4 md:grid-cols-2">
         {#each pubkeys as pubkey (pubkey)}
+          {@const memberProfile = ndk.$fetchProfile(() => pubkey)}
           <button
-            onclick={() => router.push(`/p/${pubkey}`)}
+            onclick={() => goto(`/p/${pubkey}`)}
             class="flex items-center gap-3 p-4 bg-neutral-900 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors text-left"
           >
             <Avatar {ndk} {pubkey} class="w-12 h-12 rounded-full" />
             <div class="flex-1 min-w-0">
               <p class="font-medium text-white truncate">
-                {profiles.get(pubkey)?.name || 'Anonymous'}
+                {memberProfile?.name || 'Anonymous'}
               </p>
-              {#if profiles.get(pubkey)?.nip05}
+              {#if memberProfile?.nip05}
                 <p class="text-sm text-neutral-500 truncate">
-                  {profiles.get(pubkey)?.nip05}
+                  {memberProfile?.nip05}
                 </p>
               {/if}
-              {#if profiles.get(pubkey)?.about}
+              {#if memberProfile?.about}
                 <p class="text-sm text-neutral-400 line-clamp-1 mt-1">
-                  {profiles.get(pubkey)?.about}
+                  {memberProfile?.about}
                 </p>
               {/if}
             </div>
@@ -280,7 +282,7 @@
     {/if}
   {:else if isLoading}
     <div class="text-center py-12">
-      <div class="inline-block w-8 h-8 border-2 border-[#ff6b35] border-t-transparent rounded-full animate-spin mb-4"></div>
+      <div class="inline-block w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mb-4"></div>
       <p class="text-neutral-400">Loading follow pack...</p>
     </div>
   {:else}
@@ -288,7 +290,7 @@
       <p class="text-neutral-400">Follow pack not found</p>
       <button
         onclick={handleBack}
-        class="text-[#ff6b35] hover:text-[#ff5722] mt-4 inline-block transition-colors"
+        class="text-orange-500 hover:text-orange-500/90 mt-4 inline-block transition-colors"
       >
         Browse all packs
       </button>
