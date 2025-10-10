@@ -11,9 +11,19 @@
   let error = $state<string | null>(null);
   let successMessage = $state<string | null>(null);
 
-  const mints = $derived(ndk.$wallet.mints);
-  const relays = $derived(ndk.$wallet.relays);
-  const mintBalances = $derived(ndk.$wallet.getMintBalances());
+  const wallet = $derived(ndk.$wallet);
+  const mints = $derived(wallet.mints.map(m => typeof m === 'string' ? m : m.url));
+  const relays = $derived(wallet.relays);
+  const mintBalances = $derived(() => {
+    const balances = new Map<string, number>();
+    mints.forEach(mint => {
+      const walletInstance = (wallet as any)._wallet;
+      if (walletInstance?.mintBalance) {
+        balances.set(mint, walletInstance.mintBalance(mint));
+      }
+    });
+    return balances;
+  });
 
   function validateMintUrl(url: string): boolean {
     const trimmed = url.trim();
@@ -39,7 +49,7 @@
     }
   }
 
-  function handleAddMint() {
+  async function handleAddMint() {
     error = null;
     successMessage = null;
 
@@ -56,7 +66,15 @@
     }
 
     try {
-      ndk.$wallet.addMint(trimmedUrl);
+      const walletInstance = (wallet as any)._wallet;
+      if (!walletInstance) {
+        error = 'Wallet not initialized';
+        return;
+      }
+
+      walletInstance.mints = [...walletInstance.mints, trimmedUrl];
+      await walletInstance.publish();
+
       successMessage = 'Mint added successfully!';
       newMintUrl = '';
       isAddingMint = false;
@@ -69,12 +87,20 @@
     }
   }
 
-  function handleRemoveMint(mint: string) {
+  async function handleRemoveMint(mint: string) {
     error = null;
     successMessage = null;
 
     try {
-      ndk.$wallet.removeMint(mint);
+      const walletInstance = (wallet as any)._wallet;
+      if (!walletInstance) {
+        error = 'Wallet not initialized';
+        return;
+      }
+
+      walletInstance.mints = walletInstance.mints.filter((m: string) => m !== mint);
+      await walletInstance.publish();
+
       successMessage = 'Mint removed successfully!';
 
       setTimeout(() => {
@@ -85,7 +111,7 @@
     }
   }
 
-  function handleAddRelay() {
+  async function handleAddRelay() {
     error = null;
     successMessage = null;
 
@@ -107,7 +133,17 @@
     }
 
     try {
-      ndk.$wallet.addRelay(trimmedUrl);
+      const walletInstance = (wallet as any)._wallet;
+      if (!walletInstance) {
+        error = 'Wallet not initialized';
+        return;
+      }
+
+      const { NDKRelaySet } = await import('@nostr-dev-kit/ndk');
+      const currentRelays = walletInstance.relaySet?.relayUrls || [];
+      walletInstance.relaySet = NDKRelaySet.fromRelayUrls([...currentRelays, trimmedUrl], ndk);
+      await walletInstance.publish();
+
       successMessage = 'Relay added successfully!';
       newRelayUrl = '';
       isAddingRelay = false;
@@ -120,12 +156,25 @@
     }
   }
 
-  function handleRemoveRelay(relay: string) {
+  async function handleRemoveRelay(relay: string) {
     error = null;
     successMessage = null;
 
     try {
-      ndk.$wallet.removeRelay(relay);
+      const walletInstance = (wallet as any)._wallet;
+      if (!walletInstance) {
+        error = 'Wallet not initialized';
+        return;
+      }
+
+      const { NDKRelaySet } = await import('@nostr-dev-kit/ndk');
+      const currentRelays = walletInstance.relaySet?.relayUrls || [];
+      const filteredRelays = currentRelays.filter((r: string) => r !== relay);
+      walletInstance.relaySet = filteredRelays.length > 0
+        ? NDKRelaySet.fromRelayUrls(filteredRelays, ndk)
+        : undefined;
+      await walletInstance.publish();
+
       successMessage = 'Relay removed successfully!';
 
       setTimeout(() => {
@@ -158,27 +207,31 @@
     return new Intl.NumberFormat('en-US').format(amount);
   }
 
-  function handleBrowseMints(selectedMints: string[]) {
+  async function handleBrowseMints(selectedMints: string[]) {
     error = null;
     successMessage = null;
 
-    let addedCount = 0;
-    selectedMints.forEach((mintUrl) => {
-      if (!mints.includes(mintUrl)) {
-        try {
-          ndk.$wallet.addMint(mintUrl);
-          addedCount++;
-        } catch (e) {
-          console.error('Failed to add mint:', e);
-        }
+    try {
+      const walletInstance = (wallet as any)._wallet;
+      if (!walletInstance) {
+        error = 'Wallet not initialized';
+        return;
       }
-    });
 
-    if (addedCount > 0) {
-      successMessage = `Added ${addedCount} mint${addedCount === 1 ? '' : 's'} successfully!`;
-      setTimeout(() => {
-        successMessage = null;
-      }, 3000);
+      const newMints = selectedMints.filter(mintUrl => !mints.includes(mintUrl));
+
+      if (newMints.length > 0) {
+        walletInstance.mints = [...walletInstance.mints, ...newMints];
+        await walletInstance.publish();
+
+        successMessage = `Added ${newMints.length} mint${newMints.length === 1 ? '' : 's'} successfully!`;
+        setTimeout(() => {
+          successMessage = null;
+        }, 3000);
+      }
+    } catch (e) {
+      error = e instanceof Error ? e.message : 'Failed to add mints';
+      console.error('Failed to add mints:', e);
     }
 
     isBrowsingMints = false;

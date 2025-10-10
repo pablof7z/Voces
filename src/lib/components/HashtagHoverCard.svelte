@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ndk } from '$lib/ndk.svelte';
+  import { ndk, hashtagInterests } from '$lib/ndk.svelte';
   import { Avatar } from '@nostr-dev-kit/svelte';
   import { EventContent } from '@nostr-dev-kit/svelte';
   import type { NDKEvent } from '@nostr-dev-kit/ndk';
@@ -15,6 +15,25 @@
   const { hashtag, isVisible, position, onMouseEnter, onMouseLeave }: Props = $props();
 
   const currentUser = ndk.$currentUser;
+
+  // Check if hashtag is followed
+  const isFollowing = $derived(hashtagInterests.interests.includes(hashtag.toLowerCase()));
+
+  let isTogglingFollow = $state(false);
+
+  async function toggleFollow(e: MouseEvent) {
+    e.stopPropagation();
+    if (isTogglingFollow) return;
+
+    isTogglingFollow = true;
+    try {
+      await hashtagInterests.toggleHashtag(hashtag);
+    } catch (err) {
+      console.error('Failed to toggle hashtag:', err);
+    } finally {
+      isTogglingFollow = false;
+    }
+  }
 
   // Subscribe to hashtag notes from the past 24 hours
   const hashtagSubscription = ndk.$subscribe(
@@ -98,9 +117,34 @@
 
         <!-- Content -->
         <div class="relative px-5 pb-5 -mt-8">
-          <!-- Hashtag badge -->
-          <div class="relative inline-flex items-center gap-2 mb-4 px-4 py-2 bg-orange-600 rounded-full shadow-lg">
-            <span class="text-xl font-bold text-white">#{hashtag}</span>
+          <!-- Hashtag title and Follow button -->
+          <div class="flex items-center justify-between mb-4 gap-3">
+            <h3 class="text-2xl font-bold text-white">
+              <span class="text-orange-500">#</span>{hashtag}
+            </h3>
+
+            {#if currentUser}
+              <button
+                onclick={toggleFollow}
+                disabled={isTogglingFollow}
+                class="px-4 py-2 rounded-full text-sm font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 {
+                  isFollowing
+                    ? 'bg-neutral-800 text-white hover:bg-neutral-700 border border-neutral-600'
+                    : 'bg-orange-500 text-white hover:bg-orange-600'
+                }"
+              >
+                {#if isTogglingFollow}
+                  <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                {:else if isFollowing}
+                  Following
+                {:else}
+                  Follow
+                {/if}
+              </button>
+            {/if}
           </div>
 
           <!-- Stats -->

@@ -44,6 +44,9 @@ export function createLazyFeed(
   // Map to track event IDs we've seen
   const seenEventIds = new Set<string>();
 
+  // Track the most recent timestamp from initial load
+  let mostRecentTimestamp = 0;
+
   // Track new events arriving after initial load
   $effect(() => {
     const allEvents = subscription.events;
@@ -52,15 +55,23 @@ export function createLazyFeed(
       // Initial load complete - show all events immediately
       frozenEvents = [...allEvents];
       initialLoadDone = true;
-      // Track IDs of initial events
-      allEvents.forEach(e => seenEventIds.add(e.id));
+      // Track IDs of initial events and find most recent timestamp
+      allEvents.forEach(e => {
+        seenEventIds.add(e.id);
+        if (e.created_at && e.created_at > mostRecentTimestamp) {
+          mostRecentTimestamp = e.created_at;
+        }
+      });
     } else if (!initialLoadDone) {
-      // Before EOSE: show events as they arrive
+      // Before EOSE: show events as they arrive (but don't mark as seen yet)
       frozenEvents = [...allEvents];
-      allEvents.forEach(e => seenEventIds.add(e.id));
     } else if (initialLoadDone) {
-      // After initial load, new events go to pending (only truly new ones by ID)
-      const newEvents = allEvents.filter(e => !seenEventIds.has(e.id));
+      // After initial load, only show events that are both new by ID AND newer in time
+      const newEvents = allEvents.filter(e =>
+        !seenEventIds.has(e.id) &&
+        e.created_at &&
+        e.created_at > mostRecentTimestamp
+      );
       if (newEvents.length > 0) {
         pendingEvents = [...newEvents, ...pendingEvents];
         newEvents.forEach(e => seenEventIds.add(e.id));
@@ -115,6 +126,7 @@ export function createLazyFeed(
     initialLoadDone = false;
     pendingEvents = [];
     seenEventIds.clear();
+    mostRecentTimestamp = 0;
   });
 
   return {

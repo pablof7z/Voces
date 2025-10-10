@@ -218,6 +218,16 @@
     animation: slide-up 0.15s ease-out;
   }
 
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+
   /* Mention styles for EventContent / MentionPreview components */
   :root {
     --accent-color: hsl(31 92% 54%); /* Voces orange accent */

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
-  import { NDKFollowPack, NDKEvent } from '@nostr-dev-kit/ndk';
-  import { FOLLOW_PACK_ADDRESSES, COMMUNITY_METADATA } from '$lib/config/followPacks';
+  import { NDKFollowPack, NDKSubscriptionCacheUsage, type NDKFilter } from '@nostr-dev-kit/ndk';
+  import { COMMUNITY_RELAYS, FOLLOW_PACK_KIND, COMMUNITY_METADATA } from '$lib/config/followPacks';
 
   interface Props {
     selectedCommunity: string | null;
@@ -13,28 +13,48 @@
   let { selectedCommunity, selectedPacks, onSelectPacks, onNext }: Props = $props();
 
   let followPacks = $state<NDKFollowPack[]>([]);
+  let loading = $state(true);
 
   const communityKey = selectedCommunity || 'venezuela';
-  const packAddresses = FOLLOW_PACK_ADDRESSES[communityKey] || FOLLOW_PACK_ADDRESSES.venezuela || FOLLOW_PACK_ADDRESSES.default;
+  const relayUrls = COMMUNITY_RELAYS[communityKey];
   const communityInfo = COMMUNITY_METADATA[communityKey] || COMMUNITY_METADATA.venezuela;
 
   $effect(() => {
-      const packs: NDKFollowPack[]= [];
+    if (!relayUrls || relayUrls.length === 0) {
+      console.warn(`No relay configured for community: ${communityKey}`);
+      loading = false;
+      return;
+    }
 
-      for (const naddr of packAddresses) {
-        try {
-          ndk.fetchEvent(naddr).then((event: NDKEvent | null) => {
-            if (event) {
-              const pack = NDKFollowPack.from(event);
-              packs.push(pack);
-            }
-          });
-        } catch (err) {
-          console.error(`Error fetching pack ${naddr}:`, err);
-        }
-      }
+    loading = true;
+    const packs: NDKFollowPack[] = [];
 
+    const filter: NDKFilter = {
+      kinds: [FOLLOW_PACK_KIND]
+    };
+
+    const sub = ndk.subscribe(
+      filter,
+      {
+        closeOnEose: true,
+        cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY
+      },
+      relayUrls
+    );
+
+    sub.on('event', (event) => {
+      const pack = NDKFollowPack.from(event);
+      packs.push(pack);
+    });
+
+    sub.on('eose', () => {
       followPacks = packs;
+      loading = false;
+    });
+
+    return () => {
+      sub.stop();
+    };
   });
 
   function handlePackClick(pack: NDKFollowPack) {
@@ -89,62 +109,67 @@
         </p>
       </div>
 
-        <div class="space-y-2 mb-6 lg:mb-8 max-h-[50vh] lg:max-h-[60vh] overflow-y-auto p-2 -m-2">
-          {#each followPacks as pack (pack.id)}
-            {@const isSelected = selectedPacks.includes(pack.encode())}
-            <button
-              onclick={() => handlePackClick(pack)}
-              class={`
-                relative w-full cursor-pointer rounded-xl transition-all text-left
-                flex gap-3 sm:gap-4 p-3 sm:p-4 bg-white dark:bg-black hover:bg-neutral-50 dark:hover:bg-neutral-900 border border-neutral-200 dark:border-neutral-800
-                ${isSelected ? 'ring-2 ring-orange-500 bg-orange-50 dark:bg-orange-950/20' : ''}
-              `}
-            >
-              <!-- Image -->
-              {#if pack.image}
-                <img
-                  src={pack.image}
-                  alt={pack.title}
-                  class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover flex-shrink-0"
-                />
-              {:else}
-                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center flex-shrink-0">
-                  <span class="text-xl sm:text-2xl">📦</span>
-                </div>
-              {/if}
-
-              <!-- Content -->
-              <div class="flex-1 min-w-0">
-                <h4 class="font-semibold text-sm sm:text-base text-neutral-900 dark:text-neutral-100 truncate">
-                  {pack.title}
-                </h4>
-                {#if pack.description}
-                  <p class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 line-clamp-1 sm:truncate">
-                    {pack.description}
-                  </p>
-                {/if}
-                <div class="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-2">
-                  <span class="text-[10px] sm:text-xs text-neutral-500 dark:text-neutral-400">
-                    {pack.pubkeys?.length || 0} members
-                  </span>
-                </div>
-              </div>
-
-              <!-- Selection checkmark -->
-              {#if isSelected}
-                <div class="absolute top-1/2 right-4 -translate-y-1/2 bg-orange-500 text-white rounded-full p-1.5 z-10">
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                  </svg>
-                </div>
-              {/if}
-            </button>
-          {/each}
-        </div>
-
-        {#if followPacks.length === 0}
+        {#if loading}
+          <div class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+            <p class="mt-4 text-sm text-neutral-600 dark:text-neutral-400">Loading follow packs...</p>
+          </div>
+        {:else if followPacks.length === 0}
           <div class="text-center py-8 text-neutral-500 dark:text-neutral-400">
             No follow packs available for this community yet
+          </div>
+        {:else}
+          <div class="space-y-2 mb-6 lg:mb-8 max-h-[50vh] lg:max-h-[60vh] overflow-y-auto p-2 -m-2">
+            {#each followPacks.slice(0, 6) as pack (pack.id)}
+              {@const isSelected = selectedPacks.includes(pack.encode())}
+              <button
+                onclick={() => handlePackClick(pack)}
+                class={`
+                  relative w-full cursor-pointer rounded-xl transition-all text-left
+                  flex gap-3 sm:gap-4 p-3 sm:p-4 bg-white dark:bg-black hover:bg-neutral-50 dark:hover:bg-neutral-900 border border-neutral-200 dark:border-neutral-800
+                  ${isSelected ? 'ring-2 ring-orange-500 bg-orange-50 dark:bg-orange-950/20' : ''}
+                `}
+              >
+                <!-- Image -->
+                {#if pack.image}
+                  <img
+                    src={pack.image}
+                    alt={pack.title}
+                    class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover flex-shrink-0"
+                  />
+                {:else}
+                  <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center flex-shrink-0">
+                    <span class="text-xl sm:text-2xl">📦</span>
+                  </div>
+                {/if}
+
+                <!-- Content -->
+                <div class="flex-1 min-w-0">
+                  <h4 class="font-semibold text-sm sm:text-base text-neutral-900 dark:text-neutral-100 truncate">
+                    {pack.title}
+                  </h4>
+                  {#if pack.description}
+                    <p class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 line-clamp-1 sm:truncate">
+                      {pack.description}
+                    </p>
+                  {/if}
+                  <div class="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-2">
+                    <span class="text-[10px] sm:text-xs text-neutral-500 dark:text-neutral-400">
+                      {pack.pubkeys?.length || 0} members
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Selection checkmark -->
+                {#if isSelected}
+                  <div class="absolute top-1/2 right-4 -translate-y-1/2 bg-orange-500 text-white rounded-full p-1.5 z-10">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                {/if}
+              </button>
+            {/each}
           </div>
         {/if}
 

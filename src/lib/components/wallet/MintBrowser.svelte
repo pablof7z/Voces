@@ -1,7 +1,6 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
   import { createMintDiscoveryStore, type MintMetadata } from '@nostr-dev-kit/wallet';
-  import { onDestroy } from 'svelte';
 
   interface Props {
     onSelectMints: (mints: string[]) => void;
@@ -23,13 +22,15 @@
   let manualMintError = $state('');
 
   // Subscribe to the Zustand store
-  const unsubscribe = mintStore.subscribe((state) => {
-    discoveredMints = state.mints;
-  });
+  $effect(() => {
+    const unsubscribe = mintStore.subscribe((state) => {
+      discoveredMints = state.mints;
+    });
 
-  onDestroy(() => {
-    unsubscribe();
-    mintStore.getState().stop();
+    return () => {
+      unsubscribe();
+      mintStore.getState().stop();
+    };
   });
 
   function getHostnameFromUrl(url: string): string {

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NDKEvent } from '@nostr-dev-kit/ndk';
-  import CommentCard from './CommentCard.svelte';
+  import NoteCard from './NoteCard.svelte';
 
   interface Props {
     comments: NDKEvent[];
@@ -20,9 +20,9 @@
     No comments yet. Be the first to share your thoughts!
   </div>
 {:else}
-  <div class="space-y-6">
+  <div>
     {#each comments as comment (comment.id)}
-      <CommentCard event={comment} />
+      <NoteCard event={comment} variant="default" />
     {/each}
   </div>
 {/if}

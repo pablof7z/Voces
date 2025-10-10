@@ -9,6 +9,8 @@
   import type { NDKArticle } from '@nostr-dev-kit/ndk';
   import { NDKKind, NDKList, NDKEvent } from '@nostr-dev-kit/ndk';
   import { nip19 } from 'nostr-tools';
+  import { extractArticleImage } from '$lib/utils/extractArticleImage';
+  import { Avatar } from '@nostr-dev-kit/svelte';
 
   let article = $state<NDKArticle | null>(null);
   let isLoading = $state(true);
@@ -20,6 +22,11 @@
 
   const naddr = $derived($page.params.naddr);
   const currentUser = ndk.$currentUser;
+
+  const heroImage = $derived(article ? extractArticleImage(article) : null);
+  const authorProfile = $derived(article ? ndk.$fetchProfile(() => article.pubkey) : undefined);
+  const authorName = $derived(authorProfile?.name || authorProfile?.displayName || 'Anonymous');
+  const publishedAt = $derived(article?.published_at);
 
   async function loadArticle() {
     if (!naddr) {
@@ -46,7 +53,7 @@
 
     try {
       const bookmarksNaddr = nip19.naddrEncode({
-        kind: NDKKind.BookmarkSet,
+        kind: NDKKind.CurationSet,
         pubkey: currentUser.pubkey,
         identifier: 'bookmarks'
       });
@@ -70,7 +77,7 @@
 
     try {
       const bookmarksNaddr = nip19.naddrEncode({
-        kind: NDKKind.BookmarkSet,
+        kind: NDKKind.CurationSet,
         pubkey: currentUser.pubkey,
         identifier: 'bookmarks'
       });
@@ -79,7 +86,7 @@
 
       if (!bookmarkList) {
         bookmarkList = new NDKList(ndk);
-        bookmarkList.kind = NDKKind.BookmarkSet;
+        bookmarkList.kind = NDKKind.CurationSet;
         bookmarkList.tags = [
           ['d', 'bookmarks'],
           ['title', 'Bookmarks']
@@ -255,7 +262,57 @@
       </div>
     </header>
 
-    <main class="pt-24 pb-32">
+    {#if heroImage}
+      <div class="relative w-full h-[70vh] min-h-[500px] max-h-[800px] mt-16 overflow-hidden">
+        <img
+          src={heroImage}
+          alt={article.title || 'Article hero image'}
+          class="absolute inset-0 w-full h-full object-cover"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
+
+        <div class="absolute inset-0 flex items-end">
+          <div class="max-w-screen-lg mx-auto px-6 lg:px-8 pb-12 w-full">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 leading-[1.1] tracking-tight font-serif drop-shadow-2xl">
+              {article.title || 'Untitled'}
+            </h1>
+
+            <div class="flex items-center gap-4">
+              <button
+                type="button"
+                onclick={() => window.location.href = `/p/${nip19.npubEncode(article.pubkey)}`}
+                class="flex-shrink-0"
+              >
+                <Avatar {ndk} pubkey={article.pubkey} class="w-12 h-12 sm:w-14 sm:h-14 ring-2 ring-white hover:ring-4 transition-all" />
+              </button>
+
+              <div class="text-white">
+                <button
+                  type="button"
+                  onclick={() => window.location.href = `/p/${nip19.npubEncode(article.pubkey)}`}
+                  class="font-semibold text-lg hover:text-white/80 transition-colors block"
+                >
+                  {authorName}
+                </button>
+                <div class="flex items-center gap-2 text-sm text-white/80">
+                  {#if publishedAt}
+                    <time datetime={new Date(publishedAt * 1000).toISOString()}>
+                      {new Date(publishedAt * 1000).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </time>
+                  {/if}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {/if}
+
+    <main class={heroImage ? 'pb-32' : 'pt-24 pb-32'}>
       <article class="max-w-screen-md mx-auto px-6 lg:px-8">
         {#if userError}
           <div class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
@@ -274,8 +331,15 @@
           </div>
         {/if}
 
-        <ArticleHeader {article} />
-        <ArticleContent content={article.content} emojiTags={article.tags} />
+        {#if !heroImage}
+          <ArticleHeader {article} />
+        {:else}
+          <div class="mt-12 border-t border-neutral-200 dark:border-neutral-800" />
+        {/if}
+
+        <div class={heroImage ? 'mt-12' : ''}>
+          <ArticleContent content={article.content} emojiTags={article.tags} />
+        </div>
       </article>
 
       <div class="max-w-screen-md mx-auto px-6 lg:px-8 mt-16">

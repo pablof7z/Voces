@@ -3,6 +3,7 @@ import { NDKSvelte } from '@nostr-dev-kit/svelte';
 import { LocalStorage } from '@nostr-dev-kit/sessions';
 import { browser } from '$app/environment';
 import { createAuthPolicyWithConfirmation } from './relayAuthPolicy.svelte';
+import { createHashtagInterestsStore } from './stores/hashtagInterests.svelte';
 
 const DEFAULT_RELAYS = [
   'wss://relay.primal.net',
@@ -19,7 +20,9 @@ const cacheAdapter = browser ? new NDKCacheSqliteWasm({
 // Initialize signature verification worker (only in browser)
 let sigVerifyWorker: Worker | undefined;
 
-console.log('[NDK] Creating NDK instance with relays:', DEFAULT_RELAYS);
+if (browser) {
+  console.log('[NDK] Creating NDK instance with relays:', DEFAULT_RELAYS);
+}
 
 export const ndk = new NDKSvelte({
   explicitRelayUrls: DEFAULT_RELAYS,
@@ -28,17 +31,17 @@ export const ndk = new NDKSvelte({
   signatureVerificationWorker: sigVerifyWorker,
   initialValidationRatio: 1.0,
   lowestValidationRatio: 0.1,
-  aiGuardrails: true,
-  session: {
+  session: browser ? {
     storage: new LocalStorage(),
     autoSave: true,
     fetches: {
       follows: true,
       mutes: true,
       wallet: true,
-      relayList: true
+      relayList: true,
+      events: new Map([[10015, undefined]]) // Fetch kind 10015 (Interest List)
     }
-  }
+  } : undefined
 });
 
 // Set the relay authentication policy (browser only)
@@ -67,6 +70,9 @@ export const ndkReady = (async () => {
     console.error("❌ Failed to initialize cache:", error);
   }
 })();
+
+// Create hashtag interests store (only in browser)
+export const hashtagInterests = browser ? createHashtagInterestsStore(ndk) : null as any;
 
 // Re-export auth management utilities
 export {

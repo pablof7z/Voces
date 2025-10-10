@@ -13,6 +13,7 @@
   import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
   import CreateFollowPackDialog from '$lib/components/CreateFollowPackDialog.svelte';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
+  import { toast } from '$lib/stores/toast.svelte';
 
   const identifier = $derived($page.params.identifier || '');
   const user = ndk.$fetchUser(() => identifier);
@@ -140,7 +141,6 @@
     allPacks
   );
 
-  const hasArticles = $derived.by(() => articles.length > 0);
   const npub = $derived(user?.npub || '');
 
   function handleLoadMore() {
@@ -242,11 +242,22 @@
 
       packEvent.tags.push(['p', pubkey]);
       await packEvent.sign();
-      await packEvent.publish();
+      await packEvent.publishReplaceable();
+
+      if (packEvent.publishStatus === 'error') {
+        const error = packEvent.publishError;
+        const relayErrors = error?.relayErrors || {};
+        const errorMessages = Object.entries(relayErrors)
+          .map(([relay, err]) => `${relay}: ${err}`)
+          .join('\n');
+        toast.error(`Failed to publish:\n${errorMessages || 'Unknown error'}`);
+        return;
+      }
 
       isFollowDropdownOpen = false;
     } catch (error) {
       console.error('Failed to add to pack:', error);
+      toast.error(`Failed to add to pack: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 </script>
@@ -429,21 +440,19 @@
       >
         Media
       </button>
-      {#if hasArticles}
-        <button
-          onclick={() => activeTab = 'articles'}
-          class={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
-            activeTab === 'articles'
-              ? 'text-orange-500 border-b-2 border-orange-500'
-              : 'text-neutral-400 hover:text-neutral-300'
-          }`}
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          Articles
-        </button>
-      {/if}
+      <button
+        onclick={() => activeTab = 'articles'}
+        class={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
+          activeTab === 'articles'
+            ? 'text-orange-500 border-b-2 border-orange-500'
+            : 'text-neutral-400 hover:text-neutral-300'
+        }`}
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        Articles
+      </button>
       <button
         onclick={() => activeTab = 'packs'}
         class={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${

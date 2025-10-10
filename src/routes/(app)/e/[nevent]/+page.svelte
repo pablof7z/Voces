@@ -49,13 +49,14 @@
 
   // Fetch thread events
   const threadEvents = ndk.$subscribe(() => {
-    if (!rootEventId || !mainEvent) return undefined;
+    if (!rootEventId) return undefined;
 
     return {
       filters: [
         { ids: [rootEventId] },
         { kinds: [1], '#e': [rootEventId] }
-      ]
+      ],
+      subId: 'thread-events'
     };
   });
 
@@ -66,7 +67,8 @@
       filters: [{
         kinds: [1],
         '#e': [mainEvent.id]
-      }]
+      }],
+      subId: 'main-event-replies'
     };
   });
 
@@ -140,20 +142,37 @@
   let replyContent = $state('');
   let isSubmitting = $state(false);
 
+  function handleEventNavigation(event: NDKEvent) {
+    mainEvent = event;
+    const nevent = event.encode();
+    history.replaceState({}, '', `/e/${nevent}`);
+  }
+
   async function handleReply() {
     if (!ndk.signer || !replyContent || !mainEvent) return;
 
     isSubmitting = true;
 
     try {
-      const replyEvent = await mainEvent.reply(replyContent);
+      const replyEvent = await mainEvent.reply();
+      replyEvent.content = replyContent;
       await replyEvent.publish();
+
+      if (replyEvent.publishStatus === 'error') {
+        const error = replyEvent.publishError;
+        const relayErrors = error?.relayErrors || {};
+        const errorMessages = Object.entries(relayErrors)
+          .map(([relay, err]) => `${relay}: ${err}`)
+          .join('\n');
+        toast.error(`Failed to publish:\n${errorMessages || 'Unknown error'}`);
+        return;
+      }
 
       replyContent = '';
       toast.success('Reply published');
     } catch (error) {
       console.error('Failed to publish reply:', error);
-      toast.error('Failed to send reply');
+      toast.error(`Failed to send reply: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       isSubmitting = false;
     }
@@ -189,7 +208,7 @@
           event={parentNote}
           variant="thread-parent"
           showThreadLine={index < parentChain.length - 1}
-          showActions={false}
+          onNavigate={() => handleEventNavigation(parentNote)}
         />
       {/each}
 
@@ -240,7 +259,7 @@
             <NoteCard
               event={reply}
               variant="thread-reply"
-              showActions={false}
+              onNavigate={() => handleEventNavigation(reply)}
             />
           {/each}
         {:else}

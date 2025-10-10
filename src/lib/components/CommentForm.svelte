@@ -35,6 +35,16 @@
       replyEvent.content = replyContent;
       await replyEvent.publish();
 
+      if (replyEvent.publishStatus === 'error') {
+        const error = replyEvent.publishError;
+        const relayErrors = error?.relayErrors || {};
+        const errorMessages = Object.entries(relayErrors)
+          .map(([relay, err]) => `${relay}: ${err}`)
+          .join('\n');
+        onError(`Failed to publish:\n${errorMessages || 'Unknown error'}`);
+        return;
+      }
+
       onCommentPublished(replyEvent);
       replyContent = '';
     } catch (err) {

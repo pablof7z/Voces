@@ -1,12 +1,13 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
   import { goto } from '$app/navigation';
-  import { followPacksStore } from '$lib/stores/followPacks.svelte';
   import { createPackModal } from '$lib/stores/createPackModal.svelte';
   import { mockFollowPacks } from '$lib/data/mockFollowPacks';
   import { NDKKind, type NDKEvent } from '@nostr-dev-kit/ndk';
   import { Avatar } from '@nostr-dev-kit/svelte';
   import CreateFollowPackDialog from '$lib/components/CreateFollowPackDialog.svelte';
+  import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
+  import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
 
   let searchQuery = $state('');
 
@@ -40,16 +41,17 @@
     }
   });
 
-  // Subscribe to follow packs from relays
-  const subscription = ndk.$subscribe(
-    () => ({
-      filters: [{ kinds: [39089, 39092] }],
-      bufferMs: 100,
-    })
-  );
+  // Subscribe to follow packs from relays using lazy feed
+  const packsFeed = createLazyFeed(ndk, () => ({
+    filters: [{ kinds: [39089, 39092] }],
+    bufferMs: 100,
+  }), {
+    initialLimit: 12,
+    pageSize: 12
+  });
 
-  const packEvents = $derived(subscription.events);
-  const eosed = $derived(subscription.eosed);
+  const packEvents = $derived(packsFeed.allEvents);
+  const eosed = $derived(packsFeed.eosed);
 
   // Convert events to pack objects
   interface Pack {
@@ -64,7 +66,7 @@
     created_at: number;
   }
 
-  let packs = $derived.by(() => {
+  let allPacks = $derived.by(() => {
     const relayPacks: Pack[] = packEvents.map(event => ({
       id: event.id || '',
       title: event.tagValue('title') || 'Untitled Pack',
@@ -82,7 +84,7 @@
   });
 
   let filteredPacks = $derived.by(() => {
-    let filtered = packs;
+    let filtered = allPacks;
 
     // Apply filter type
     if (activeFilter !== 'all') {
@@ -112,23 +114,35 @@
     return filtered;
   });
 
-  let subscribedPacks = $derived.by(() => {
-    return packs.filter(pack => followPacksStore.isSubscribed(pack.id));
+  // Derive visible packs based on lazy loading
+  let displayLimit = $state(12);
+
+  const visiblePacks = $derived(filteredPacks.slice(0, displayLimit));
+  const hasMore = $derived(displayLimit < filteredPacks.length);
+  const isLoading = $derived(packsFeed.isLoading);
+
+  function handleLoadMore() {
+    if (hasMore) {
+      displayLimit = Math.min(displayLimit + 12, filteredPacks.length);
+    }
+  }
+
+  // Reset display limit when filters change
+  $effect(() => {
+    // Track filter dependencies
+    activeFilter;
+    searchQuery;
+
+    // Reset to initial limit
+    displayLimit = 12;
   });
 
   function handlePackClick(pack: Pack) {
     goto(`/packs/${pack.encode()}`);
   }
 
-  function handleSubscribe(e: MouseEvent, pack: Pack) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (followPacksStore.isSubscribed(pack.id)) {
-      followPacksStore.unsubscribeFromPack(pack.id);
-    } else {
-      followPacksStore.subscribeToPack(pack.id);
-    }
+  function restartSubscription() {
+    packsFeed.loadMore();
   }
 </script>
 
@@ -229,88 +243,14 @@
     </div>
   </div>
 
-  <!-- Your Subscribed Packs -->
-  {#if subscribedPacks.length > 0}
-    <div class="mb-8">
-      <h2 class="text-xl font-semibold text-white mb-4">Your Packs</h2>
-      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {#each subscribedPacks as pack (pack.id)}
-          <div
-            role="button"
-            tabindex="0"
-            onclick={() => handlePackClick(pack)}
-            onkeydown={(e) => e.key === 'Enter' && handlePackClick(pack)}
-            class="block bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden hover:border-neutral-700 transition-colors group cursor-pointer"
-          >
-            {#if pack.image}
-              <div class="h-32 w-full">
-                <img
-                  src={pack.image}
-                  alt={pack.title}
-                  class="w-full h-full object-cover"
-                />
-              </div>
-            {/if}
-
-            <div class="p-5">
-              <div class="mb-4">
-                <h3 class="font-semibold text-white group-hover:text-orange-500 transition-colors">
-                  {pack.title}
-                </h3>
-                <p class="text-sm text-neutral-500 mt-1">
-                  {pack.pubkeys.length} members
-                </p>
-              </div>
-
-              {#if pack.description}
-                <p class="text-sm text-neutral-400 mb-4 line-clamp-2">
-                  {pack.description}
-                </p>
-              {/if}
-
-              <div class="flex items-center justify-between">
-                <div class="flex -space-x-2">
-                  {#each pack.pubkeys.slice(0, 4) as pubkey, index (pubkey)}
-                    <button
-                      type="button"
-                      onclick={(e) => { e.stopPropagation(); goto(`/p/${pubkey}`); }}
-                      class="relative cursor-pointer"
-                      style="z-index: {4 - index}"
-                    >
-                      <Avatar {ndk} {pubkey} class="w-8 h-8 rounded-full ring-2 ring-neutral-900 hover:opacity-80 transition-opacity" />
-                    </button>
-                  {/each}
-                  {#if pack.pubkeys.length > 4}
-                    <div class="w-8 h-8 rounded-full bg-neutral-800 ring-2 ring-neutral-900 flex items-center justify-center">
-                      <span class="text-xs text-neutral-400">
-                        +{pack.pubkeys.length - 4}
-                      </span>
-                    </div>
-                  {/if}
-                </div>
-
-                <button
-                  onclick={(e) => handleSubscribe(e, pack)}
-                  class="px-3 py-1.5 text-sm font-medium border rounded-lg transition-colors bg-neutral-800 border-neutral-700 text-neutral-300 hover:bg-neutral-700"
-                >
-                  Following
-                </button>
-              </div>
-            </div>
-          </div>
-        {/each}
-      </div>
-    </div>
-  {/if}
-
   <!-- All Packs Grid -->
   <div>
     <h2 class="text-xl font-semibold text-white mb-4">
-      {subscribedPacks.length > 0 ? 'Discover More' : 'Popular Packs'}
+      Popular Packs
     </h2>
-    {#if filteredPacks.length > 0}
+    {#if visiblePacks.length > 0}
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {#each filteredPacks as pack (pack.id)}
+        {#each visiblePacks as pack (pack.id)}
           <div
             role="button"
             tabindex="0"
@@ -344,38 +284,35 @@
                 </p>
               {/if}
 
-              <div class="flex items-center justify-between">
-                <div class="flex -space-x-2">
-                  {#each pack.pubkeys.slice(0, 4) as pubkey, index (pubkey)}
-                    <button
-                      type="button"
-                      onclick={(e) => { e.stopPropagation(); goto(`/p/${pubkey}`); }}
-                      class="relative cursor-pointer"
-                      style="z-index: {4 - index}"
-                    >
-                      <Avatar {ndk} {pubkey} class="w-8 h-8 rounded-full ring-2 ring-neutral-900 hover:opacity-80 transition-opacity" />
-                    </button>
-                  {/each}
-                  {#if pack.pubkeys.length > 4}
-                    <div class="w-8 h-8 rounded-full bg-neutral-800 ring-2 ring-neutral-900 flex items-center justify-center">
-                      <span class="text-xs text-neutral-400">
-                        +{pack.pubkeys.length - 4}
-                      </span>
-                    </div>
-                  {/if}
-                </div>
-
-                <button
-                  onclick={(e) => handleSubscribe(e, pack)}
-                  class="px-3 py-1.5 text-sm font-medium border rounded-lg transition-colors {followPacksStore.isSubscribed(pack.id) ? 'bg-neutral-800 border-neutral-700 text-neutral-300 hover:bg-neutral-700' : 'bg-orange-500 border-orange-500 text-white hover:bg-orange-500/90'}"
-                >
-                  {followPacksStore.isSubscribed(pack.id) ? 'Following' : 'Follow'}
-                </button>
+              <div class="flex -space-x-2">
+                {#each pack.pubkeys.slice(0, 4) as pubkey, index (pubkey)}
+                  <button
+                    type="button"
+                    onclick={(e) => { e.stopPropagation(); goto(`/p/${pubkey}`); }}
+                    class="relative cursor-pointer"
+                    style="z-index: {4 - index}"
+                  >
+                    <Avatar {ndk} {pubkey} class="w-8 h-8 rounded-full ring-2 ring-neutral-900 hover:opacity-80 transition-opacity" />
+                  </button>
+                {/each}
+                {#if pack.pubkeys.length > 4}
+                  <div class="w-8 h-8 rounded-full bg-neutral-800 ring-2 ring-neutral-900 flex items-center justify-center">
+                    <span class="text-xs text-neutral-400">
+                      +{pack.pubkeys.length - 4}
+                    </span>
+                  </div>
+                {/if}
               </div>
             </div>
           </div>
         {/each}
       </div>
+
+      <LoadMoreTrigger
+        onIntersect={handleLoadMore}
+        hasMore={hasMore}
+        isLoading={isLoading}
+      />
     {:else}
       <div class="text-center py-12">
         <svg class="w-16 h-16 text-neutral-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -391,7 +328,7 @@
   <CreateFollowPackDialog
     bind:open={createPackModal.show}
     onPublished={(packId) => {
-      subscription.restart();
+      restartSubscription();
     }}
   />
 </div>

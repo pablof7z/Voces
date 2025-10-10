@@ -4,10 +4,10 @@ import type NDK from '@nostr-dev-kit/ndk';
 import createDebug from 'debug';
 import { relayAuthModal } from './stores/relayAuthModal.svelte';
 
-const debug = createDebug('voces:relay:auth');
+const debug = createDebug('agora:relay:auth');
 
 // Storage key for auth decisions
-const AUTH_DECISIONS_KEY = 'voces:relay-auth-decisions';
+const AUTH_DECISIONS_KEY = 'agora:relay-auth-decisions';
 
 interface AuthDecision {
   relay: string;

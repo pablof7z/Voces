@@ -1,8 +1,18 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
 
-  const mints = $derived(ndk.$wallet.mints);
-  const mintBalances = $derived(ndk.$wallet.getMintBalances());
+  const wallet = $derived(ndk.$wallet);
+  const mints = $derived(wallet.mints.map(m => typeof m === 'string' ? m : m.url));
+  const mintBalances = $derived(() => {
+    const balances = new Map<string, number>();
+    mints.forEach(mint => {
+      const walletInstance = (wallet as any)._wallet;
+      if (walletInstance?.mintBalance) {
+        balances.set(mint, walletInstance.mintBalance(mint));
+      }
+    });
+    return balances;
+  });
 
   let newMintUrl = $state('');
   let isAdding = $state(false);
@@ -20,14 +30,14 @@
     }
 
     try {
-      const wallet = ndk.$wallet.wallet;
-      if (!wallet) {
+      const walletInstance = (wallet as any)._wallet;
+      if (!walletInstance) {
         error = 'Wallet not initialized';
         return;
       }
 
-      wallet.mints = [...wallet.mints, newMintUrl.trim()];
-      await wallet.publish();
+      walletInstance.mints = [...walletInstance.mints, newMintUrl.trim()];
+      await walletInstance.publish();
 
       newMintUrl = '';
       error = null;
@@ -40,14 +50,14 @@
   async function removeMint(mint: string) {
     if (confirm(`Remove mint: ${mint}?`)) {
       try {
-        const wallet = ndk.$wallet.wallet;
-        if (!wallet) {
+        const walletInstance = (wallet as any)._wallet;
+        if (!walletInstance) {
           error = 'Wallet not initialized';
           return;
         }
 
-        wallet.mints = wallet.mints.filter(m => m !== mint);
-        await wallet.publish();
+        walletInstance.mints = walletInstance.mints.filter((m: string) => m !== mint);
+        await walletInstance.publish();
       } catch (e) {
         error = e instanceof Error ? e.message : String(e);
       }

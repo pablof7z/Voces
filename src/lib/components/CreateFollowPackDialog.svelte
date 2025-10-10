@@ -113,7 +113,17 @@
       pack.pubkeys = Array.from(selectedPubkeys);
 
       await pack.sign();
-      await pack.publish();
+      await pack.publishReplaceable();
+
+      if (pack.publishStatus === 'error') {
+        const error = pack.publishError;
+        const relayErrors = error?.relayErrors || {};
+        const errorMessages = Object.entries(relayErrors)
+          .map(([relay, err]) => `${relay}: ${err}`)
+          .join('\n');
+        toast.error(`Failed to publish:\n${errorMessages || 'Unknown error'}`);
+        return;
+      }
 
       toast.success(editingPack ? 'Follow pack updated' : 'Follow pack created');
       resetForm();
@@ -122,7 +132,7 @@
       onClose?.();
     } catch (error) {
       console.error('Failed to publish follow pack:', error);
-      toast.error(editingPack ? 'Failed to update follow pack' : 'Failed to create follow pack');
+      toast.error(`${editingPack ? 'Failed to update' : 'Failed to create'} follow pack: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       isPublishing = false;
     }

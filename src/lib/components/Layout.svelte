@@ -6,6 +6,7 @@
   import { relayFilter } from '$lib/stores/relayFilter.svelte';
   import { sidebarStore } from '$lib/stores/sidebar.svelte';
   import { createPackModal } from '$lib/stores/createPackModal.svelte';
+  import { createListingModal } from '$lib/stores/createListingModal.svelte';
   import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
   import { NDKKind, NDKArticle } from '@nostr-dev-kit/ndk';
   import LoginButton from './LoginButton.svelte';
@@ -248,7 +249,7 @@
         <button
           onclick={() => {
             if (path === '/marketplace') {
-              goto('/marketplace/create');
+              createListingModal.open();
             } else if (path === '/trades') {
               goto('/trades/create');
             } else if (path.startsWith('/packs')) {

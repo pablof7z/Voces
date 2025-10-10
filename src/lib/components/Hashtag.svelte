@@ -117,7 +117,7 @@
   <!-- Inline format: compact hashtag display -->
   <a
     bind:this={elementRef}
-    href={`#/hashtag/${hashtag}`}
+    href={`/t/${hashtag}`}
     class="hashtag-inline {className}"
     onclick={handleClick}
     onmouseenter={handleMouseEnter}

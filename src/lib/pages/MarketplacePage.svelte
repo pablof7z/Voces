@@ -3,6 +3,8 @@
   import { NDKKind, NDKEvent } from '@nostr-dev-kit/ndk';
   import type { NDKFilter } from '@nostr-dev-kit/ndk';
   import { goto } from '$app/navigation';
+  import { createListingModal } from '$lib/stores/createListingModal.svelte';
+  import CreateListingModal from '$lib/components/CreateListingModal.svelte';
 
   const CATEGORIES = [
     { value: '', label: 'All Categories' },
@@ -302,4 +304,11 @@
       </div>
     {/if}
   </div>
+
+  <CreateListingModal
+    bind:open={createListingModal.show}
+    onClose={() => {
+      subscription.restart?.();
+    }}
+  />
 </div>

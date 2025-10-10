@@ -1,7 +1,6 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
   import { goto } from '$app/navigation';
-  import { followPacksStore } from '$lib/stores/followPacks.svelte';
   import { Avatar } from '@nostr-dev-kit/svelte';
 
   interface Pack {
@@ -27,18 +26,6 @@
     goto(`/packs/${pack.encode()}`);
   }
 
-  function handleSubscribe(e: MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (followPacksStore.isSubscribed(pack.id)) {
-      followPacksStore.unsubscribeFromPack(pack.id);
-    } else {
-      followPacksStore.subscribeToPack(pack.id);
-    }
-  }
-
-  const isSubscribed = $derived(followPacksStore.isSubscribed(pack.id));
 </script>
 
 <div
@@ -74,33 +61,24 @@
       </p>
     {/if}
 
-    <div class="flex items-center justify-between">
-      <div class="flex -space-x-2">
-        {#each pack.pubkeys.slice(0, 4) as pubkey, index (pubkey)}
-          <button
-            type="button"
-            onclick={(e) => { e.stopPropagation(); window.location.href = `/p/${pubkey}`; }}
-            class="relative cursor-pointer"
-            style="z-index: {4 - index}"
-          >
-            <Avatar {ndk} {pubkey} class="w-8 h-8 rounded-full ring-2 ring-neutral-900 hover:opacity-80 transition-opacity" />
-          </button>
-        {/each}
-        {#if pack.pubkeys.length > 4}
-          <div class="w-8 h-8 rounded-full bg-neutral-800 ring-2 ring-neutral-900 flex items-center justify-center">
-            <span class="text-xs text-neutral-400">
-              +{pack.pubkeys.length - 4}
-            </span>
-          </div>
-        {/if}
-      </div>
-
-      <button
-        onclick={handleSubscribe}
-        class="px-3 py-1.5 text-sm font-medium border rounded-lg transition-colors {isSubscribed ? 'bg-neutral-800 border-neutral-700 text-neutral-300 hover:bg-neutral-700' : 'bg-orange-500 border-orange-500 text-white hover:bg-orange-500/90'}"
-      >
-        {isSubscribed ? 'Following' : 'Follow'}
-      </button>
+    <div class="flex -space-x-2">
+      {#each pack.pubkeys.slice(0, 4) as pubkey, index (pubkey)}
+        <button
+          type="button"
+          onclick={(e) => { e.stopPropagation(); window.location.href = `/p/${pubkey}`; }}
+          class="relative cursor-pointer"
+          style="z-index: {4 - index}"
+        >
+          <Avatar {ndk} {pubkey} class="w-8 h-8 rounded-full ring-2 ring-neutral-900 hover:opacity-80 transition-opacity" />
+        </button>
+      {/each}
+      {#if pack.pubkeys.length > 4}
+        <div class="w-8 h-8 rounded-full bg-neutral-800 ring-2 ring-neutral-900 flex items-center justify-center">
+          <span class="text-xs text-neutral-400">
+            +{pack.pubkeys.length - 4}
+          </span>
+        </div>
+      {/if}
     </div>
   </div>
 </div>

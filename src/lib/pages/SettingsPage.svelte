@@ -6,8 +6,9 @@
   import DebugSettings from '$lib/components/settings/DebugSettings.svelte';
   import ZapSettings from '$lib/components/settings/ZapSettings.svelte';
   import WalletSettings from '$lib/components/settings/WalletSettings.svelte';
+  import HashtagSettings from '$lib/components/settings/HashtagSettings.svelte';
 
-  type SettingsSection = 'relays' | 'theme' | 'blossom' | 'backup' | 'zap' | 'wallet' | 'debug' | null;
+  type SettingsSection = 'relays' | 'theme' | 'blossom' | 'backup' | 'zap' | 'wallet' | 'hashtags' | 'debug' | null;
 
   interface SectionConfig {
     id: SettingsSection;
@@ -31,6 +32,16 @@
       iconColor: 'text-blue-400',
       iconBg: 'bg-blue-400/10',
       component: RelaySettings,
+      available: true,
+    },
+    {
+      id: 'hashtags',
+      label: 'Hashtag Interests',
+      description: 'Follow hashtags and filter your feed',
+      iconPath: 'M7 20l4-16m2 16l4-16M6 9h14M4 15h14',
+      iconColor: 'text-orange-500',
+      iconBg: 'bg-orange-500/10',
+      component: HashtagSettings,
       available: true,
     },
     {

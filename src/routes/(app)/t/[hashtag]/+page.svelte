@@ -1,84 +1,55 @@
 <script lang="ts">
-  import { ndk, hashtagInterests } from '$lib/ndk.svelte';
+  import { page } from '$app/stores';
+  import { onMount } from 'svelte';
+  import { ndk } from '$lib/ndk.svelte';
   import { settings } from '$lib/stores/settings.svelte';
-  import { relayFilter } from '$lib/stores/relayFilter.svelte';
-  import { hashtagFilter } from '$lib/stores/hashtagFilter.svelte';
-  import { NDKKind, type NDKEvent, NDKArticle, NDKSubscriptionCacheUsage } from '@nostr-dev-kit/ndk';
+  import { sidebarStore } from '$lib/stores/sidebar.svelte';
+  import { NDKKind, type NDKEvent, NDKArticle } from '@nostr-dev-kit/ndk';
+  import { Avatar } from '@nostr-dev-kit/svelte';
   import NoteCard from '$lib/components/NoteCard.svelte';
   import ArticlePreviewCard from '$lib/components/ArticlePreviewCard.svelte';
   import MediaGrid from '$lib/components/MediaGrid.svelte';
   import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
-  import { Avatar } from '@nostr-dev-kit/svelte';
-  import RelaySelectorIcon from '$lib/components/RelaySelectorIcon.svelte';
 
   type MediaFilter = 'conversations' | 'images' | 'videos' | 'articles';
   let selectedFilter = $state<MediaFilter>('conversations');
 
-  // Get relays to use based on filter
-  // If a specific relay is selected, use only that relay
-  // Otherwise, use all enabled relays
+  // Get the hashtag from the URL parameter
+  const hashtag = $derived($page.params.hashtag);
+
+  // Get enabled relays
   const relaysToUse = $derived(
-    relayFilter.selectedRelay
-      ? [relayFilter.selectedRelay]
-      : settings.relays
-          .filter(r => r.enabled && r.read)
-          .map(r => r.url)
+    settings.relays
+      .filter(r => r.enabled && r.read)
+      .map(r => r.url)
   );
 
-  // Get follows for filtering when in "Following" mode
-  const follows = $derived(ndk.$sessions?.follows||[]);
-  const followsArray = $derived.by(() => Array.from(follows));
-
-  console.log('[HomePage] Creating subscriptions');
-
   const notesFeed = createLazyFeed(ndk, () => {
+    const currentHashtag = hashtag;
     const filter: any = {
       kinds: [NDKKind.Text],
+      '#t': [currentHashtag.toLowerCase()],
       limit: 200
     };
 
-    // Add hashtag filters if any are selected
-    if (hashtagFilter.hasFilters) {
-      filter['#t'] = hashtagFilter.selectedHashtags;
-    }
-
-    // When no specific relay is selected (Following mode) AND no hashtag filters, filter by follows
-    if (!relayFilter.selectedRelay && followsArray.length > 0 && !hashtagFilter.hasFilters) {
-      filter.authors = followsArray;
-    } else if (!relayFilter.selectedRelay && followsArray.length > 0 && hashtagFilter.hasFilters) {
-      // When hashtag filters are active in Following mode, combine with authors
-      filter.authors = followsArray;
-    }
-
-    console.log('Using filter:', filter, "relays:", relaysToUse);
     return {
       filters: [filter],
-      relayUrls: relaysToUse.length > 0 ? relaysToUse : undefined,
-      subId: 'home-notes',
-      cacheUsage: relaysToUse.length > 0 ? NDKSubscriptionCacheUsage.ONLY_RELAY : NDKSubscriptionCacheUsage.PARALLEL
+      relayUrls: relaysToUse.length > 0 ? relaysToUse : undefined
     };
   }, {
     initialLimit: 20,
     pageSize: 20
   });
-  console.log('[HomePage] Notes subscription created');
 
   const mediaFeed = createLazyFeed(ndk, () => {
+    const currentHashtag = hashtag;
     const filter: any = {
       kinds: [NDKKind.Text, NDKKind.Image, NDKKind.Video, NDKKind.ShortVideo],
+      '#t': [currentHashtag.toLowerCase()],
       limit: 300
     };
 
-    // Add hashtag filters if any are selected
-    if (hashtagFilter.hasFilters) {
-      filter['#t'] = hashtagFilter.selectedHashtags;
-    }
-
-    // When no specific relay is selected (Following mode), filter by follows
-    if (!relayFilter.selectedRelay && followsArray.length > 0) {
-      filter.authors = followsArray;
-    }
     return {
       filters: [filter],
       relayUrls: relaysToUse.length > 0 ? relaysToUse : undefined
@@ -89,20 +60,13 @@
   });
 
   const articlesFeed = createLazyFeed(ndk, () => {
+    const currentHashtag = hashtag;
     const filter: any = {
       kinds: [NDKKind.Article],
+      '#t': [currentHashtag.toLowerCase()],
       limit: 100
     };
 
-    // Add hashtag filters if any are selected
-    if (hashtagFilter.hasFilters) {
-      filter['#t'] = hashtagFilter.selectedHashtags;
-    }
-
-    // When no specific relay is selected (Following mode), filter by follows
-    if (!relayFilter.selectedRelay && followsArray.length > 0) {
-      filter.authors = followsArray;
-    }
     return {
       filters: [filter],
       cacheUsage: 1, // NDKSubscriptionCacheUsage.CACHE_FIRST
@@ -145,6 +109,8 @@
   });
 
   const events = $derived(selectedFilter === 'articles' ? [] : notesFeed.events);
+  const eosed = $derived(selectedFilter === 'articles' ? articlesFeed.eosed : notesFeed.eosed);
+  const status = $derived(selectedFilter === 'articles' ? 'connected' : 'connected');
   const hasMore = $derived(selectedFilter === 'articles' ? articlesFeed.hasMore : notesFeed.hasMore);
   const isLoading = $derived(selectedFilter === 'articles' ? articlesFeed.isLoading : notesFeed.isLoading);
 
@@ -156,59 +122,90 @@
     }
   }
 
-  // Get unique authors from pending events (up to 3 for display)
-  const pendingAuthors = $derived.by(() => {
-    const authors = new Set<string>();
-    const pending = notesFeed.pendingEvents;
-    for (const event of pending) {
-      if (authors.size >= 3) break;
-      authors.add(event.pubkey);
-    }
-    return Array.from(authors);
+  // Calculate top authors for this hashtag
+  const topAuthors = $derived.by(() => {
+    const authorCounts = new Map<string, number>();
+
+    // Count posts by each author from all feeds
+    [...notesFeed.events, ...mediaFeed.events, ...articlesFeed.events].forEach(event => {
+      const count = authorCounts.get(event.pubkey) || 0;
+      authorCounts.set(event.pubkey, count + 1);
+    });
+
+    // Sort by count and return top 5
+    return Array.from(authorCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([pubkey, count]) => ({ pubkey, count }));
   });
 
+  // Set up custom sidebar
+  $effect(() => {
+    sidebarStore.rightSidebar = hashtagSidebar;
+
+    return () => {
+      sidebarStore.clear();
+    };
+  });
 </script>
+
+{#snippet hashtagSidebar()}
+  <div class="p-4 bg-neutral-900 rounded-lg border border-neutral-800">
+    <div class="flex items-center gap-2 mb-4">
+      <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      <h2 class="text-lg font-semibold text-white">Top Authors</h2>
+    </div>
+    <div class="space-y-3">
+      {#if topAuthors.length === 0}
+        <div class="h-12 bg-neutral-800 rounded animate-pulse"></div>
+        <div class="h-12 bg-neutral-800 rounded animate-pulse"></div>
+        <div class="h-12 bg-neutral-800 rounded animate-pulse"></div>
+      {:else}
+        {#each topAuthors as { pubkey, count } (pubkey)}
+          <a
+            href="/p/{pubkey}"
+            class="flex items-center gap-3 hover:bg-neutral-800/50 rounded-lg p-2 transition-colors"
+          >
+            <Avatar {ndk} {pubkey} class="w-10 h-10 rounded-full flex-shrink-0" />
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-medium text-white truncate">
+                {pubkey.slice(0, 16)}...
+              </div>
+              <div class="text-xs text-neutral-500">
+                {count} {count === 1 ? 'post' : 'posts'}
+              </div>
+            </div>
+          </a>
+        {/each}
+      {/if}
+    </div>
+  </div>
+{/snippet}
 
 <div class="max-w-full mx-auto">
   <!-- Header -->
   <div class="sticky top-0 z-10 bg-black/90 backdrop-blur-xl border-b border-neutral-800/50">
     <div class="px-4 py-4">
-      <div class="flex items-center gap-2">
-        <!-- Relay/Following selector icon -->
-        <div class="flex-shrink-0 relative z-20">
-          <RelaySelectorIcon />
-        </div>
-
-        <!-- Hashtags scroll container -->
-        <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide flex-1 min-w-0">
-        {#if hashtagInterests.interests.length > 0}
-          {#each hashtagInterests.interests as hashtag}
-            <button
-              onclick={() => hashtagFilter.toggleHashtag(hashtag)}
-              class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all {
-                hashtagFilter.isSelected(hashtag)
-                  ? 'bg-orange-500 text-white border-2 border-orange-400'
-                  : 'bg-neutral-800 text-neutral-300 border-2 border-neutral-700 hover:border-neutral-600'
-              }"
-            >
-              <span class="text-xs">#</span>
-              <span>{hashtag}</span>
-            </button>
-          {/each}
-          {#if hashtagFilter.hasFilters}
-            <button
-              onclick={() => hashtagFilter.clearAll()}
-              class="flex-shrink-0 inline-flex items-center gap-1 px-2 py-1.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-all"
-              title="Clear all filters"
-            >
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          {/if}
-        {:else}
-          <h1 class="text-xl font-bold text-white">Home</h1>
-        {/if}
+      <div class="flex items-center gap-3">
+        <a
+          href="/"
+          class="flex items-center justify-center w-8 h-8 rounded-full hover:bg-neutral-800 transition-colors"
+          aria-label="Back to home"
+        >
+          <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </a>
+        <div>
+          <h1 class="text-xl font-bold text-white flex items-center gap-2">
+            <span class="text-orange-500">#</span>
+            {hashtag}
+          </h1>
+          <p class="text-sm text-neutral-400">
+            Posts tagged with #{hashtag}
+          </p>
         </div>
       </div>
     </div>
@@ -278,7 +275,7 @@
     {#if selectedFilter === 'articles'}
       {#if filteredArticles.length === 0 && articlesFeed.eosed}
         <div class="p-8 text-center text-neutral-400">
-          No articles found
+          No articles found with #{hashtag}
         </div>
       {:else if filteredArticles.length === 0}
         <div class="p-8 text-center text-neutral-400">
@@ -299,7 +296,7 @@
       <div class="p-4">
         {#if mediaEvents.length === 0 && mediaFeed.eosed}
           <div class="p-8 text-center text-neutral-400">
-            No {selectedFilter} found
+            No {selectedFilter} found with #{hashtag}
           </div>
         {:else if mediaEvents.length === 0}
           <div class="p-8 text-center text-neutral-400">
@@ -310,30 +307,17 @@
         {/if}
       </div>
     {:else}
-      <!-- New Notes Indicator (Twitter-style) -->
-      {#if notesFeed.pendingCount > 0}
-        <div class="flex justify-center py-2">
-          <button
-            onclick={() => notesFeed.loadPendingEvents()}
-            class="flex items-center gap-2 px-4 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded-full transition-all shadow-lg"
-          >
-            <!-- Avatars -->
-            <div class="flex -space-x-2">
-              {#each pendingAuthors.slice(0, 3) as pubkey (pubkey)}
-                <Avatar {ndk} {pubkey} class="w-6 h-6 rounded-full border-2 border-neutral-900" />
-              {/each}
-            </div>
-            <!-- Text -->
-            <span class="text-sm text-neutral-200 font-medium">
-              {notesFeed.pendingCount} new {notesFeed.pendingCount === 1 ? 'note' : 'notes'}
-            </span>
-          </button>
-        </div>
-      {/if}
-
-      {#if events.length === 0}
+      {#if status === 'connecting'}
         <div class="p-8 text-center text-neutral-400">
-          No notes found
+          Connecting to relays...
+        </div>
+      {:else if events.length === 0 && eosed}
+        <div class="p-8 text-center text-neutral-400">
+          No notes found with #{hashtag}
+        </div>
+      {:else if events.length === 0}
+        <div class="p-8 text-center text-neutral-400">
+          Loading notes...
         </div>
       {:else}
         {#each events as event (event.id)}

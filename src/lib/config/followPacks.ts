@@ -1,17 +1,14 @@
-// Hardcoded follow pack naddr identifiers
-// These will be replaced with dynamic data later
-export const FOLLOW_PACK_ADDRESSES: Record<string, string[]> = {
-  venezuela: [
-    'naddr1qvzqqqyckypzpm0yzdfrja6cz4z3g9ytysgjxzxwm9k3yy3fkrn2v679526qcqlvqy88wumn8ghj7mn0wvhxcmmv9uqpkum5wfjkzmt9wfe5vmmvd3hhw5rpvd4kswzt0ge4qvn3zqe5pv',
-    'naddr1qvzqqqyckypzp7gpv9hspf3lf7w83qw5sudq8heafnh89y02l4ade0h20j2utr38qy88wumn8ghj7mn0wvhxcmmv9uqqcmmyv4hx5mejdc6nsvn0wnru2m',
-    'naddr1qvzqqqyckypzpq3zq944rrmyyj3uu2zhhvlwj03d7tyce2905kkvhzt98nr5axrxqy88wumn8ghj7mn0wvhxcmmv9uqsuamnwvaz7tmwdaejumr0dshsqrrn0fu8xvrjvy6hgut6w5vtmsm6',
-    'naddr1qvzqqqyckypzpq3zq944rrmyyj3uu2zhhvlwj03d7tyce2905kkvhzt98nr5axrxqy88wumn8ghj7mn0wvhxcmmv9uqsuamnwvaz7tmwdaejumr0dshsqrrcv9ch2utjw4ekkce5wg7srgqv'
-  ],
-  // Other communities can be added here
-  default: [
-    'naddr1qvzqqqyckypzpm0yzdfrja6cz4z3g9ytysgjxzxwm9k3yy3fkrn2v679526qcqlvqy88wumn8ghj7mn0wvhxcmmv9uqpkum5wfjkzmt9wfe5vmmvd3hhw5rpvd4kswzt0ge4qvn3zqe5pv'
-  ]
+import { NDKKind } from '@nostr-dev-kit/ndk';
+
+// Community to relay mapping
+// Maps community IDs to their dedicated relay URLs for fetching follow packs
+export const COMMUNITY_RELAYS: Record<string, string[]> = {
+  venezuela: ['wss://ve.agorawlc.com'],
+  // Other communities can be added here as they get their own relays
 };
+
+// Follow pack kind for subscription filters
+export const FOLLOW_PACK_KIND = NDKKind.FollowPack; // 39089
 
 // Community metadata - this will be shown while loading actual data
 export const COMMUNITY_METADATA: Record<string, { name: string; description: string }> = {

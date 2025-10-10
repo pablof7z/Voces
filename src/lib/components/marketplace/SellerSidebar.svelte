@@ -10,6 +10,7 @@
 
   const { listing }: Props = $props();
 
+  const profile = ndk.$fetchProfile(() => listing?.pubkey || '');
   const isOwner = $derived(ndk.$sessions.current?.pubkey === listing?.pubkey);
 
   function handleShare() {
@@ -43,11 +44,11 @@
   {#if listing}
     <div class="flex items-center gap-3 mb-6">
       <div class="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg">
-        {listing.pubkey.slice(0, 2).toUpperCase()}
+        {(profile?.displayName || profile?.name || listing.pubkey).slice(0, 2).toUpperCase()}
       </div>
       <div>
         <p class="text-sm text-neutral-400">Listed by</p>
-        <p class="font-medium text-white truncate">{listing.pubkey.slice(0, 16)}...</p>
+        <p class="font-medium text-white truncate">{profile?.displayName || profile?.name || `${listing.pubkey.slice(0, 16)}...`}</p>
       </div>
     </div>
 

@@ -91,12 +91,12 @@
   );
 
   const bgClass = $derived(
-    variant === 'thread-main' ? 'bg-neutral-900/50 border-y-2 border-purple-600/50' :
+    variant === 'thread-main' ? 'bg-neutral-900/50' :
     variant === 'default' ? 'hover:bg-neutral-900/30' :
     'hover:bg-neutral-900/30'
   );
 
-  const clickable = $derived(variant === 'default');
+  const clickable = $derived(variant === 'default' || (onNavigate !== undefined));
 
   function formatTime(timestamp: number | undefined) {
     if (!timestamp) return '';
@@ -145,7 +145,7 @@
   }
 
   function copyAuthorNprofile() {
-    const nprofile = event.author.encode();
+    const nprofile = event.author.nprofile();
     copyToClipboard(nprofile, 'author nprofile');
   }
 
@@ -155,7 +155,7 @@
   }
 
   function copyRawEvent() {
-    const raw = event.inspect();
+    const raw = event.inspect;
     copyToClipboard(raw, 'raw event');
   }
 

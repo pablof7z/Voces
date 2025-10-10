@@ -21,7 +21,7 @@
   }));
 
   const comments = $derived.by(() => {
-    return commentsSubscription.events.sort((a, b) => (a.created_at || 0) - (b.created_at || 0));
+    return [...commentsSubscription.events].sort((a, b) => (a.created_at || 0) - (b.created_at || 0));
   });
 
   const isLoading = $derived(!commentsSubscription.eosed);
