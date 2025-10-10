@@ -124,6 +124,9 @@ export function createLazyFeed(
     get allEvents() {
       return frozenEvents;
     },
+    get pendingEvents() {
+      return pendingEvents;
+    },
     get hasMore() {
       return hasMore;
     },
