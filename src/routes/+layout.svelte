@@ -5,6 +5,7 @@
   import { EventContentHandlersProxy } from '@nostr-dev-kit/svelte';
   import { goto } from '$app/navigation';
   import Toaster from '$lib/components/Toaster.svelte';
+  import LoginModal from '$lib/components/LoginModal.svelte';
   import '../app.css';
   import type { Snippet } from 'svelte';
 
@@ -53,6 +54,7 @@
 </script>
 
 <Toaster />
+<LoginModal />
 
 {#if ready}
   <svelte:boundary onerror={(e) => {
