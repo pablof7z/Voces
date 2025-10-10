@@ -9,7 +9,7 @@
         "@nostr-dev-kit/ndk": "^2.17.3",
         "@nostr-dev-kit/sessions": "^0.4.2",
         "@nostr-dev-kit/svelte": "^2.0.7",
-        "@nostr-dev-kit/wallet": "^0.8.4",
+        "@nostr-dev-kit/wallet": "^0.8.6",
         "blossom-client-sdk": "^4.1.0",
         "clsx": "^2.1.1",
         "date-fns": "^4.1.0",
@@ -175,7 +175,7 @@
 
     "@nostr-dev-kit/sync": ["@nostr-dev-kit/sync@0.3.4", "", { "dependencies": { "@nostr-dev-kit/ndk": "^2.17.3", "nostr-tools": "^2.10.2", "tseep": "^1.3.1" } }, "sha512-FcA7ehS6jRn3n7vzbTZg6j5Xcjq2boK6TDh4h3WzRRXqFNU0C+TTGm2wQq0utCs5Fn3Qr3I1S4vPhsfIhDblrg=="],
 
-    "@nostr-dev-kit/wallet": ["@nostr-dev-kit/wallet@0.8.4", "", { "dependencies": { "@nostr-dev-kit/ndk": "^2.17.0", "@nostr-dev-kit/sync": "^0.3.2", "debug": "^4.3.4", "light-bolt11-decoder": "^3.0.0", "tseep": "^1.3.1", "typescript": "^5.8.2", "webln": "^0.3.2", "zustand": "^5.0.2" }, "peerDependencies": { "@cashu/cashu-ts": "^2.1", "@cashu/crypto": "*" } }, "sha512-XtFod4xiHe8NR+Pt5EKWW4ozMLujRbGdhD2+8KRG4scjWqUl1muLUpUqAgcl6rBGopavFKdg+EoTYeXqEer+Kw=="],
+    "@nostr-dev-kit/wallet": ["@nostr-dev-kit/wallet@0.8.6", "", { "dependencies": { "@nostr-dev-kit/ndk": "^2.17.0", "@nostr-dev-kit/sync": "^0.3.2", "debug": "^4.3.4", "light-bolt11-decoder": "^3.0.0", "tseep": "^1.3.1", "typescript": "^5.8.2", "webln": "^0.3.2", "zustand": "^5.0.2" }, "peerDependencies": { "@cashu/cashu-ts": "^2.1", "@cashu/crypto": "*" } }, "sha512-A/az4srCYe7L7qhKBGRGG583/XpIgnFTYK3aQuxQUCSI5E5ZMUJsjik5rKjCmR+azdhBYiLIpDiKDdkNxaScSg=="],
 
     "@nostr-dev-kit/wot": ["@nostr-dev-kit/wot@0.3.6", "", { "dependencies": { "@nostr-dev-kit/ndk": "^2.17.3", "@nostr-dev-kit/sync": "^0.3.4", "debug": "^4.3.4", "typescript": "^5.8.2" } }, "sha512-vYhcmP2ro3vE1SJQFh6kKVgmP5MUuE19j0rgE9J8d5rrvigeUqaxowFMlQuGK5FxEv4m/3ai5FW+r458wZ6HDg=="],
 
