@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import QRCode from 'qrcode';
 
   interface Props {
@@ -9,10 +8,6 @@
 
   let { value, size = 300 }: Props = $props();
   let canvas: HTMLCanvasElement;
-
-  onMount(() => {
-    generateQR();
-  });
 
   $effect(() => {
     if (value && canvas) {

@@ -2,7 +2,6 @@
   import type { NDKEvent } from '@nostr-dev-kit/ndk';
   import { ndk } from '$lib/ndk.svelte';
   import { nip19 } from 'nostr-tools';
-  import { onMount } from 'svelte';
 
   interface Props {
     event: NDKEvent;

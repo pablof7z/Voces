@@ -8,6 +8,7 @@
   import ComposeDialog from './ComposeDialog.svelte';
   import ReplyIndicator from './ReplyIndicator.svelte';
   import ZapAmountModal from './ZapAmountModal.svelte';
+  import RelayBadge from './RelayBadge.svelte';
 
   interface Props {
     event: NDKEvent;
@@ -279,7 +280,7 @@
 
           {#if showOptionsMenu}
             <div
-              class="absolute right-0 mt-1 w-56 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg z-10"
+              class="absolute right-0 mt-1 w-72 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg z-10 max-h-96 overflow-y-auto"
               onclick={(e) => e.stopPropagation()}
             >
               <button
@@ -298,11 +299,24 @@
               </button>
               <button
                 onclick={copyRawEvent}
-                class="w-full px-4 py-2 text-left text-sm text-neutral-200 hover:bg-neutral-700 transition-colors last:rounded-b-lg"
+                class="w-full px-4 py-2 text-left text-sm text-neutral-200 hover:bg-neutral-700 transition-colors"
                 type="button"
               >
                 Copy raw event
               </button>
+
+              {#if event.onRelays && event.onRelays.size > 0}
+                <div class="border-t border-neutral-700 mt-1 pt-1">
+                  <div class="px-4 py-2 text-xs text-neutral-500 font-medium">
+                    Seen on {event.onRelays.size} relay{event.onRelays.size === 1 ? '' : 's'}
+                  </div>
+                  <div class="px-2 pb-2 space-y-1">
+                    {#each Array.from(event.onRelays) as relay (relay.url)}
+                      <RelayBadge {relay} variant="compact" />
+                    {/each}
+                  </div>
+                </div>
+              {/if}
             </div>
           {/if}
         </div>

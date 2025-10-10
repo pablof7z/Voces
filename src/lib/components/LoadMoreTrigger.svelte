@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-
   interface Props {
     onIntersect: () => void;
     hasMore: boolean;
@@ -9,9 +7,11 @@
 
   const { onIntersect, hasMore, isLoading = false }: Props = $props();
 
-  let element: HTMLDivElement;
+  let element = $state<HTMLDivElement>();
 
-  onMount(() => {
+  $effect(() => {
+    if (!element) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
@@ -25,14 +25,10 @@
       }
     );
 
-    if (element) {
-      observer.observe(element);
-    }
+    observer.observe(element);
 
     return () => {
-      if (element) {
-        observer.unobserve(element);
-      }
+      observer.unobserve(element);
     };
   });
 </script>

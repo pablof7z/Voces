@@ -1,12 +1,23 @@
 <script lang="ts">
   import type { NDKEvent, NDKImetaTag } from '@nostr-dev-kit/ndk';
   import { mapImetaTag } from '@nostr-dev-kit/ndk';
+  import MediaViewerModal from './MediaViewerModal.svelte';
 
   interface Props {
     events: NDKEvent[];
   }
 
   const { events }: Props = $props();
+
+  let selectedMedia = $state<{ event: NDKEvent; imeta: NDKImetaTag; mediaType: 'image' | 'video' | 'audio' | 'file' } | null>(null);
+
+  function openMediaViewer(event: NDKEvent, imeta: NDKImetaTag, mediaType: 'image' | 'video' | 'audio' | 'file') {
+    selectedMedia = { event, imeta, mediaType };
+  }
+
+  function closeMediaViewer() {
+    selectedMedia = null;
+  }
 
   function extractMediaUrls(content: string): string[] {
     const urlRegex = /(https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp|svg|avif|mp4|webm|mov|avi|mkv))/gi;
@@ -69,7 +80,11 @@
       {@const mediaType = getMediaType(imeta)}
       {@const fileSize = imeta.size ? (parseInt(imeta.size) / (1024 * 1024)).toFixed(1) : null}
 
-      <div class="group relative aspect-square overflow-hidden bg-black cursor-pointer">
+      <button
+        type="button"
+        onclick={() => openMediaViewer(event, imeta, mediaType)}
+        class="group relative aspect-square overflow-hidden bg-black cursor-pointer w-full"
+      >
         {#if mediaType === 'image'}
           <img
             src={imeta.url}
@@ -83,7 +98,9 @@
               src={imeta.url}
               class="max-w-full max-h-full"
               preload="metadata"
-            />
+            >
+              <track kind="captions" />
+            </video>
             <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
                 <svg class="w-8 h-8 text-neutral-900 ml-1" fill="currentColor" viewBox="0 0 24 24">
@@ -134,7 +151,17 @@
             {#if mediaType === 'file'}File{/if}
           </div>
         {/if}
-      </div>
+      </button>
     {/each}
   </div>
+{/if}
+
+{#if selectedMedia}
+  <MediaViewerModal
+    open={true}
+    event={selectedMedia.event}
+    imeta={selectedMedia.imeta}
+    mediaType={selectedMedia.mediaType}
+    onClose={closeMediaViewer}
+  />
 {/if}

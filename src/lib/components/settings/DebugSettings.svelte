@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { ndk } from '$lib/ndk.svelte';
   import type { NDKCacheAdapterSqliteWasm, CacheStats } from '@nostr-dev-kit/cache-sqlite-wasm';
 
@@ -31,7 +30,7 @@
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     loadCacheStats();
   });
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { toast } from '$lib/stores/toast.svelte';
 
   const DEFAULT_SERVERS = [
@@ -12,7 +11,7 @@
   let newServer = $state('');
   let isAddingServer = $state(false);
 
-  onMount(() => {
+  $effect(() => {
     const stored = localStorage.getItem('blossomServers');
     if (stored) {
       try {

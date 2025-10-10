@@ -4,7 +4,6 @@
   import { fetchArticleComments } from '$lib/utils/fetchArticleComments';
   import CommentForm from './CommentForm.svelte';
   import CommentList from './CommentList.svelte';
-  import { onMount } from 'svelte';
 
   interface Props {
     article: NDKArticle;
@@ -33,7 +32,7 @@
     comments = [...comments, comment];
   }
 
-  onMount(() => {
+  $effect(() => {
     loadComments();
   });
 </script>

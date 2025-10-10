@@ -76,7 +76,7 @@
       </svg>
     {/if}
 
-    <span class="font-medium flex-1 text-left">{displayName}</span>
+    <span class="font-medium flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis">{displayName}</span>
 
     <!-- Chevron -->
     <svg
