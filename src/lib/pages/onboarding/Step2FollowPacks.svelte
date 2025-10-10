@@ -1,8 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { ndk } from '$lib/ndk.svelte';
-  import { nip19 } from 'nostr-tools';
-  import { type NDKFollowPack, NDKEvent } from '@nostr-dev-kit/ndk';
+  import { NDKFollowPack, NDKEvent } from '@nostr-dev-kit/ndk';
   import { FOLLOW_PACK_ADDRESSES, COMMUNITY_METADATA } from '$lib/config/followPacks';
 
   interface Props {
@@ -14,43 +12,29 @@
 
   let { selectedCommunity, selectedPacks, onSelectPacks, onNext }: Props = $props();
 
-  let loading = $state(true);
   let followPacks = $state<NDKFollowPack[]>([]);
 
   const communityKey = selectedCommunity || 'venezuela';
   const packAddresses = FOLLOW_PACK_ADDRESSES[communityKey] || FOLLOW_PACK_ADDRESSES.venezuela || FOLLOW_PACK_ADDRESSES.default;
   const communityInfo = COMMUNITY_METADATA[communityKey] || COMMUNITY_METADATA.venezuela;
 
-  onMount(async () => {
-    loading = true;
-    const packs: NDKFollowPack[] = [];
+  $effect(() => {
+      const packs: NDKFollowPack[]= [];
 
-    for (const naddr of packAddresses) {
-      try {
-        const decoded = nip19.decode(naddr);
-        if (decoded.type !== 'naddr') continue;
-
-        const { identifier, pubkey, kind, relays } = decoded.data;
-
-        const filter = {
-          kinds: [kind],
-          authors: [pubkey],
-          '#d': [identifier],
-        };
-
-        const event = await ndk.fetchEvent(filter, { closeOnEose: true }, relays ? new Set(relays) : undefined);
-
-        if (event) {
-          const pack = (await import('@nostr-dev-kit/ndk')).NDKFollowPack.from(event as NDKEvent);
-          packs.push(pack);
+      for (const naddr of packAddresses) {
+        try {
+          ndk.fetchEvent(naddr).then((event: NDKEvent | null) => {
+            if (event) {
+              const pack = NDKFollowPack.from(event);
+              packs.push(pack);
+            }
+          });
+        } catch (err) {
+          console.error(`Error fetching pack ${naddr}:`, err);
         }
-      } catch (err) {
-        console.error(`Error fetching pack ${naddr}:`, err);
       }
-    }
 
-    followPacks = packs;
-    loading = false;
+      followPacks = packs;
   });
 
   function handlePackClick(pack: NDKFollowPack) {
@@ -105,16 +89,8 @@
         </p>
       </div>
 
-      {#if loading}
-        <div class="space-y-2 mb-8">
-          {#each [1, 2, 3, 4] as i (i)}
-            <div class="h-20 bg-neutral-100 dark:bg-black rounded-xl animate-pulse" />
-          {/each}
-        </div>
-      {:else}
-        <!-- Follow Pack List -->
         <div class="space-y-2 mb-6 lg:mb-8 max-h-[50vh] lg:max-h-[60vh] overflow-y-auto p-2 -m-2">
-          {#each followPacks as pack (pack.encode())}
+          {#each followPacks as pack (pack.id)}
             {@const isSelected = selectedPacks.includes(pack.encode())}
             <button
               onclick={() => handlePackClick(pack)}
@@ -171,7 +147,6 @@
             No follow packs available for this community yet
           </div>
         {/if}
-      {/if}
 
       <button
         onclick={handleNext}

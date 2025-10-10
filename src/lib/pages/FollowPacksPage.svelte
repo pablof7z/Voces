@@ -5,8 +5,10 @@
   import { mockFollowPacks } from '$lib/data/mockFollowPacks';
   import { NDKKind, type NDKEvent } from '@nostr-dev-kit/ndk';
   import { Avatar } from '@nostr-dev-kit/svelte';
+  import CreateFollowPackDialog from '$lib/components/CreateFollowPackDialog.svelte';
 
   let searchQuery = $state('');
+  let isCreateDialogOpen = $state(false);
 
   // Subscribe to follow packs from relays
   const subscription = ndk.$subscribe(
@@ -81,15 +83,30 @@
 <div class="max-w-6xl mx-auto px-4 py-8">
   <!-- Header -->
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-      <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-      </svg>
-      Follow Packs
-    </h1>
-    <p class="text-neutral-400">
-      Discover curated lists of accounts to follow
-    </p>
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+          <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+          Follow Packs
+        </h1>
+        <p class="text-neutral-400">
+          Discover curated lists of accounts to follow
+        </p>
+      </div>
+      {#if ndk.$currentUser}
+        <button
+          onclick={() => isCreateDialogOpen = true}
+          class="px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors font-medium text-sm flex items-center gap-2 flex-shrink-0"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          New Follow Pack
+        </button>
+      {/if}
+    </div>
   </div>
 
   <!-- Search -->
@@ -265,4 +282,11 @@
       </div>
     {/if}
   </div>
+
+  <CreateFollowPackDialog
+    bind:open={isCreateDialogOpen}
+    onPublished={(packId) => {
+      subscription.restart();
+    }}
+  />
 </div>

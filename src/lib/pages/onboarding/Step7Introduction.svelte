@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { ndk } from '$lib/ndk.svelte';
   import { NDKEvent } from '@nostr-dev-kit/ndk';
   import { fetchIntroductionPosts, type IntroductionPost } from '$lib/utils/introductionPosts.svelte';
@@ -25,8 +24,10 @@
   const hasValidIntro = $derived(introText.length > 10);
   const charCount = $derived(introText.length);
 
-  onMount(async () => {
-    introductionPosts = await fetchIntroductionPosts(ndk);
+  $effect(() => {
+    fetchIntroductionPosts(ndk).then(posts => {
+      introductionPosts = posts;
+    });
   });
 
   async function publishIntroduction() {

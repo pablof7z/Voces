@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { ndk } from '$lib/ndk.svelte';
   import { goto } from '$app/navigation';
   import { NDKPrivateKeySigner, NDKEvent } from '@nostr-dev-kit/ndk';
@@ -30,21 +29,23 @@
   const totalSteps = 8;
   const progressPercentage = $derived((currentStep / totalSteps) * 100);
 
-  onMount(async () => {
-    const secretKey = generateSecretKey();
-    const privKey = bytesToHex(secretKey);
-    const pubKey = getPublicKey(secretKey);
-    privateKey = privKey;
-    publicKey = pubKey;
+  $effect(() => {
+    (async () => {
+      const secretKey = generateSecretKey();
+      const privKey = bytesToHex(secretKey);
+      const pubKey = getPublicKey(secretKey);
+      privateKey = privKey;
+      publicKey = pubKey;
 
-    // Create signer and login
-    const newSigner = new NDKPrivateKeySigner(privKey);
-    try {
-      await sessions.login(newSigner, true);
-      console.log('Logged in with new keypair:', pubKey);
-    } catch (err) {
-      console.error('Error logging in with new keypair:', err);
-    }
+      // Create signer and login
+      const newSigner = new NDKPrivateKeySigner(privKey);
+      try {
+        await ndk.$sessions.login(newSigner, true);
+        console.log('Logged in with new keypair:', pubKey);
+      } catch (err) {
+        console.error('Error logging in with new keypair:', err);
+      }
+    })();
   });
 
   function goToStep(step: number) {

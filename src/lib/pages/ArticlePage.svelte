@@ -8,7 +8,6 @@
   import CommentSection from '$lib/components/CommentSection.svelte';
   import type { NDKArticle } from '@nostr-dev-kit/ndk';
   import { NDKKind, NDKList } from '@nostr-dev-kit/ndk';
-  import { onMount } from 'svelte';
 
   let article = $state<NDKArticle | null>(null);
   let isLoading = $state(true);
@@ -135,14 +134,6 @@
   function goBack() {
     window.history.back();
   }
-
-  onMount(() => {
-    loadArticle().then(() => {
-      if (article) {
-        checkBookmark();
-      }
-    });
-  });
 
   $effect(() => {
     if (naddr) {

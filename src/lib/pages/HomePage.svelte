@@ -8,6 +8,7 @@
   import MediaGrid from '$lib/components/MediaGrid.svelte';
   import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
+  import { Avatar } from '@nostr-dev-kit/svelte';
 
   type MediaFilter = 'conversations' | 'images' | 'videos' | 'articles';
   let selectedFilter = $state<MediaFilter>('conversations');
@@ -130,6 +131,17 @@
       notesFeed.loadMore();
     }
   }
+
+  // Get unique authors from pending events (up to 3 for display)
+  const pendingAuthors = $derived.by(() => {
+    const authors = new Set<string>();
+    const pending = notesFeed.pendingEvents;
+    for (const event of pending) {
+      if (authors.size >= 3) break;
+      authors.add(event.pubkey);
+    }
+    return Array.from(authors);
+  });
 </script>
 
 <div class="max-w-full mx-auto">
@@ -140,10 +152,14 @@
     </div>
 
     <!-- Media Type Filters -->
-    <div class="flex gap-2 px-4 pb-3 overflow-x-auto">
+    <div class="flex px-4 overflow-x-auto">
       <button
         onclick={() => selectedFilter = 'conversations'}
-        class="flex items-center gap-2 px-4 py-2 rounded-full transition-colors whitespace-nowrap {selectedFilter === 'conversations' ? 'bg-orange-500 text-white' : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'}"
+        class={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
+          selectedFilter === 'conversations'
+            ? 'text-orange-500 border-b-2 border-orange-500'
+            : 'text-neutral-400 hover:text-neutral-300'
+        }`}
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -153,7 +169,11 @@
 
       <button
         onclick={() => selectedFilter = 'images'}
-        class="flex items-center gap-2 px-4 py-2 rounded-full transition-colors whitespace-nowrap {selectedFilter === 'images' ? 'bg-orange-500 text-white' : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'}"
+        class={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
+          selectedFilter === 'images'
+            ? 'text-orange-500 border-b-2 border-orange-500'
+            : 'text-neutral-400 hover:text-neutral-300'
+        }`}
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -163,7 +183,11 @@
 
       <button
         onclick={() => selectedFilter = 'videos'}
-        class="flex items-center gap-2 px-4 py-2 rounded-full transition-colors whitespace-nowrap {selectedFilter === 'videos' ? 'bg-orange-500 text-white' : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'}"
+        class={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
+          selectedFilter === 'videos'
+            ? 'text-orange-500 border-b-2 border-orange-500'
+            : 'text-neutral-400 hover:text-neutral-300'
+        }`}
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -173,7 +197,11 @@
 
       <button
         onclick={() => selectedFilter = 'articles'}
-        class="flex items-center gap-2 px-4 py-2 rounded-full transition-colors whitespace-nowrap {selectedFilter === 'articles' ? 'bg-orange-500 text-white' : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'}"
+        class={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
+          selectedFilter === 'articles'
+            ? 'text-orange-500 border-b-2 border-orange-500'
+            : 'text-neutral-400 hover:text-neutral-300'
+        }`}
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -220,14 +248,25 @@
         {/if}
       </div>
     {:else}
-      <!-- New Events Notification Banner -->
+      <!-- New Notes Indicator (Twitter-style) -->
       {#if notesFeed.pendingCount > 0}
-        <button
-          onclick={() => notesFeed.loadPendingEvents()}
-          class="sticky top-[108px] z-10 w-full py-3 px-4 bg-orange-500 hover:bg-orange-500/90 text-white font-medium transition-colors border-b border-orange-500-dark"
-        >
-          {notesFeed.pendingCount} new {notesFeed.pendingCount === 1 ? 'event' : 'events'} - Click to load
-        </button>
+        <div class="flex justify-center py-2">
+          <button
+            onclick={() => notesFeed.loadPendingEvents()}
+            class="flex items-center gap-2 px-4 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded-full transition-all shadow-lg"
+          >
+            <!-- Avatars -->
+            <div class="flex -space-x-2">
+              {#each pendingAuthors.slice(0, 3) as pubkey (pubkey)}
+                <Avatar {ndk} {pubkey} class="w-6 h-6 rounded-full border-2 border-neutral-900" />
+              {/each}
+            </div>
+            <!-- Text -->
+            <span class="text-sm text-neutral-200 font-medium">
+              {notesFeed.pendingCount} new {notesFeed.pendingCount === 1 ? 'note' : 'notes'}
+            </span>
+          </button>
+        </div>
       {/if}
 
       {#if status === 'connecting'}

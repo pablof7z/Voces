@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import RelaySettings from '$lib/components/settings/RelaySettings.svelte';
   import ThemeSettings from '$lib/components/settings/ThemeSettings.svelte';
   import BlossomSettings from '$lib/components/settings/BlossomSettings.svelte';
@@ -85,7 +84,7 @@
     },
   ];
 
-  onMount(() => {
+  $effect(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get('tab');
     if (tab && sections.some(s => s.id === tab && s.available)) {

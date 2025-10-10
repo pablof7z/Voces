@@ -11,6 +11,7 @@
   import ArticleList from '$lib/components/ArticleList.svelte';
   import PackCard from '$lib/components/PackCard.svelte';
   import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
+  import CreateFollowPackDialog from '$lib/components/CreateFollowPackDialog.svelte';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
 
   const identifier = $derived($page.params.identifier || '');
@@ -23,6 +24,9 @@
   let activeTab = $state<'notes' | 'replies' | 'media' | 'articles' | 'packs'>('notes');
   let isShareModalOpen = $state(false);
   let packFilter = $state<'all' | 'created' | 'appears'>('all');
+  let isCreatePackDialogOpen = $state(false);
+  let isFollowDropdownOpen = $state(false);
+  let dropdownRef: HTMLDivElement;
 
   const allTextEventsFeed = createLazyFeed(
     ndk,
@@ -189,7 +193,64 @@
     }
     return false;
   });
+
+  // Fetch user's created follow packs
+  const userPacksSubscription = ndk.$subscribe(
+    () => currentUser?.pubkey ? ({
+      filters: [{ kinds: [39089, 39092], authors: [currentUser.pubkey], limit: 100 }],
+      bufferMs: 100,
+    }) : undefined
+  );
+
+  interface UserPack {
+    id: string;
+    title: string;
+    pubkeys: string[];
+  }
+
+  const userPacks = $derived.by((): UserPack[] => {
+    return userPacksSubscription.events.map(event => ({
+      id: event.id || '',
+      title: event.tagValue('title') || 'Untitled Pack',
+      pubkeys: event.tags.filter(t => t[0] === 'p').map(t => t[1]),
+    }));
+  });
+
+  function handleClickOutside(event: MouseEvent) {
+    if (dropdownRef && !dropdownRef.contains(event.target as Node)) {
+      isFollowDropdownOpen = false;
+    }
+  }
+
+  function openCreatePackWithUser() {
+    isFollowDropdownOpen = false;
+    isCreatePackDialogOpen = true;
+  }
+
+  async function addToExistingPack(packId: string) {
+    if (!pubkey) return;
+
+    const packEvent = userPacksSubscription.events.find(e => e.id === packId);
+    if (!packEvent) return;
+
+    try {
+      const existingPubkeys = packEvent.tags.filter(t => t[0] === 'p').map(t => t[1]);
+      if (existingPubkeys.includes(pubkey)) {
+        return;
+      }
+
+      packEvent.tags.push(['p', pubkey]);
+      await packEvent.sign();
+      await packEvent.publish();
+
+      isFollowDropdownOpen = false;
+    } catch (error) {
+      console.error('Failed to add to pack:', error);
+    }
+  }
 </script>
+
+<svelte:window onclick={handleClickOutside} />
 
 <div class="max-w-2xl mx-auto">
   <!-- Profile header -->
@@ -234,7 +295,64 @@
               </button>
             </div>
           </div>
-          <FollowButton {pubkey} />
+          <div class="flex items-center gap-2">
+            <FollowButton {pubkey} />
+            {#if !isOwnProfile && currentUser}
+              <div class="relative" bind:this={dropdownRef}>
+                <button
+                  onclick={(e) => {
+                    e.stopPropagation();
+                    isFollowDropdownOpen = !isFollowDropdownOpen;
+                  }}
+                  class="p-2 rounded-full border border-neutral-600 text-neutral-300 hover:bg-neutral-800 transition-colors"
+                  aria-label="More options"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {#if isFollowDropdownOpen}
+                  <div class="absolute right-0 mt-2 w-64 bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl overflow-hidden z-50">
+                    <div class="py-1">
+                      <button
+                        onclick={openCreatePackWithUser}
+                        class="w-full px-4 py-3 text-left text-sm text-neutral-300 hover:bg-neutral-800 transition-colors flex items-center gap-3"
+                      >
+                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Create new follow pack
+                      </button>
+
+                      {#if userPacks.length > 0}
+                        <div class="border-t border-neutral-800 mt-1 pt-1">
+                          <div class="px-4 py-2 text-xs text-neutral-500 font-medium">
+                            Add to existing pack
+                          </div>
+                          {#each userPacks as pack (pack.id)}
+                            {@const alreadyInPack = pack.pubkeys.includes(pubkey)}
+                            <button
+                              onclick={() => addToExistingPack(pack.id)}
+                              disabled={alreadyInPack}
+                              class="w-full px-4 py-2.5 text-left text-sm text-neutral-300 hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-between gap-2"
+                            >
+                              <span class="truncate">{pack.title}</span>
+                              {#if alreadyInPack}
+                                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                              {/if}
+                            </button>
+                          {/each}
+                        </div>
+                      {/if}
+                    </div>
+                  </div>
+                {/if}
+              </div>
+            {/if}
+          </div>
         </div>
         {#if profile?.about}
           <div class="mt-3">
@@ -469,5 +587,13 @@
     onClose={() => isShareModalOpen = false}
     {pubkey}
     {npub}
+  />
+
+  <CreateFollowPackDialog
+    bind:open={isCreatePackDialogOpen}
+    initialPubkey={pubkey}
+    onPublished={() => {
+      userPacksSubscription.restart();
+    }}
   />
 </div>
