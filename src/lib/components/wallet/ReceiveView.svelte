@@ -75,11 +75,13 @@
         depositInstance = null;
         depositInvoice = null;
         isCheckingPayment = false;
+        isProcessing = false;
       });
 
       deposit.on('error', (err) => {
         error = err.message || 'Deposit failed';
         isCheckingPayment = false;
+        isProcessing = false;
       });
 
       const bolt11 = await deposit.start();
@@ -91,6 +93,10 @@
     } finally {
       isProcessing = false;
     }
+  }
+
+  function setPresetAmount(amount: number) {
+    mintAmount = amount.toString();
   }
 
   async function checkMintQuote() {
@@ -137,12 +143,17 @@
 
   {#if success}
     <div class="success-screen">
-      <div class="success-icon">✓</div>
-      <h3>Received!</h3>
-      <p class="success-amount">{new Intl.NumberFormat('en-US').format(success.amount)} sats</p>
-      <button class="primary" onclick={() => { reset(); onBack(); }}>
-        Done
-      </button>
+      <div class="success-backdrop"></div>
+      <div class="success-content">
+        <div class="success-ring">
+          <div class="success-checkmark">✓</div>
+        </div>
+        <h3 class="success-title">Payment Received!</h3>
+        <p class="success-amount">{new Intl.NumberFormat('en-US').format(success.amount)} sats</p>
+        <button class="primary" onclick={() => { reset(); onBack(); }}>
+          Done
+        </button>
+      </div>
     </div>
   {:else}
     <div class="tabs">
@@ -216,6 +227,14 @@
               />
               <span class="amount-unit">sats</span>
             </div>
+
+            <div class="preset-buttons">
+              <button type="button" class="preset-btn" onclick={() => setPresetAmount(1000)}>1k</button>
+              <button type="button" class="preset-btn" onclick={() => setPresetAmount(5000)}>5k</button>
+              <button type="button" class="preset-btn" onclick={() => setPresetAmount(10000)}>10k</button>
+              <button type="button" class="preset-btn" onclick={() => setPresetAmount(21000)}>21k</button>
+              <button type="button" class="preset-btn" onclick={() => setPresetAmount(100000)}>100k</button>
+            </div>
           </div>
 
           {#if error}
@@ -235,38 +254,35 @@
           </button>
         {:else}
           <div class="quote-display">
-            <h4>💳 Payment Request Created</h4>
-            <p class="quote-amount">{mintAmount} sats</p>
+            <h4>Lightning Invoice</h4>
+            <p class="quote-amount">{Number(mintAmount).toLocaleString()} sats</p>
 
             {#if depositInvoice}
               <div class="qr-container">
-                <QRCode value={depositInvoice.toUpperCase()} size={280} />
+                <div class="qr-wrapper">
+                  <QRCode value={depositInvoice.toUpperCase()} size={280} />
+                </div>
               </div>
 
               <div class="invoice-box">
-                <label>Lightning Invoice</label>
+                <label>Invoice String</label>
                 <div class="invoice-text">{depositInvoice}</div>
                 <button class="copy-button" onclick={copyInvoice}>
-                  📋 Copy Invoice
+                  <span class="copy-icon">📋</span> Copy Invoice
                 </button>
+              </div>
+
+              <div class="waiting-status">
+                <div class="spinner"></div>
+                <p>Waiting for payment...</p>
               </div>
             {/if}
 
-            {#if isCheckingPayment}
-              <div class="checking-status">
-                <div class="spinner"></div>
-                <p>Checking payment status...</p>
-              </div>
-            {:else}
-              <div class="quote-actions">
-                <button onclick={checkMintQuote} class="primary">
-                  Check Status
-                </button>
-                <button onclick={cancelMint}>
-                  Cancel
-                </button>
-              </div>
-            {/if}
+            <div class="quote-actions">
+              <button onclick={cancelMint}>
+                Cancel
+              </button>
+            </div>
 
             {#if error}
               <div class="error-message">{error}</div>
@@ -444,45 +460,136 @@
     background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
   }
 
+  .preset-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .preset-btn {
+    flex: 1;
+    padding: 0.5rem;
+    background: rgba(249, 115, 22, 0.1);
+    border: 1px solid rgba(249, 115, 22, 0.3);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #f97316;
+    transition: all 0.2s;
+  }
+
+  .preset-btn:hover {
+    background: rgba(249, 115, 22, 0.2);
+    border-color: rgba(249, 115, 22, 0.5);
+    transform: translateY(-1px);
+  }
+
   .success-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+
+  .success-backdrop {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(249, 115, 22, 0.15) 0%, rgba(0, 0, 0, 0.85) 100%);
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  .success-content {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
-    padding: 2rem 1rem;
+    padding: 2rem;
   }
 
-  .success-icon {
-    width: 80px;
-    height: 80px;
+  .success-ring {
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3rem;
-    color: white;
+    box-shadow: 0 0 40px rgba(16, 185, 129, 0.4);
+    animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  h3 {
+  .success-checkmark {
+    font-size: 4rem;
+    color: white;
+    animation: checkmarkPop 0.4s 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  .success-title {
     margin: 0;
     font-size: 1.75rem;
     font-weight: 700;
+    color: white;
+    animation: fadeSlideUp 0.4s 0.5s ease-out both;
   }
 
   .success-amount {
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-weight: 700;
     background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin: 0;
+    animation: fadeSlideUp 0.4s 0.6s ease-out both;
   }
 
   .success-screen button {
     width: 100%;
     max-width: 200px;
+    animation: fadeSlideUp 0.4s 0.7s ease-out both;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes checkmarkPop {
+    from {
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes fadeSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .quote-display {
@@ -514,10 +621,36 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.03);
+    padding: 1.5rem;
+    background: white;
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .qr-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    padding: 0.5rem;
+    border-radius: 8px;
+  }
+
+  .waiting-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(249, 115, 22, 0.05);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    border-radius: 12px;
+  }
+
+  .waiting-status p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
   }
 
   .invoice-box {
@@ -534,22 +667,46 @@
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 600;
   }
 
   .invoice-text {
-    font-family: monospace;
-    font-size: 0.75rem;
+    font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+    font-size: 0.7rem;
     word-break: break-all;
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.5;
-    padding: 0.75rem;
-    background: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
+    max-height: 100px;
+    overflow-y: auto;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
   }
 
   .copy-button {
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(249, 115, 22, 0.1);
+    border: 1px solid rgba(249, 115, 22, 0.3);
+    color: #f97316;
+    font-weight: 600;
+  }
+
+  .copy-button:hover {
+    background: rgba(249, 115, 22, 0.2);
+    border-color: rgba(249, 115, 22, 0.5);
+  }
+
+  .copy-icon {
+    font-size: 1.1rem;
   }
 
   .checking-status {

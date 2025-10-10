@@ -9,9 +9,10 @@
     onClose?: () => void;
     onPublished?: (packId: string) => void;
     initialPubkey?: string;
+    editingPack?: NDKEvent | null;
   }
 
-  let { open = $bindable(false), onClose, onPublished, initialPubkey }: Props = $props();
+  let { open = $bindable(false), onClose, onPublished, initialPubkey, editingPack }: Props = $props();
 
   let activeTab = $state<'details' | 'members'>('details');
   let isPublishing = $state(false);
@@ -104,7 +105,8 @@
 
     try {
       isPublishing = true;
-      const pack = new NDKFollowPack(ndk);
+
+      const pack = editingPack ? NDKFollowPack.from(editingPack) : new NDKFollowPack(ndk);
       pack.title = title.trim();
       pack.description = description.trim() || undefined;
       pack.image = imageUrl.trim() || undefined;
@@ -113,14 +115,14 @@
       await pack.sign();
       await pack.publish();
 
-      toast.success('Follow pack created');
+      toast.success(editingPack ? 'Follow pack updated' : 'Follow pack created');
       resetForm();
       open = false;
       onPublished?.(pack.id);
       onClose?.();
     } catch (error) {
       console.error('Failed to publish follow pack:', error);
-      toast.error('Failed to create follow pack');
+      toast.error(editingPack ? 'Failed to update follow pack' : 'Failed to create follow pack');
     } finally {
       isPublishing = false;
     }
@@ -155,8 +157,16 @@
     }
   }
 
+  // Load editing pack data when modal opens in edit mode
   $effect(() => {
-    if (open && initialPubkey) {
+    if (open && editingPack) {
+      title = editingPack.tagValue('title') || '';
+      description = editingPack.tagValue('description') || '';
+      imageUrl = editingPack.tagValue('image') || '';
+      const pubkeys = editingPack.tags.filter(t => t[0] === 'p').map(t => t[1]);
+      selectedPubkeys = new Set(pubkeys);
+      activeTab = 'details';
+    } else if (open && initialPubkey) {
       selectedPubkeys = new Set([initialPubkey]);
     }
   });
@@ -193,7 +203,7 @@
             <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
-            Create Follow Pack
+            {editingPack ? 'Edit Follow Pack' : 'Create Follow Pack'}
           </h2>
         </div>
         <button
@@ -201,7 +211,7 @@
           disabled={!title.trim() || selectedPubkeys.size === 0 || isPublishing}
           class="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 disabled:bg-neutral-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-semibold text-sm"
         >
-          {isPublishing ? 'Creating...' : 'Create Pack'}
+          {isPublishing ? (editingPack ? 'Updating...' : 'Creating...') : (editingPack ? 'Update Pack' : 'Create Pack')}
         </button>
       </div>
 

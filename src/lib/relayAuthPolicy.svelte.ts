@@ -1,7 +1,8 @@
 import type { NDKRelay, NDKAuthPolicy } from '@nostr-dev-kit/ndk';
 import { NDKEvent, NDKKind } from '@nostr-dev-kit/ndk';
-import type { NDK } from '@nostr-dev-kit/ndk';
+import type NDK from '@nostr-dev-kit/ndk';
 import createDebug from 'debug';
+import { relayAuthModal } from './stores/relayAuthModal.svelte';
 
 const debug = createDebug('voces:relay:auth');
 
@@ -56,16 +57,19 @@ if (typeof window !== 'undefined') {
 // Prompt user for confirmation
 async function promptUserForAuth(relay: NDKRelay): Promise<boolean> {
   return new Promise((resolve) => {
-    const message = `Relay ${relay.url} is requesting authentication. Do you want to authenticate?`;
-
-    // Use native confirm for now - can be replaced with custom modal
-    const confirmed = confirm(message);
-
-    // Store the decision
-    authDecisionsCache.set(relay.url, confirmed);
-    saveAuthDecisions(authDecisionsCache);
-
-    resolve(confirmed);
+    relayAuthModal.open({
+      relayUrl: relay.url,
+      onConfirm: () => {
+        authDecisionsCache.set(relay.url, true);
+        saveAuthDecisions(authDecisionsCache);
+        resolve(true);
+      },
+      onReject: () => {
+        authDecisionsCache.set(relay.url, false);
+        saveAuthDecisions(authDecisionsCache);
+        resolve(false);
+      }
+    });
   });
 }
 

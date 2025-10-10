@@ -7,7 +7,8 @@
   import ArticleContent from '$lib/components/ArticleContent.svelte';
   import CommentSection from '$lib/components/CommentSection.svelte';
   import type { NDKArticle } from '@nostr-dev-kit/ndk';
-  import { NDKKind, NDKList } from '@nostr-dev-kit/ndk';
+  import { NDKKind, NDKList, NDKEvent } from '@nostr-dev-kit/ndk';
+  import { nip19 } from 'nostr-tools';
 
   let article = $state<NDKArticle | null>(null);
   let isLoading = $state(true);
@@ -44,13 +45,13 @@
     if (!currentUser || !article) return;
 
     try {
-      const lists = await ndk.fetchEvents({
-        kinds: [NDKKind.BookmarkSet],
-        authors: [currentUser.pubkey],
-        '#d': ['bookmarks']
+      const bookmarksNaddr = nip19.naddrEncode({
+        kind: NDKKind.BookmarkSet,
+        pubkey: currentUser.pubkey,
+        identifier: 'bookmarks'
       });
 
-      const bookmarkList = Array.from(lists)[0];
+      const bookmarkList = await ndk.fetchEvent(bookmarksNaddr);
       if (bookmarkList) {
         const bookmarkedItems = bookmarkList.tags
           .filter(tag => tag[0] === 'a')
@@ -68,13 +69,13 @@
     if (!currentUser || !article) return;
 
     try {
-      const lists = await ndk.fetchEvents({
-        kinds: [NDKKind.BookmarkSet],
-        authors: [currentUser.pubkey],
-        '#d': ['bookmarks']
+      const bookmarksNaddr = nip19.naddrEncode({
+        kind: NDKKind.BookmarkSet,
+        pubkey: currentUser.pubkey,
+        identifier: 'bookmarks'
       });
 
-      let bookmarkList = Array.from(lists)[0] as NDKList | undefined;
+      let bookmarkList = await ndk.fetchEvent(bookmarksNaddr) as NDKList | null;
 
       if (!bookmarkList) {
         bookmarkList = new NDKList(ndk);

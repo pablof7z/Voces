@@ -195,11 +195,12 @@
   });
 
   // Fetch user's created follow packs
-  const userPacksSubscription = ndk.$subscribe(
-    () => currentUser?.pubkey ? ({
-      filters: [{ kinds: [39089, 39092], authors: [currentUser.pubkey], limit: 100 }],
-      bufferMs: 100,
-    }) : undefined
+  const userPacksFeed = createLazyFeed(
+    ndk,
+    () => currentUser?.pubkey ? {
+      filters: [{ kinds: [39089, 39092], authors: [currentUser.pubkey], limit: 100 }]
+    } : undefined,
+    { initialLimit: 100, pageSize: 100 }
   );
 
   interface UserPack {
@@ -209,7 +210,7 @@
   }
 
   const userPacks = $derived.by((): UserPack[] => {
-    return userPacksSubscription.events.map(event => ({
+    return userPacksFeed.events.map(event => ({
       id: event.id || '',
       title: event.tagValue('title') || 'Untitled Pack',
       pubkeys: event.tags.filter(t => t[0] === 'p').map(t => t[1]),
@@ -230,7 +231,7 @@
   async function addToExistingPack(packId: string) {
     if (!pubkey) return;
 
-    const packEvent = userPacksSubscription.events.find(e => e.id === packId);
+    const packEvent = userPacksFeed.events.find(e => e.id === packId);
     if (!packEvent) return;
 
     try {
@@ -593,7 +594,8 @@
     bind:open={isCreatePackDialogOpen}
     initialPubkey={pubkey}
     onPublished={() => {
-      userPacksSubscription.restart();
+      // The newly published pack will be picked up automatically by the userPacksFeed subscription
+      // No need to manually restart - NDK will broadcast the event and the subscription will receive it
     }}
   />
 </div>

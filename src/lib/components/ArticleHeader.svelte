@@ -27,6 +27,19 @@
   const isOwnArticle = $derived(currentUser?.pubkey === article.pubkey);
   const npub = $derived(nip19.npubEncode(article.pubkey));
 
+  const firstParagraph = $derived.by(() => {
+    if (!article.content) return '';
+    const paragraphs = article.content.trim().split(/\n\n+/);
+    return paragraphs[0]?.trim() || '';
+  });
+
+  const shouldShowSummary = $derived.by(() => {
+    if (!summary) return false;
+    const normalizedSummary = summary.trim().toLowerCase();
+    const normalizedFirstParagraph = firstParagraph.toLowerCase();
+    return normalizedSummary !== normalizedFirstParagraph;
+  });
+
   function navigateToProfile() {
     window.location.href = `/p/${npub}`;
   }
@@ -37,7 +50,7 @@
     {title}
   </h1>
 
-  {#if summary}
+  {#if shouldShowSummary}
     <p class="text-xl sm:text-2xl text-neutral-600 dark:text-neutral-400 mb-8 leading-relaxed font-light">
       {summary}
     </p>

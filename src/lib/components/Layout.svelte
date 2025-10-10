@@ -5,6 +5,7 @@
   import { useWallet } from '$lib/utils/useWallet.svelte';
   import { relayFilter } from '$lib/stores/relayFilter.svelte';
   import { sidebarStore } from '$lib/stores/sidebar.svelte';
+  import { createPackModal } from '$lib/stores/createPackModal.svelte';
   import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
   import { NDKKind, NDKArticle } from '@nostr-dev-kit/ndk';
   import LoginButton from './LoginButton.svelte';
@@ -245,15 +246,48 @@
         </a>
 
         <button
-          onclick={() => goto('/compose')}
+          onclick={() => {
+            if (path === '/marketplace') {
+              goto('/marketplace/create');
+            } else if (path === '/trades') {
+              goto('/trades/create');
+            } else if (path.startsWith('/packs')) {
+              createPackModal.open();
+            } else {
+              goto('/compose');
+            }
+          }}
           class="w-full flex items-center justify-center {sidebarCollapsed ? 'p-3' : 'gap-2 px-6 py-3'} bg-orange-500 hover:bg-orange-500/90 text-white font-semibold rounded-full transition-colors mt-4"
-          title={sidebarCollapsed ? 'Compose' : undefined}
+          title={sidebarCollapsed ? (path === '/marketplace' ? 'Create Listing' : path === '/trades' ? 'Create Trade' : path.startsWith('/packs') ? 'Create Pack' : 'Compose') : undefined}
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-          </svg>
-          {#if !sidebarCollapsed}
-            <span>Compose</span>
+          {#if path === '/marketplace'}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            {#if !sidebarCollapsed}
+              <span>Create Listing</span>
+            {/if}
+          {:else if path === '/trades'}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            {#if !sidebarCollapsed}
+              <span>Create Trade</span>
+            {/if}
+          {:else if path.startsWith('/packs')}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            {#if !sidebarCollapsed}
+              <span>Create Pack</span>
+            {/if}
+          {:else}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+            {#if !sidebarCollapsed}
+              <span>Compose</span>
+            {/if}
           {/if}
         </button>
       </nav>

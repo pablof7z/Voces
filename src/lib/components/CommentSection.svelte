@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NDKArticle, NDKEvent } from '@nostr-dev-kit/ndk';
+  import { NDKKind } from '@nostr-dev-kit/ndk';
   import { ndk } from '$lib/ndk.svelte';
-  import { fetchArticleComments } from '$lib/utils/fetchArticleComments';
   import CommentForm from './CommentForm.svelte';
   import CommentList from './CommentList.svelte';
 
@@ -12,29 +12,24 @@
 
   let { article, onError }: Props = $props();
 
-  let comments = $state<NDKEvent[]>([]);
-  let isLoading = $state(false);
+  const commentsSubscription = ndk.$subscribe(() => ({
+    filters: [{
+      kinds: [NDKKind.Text],
+      '#a': [`${article.kind}:${article.pubkey}:${article.dTag}`]
+    }],
+    bufferMs: 100
+  }));
 
-  async function loadComments() {
-    isLoading = true;
-    try {
-      const fetchedComments = await fetchArticleComments(ndk, article);
-      comments = fetchedComments;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load comments';
-      onError(errorMessage);
-    } finally {
-      isLoading = false;
-    }
-  }
+  const comments = $derived.by(() => {
+    return commentsSubscription.events.sort((a, b) => (a.created_at || 0) - (b.created_at || 0));
+  });
+
+  const isLoading = $derived(!commentsSubscription.eosed);
 
   function addComment(comment: NDKEvent) {
-    comments = [...comments, comment];
+    // The subscription will automatically pick up the new comment
+    // No need to manually add it
   }
-
-  $effect(() => {
-    loadComments();
-  });
 </script>
 
 <div class="border-t border-neutral-200 dark:border-neutral-800 pt-12">

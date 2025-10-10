@@ -2,10 +2,12 @@
   import { ndkReady } from '$lib/ndk.svelte';
   import { settings } from '$lib/stores/settings.svelte';
   import { browser } from '$app/environment';
-  import { EventContentHandlersProxy } from '@nostr-dev-kit/svelte';
+  import { EventContentHandlersProxy, setEventContentComponents } from '@nostr-dev-kit/svelte';
   import { goto } from '$app/navigation';
   import Toaster from '$lib/components/Toaster.svelte';
   import LoginModal from '$lib/components/LoginModal.svelte';
+  import RelayAuthModal from '$lib/components/RelayAuthModal.svelte';
+  import Hashtag from '$lib/components/Hashtag.svelte';
   import '../app.css';
   import type { Snippet } from 'svelte';
 
@@ -34,6 +36,11 @@
     EventContentHandlersProxy.onLinkClick = (url) => {
       window.open(url, '_blank');
     };
+
+    // Set up custom hashtag component
+    setEventContentComponents({
+      hashtag: Hashtag
+    });
   }
 
   // Initialize theme immediately to prevent flash
@@ -55,6 +62,7 @@
 
 <Toaster />
 <LoginModal />
+<RelayAuthModal />
 
 {#if ready}
   <svelte:boundary onerror={(e) => {

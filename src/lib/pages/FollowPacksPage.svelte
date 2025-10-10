@@ -2,13 +2,43 @@
   import { ndk } from '$lib/ndk.svelte';
   import { goto } from '$app/navigation';
   import { followPacksStore } from '$lib/stores/followPacks.svelte';
+  import { createPackModal } from '$lib/stores/createPackModal.svelte';
   import { mockFollowPacks } from '$lib/data/mockFollowPacks';
   import { NDKKind, type NDKEvent } from '@nostr-dev-kit/ndk';
   import { Avatar } from '@nostr-dev-kit/svelte';
   import CreateFollowPackDialog from '$lib/components/CreateFollowPackDialog.svelte';
 
   let searchQuery = $state('');
-  let isCreateDialogOpen = $state(false);
+
+  type FilterType = 'all' | 'mine' | 'follows' | 'include-me';
+  let activeFilter = $state<FilterType>('all');
+  let isFilterDropdownOpen = $state(false);
+
+  const filterLabels: Record<FilterType, string> = {
+    all: 'All Packs',
+    mine: 'My Packs',
+    follows: 'From Follows',
+    'include-me': 'Include Me'
+  };
+
+  function selectFilter(filter: FilterType) {
+    activeFilter = filter;
+    isFilterDropdownOpen = false;
+  }
+
+  function handleClickOutside(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.filter-dropdown')) {
+      isFilterDropdownOpen = false;
+    }
+  }
+
+  $effect(() => {
+    if (isFilterDropdownOpen) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  });
 
   // Subscribe to follow packs from relays
   const subscription = ndk.$subscribe(
@@ -52,12 +82,34 @@
   });
 
   let filteredPacks = $derived.by(() => {
-    if (!searchQuery) return packs;
-    const search = searchQuery.toLowerCase();
-    return packs.filter(pack =>
-      pack.title.toLowerCase().includes(search) ||
-      (pack.description && pack.description.toLowerCase().includes(search))
-    );
+    let filtered = packs;
+
+    // Apply filter type
+    if (activeFilter !== 'all') {
+      const currentUser = ndk.$currentUser;
+      const userPubkey = currentUser?.pubkey;
+      const userFollows = currentUser?.follows;
+
+      if (activeFilter === 'mine' && userPubkey) {
+        filtered = filtered.filter(pack => pack.pubkey === userPubkey);
+      } else if (activeFilter === 'follows' && userFollows) {
+        const followPubkeys = Array.from(userFollows).map(user => user.pubkey);
+        filtered = filtered.filter(pack => followPubkeys.includes(pack.pubkey));
+      } else if (activeFilter === 'include-me' && userPubkey) {
+        filtered = filtered.filter(pack => pack.pubkeys.includes(userPubkey));
+      }
+    }
+
+    // Apply search query
+    if (searchQuery) {
+      const search = searchQuery.toLowerCase();
+      filtered = filtered.filter(pack =>
+        pack.title.toLowerCase().includes(search) ||
+        (pack.description && pack.description.toLowerCase().includes(search))
+      );
+    }
+
+    return filtered;
   });
 
   let subscribedPacks = $derived.by(() => {
@@ -97,7 +149,7 @@
       </div>
       {#if ndk.$currentUser}
         <button
-          onclick={() => isCreateDialogOpen = true}
+          onclick={() => createPackModal.open()}
           class="px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors font-medium text-sm flex items-center gap-2 flex-shrink-0"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,18 +161,71 @@
     </div>
   </div>
 
-  <!-- Search -->
+  <!-- Search and Filters -->
   <div class="mb-6">
-    <div class="relative">
-      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-      </svg>
-      <input
-        type="search"
-        placeholder="Search follow packs..."
-        bind:value={searchQuery}
-        class="w-full pl-10 pr-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white placeholder:text-neutral-500 focus:outline-none focus:border-orange-500"
-      />
+    <div class="flex gap-3 flex-col sm:flex-row">
+      <div class="relative flex-1">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          type="search"
+          placeholder="Search follow packs..."
+          bind:value={searchQuery}
+          class="w-full pl-10 pr-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white placeholder:text-neutral-500 focus:outline-none focus:border-orange-500"
+        />
+      </div>
+
+      <!-- Filter Dropdown -->
+      {#if ndk.$currentUser}
+        <div class="relative flex-shrink-0 filter-dropdown">
+          <button
+            onclick={() => isFilterDropdownOpen = !isFilterDropdownOpen}
+            class="px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white hover:border-neutral-700 transition-colors flex items-center gap-2 min-w-[160px] justify-between"
+          >
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              <span class="text-sm font-medium">{filterLabels[activeFilter]}</span>
+            </div>
+            <svg class="w-4 h-4 text-neutral-400 transition-transform {isFilterDropdownOpen ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {#if isFilterDropdownOpen}
+            <div class="absolute right-0 mt-2 w-48 bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl z-10">
+              <div class="py-1">
+                <button
+                  onclick={() => selectFilter('all')}
+                  class="w-full px-4 py-2.5 text-left text-sm hover:bg-neutral-800 transition-colors {activeFilter === 'all' ? 'text-orange-500 font-medium' : 'text-neutral-300'}"
+                >
+                  All Packs
+                </button>
+                <button
+                  onclick={() => selectFilter('mine')}
+                  class="w-full px-4 py-2.5 text-left text-sm hover:bg-neutral-800 transition-colors {activeFilter === 'mine' ? 'text-orange-500 font-medium' : 'text-neutral-300'}"
+                >
+                  My Packs
+                </button>
+                <button
+                  onclick={() => selectFilter('follows')}
+                  class="w-full px-4 py-2.5 text-left text-sm hover:bg-neutral-800 transition-colors {activeFilter === 'follows' ? 'text-orange-500 font-medium' : 'text-neutral-300'}"
+                >
+                  From Follows
+                </button>
+                <button
+                  onclick={() => selectFilter('include-me')}
+                  class="w-full px-4 py-2.5 text-left text-sm hover:bg-neutral-800 transition-colors {activeFilter === 'include-me' ? 'text-orange-500 font-medium' : 'text-neutral-300'}"
+                >
+                  Include Me
+                </button>
+              </div>
+            </div>
+          {/if}
+        </div>
+      {/if}
     </div>
   </div>
 
@@ -284,7 +389,7 @@
   </div>
 
   <CreateFollowPackDialog
-    bind:open={isCreateDialogOpen}
+    bind:open={createPackModal.show}
     onPublished={(packId) => {
       subscription.restart();
     }}

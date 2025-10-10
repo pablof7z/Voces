@@ -2,6 +2,7 @@ import NDKCacheSqliteWasm from "@nostr-dev-kit/cache-sqlite-wasm";
 import { NDKSvelte } from '@nostr-dev-kit/svelte';
 import { LocalStorage } from '@nostr-dev-kit/sessions';
 import { browser } from '$app/environment';
+import { createAuthPolicyWithConfirmation } from './relayAuthPolicy.svelte';
 
 const DEFAULT_RELAYS = [
   'wss://relay.primal.net',
@@ -40,6 +41,11 @@ export const ndk = new NDKSvelte({
   }
 });
 
+// Set the relay authentication policy (browser only)
+if (browser) {
+  ndk.relayAuthDefaultPolicy = createAuthPolicyWithConfirmation({ ndk });
+}
+
 // Initialize the cache and connect
 export const ndkReady = (async () => {
   if (!browser) return;
@@ -61,5 +67,12 @@ export const ndkReady = (async () => {
     console.error("❌ Failed to initialize cache:", error);
   }
 })();
+
+// Re-export auth management utilities
+export {
+  clearAuthDecisions,
+  removeAuthDecision,
+  getAuthDecisions
+} from './relayAuthPolicy.svelte';
 
 export default ndk;

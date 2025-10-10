@@ -4,10 +4,12 @@
   import { goto } from '$app/navigation';
   import { toast } from '$lib/stores/toast.svelte';
   import { followPacksStore } from '$lib/stores/followPacks.svelte';
+  import { createPackModal } from '$lib/stores/createPackModal.svelte';
   import { mockFollowPacks } from '$lib/data/mockFollowPacks';
   import { NDKKind, type NDKEvent } from '@nostr-dev-kit/ndk';
   import { Avatar } from '@nostr-dev-kit/svelte';
   import NoteCard from '$lib/components/NoteCard.svelte';
+  import CreateFollowPackDialog from '$lib/components/CreateFollowPackDialog.svelte';
 
   const packId = $derived($page.params.packId);
 
@@ -66,6 +68,7 @@
   const packCreatorProfile = ndk.$fetchProfile(() => pack?.pubkey);
 
   let isFavorite = $derived(pack ? followPacksStore.isFavorite(pack.id) : false);
+  let isMyPack = $derived(pack && ndk.$currentUser ? pack.pubkey === ndk.$currentUser.pubkey : false);
 
   // Subscribe to notes from pack members
   const feedSubscription = $derived.by(() => {
@@ -112,6 +115,12 @@
   function handleBack() {
     goto('/packs');
   }
+
+  function handleEdit() {
+    if (packEvent) {
+      createPackModal.open(packEvent);
+    }
+  }
 </script>
 
 <div class="max-w-4xl mx-auto px-4 py-8">
@@ -150,16 +159,28 @@
             </p>
           </div>
           <div class="flex items-center gap-2">
-            <button
-              onclick={handleFollowAll}
-              disabled={isFollowingAll}
-              class="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-500/90 disabled:bg-neutral-700 text-white font-medium rounded-lg transition-colors whitespace-nowrap"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-              </svg>
-              {isFollowingAll ? 'Following...' : 'Follow All'}
-            </button>
+            {#if isMyPack}
+              <button
+                onclick={handleEdit}
+                class="flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white font-medium rounded-lg transition-colors whitespace-nowrap"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                Edit
+              </button>
+            {:else}
+              <button
+                onclick={handleFollowAll}
+                disabled={isFollowingAll}
+                class="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-500/90 disabled:bg-neutral-700 text-white font-medium rounded-lg transition-colors whitespace-nowrap"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+                {isFollowingAll ? 'Following...' : 'Follow All'}
+              </button>
+            {/if}
             <button
               onclick={handleFavorite}
               class="p-2.5 rounded-lg transition-colors {isFavorite ? 'bg-red-500/10 text-red-500' : 'bg-neutral-800 text-neutral-400 hover:text-white'}"
@@ -296,4 +317,9 @@
       </button>
     </div>
   {/if}
+
+  <CreateFollowPackDialog
+    bind:open={createPackModal.show}
+    editingPack={createPackModal.editingPack}
+  />
 </div>

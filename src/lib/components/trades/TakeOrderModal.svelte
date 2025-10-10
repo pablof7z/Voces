@@ -23,7 +23,7 @@
 
   let { order, onClose }: Props = $props();
 
-  const profile = ndk.storeProfileFromPubkey(order.pubkey);
+  const profile = ndk.$fetchProfile(() => order.pubkey);
   let step = $state<'confirm' | 'processing' | 'complete'>('confirm');
   let accepted = $state(false);
 

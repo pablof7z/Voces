@@ -8,7 +8,7 @@
   let isAdding = $state(false);
   let error = $state<string | null>(null);
 
-  function addMint() {
+  async function addMint() {
     if (!newMintUrl.trim()) {
       error = 'Please enter a mint URL';
       return;
@@ -20,7 +20,15 @@
     }
 
     try {
-      ndk.$wallet.addMint(newMintUrl.trim());
+      const wallet = ndk.$wallet.wallet;
+      if (!wallet) {
+        error = 'Wallet not initialized';
+        return;
+      }
+
+      wallet.mints = [...wallet.mints, newMintUrl.trim()];
+      await wallet.publish();
+
       newMintUrl = '';
       error = null;
       isAdding = false;
@@ -29,9 +37,20 @@
     }
   }
 
-  function removeMint(mint: string) {
+  async function removeMint(mint: string) {
     if (confirm(`Remove mint: ${mint}?`)) {
-      ndk.$wallet.removeMint(mint);
+      try {
+        const wallet = ndk.$wallet.wallet;
+        if (!wallet) {
+          error = 'Wallet not initialized';
+          return;
+        }
+
+        wallet.mints = wallet.mints.filter(m => m !== mint);
+        await wallet.publish();
+      } catch (e) {
+        error = e instanceof Error ? e.message : String(e);
+      }
     }
   }
 

@@ -5,8 +5,9 @@
   import BackupKeySettings from '$lib/components/settings/BackupKeySettings.svelte';
   import DebugSettings from '$lib/components/settings/DebugSettings.svelte';
   import ZapSettings from '$lib/components/settings/ZapSettings.svelte';
+  import WalletSettings from '$lib/components/settings/WalletSettings.svelte';
 
-  type SettingsSection = 'relays' | 'theme' | 'blossom' | 'backup' | 'zap' | 'debug' | null;
+  type SettingsSection = 'relays' | 'theme' | 'blossom' | 'backup' | 'zap' | 'wallet' | 'debug' | null;
 
   interface SectionConfig {
     id: SettingsSection;
@@ -50,6 +51,16 @@
       iconColor: 'text-red-400',
       iconBg: 'bg-red-400/10',
       component: BackupKeySettings,
+      available: true,
+    },
+    {
+      id: 'wallet',
+      label: 'Wallet',
+      description: 'Manage Cashu mints and wallet relays',
+      iconPath: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
+      iconColor: 'text-orange-500',
+      iconBg: 'bg-orange-500/10',
+      component: WalletSettings,
       available: true,
     },
     {

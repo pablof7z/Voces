@@ -9,6 +9,7 @@
   import ReplyIndicator from './ReplyIndicator.svelte';
   import ZapAmountModal from './ZapAmountModal.svelte';
   import RelayBadge from './RelayBadge.svelte';
+  import UserHoverCard from './UserHoverCard.svelte';
 
   interface Props {
     event: NDKEvent;
@@ -36,6 +37,10 @@
   let zapSuccess = $state(false);
   let longPressTimer: ReturnType<typeof setTimeout> | null = null;
   let zapButtonElement = $state<HTMLButtonElement | null>(null);
+  let showUserHoverCard = $state(false);
+  let hoverCardPosition = $state({ x: 0, y: 0 });
+  let hoverTimer: ReturnType<typeof setTimeout> | null = null;
+  let avatarElement = $state<HTMLButtonElement | null>(null);
 
   const interactions = ndk.$subscribe(() => ({
     filters: [{
@@ -215,6 +220,57 @@
     }
   }
 
+  function handleAvatarMouseEnter(e: MouseEvent) {
+    if (hoverTimer) clearTimeout(hoverTimer);
+
+    hoverTimer = setTimeout(() => {
+      if (avatarElement) {
+        const rect = avatarElement.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const cardWidth = 320; // w-80 = 320px
+        const spacing = 16;
+
+        // Calculate horizontal position
+        let x = rect.right + spacing;
+
+        // If card would overflow right edge, position to the left
+        if (x + cardWidth > viewportWidth - spacing) {
+          x = rect.left - cardWidth - spacing;
+        }
+
+        // Vertical position - align with top of avatar
+        const y = rect.top;
+
+        hoverCardPosition = { x, y };
+        showUserHoverCard = true;
+      }
+    }, 500);
+  }
+
+  function handleAvatarMouseLeave(e: MouseEvent) {
+    if (hoverTimer) {
+      clearTimeout(hoverTimer);
+      hoverTimer = null;
+    }
+
+    // Don't hide if moving to the hover card
+    hoverTimer = setTimeout(() => {
+      showUserHoverCard = false;
+    }, 100);
+  }
+
+  function handleHoverCardMouseEnter() {
+    // Cancel the hide timer when entering the card
+    if (hoverTimer) {
+      clearTimeout(hoverTimer);
+      hoverTimer = null;
+    }
+  }
+
+  function handleHoverCardMouseLeave() {
+    showUserHoverCard = false;
+  }
+
   $effect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (showOptionsMenu) {
@@ -244,8 +300,11 @@
   <div class="flex gap-3">
     <!-- Avatar -->
     <button
+      bind:this={avatarElement}
       type="button"
       onclick={(e) => { e.stopPropagation(); navigateToProfile(); }}
+      onmouseenter={handleAvatarMouseEnter}
+      onmouseleave={handleAvatarMouseLeave}
       class="flex-shrink-0 self-start"
     >
       <Avatar {ndk} pubkey={event.pubkey} class="{avatarSize} cursor-pointer hover:opacity-80 transition-opacity" />
@@ -412,3 +471,15 @@
   onZap={handleZapModalZap}
   onCancel={() => showZapModal = false}
 />
+
+<!-- User Hover Card -->
+<div
+  onmouseenter={handleHoverCardMouseEnter}
+  onmouseleave={handleHoverCardMouseLeave}
+>
+  <UserHoverCard
+    pubkey={event.pubkey}
+    isVisible={showUserHoverCard}
+    position={hoverCardPosition}
+  />
+</div>

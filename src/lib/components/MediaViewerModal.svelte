@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NDKEvent, NDKImetaTag } from '@nostr-dev-kit/ndk';
+  import { NDKKind } from '@nostr-dev-kit/ndk';
   import { ndk } from '$lib/ndk.svelte';
-  import { fetchArticleComments } from '$lib/utils/fetchArticleComments';
   import CommentCard from './CommentCard.svelte';
   import CommentForm from './CommentForm.svelte';
   import { Avatar } from '@nostr-dev-kit/svelte';
@@ -18,29 +18,32 @@
 
   const { open, event, imeta, mediaType, onClose }: Props = $props();
 
-  let comments = $state<NDKEvent[]>([]);
-  let isLoadingComments = $state(false);
   let errorMessage = $state('');
+
+  const commentsSubscription = ndk.$subscribe(() => {
+    if (!open || !event.id) return undefined;
+    return {
+      filters: [{
+        kinds: [NDKKind.Text],
+        '#e': [event.id]
+      }],
+      bufferMs: 100
+    };
+  });
+
+  const comments = $derived.by(() => {
+    return commentsSubscription.events.sort((a, b) => (a.created_at || 0) - (b.created_at || 0));
+  });
+
+  const isLoadingComments = $derived(!commentsSubscription.eosed);
 
   const profile = ndk.$fetchProfile(() => event.pubkey);
   const displayName = $derived(profile?.name || profile?.displayName || 'Anonymous');
   const npub = $derived(nip19.npubEncode(event.pubkey));
   const timeAgo = $derived(event.created_at ? formatDistanceToNow(new Date(event.created_at * 1000), { addSuffix: true }) : '');
 
-  async function loadComments() {
-    isLoadingComments = true;
-    try {
-      const fetchedComments = await fetchArticleComments(ndk, event as any);
-      comments = fetchedComments;
-    } catch (err) {
-      errorMessage = err instanceof Error ? err.message : 'Failed to load comments';
-    } finally {
-      isLoadingComments = false;
-    }
-  }
-
   function addComment(comment: NDKEvent) {
-    comments = [...comments, comment];
+    // The subscription will automatically pick up the new comment
   }
 
   function handleError(error: string) {
@@ -60,7 +63,6 @@
 
   $effect(() => {
     if (open) {
-      loadComments();
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
