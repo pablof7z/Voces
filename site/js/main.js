@@ -1,7 +1,7 @@
 // Animate numbers on scroll
 function animateValue(element, start, end, duration) {
     const startTimestamp = Date.now();
-    const step = (timestamp) => {
+    const step = (_timestamp) => {
         const progress = Math.min((Date.now() - startTimestamp) / duration, 1);
         const value = Math.floor(progress * (end - start) + start);
         element.textContent = value.toLocaleString();

@@ -112,7 +112,7 @@ Visit any of these URLs directly (no login needed):
 - Progress indicators
 - **Perfect for**: General audience, newcomers to Nostr
 
-**Flow**: Intro → Why Voces → Setup → Ready
+**Flow**: Intro → Why Agora → Setup → Ready
 **Duration**: ~50 seconds
 
 ---

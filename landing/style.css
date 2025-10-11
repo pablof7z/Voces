@@ -1,0 +1,318 @@
+/* Reset and Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-purple: #6B46C1;
+    --deep-purple: #4C1D95;
+    --electric-blue: #2563EB;
+    --bitcoin-orange: #F7931A;
+    --nostr-purple: #8B5CF6;
+    --dark-bg: #0F0F14;
+    --darker-bg: #050507;
+    --light-text: #F9FAFB;
+    --gray-text: #9CA3AF;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--darker-bg);
+    color: var(--light-text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+.landing-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 3D World Container */
+.world-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 1;
+}
+
+#worldCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Content Overlay */
+.content-overlay {
+    position: relative;
+    z-index: 10;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.logo-image {
+    height: 80px;
+    width: auto;
+    filter: drop-shadow(0 0 20px rgba(246, 142, 29, 0.2));
+}
+
+/* Tagline */
+.tagline {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Subtitle */
+.subtitle {
+    font-size: 1.25rem;
+    color: var(--gray-text);
+    margin-bottom: 2rem;
+    max-width: 800px;
+    line-height: 1.7;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.highlight-city {
+    color: var(--light-text);
+    font-weight: 600;
+}
+
+.highlight-bitcoin {
+    color: var(--bitcoin-orange);
+    font-weight: 600;
+}
+
+/* Manifesto */
+.manifesto {
+    max-width: 700px;
+    margin: 0 auto 3rem;
+    text-align: left;
+}
+
+.manifesto-line {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--gray-text);
+    margin-bottom: 0.5rem;
+}
+
+.manifesto-line strong {
+    color: var(--light-text);
+    font-weight: 600;
+}
+
+/* Status Indicator */
+.status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(107, 70, 193, 0.3);
+    border-radius: 12px;
+    animation: fadeInUp 1s ease-out 0.9s both;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--bitcoin-orange);
+    border-radius: 50%;
+    animation: statusPulse 2s ease-in-out infinite;
+    box-shadow: 0 0 10px var(--bitcoin-orange);
+}
+
+.status-text {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--gray-text);
+}
+
+@keyframes statusPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.2);
+    }
+}
+
+/* Footer */
+.footer {
+    position: absolute;
+    bottom: 2rem;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+}
+
+.footer-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--gray-text);
+    opacity: 0.7;
+}
+
+.wlc-logo {
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes shimmer {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .logo-image {
+        height: 60px;
+    }
+
+    .tagline {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .subtitle {
+        font-size: 1.125rem;
+        padding: 0 1.5rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .manifesto {
+        padding: 0 1.5rem;
+    }
+
+    .manifesto-line {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-image {
+        height: 50px;
+    }
+
+    .tagline {
+        font-size: 1.75rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        padding: 0 1rem;
+        line-height: 1.6;
+        margin-bottom: 1.25rem;
+    }
+
+    .manifesto {
+        padding: 0 1rem;
+    }
+
+    .manifesto-line {
+        font-size: 0.9375rem;
+    }
+
+    .footer {
+        bottom: 1.5rem;
+    }
+
+    .footer-text {
+        font-size: 0.75rem;
+        padding: 0 1rem;
+    }
+
+    .wlc-logo {
+        height: 16px;
+        width: 16px;
+    }
+}

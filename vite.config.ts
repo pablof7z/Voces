@@ -1,22 +1,17 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
+  plugins: [sveltekit()],
   optimizeDeps: {
-    exclude: ['@nostr-dev-kit/ndk-cache-sqlite-wasm']
+    exclude: ['@nostr-dev-kit/ndk-cache-sqlite-wasm', '@nostr-dev-kit/ndk-svelte5']
   },
   worker: {
     format: 'es'
   },
   server: {
+    port: 5173,
+    host: true,
     headers: {
       'Cross-Origin-Embedder-Policy': 'credentialless',
       'Cross-Origin-Opener-Policy': 'same-origin',
@@ -32,4 +27,4 @@ export default defineConfig({
     }
   },
   assetsInclude: ['**/*.wasm'],
-})
+});

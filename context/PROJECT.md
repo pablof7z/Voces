@@ -1,10 +1,10 @@
-# Voces - NDK Nostr App
+# Agora - NDK Nostr App
 
 A modern React-based Nostr client built with NDK (Nostr Development Kit), Vite, shadcn/ui, and TypeScript.
 
 ## Project Overview
 
-Voces is a Nostr client application that allows users to authenticate with Nostr extensions or private keys, publish notes to the Nostr network, and view a real-time feed of notes from followed users. The application follows modern React best practices with a clean, modular architecture and a minimalistic, responsive UI.
+Agora is a Nostr client application that allows users to authenticate with Nostr extensions or private keys, publish notes to the Nostr network, and view a real-time feed of notes from followed users. The application follows modern React best practices with a clean, modular architecture and a minimalistic, responsive UI.
 
 ## Technology Stack
 
