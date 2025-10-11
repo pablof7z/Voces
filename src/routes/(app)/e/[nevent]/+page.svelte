@@ -64,10 +64,10 @@
   const replies = ndk.$subscribe(() => {
     if (!mainEvent) return undefined;
     return {
-      filters: [{
-        kinds: [1],
-        '#e': [mainEvent.id]
-      }],
+      filters: [
+        { kinds: [1], '#e': [mainEvent.id] },
+        { kinds: [1], '#e': [mainEvent.id] },
+      ],
       subId: 'main-event-replies'
     };
   });
@@ -128,11 +128,11 @@
       );
       // If there's a specific reply tag, check if it's replying to our event
       if (replyTag) {
-        return replyTag[1] === mainEvent.id;
+        return replyTag[1] === mainEvent?.id;
       }
       // Otherwise check if our event is the last 'e' tag (older format)
       const eTags = reply.tags.filter(tag => tag[0] === 'e');
-      return eTags.length > 0 && eTags[eTags.length - 1][1] === mainEvent.id;
+      return eTags.length > 0 && eTags[eTags.length - 1][1] === mainEvent?.id;
     });
 
     // Sort by creation time (oldest first)

@@ -3,16 +3,17 @@
   import { goto } from '$app/navigation';
   import { ndk } from '$lib/ndk.svelte';
   import { useWallet } from '$lib/utils/useWallet.svelte';
-  import { relayFilter } from '$lib/stores/relayFilter.svelte';
   import { sidebarStore } from '$lib/stores/sidebar.svelte';
+  import { settings } from '$lib/stores/settings.svelte';
   import { createPackModal } from '$lib/stores/createPackModal.svelte';
   import { createListingModal } from '$lib/stores/createListingModal.svelte';
   import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
   import { NDKKind, NDKArticle } from '@nostr-dev-kit/ndk';
+  import RelaySelector from './RelaySelector.svelte';
   import LoginButton from './LoginButton.svelte';
   import UserMenu from './UserMenu.svelte';
   import MarketplaceSidebar from './MarketplaceSidebar.svelte';
-  import RelaySelector from './RelaySelector.svelte';
+  import NewMembersWidget from './NewMembersWidget.svelte';
   import type { Snippet } from 'svelte';
 
   interface Props {
@@ -56,8 +57,8 @@
   });
 
   const selectedRelayInfo = $derived.by(() => {
-    if (!relayFilter.selectedRelay) return null;
-    return useRelayInfoCached(relayFilter.selectedRelay);
+    if (!settings.selectedRelay) return null;
+    return useRelayInfoCached(settings.selectedRelay);
   });
 
   // Auto-collapse sidebar when viewing articles
@@ -76,7 +77,7 @@
 <div class="min-h-screen bg-black flex justify-center overflow-x-hidden">
   <div class="flex w-full max-w-[1400px] relative">
     <!-- Left Sidebar - Navigation -->
-    <aside class="hidden lg:flex {sidebarCollapsed ? 'w-20' : 'w-64'} flex-col border-r border-neutral-800/50 p-4 fixed left-0 top-0 bottom-0 overflow-y-auto transition-all duration-300 ease-in-out">
+    <aside class="hidden lg:flex {sidebarCollapsed ? 'w-20' : 'w-64'} flex-col border-r border-neutral-800/50 p-4 fixed left-0 top-0 bottom-0 overflow-y-auto overflow-x-visible transition-all duration-300 ease-in-out">
       <!-- Header: Logo and Toggle -->
       <div class="mb-6 flex items-center {sidebarCollapsed ? 'justify-center' : 'justify-between'} gap-2">
         <!-- Agora Branding -->
@@ -150,30 +151,7 @@
       <!-- Navigation -->
       <nav class="flex-1 space-y-2">
         <!-- Following / Relay Selector -->
-        {#if !sidebarCollapsed}
-          <RelaySelector active={path === '/'} />
-        {:else}
-          <a
-            href="/"
-            class="flex items-center justify-center p-3 rounded-lg transition-colors {path === '/' ? 'text-orange-500 bg-orange-500/10' : 'text-neutral-300 hover:bg-neutral-800/50'}"
-            title={relayFilter.selectedRelay ? (selectedRelayInfo?.info?.name || relayFilter.selectedRelay.replace('wss://', '').replace('ws://', '')) : 'Following'}
-          >
-            {#if relayFilter.selectedRelay && selectedRelayInfo?.info?.icon}
-              <img src={selectedRelayInfo.info.icon} alt="" class="w-6 h-6 rounded flex-shrink-0" />
-            {:else if relayFilter.selectedRelay}
-              <div class="w-6 h-6 rounded bg-orange-500 flex items-center justify-center flex-shrink-0">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-                </svg>
-              </div>
-            {:else}
-              <!-- Users icon for "Following" -->
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            {/if}
-          </a>
-        {/if}
+        <RelaySelector active={path === '/'} collapsed={sidebarCollapsed} />
 
         <a
           href="/messages"
@@ -320,6 +298,9 @@
             {#if sidebarStore.rightSidebar}
               {@render sidebarStore.rightSidebar()}
             {:else}
+              <!-- New Members Widget (only shown when a relay is selected) -->
+              <NewMembersWidget />
+
               <!-- Recent Articles Widget -->
               <div class="p-4 bg-neutral-900 rounded-lg border border-neutral-800">
                 <div class="flex items-center gap-2 mb-4">

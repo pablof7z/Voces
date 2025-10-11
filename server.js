@@ -186,14 +186,14 @@ function generateMetaTags(type, data, identifier) {
   let tags = [];
 
   // Default tags
-  tags.push(`<meta property="og:site_name" content="Voces">`);
+  tags.push(`<meta property="og:site_name" content="Agora">`);
   tags.push(`<meta property="og:type" content="website">`);
   tags.push(`<meta name="twitter:card" content="summary_large_image">`);
 
   if (!event && type !== 'profile') {
     // Fallback for when content can't be loaded
-    tags.push(`<meta property="og:title" content="Voces - Nostr Content">`);
-    tags.push(`<meta property="og:description" content="View this content on Voces">`);
+    tags.push(`<meta property="og:title" content="Agora - Nostr Content">`);
+    tags.push(`<meta property="og:description" content="View this content on Agora">`);
     return tags.join('\n    ');
   }
 
@@ -240,7 +240,7 @@ function generateMetaTags(type, data, identifier) {
     case 'profile':
       const userProfile = profile || {};
       tags.push(`<meta property="og:title" content="${escapeHtml(userProfile.name || 'Nostr User')}">`);
-      tags.push(`<meta property="og:description" content="${escapeHtml(userProfile.about || 'Nostr profile on Voces')}">`);
+      tags.push(`<meta property="og:description" content="${escapeHtml(userProfile.about || 'Nostr profile on Agora')}">`);
       tags.push(`<meta property="og:url" content="${baseUrl}/p/${identifier}">`);
 
       if (userProfile.picture) {

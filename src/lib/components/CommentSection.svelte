@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NDKArticle, NDKEvent } from '@nostr-dev-kit/ndk';
-  import { NDKKind } from '@nostr-dev-kit/ndk';
+  import NDK, { NDKKind } from '@nostr-dev-kit/ndk';
   import { ndk } from '$lib/ndk.svelte';
   import CommentForm from './CommentForm.svelte';
   import CommentList from './CommentList.svelte';
@@ -14,7 +14,7 @@
 
   const commentsSubscription = ndk.$subscribe(() => ({
     filters: [{
-      kinds: [NDKKind.Text],
+      kinds: [NDKKind.Text, NDKKind.GenericReply],
       '#a': [`${article.kind}:${article.pubkey}:${article.dTag}`]
     }],
     bufferMs: 100

@@ -5,7 +5,6 @@
   import { Avatar } from '@nostr-dev-kit/svelte';
   import { toast } from '$lib/stores/toast.svelte';
   import { settings } from '$lib/stores/settings.svelte';
-  import { relayFilter } from '$lib/stores/relayFilter.svelte';
   import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
   import { clickOutside } from '$lib/utils/clickOutside';
 
@@ -31,8 +30,8 @@
   // Initialize selected relays from current relay filter or use all write relays
   $effect(() => {
     if (open) {
-      if (relayFilter.selectedRelay) {
-        selectedRelayUrls = [relayFilter.selectedRelay];
+      if (settings.selectedRelay) {
+        selectedRelayUrls = [settings.selectedRelay];
       } else if (selectedRelayUrls.length === 0) {
         selectedRelayUrls = allRelays.filter(r => r.write).map(r => r.url);
       }

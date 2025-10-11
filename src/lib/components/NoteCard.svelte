@@ -2,7 +2,6 @@
   import type { NDKEvent } from '@nostr-dev-kit/ndk';
   import { ndk } from '$lib/ndk.svelte';
   import { Avatar, EventContent, zap } from '@nostr-dev-kit/svelte';
-  import { formatDistanceToNow } from 'date-fns';
   import { toast } from '$lib/stores/toast.svelte';
   import { settings } from '$lib/stores/settings.svelte';
   import ComposeDialog from './ComposeDialog.svelte';
@@ -10,6 +9,7 @@
   import ZapAmountModal from './ZapAmountModal.svelte';
   import RelayBadge from './RelayBadge.svelte';
   import UserHoverCard from './UserHoverCard.svelte';
+  import TimeAgo from './TimeAgo.svelte';
 
   interface Props {
     event: NDKEvent;
@@ -97,11 +97,6 @@
   );
 
   const clickable = $derived(variant === 'default' || (onNavigate !== undefined));
-
-  function formatTime(timestamp: number | undefined) {
-    if (!timestamp) return '';
-    return formatDistanceToNow(new Date(timestamp * 1000), { addSuffix: true });
-  }
 
   async function handleReact(emoji: string) {
     if (!ndk.signer) {
@@ -322,9 +317,9 @@
           </span>
         {/if}
         <span class="text-neutral-500 text-sm">·</span>
-        <span class="text-neutral-500 text-sm">
-          {formatTime(event.created_at)}
-        </span>
+        {#if event.created_at}
+          <TimeAgo timestamp={event.created_at} class="text-neutral-500 text-sm" />
+        {/if}
         <div class="ml-auto relative">
           <button
             onclick={(e) => { e.stopPropagation(); showOptionsMenu = !showOptionsMenu; }}

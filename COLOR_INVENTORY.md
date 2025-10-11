@@ -1,4 +1,4 @@
-# Color Inventory - Voces App
+# Color Inventory - Agora App
 
 ## Color Usage Analysis
 

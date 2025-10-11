@@ -1,6 +1,6 @@
 # Invite System UI Mockups
 
-This document describes the various UI mockups created for the Voces invite system.
+This document describes the various UI mockups created for the Agora invite system.
 
 ## Access Points
 
@@ -157,7 +157,7 @@ Test these by visiting the URLs directly with any code (e.g., `/i-1/test123`)
 
 **User Journey**:
 1. Intro card with inviter branding
-2. "Why Voces?" feature showcase
+2. "Why Agora?" feature showcase
 3. Setup form
 4. Ready screen with rotating star icon
 

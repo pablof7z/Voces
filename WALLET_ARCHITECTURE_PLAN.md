@@ -1,5 +1,5 @@
 # Wallet Architecture Plan (REVISED)
-## Leveraging ndk-wallet Through ndk-svelte5 in Voces
+## Leveraging ndk-wallet Through ndk-svelte5 in Agora
 
 ---
 
@@ -218,7 +218,7 @@ class WalletStore {
 
 ---
 
-## Phase 2: Update Voces to Use Enhanced Store
+## Phase 2: Update Agora to Use Enhanced Store
 
 ### 2.1 Delete Custom Wallet Code
 
@@ -416,7 +416,7 @@ src/lib/components/wallet/
 **Day 5:** Test with nutsack example app
 **Days 6-7:** Documentation and polish
 
-### Week 2: Voces Integration
+### Week 2: Agora Integration
 **Days 1-2:** Remove custom wallet code, integrate ndk-svelte5 store
 **Days 3-5:** Build wallet UI components
 **Days 6-7:** Integration testing, bug fixes, polish
@@ -433,7 +433,7 @@ src/lib/components/wallet/
 - ✅ Nutzap monitoring tracks and redeems zaps
 - ✅ State persists across page reloads
 
-### Voces
+### Agora
 - ✅ Wallet initializes on login
 - ✅ Deposit flow works (create invoice → QR → auto-redeem)
 - ✅ Receive token flow works
@@ -520,7 +520,7 @@ wallet.clear();
    - Added `getMintBalances()` method
    - All methods are thin wrappers around ndk-wallet core functionality
 
-2. ✅ Refactored Voces to use enhanced ndk-svelte5 wallet
+2. ✅ Refactored Agora to use enhanced ndk-svelte5 wallet
    - Removed custom wallet code:
      - `src/lib/stores/wallet.svelte.ts`
      - `src/lib/wallet/` (entire directory)
@@ -531,7 +531,7 @@ wallet.clear();
    - Configured default mint: `https://mint.minibits.cash/Bitcoin`
    - Enabled nutzap monitoring by default
 
-3. ✅ Built wallet UI components in Voces
+3. ✅ Built wallet UI components in Agora
    - ✅ `BalanceCard.svelte` - Balance display with wallet type indicator
    - ✅ `DepositModal.svelte` - Lightning deposit UI with QR code generation
    - ✅ `ReceiveTokenModal.svelte` - Cashu token redemption interface

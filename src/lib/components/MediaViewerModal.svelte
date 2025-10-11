@@ -6,7 +6,7 @@
   import CommentForm from './CommentForm.svelte';
   import { Avatar } from '@nostr-dev-kit/svelte';
   import { nip19 } from 'nostr-tools';
-  import { formatDistanceToNow } from 'date-fns';
+  import TimeAgo from './TimeAgo.svelte';
 
   interface Props {
     open: boolean;
@@ -40,7 +40,6 @@
   const profile = ndk.$fetchProfile(() => event.pubkey);
   const displayName = $derived(profile?.name || profile?.displayName || 'Anonymous');
   const npub = $derived(nip19.npubEncode(event.pubkey));
-  const timeAgo = $derived(event.created_at ? formatDistanceToNow(new Date(event.created_at * 1000), { addSuffix: true }) : '');
 
   function addComment(comment: NDKEvent) {
     // The subscription will automatically pick up the new comment
@@ -135,8 +134,8 @@
               <button type="button" onclick={navigateToProfile} class="hover:underline">
                 <p class="font-semibold text-white">{displayName}</p>
               </button>
-              {#if timeAgo}
-                <p class="text-sm text-neutral-400">{timeAgo}</p>
+              {#if event.created_at}
+                <TimeAgo timestamp={event.created_at} class="text-sm text-neutral-400" />
               {/if}
             </div>
           </div>

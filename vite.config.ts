@@ -6,15 +6,6 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['@nostr-dev-kit/ndk-cache-sqlite-wasm', '@nostr-dev-kit/ndk-svelte5']
   },
-  ssr: {
-    noExternal: [],
-    external: ['zustand']
-  },
-  build: {
-    rollupOptions: {
-      external: ['zustand']
-    }
-  },
   worker: {
     format: 'es'
   },

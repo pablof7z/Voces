@@ -2,13 +2,17 @@
   import RelaySettings from '$lib/components/settings/RelaySettings.svelte';
   import ThemeSettings from '$lib/components/settings/ThemeSettings.svelte';
   import BlossomSettings from '$lib/components/settings/BlossomSettings.svelte';
-  import BackupKeySettings from '$lib/components/settings/BackupKeySettings.svelte';
+  import KeyManagementSettings from '$lib/components/settings/KeyManagementSettings.svelte';
   import DebugSettings from '$lib/components/settings/DebugSettings.svelte';
   import ZapSettings from '$lib/components/settings/ZapSettings.svelte';
   import WalletSettings from '$lib/components/settings/WalletSettings.svelte';
   import HashtagSettings from '$lib/components/settings/HashtagSettings.svelte';
+  import ProfileSettings from '$lib/components/settings/ProfileSettings.svelte';
+  import CreateInviteModal from '$lib/components/invite/CreateInviteModal.svelte';
 
-  type SettingsSection = 'relays' | 'theme' | 'blossom' | 'backup' | 'zap' | 'wallet' | 'hashtags' | 'debug' | null;
+  type SettingsSection = 'profile' | 'relays' | 'theme' | 'blossom' | 'keys' | 'zap' | 'wallet' | 'hashtags' | 'debug' | null;
+
+  let showInviteModal = $state(false);
 
   interface SectionConfig {
     id: SettingsSection;
@@ -24,6 +28,16 @@
   let activeSection = $state<SettingsSection>(null);
 
   const sections: SectionConfig[] = [
+    {
+      id: 'profile',
+      label: 'Profile',
+      description: 'Edit your profile information and picture',
+      iconPath: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
+      iconColor: 'text-orange-500',
+      iconBg: 'bg-orange-500/10',
+      component: ProfileSettings,
+      available: true,
+    },
     {
       id: 'relays',
       label: 'Relays',
@@ -55,13 +69,13 @@
       available: true,
     },
     {
-      id: 'backup',
-      label: 'Key Backup',
-      description: 'Backup your private key with trusted contacts',
+      id: 'keys',
+      label: 'Private Key',
+      description: 'View and backup your private key',
       iconPath: 'M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z',
-      iconColor: 'text-red-400',
-      iconBg: 'bg-red-400/10',
-      component: BackupKeySettings,
+      iconColor: 'text-red-500',
+      iconBg: 'bg-red-500/10',
+      component: KeyManagementSettings,
       available: true,
     },
     {
@@ -149,6 +163,57 @@
       </div>
 
       <div class="px-6 py-6 space-y-6">
+        <!-- Create Invite Button -->
+        <div class="space-y-3">
+          <button
+            onclick={() => showInviteModal = true}
+            class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 rounded-xl p-4 flex items-center justify-between transition-all"
+          >
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-white/20">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+              </div>
+              <div class="text-left">
+                <div class="text-sm font-semibold text-white">
+                  Create Invite
+                </div>
+                <div class="text-xs text-white/80">
+                  Invite someone to join Agora
+                </div>
+              </div>
+            </div>
+            <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          <a
+            href="/invites"
+            class="w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-xl p-4 flex items-center justify-between transition-all"
+          >
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-orange-500/10">
+                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <div class="text-left">
+                <div class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                  My Invites
+                </div>
+                <div class="text-xs text-neutral-500 dark:text-neutral-600">
+                  View and manage sent invites
+                </div>
+              </div>
+            </div>
+            <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+
         {#each sections as section}
           <div>
             <button
@@ -190,3 +255,5 @@
     {/if}
   </div>
 </div>
+
+<CreateInviteModal bind:isOpen={showInviteModal} onClose={() => showInviteModal = false} />

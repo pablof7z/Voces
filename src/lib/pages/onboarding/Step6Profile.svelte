@@ -1,12 +1,16 @@
 <script lang="ts">
+  import { ndk } from '$lib/ndk.svelte';
+  import PictureUpload from '$lib/components/onboarding/PictureUpload.svelte';
+
   interface Props {
     profileData: {
       name: string;
       bio: string;
       location: string;
       banner: number;
+      picture?: string;
     };
-    onUpdateProfile: (data: { name: string; bio: string; location: string; banner: number }) => void;
+    onUpdateProfile: (data: { name: string; bio: string; location: string; banner: number; picture?: string }) => void;
     onNext: () => void;
   }
 
@@ -37,6 +41,10 @@
   function cycleBanner() {
     const nextBanner = (profileData.banner + 1) % bannerColors.length;
     onUpdateProfile({ ...profileData, banner: nextBanner });
+  }
+
+  function handlePictureUpload(url: string) {
+    onUpdateProfile({ ...profileData, picture: url });
   }
 </script>
 
@@ -84,8 +92,13 @@
         </div>
       </button>
       <div class="relative -mt-14 px-6 pb-6">
-        <div class="w-28 h-28 bg-neutral-900 dark:bg-white text-white dark:text-black rounded-full border-4 border-white dark:border-neutral-900 flex items-center justify-center text-3xl font-bold">
-          {getInitials(profileData.name)}
+        <div class="relative w-28 h-28">
+          <PictureUpload
+            ndk={ndk}
+            onUploadComplete={handlePictureUpload}
+            currentImageUrl={profileData.picture}
+            fallbackInitials={getInitials(profileData.name)}
+          />
         </div>
         <div class="mt-4 space-y-3">
           <div>

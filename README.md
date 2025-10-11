@@ -1,4 +1,4 @@
-# Voces - Modern NDK Nostr App
+# Agora - Modern NDK Nostr App
 
 A modern React-based Nostr client built with NDK (Nostr Development Kit), Vite, shadcn/ui, and TypeScript.
 

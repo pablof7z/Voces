@@ -15,11 +15,10 @@
   let followPacks = $state<NDKFollowPack[]>([]);
   let loading = $state(true);
 
-  const communityKey = selectedCommunity || 'venezuela';
-  const relayUrls = COMMUNITY_RELAYS[communityKey];
-  const communityInfo = COMMUNITY_METADATA[communityKey] || COMMUNITY_METADATA.venezuela;
-
   $effect(() => {
+    const communityKey = selectedCommunity || 'venezuela';
+    const relayUrls = COMMUNITY_RELAYS[communityKey];
+
     if (!relayUrls || relayUrls.length === 0) {
       console.warn(`No relay configured for community: ${communityKey}`);
       loading = false;
@@ -56,6 +55,9 @@
       sub.stop();
     };
   });
+
+  const communityKey = selectedCommunity || 'venezuela';
+  const communityInfo = COMMUNITY_METADATA[communityKey] || COMMUNITY_METADATA.venezuela;
 
   function handlePackClick(pack: NDKFollowPack) {
     const packId = pack.encode();

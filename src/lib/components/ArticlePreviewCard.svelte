@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { NDKArticle } from '@nostr-dev-kit/ndk';
   import { nip19 } from 'nostr-tools';
-  import { formatDistanceToNow } from 'date-fns';
   import { ndk } from '$lib/ndk.svelte';
+  import TimeAgo from './TimeAgo.svelte';
 
   interface Props {
     article: NDKArticle;
@@ -50,7 +50,7 @@
           <span>{authorName}</span>
           {#if publishedAt}
             <span>·</span>
-            <span>{formatDistanceToNow(new Date(publishedAt * 1000), { addSuffix: true })}</span>
+            <TimeAgo timestamp={publishedAt} />
           {/if}
         </div>
       </div>
@@ -77,7 +77,7 @@
               <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              {formatDistanceToNow(new Date(publishedAt * 1000), { addSuffix: true })}
+              <TimeAgo timestamp={publishedAt} />
             </span>
           {/if}
         </div>

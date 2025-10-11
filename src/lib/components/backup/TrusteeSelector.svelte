@@ -12,7 +12,7 @@
 
   let searchValue = $state('');
 
-  let followsList = $derived(Array.from($ndk.$sessions.follows));
+  let followsList = $derived(Array.from(ndk.$sessions.follows));
 
   let filteredFollows = $derived(
     followsList.filter(pubkey => !trustees.some(t => t.pubkey === pubkey))

@@ -230,8 +230,8 @@
 
   /* Mention styles for EventContent / MentionPreview components */
   :root {
-    --accent-color: hsl(31 92% 54%); /* Voces orange accent */
-    --text-primary: hsl(225 11% 8%); /* Voces foreground */
+    --accent-color: hsl(31 92% 54%); /* Agora orange accent */
+    --text-primary: hsl(225 11% 8%); /* Agora foreground */
     --text-muted: hsl(225 8% 40%);
     --border-color: hsl(40 8% 82%);
     --border-hover-color: hsl(40 8% 70%);
@@ -242,8 +242,8 @@
   }
 
   .dark {
-    --accent-color: hsl(31 92% 54%); /* Voces orange accent */
-    --text-primary: hsl(30 20% 95%); /* Voces dark mode foreground */
+    --accent-color: hsl(31 92% 54%); /* Agora orange accent */
+    --text-primary: hsl(30 20% 95%); /* Agora dark mode foreground */
     --text-muted: hsl(30 10% 65%);
     --border-color: hsl(225 8% 18%);
     --border-hover-color: hsl(225 8% 25%);

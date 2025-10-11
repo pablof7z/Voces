@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { NDKEvent } from '@nostr-dev-kit/ndk';
   import { Avatar, EventContent } from '@nostr-dev-kit/svelte';
-  import { formatDistanceToNow } from 'date-fns';
   import { ndk } from '$lib/ndk.svelte';
   import { nip19 } from 'nostr-tools';
+  import TimeAgo from './TimeAgo.svelte';
 
   interface Props {
     event: NDKEvent;
@@ -31,9 +31,7 @@
           {displayName}
         </span>
         {#if event.created_at}
-          <span class="text-sm text-neutral-500 dark:text-neutral-400">
-            {formatDistanceToNow(new Date(event.created_at * 1000), { addSuffix: true })}
-          </span>
+          <TimeAgo timestamp={event.created_at} class="text-sm text-neutral-500 dark:text-neutral-400" />
         {/if}
       </div>
       <div class="text-neutral-800 dark:text-neutral-200 leading-relaxed whitespace-pre-wrap break-words">

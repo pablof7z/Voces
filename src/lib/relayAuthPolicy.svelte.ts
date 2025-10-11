@@ -88,6 +88,39 @@ export function createAuthPolicyWithConfirmation({ ndk }: { ndk?: NDK } = {}): N
   return async (relay: NDKRelay, challenge: string): Promise<boolean | NDKEvent> => {
     debug(`Relay ${relay.url} requested authentication`);
 
+    // Auto-authenticate to agorawlc.com relays without prompting
+    const isAgorawlcRelay = relay.url.includes('agorawlc.com');
+    if (isAgorawlcRelay) {
+      debug(`Auto-authenticating to agorawlc.com relay: ${relay.url}`);
+
+      // Create and sign auth event
+      const event = new NDKEvent(ndk);
+      event.kind = NDKKind.ClientAuth;
+      event.tags = [
+        ['relay', relay.url],
+        ['challenge', challenge]
+      ];
+
+      const signer = ndk?.signer;
+      if (signer) {
+        await event.sign(signer);
+        return event;
+      } else {
+        // Wait for signer to be ready
+        return new Promise((resolve, reject) => {
+          ndk?.once('signer:ready', async (signer) => {
+            try {
+              await event.sign(signer);
+              resolve(event);
+            } catch (e) {
+              debug('Failed to sign auth event:', e);
+              reject(e);
+            }
+          });
+        });
+      }
+    }
+
     // Check if we already have a decision for this relay
     const storedDecision = getStoredDecision(relay.url);
 

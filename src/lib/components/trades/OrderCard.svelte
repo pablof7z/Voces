@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { formatDistanceToNow } from 'date-fns';
   import type { NDKEvent } from '@nostr-dev-kit/ndk';
   import { ndk } from '$lib/ndk.svelte';
   import TakeOrderModal from './TakeOrderModal.svelte';
+  import TimeAgo from '../TimeAgo.svelte';
 
   interface Props {
     order: {
@@ -97,7 +97,7 @@
           {/if}
         </div>
         <p class="text-xs text-neutral-500 dark:text-neutral-400">
-          {formatDistanceToNow(order.createdAt * 1000, { addSuffix: true })}
+          <TimeAgo timestamp={order.createdAt} />
           {#if order.platform}
             • {order.platform}
           {/if}

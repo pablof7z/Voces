@@ -77,7 +77,7 @@
 
     try {
       const bookmarksNaddr = nip19.naddrEncode({
-        kind: NDKKind.CurationSet,
+        kind: NDKKind.ArticleCurationSet,
         pubkey: currentUser.pubkey,
         identifier: 'bookmarks'
       });
@@ -100,7 +100,7 @@
           tag => !(tag[0] === 'a' && tag[1] === articlePointer)
         );
       } else {
-        bookmarkList.addItem(['a', articlePointer, '', article.author.pubkey]);
+        bookmarkList.addItem(article);
       }
 
       await bookmarkList.publish();
@@ -263,7 +263,7 @@
     </header>
 
     {#if heroImage}
-      <div class="relative w-full h-[70vh] min-h-[500px] max-h-[800px] mt-16 overflow-hidden">
+      <div class="relative w-full h-[50vh] min-h-[400px] max-h-[600px] mt-16 overflow-hidden">
         <img
           src={heroImage}
           alt={article.title || 'Article hero image'}
@@ -272,25 +272,25 @@
         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
 
         <div class="absolute inset-0 flex items-end">
-          <div class="max-w-screen-lg mx-auto px-6 lg:px-8 pb-12 w-full">
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 leading-[1.1] tracking-tight font-serif drop-shadow-2xl">
+          <div class="max-w-screen-lg mx-auto px-6 lg:px-8 pb-8 w-full">
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight tracking-tight font-serif drop-shadow-2xl">
               {article.title || 'Untitled'}
             </h1>
 
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3">
               <button
                 type="button"
                 onclick={() => window.location.href = `/p/${nip19.npubEncode(article.pubkey)}`}
                 class="flex-shrink-0"
               >
-                <Avatar {ndk} pubkey={article.pubkey} class="w-12 h-12 sm:w-14 sm:h-14 ring-2 ring-white hover:ring-4 transition-all" />
+                <Avatar {ndk} pubkey={article.pubkey} class="w-10 h-10 sm:w-12 sm:h-12 ring-2 ring-white hover:ring-4 transition-all" />
               </button>
 
               <div class="text-white">
                 <button
                   type="button"
                   onclick={() => window.location.href = `/p/${nip19.npubEncode(article.pubkey)}`}
-                  class="font-semibold text-lg hover:text-white/80 transition-colors block"
+                  class="font-semibold text-base hover:text-white/80 transition-colors block"
                 >
                   {authorName}
                 </button>

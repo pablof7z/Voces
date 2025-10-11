@@ -12,15 +12,15 @@
   },
   "dependencies": {
     "@cashu/cashu-ts": "^2.7.2",
+    "@nostr-dev-kit/blossom": "^6.0.1",
     "@nostr-dev-kit/cache-sqlite-wasm": "latest",
-    "@nostr-dev-kit/ndk": "^2.17.3",
+    "@nostr-dev-kit/ndk": "latest",
     "@nostr-dev-kit/sessions": "^0.4.2",
-    "@nostr-dev-kit/svelte": "^2.0.7",
+    "@nostr-dev-kit/svelte": "^2.0.8",
     "@nostr-dev-kit/wallet": "^0.8.6",
     "blossom-client-sdk": "^4.1.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "lucide-svelte": "^0.545.0",
     "marked": "^16.3.0",
     "nostr-tools": "^2.17.0",
     "qrcode": "^1.5.3",
@@ -29,6 +29,7 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.0",
     "@sveltejs/adapter-auto": "^6.1.1",
     "@sveltejs/adapter-vercel": "^5.10.3",
     "@sveltejs/kit": "^2.45.0",

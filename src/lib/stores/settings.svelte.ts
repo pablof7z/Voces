@@ -26,16 +26,16 @@ interface AppSettings {
 }
 
 const DEFAULT_RELAYS: Relay[] = [
-  { url: 'wss://ve.agorawlc.com', read: true, write: false, enabled: true },
+  { url: 'wss://ve.agorawlc.com', read: true, write: true, enabled: true },
+  { url: 'wss://ni.agorawlc.com', read: true, write: true, enabled: true },
   { url: 'wss://relay.damus.io', read: true, write: true, enabled: true },
   { url: 'wss://nos.lol', read: true, write: true, enabled: true },
-  { url: 'wss://relay.snort.social', read: true, write: true, enabled: true },
   { url: 'wss://relay.primal.net', read: true, write: true, enabled: true },
 ];
 
 const DEFAULT_SETTINGS: AppSettings = {
   relays: DEFAULT_RELAYS,
-  selectedRelay: null,
+  selectedRelay: 'agoras',
   theme: 'system',
   language: 'en',
   notifications: {

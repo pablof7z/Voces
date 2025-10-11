@@ -1,7 +1,6 @@
 <script lang="ts">
   import { ndk, hashtagInterests } from '$lib/ndk.svelte';
   import { settings } from '$lib/stores/settings.svelte';
-  import { relayFilter } from '$lib/stores/relayFilter.svelte';
   import { hashtagFilter } from '$lib/stores/hashtagFilter.svelte';
   import { NDKKind, type NDKEvent, NDKArticle, NDKSubscriptionCacheUsage } from '@nostr-dev-kit/ndk';
   import NoteCard from '$lib/components/NoteCard.svelte';
@@ -11,24 +10,62 @@
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
   import { Avatar } from '@nostr-dev-kit/svelte';
   import RelaySelectorIcon from '$lib/components/RelaySelectorIcon.svelte';
+  import { getRelaysToUse, isAgorasSelection } from '$lib/utils/relayUtils';
+  import { sub } from 'date-fns';
 
   type MediaFilter = 'conversations' | 'images' | 'videos' | 'articles';
   let selectedFilter = $state<MediaFilter>('conversations');
 
   // Get relays to use based on filter
   // If a specific relay is selected, use only that relay
+  // If "agoras" is selected, use both agora relays
   // Otherwise, use all enabled relays
   const relaysToUse = $derived(
-    relayFilter.selectedRelay
-      ? [relayFilter.selectedRelay]
-      : settings.relays
-          .filter(r => r.enabled && r.read)
-          .map(r => r.url)
+    getRelaysToUse(
+      settings.selectedRelay,
+      settings.relays.filter(r => r.enabled && r.read).map(r => r.url)
+    )
   );
 
   // Get follows for filtering when in "Following" mode
   const follows = $derived(ndk.$sessions?.follows||[]);
   const followsArray = $derived.by(() => Array.from(follows));
+
+  // Helper to check if selection is a follow pack
+  function isFollowPackSelection(value: string | null): boolean {
+    return value?.startsWith('followpack:') ?? false;
+  }
+
+  // Fetch selected follow pack if applicable
+  let selectedPackEvent = $state<NDKEvent | null>(null);
+
+  $effect(() => {
+    if (!settings.selectedRelay || !isFollowPackSelection(settings.selectedRelay)) {
+      selectedPackEvent = null;
+      return;
+    }
+
+    const packId = settings.selectedRelay.replace('followpack:', '');
+    ndk.fetchEvent(packId).then(event => {
+      selectedPackEvent = event;
+    }).catch(err => {
+      console.error('Failed to fetch selected pack:', err);
+      selectedPackEvent = null;
+    });
+  });
+
+  // Get authors array based on selection
+  // - If a follow pack is selected, use pack members
+  // - If in "Following" mode (no selection), use follows
+  // - Otherwise, use no author filter (all authors)
+  const authorsArray = $derived.by(() => {
+    if (selectedPackEvent) {
+      return selectedPackEvent.tags.filter(t => t[0] === 'p').map(t => t[1]);
+    } else if (!settings.selectedRelay) {
+      return followsArray;
+    }
+    return [];
+  });
 
   console.log('[HomePage] Creating subscriptions');
 
@@ -43,12 +80,10 @@
       filter['#t'] = hashtagFilter.selectedHashtags;
     }
 
-    // When no specific relay is selected (Following mode) AND no hashtag filters, filter by follows
-    if (!relayFilter.selectedRelay && followsArray.length > 0 && !hashtagFilter.hasFilters) {
-      filter.authors = followsArray;
-    } else if (!relayFilter.selectedRelay && followsArray.length > 0 && hashtagFilter.hasFilters) {
-      // When hashtag filters are active in Following mode, combine with authors
-      filter.authors = followsArray;
+    // When in Following mode or Follow Pack mode, filter by authors
+    const isFollowingOrPackMode = !settings.selectedRelay || isFollowPackSelection(settings.selectedRelay);
+    if (isFollowingOrPackMode && authorsArray.length > 0) {
+      filter.authors = authorsArray;
     }
 
     console.log('Using filter:', filter, "relays:", relaysToUse);
@@ -56,7 +91,8 @@
       filters: [filter],
       relayUrls: relaysToUse.length > 0 ? relaysToUse : undefined,
       subId: 'home-notes',
-      cacheUsage: relaysToUse.length > 0 ? NDKSubscriptionCacheUsage.ONLY_RELAY : NDKSubscriptionCacheUsage.PARALLEL
+      cacheUsage: relaysToUse.length > 0 ? NDKSubscriptionCacheUsage.ONLY_RELAY : NDKSubscriptionCacheUsage.PARALLEL,
+      exclusiveRelay: relaysToUse.length > 0,
     };
   }, {
     initialLimit: 20,
@@ -75,14 +111,21 @@
       filter['#t'] = hashtagFilter.selectedHashtags;
     }
 
-    // When no specific relay is selected (Following mode), filter by follows
-    if (!relayFilter.selectedRelay && followsArray.length > 0) {
-      filter.authors = followsArray;
+    // When in Following mode or Follow Pack mode, filter by authors
+    const isFollowingOrPackMode = !settings.selectedRelay || isFollowPackSelection(settings.selectedRelay);
+    if (isFollowingOrPackMode && authorsArray.length > 0) {
+      filter.authors = authorsArray;
     }
     return {
-      filters: [filter],
-      relayUrls: relaysToUse.length > 0 ? relaysToUse : undefined
-    };
+					filters: [filter],
+					relayUrls: relaysToUse.length > 0 ? relaysToUse : undefined,
+					cacheUsage:
+						relaysToUse.length > 0
+							? NDKSubscriptionCacheUsage.ONLY_RELAY
+							: NDKSubscriptionCacheUsage.PARALLEL,
+					subId: "home-media",
+					exclusiveRelay: relaysToUse.length > 0,
+				};
   }, {
     initialLimit: 30,
     pageSize: 30
@@ -99,13 +142,16 @@
       filter['#t'] = hashtagFilter.selectedHashtags;
     }
 
-    // When no specific relay is selected (Following mode), filter by follows
-    if (!relayFilter.selectedRelay && followsArray.length > 0) {
-      filter.authors = followsArray;
+    // When in Following mode or Follow Pack mode, filter by authors
+    const isFollowingOrPackMode = !settings.selectedRelay || isFollowPackSelection(settings.selectedRelay);
+    if (isFollowingOrPackMode && authorsArray.length > 0) {
+      filter.authors = authorsArray;
     }
     return {
       filters: [filter],
-      cacheUsage: 1, // NDKSubscriptionCacheUsage.CACHE_FIRST
+      cacheUsage: relaysToUse.length > 0 ? NDKSubscriptionCacheUsage.ONLY_RELAY : NDKSubscriptionCacheUsage.PARALLEL,
+      subId: 'home-articles',
+      exclusiveRelay: relaysToUse.length > 0,
       relayUrls: relaysToUse.length > 0 ? relaysToUse : undefined
     };
   }, {

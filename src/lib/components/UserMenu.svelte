@@ -11,6 +11,7 @@
 
   let showDropdown = $state(false);
   let dropdownRef: HTMLDivElement | undefined = $state();
+  let buttonRef: HTMLButtonElement | undefined = $state();
 
   const currentUser = ndk.$currentUser;
   const profile = ndk.$fetchProfile(() => currentUser?.pubkey);
@@ -45,7 +46,8 @@
 
   // Close dropdown when clicking outside
   function handleClickOutside(event: MouseEvent) {
-    if (dropdownRef && !dropdownRef.contains(event.target as Node)) {
+    if (dropdownRef && !dropdownRef.contains(event.target as Node) &&
+        buttonRef && !buttonRef.contains(event.target as Node)) {
       closeDropdown();
     }
   }
@@ -60,30 +62,34 @@
 </script>
 
 {#if currentUser}
-  <div class="relative" bind:this={dropdownRef}>
-    <!-- Trigger Button -->
-    <button
-      onclick={toggleDropdown}
-      class="w-full flex items-center {collapsed ? 'justify-center p-3' : 'gap-3 px-2 py-2'} rounded-lg hover:bg-neutral-900/50 transition-colors cursor-pointer"
-      title={collapsed ? displayName : undefined}
-    >
-      <Avatar {ndk} pubkey={currentUser.pubkey} class="w-10 h-10" />
-      {#if !collapsed}
-        <div class="flex-1 min-w-0 text-left">
-          <p class="font-medium text-sm truncate text-white">
-            {displayName}
-          </p>
-          <p class="text-xs text-neutral-500 truncate">
-            {profile?.nip05 || (npub ? `${npub.slice(0, 16)}...` : '')}
-          </p>
-        </div>
-      {/if}
-    </button>
+  <!-- Trigger Button -->
+  <button
+    bind:this={buttonRef}
+    onclick={toggleDropdown}
+    class="w-full flex items-center {collapsed ? 'justify-center p-3' : 'gap-3 px-2 py-2'} rounded-lg hover:bg-neutral-900/50 transition-colors cursor-pointer"
+    title={collapsed ? displayName : undefined}
+  >
+    <Avatar {ndk} pubkey={currentUser.pubkey} class="w-10 h-10" />
+    {#if !collapsed}
+      <div class="flex-1 min-w-0 text-left">
+        <p class="font-medium text-sm truncate text-white">
+          {displayName}
+        </p>
+        <p class="text-xs text-neutral-500 truncate">
+          {profile?.nip05 || (npub ? `${npub.slice(0, 16)}...` : '')}
+        </p>
+      </div>
+    {/if}
+  </button>
+{/if}
 
-    <!-- Dropdown Menu -->
-    {#if showDropdown}
+{#if showDropdown && buttonRef}
+  {#key showDropdown}
+    <svelte:element this={'div'} style="display: contents">
       <div
-        class="absolute bottom-full left-4 mb-2 w-56 bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl overflow-hidden z-50"
+        bind:this={dropdownRef}
+        class="w-56 bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl overflow-hidden"
+        style="position: fixed; bottom: {window.innerHeight - buttonRef.getBoundingClientRect().top + 8}px; left: {buttonRef.getBoundingClientRect().left}px; z-index: 9999;"
       >
         <!-- Profile Link -->
         <button
@@ -126,6 +132,6 @@
           <span>Logout</span>
         </button>
       </div>
-    {/if}
-  </div>
+    </svelte:element>
+  {/key}
 {/if}

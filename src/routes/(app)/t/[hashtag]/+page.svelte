@@ -1,6 +1,5 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { onMount } from 'svelte';
   import { ndk } from '$lib/ndk.svelte';
   import { settings } from '$lib/stores/settings.svelte';
   import { sidebarStore } from '$lib/stores/sidebar.svelte';

@@ -11,18 +11,27 @@
       bio: string;
       location: string;
     };
+    inviterPubkey?: string;
     onNext: () => void;
     onSkip: () => void;
   }
 
-  let { publicKey, profileData, onNext, onSkip }: Props = $props();
+  let { publicKey, profileData, inviterPubkey, onNext, onSkip }: Props = $props();
 
   let introText = $state('');
   let publishing = $state(false);
   let introductionPosts = $state<IntroductionPost[]>([]);
+  let mentionInviter = $state(!!inviterPubkey);
 
   const hasValidIntro = $derived(introText.length > 10);
   const charCount = $derived(introText.length);
+
+  const inviterProfile = $derived.by(() => {
+    if (!inviterPubkey) return null;
+    return ndk.$fetchProfile(() => inviterPubkey);
+  });
+
+  const inviterName = $derived(inviterProfile?.displayName || inviterProfile?.name || 'your inviter');
 
   $effect(() => {
     fetchIntroductionPosts(ndk).then(posts => {
@@ -45,6 +54,11 @@
       event.kind = 1;
       event.content = content;
       event.tags = [['t', 'introductions']];
+
+      // Add p-tag for inviter if enabled
+      if (mentionInviter && inviterPubkey) {
+        event.tags.push(['p', inviterPubkey]);
+      }
 
       await event.publish();
       onNext();
@@ -105,6 +119,37 @@
               </span>
             </div>
           </div>
+
+          <!-- Inviter Mention -->
+          {#if inviterPubkey}
+            <div class="mt-4 p-3 bg-orange-50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-800 rounded-lg">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 text-sm">
+                  {#if mentionInviter}
+                    <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                    </svg>
+                    <span class="text-neutral-700 dark:text-neutral-300">
+                      Will notify <span class="font-semibold">{inviterName}</span> who invited you
+                    </span>
+                  {:else}
+                    <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                    </svg>
+                    <span class="text-neutral-500">
+                      Won't notify <span class="font-semibold">{inviterName}</span>
+                    </span>
+                  {/if}
+                </div>
+                <button
+                  onclick={() => mentionInviter = !mentionInviter}
+                  class="text-xs px-2 py-1 rounded hover:bg-orange-100 dark:hover:bg-orange-900/20 transition-colors text-orange-600 dark:text-orange-400 font-medium"
+                >
+                  {mentionInviter ? 'Remove' : 'Add back'}
+                </button>
+              </div>
+            </div>
+          {/if}
 
           <!-- Action buttons -->
           <div class="flex gap-3 mt-6">
