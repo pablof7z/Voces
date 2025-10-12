@@ -13,14 +13,14 @@
   let replyToProfile = $state<any>(null);
 
   // Determine what this note is replying to
-  const replyToEventId = $derived.by(() => {
+  const replyToTag = $derived.by(() => {
     // First, check for explicit 'reply' marker
     const replyTag = event.tags.find(tag =>
       tag[0] === 'e' && tag[3] === 'reply'
     );
 
     if (replyTag) {
-      return replyTag[1];
+      return replyTag;
     }
 
     // Check for 'root' marker as fallback
@@ -29,13 +29,13 @@
     );
 
     if (rootTag) {
-      return rootTag[1];
+      return rootTag;
     }
 
     // If there's only a single 'e' tag with no marker, it's likely a reply to that event
     const eTags = event.tags.filter(tag => tag[0] === 'e');
     if (eTags.length === 1) {
-      return eTags[0][1];
+      return eTags[0];
     }
 
     return undefined;
@@ -43,12 +43,12 @@
 
   // Fetch the event being replied to
   $effect(() => {
-    if (replyToEventId) {
-      ndk.fetchEvent(replyToEventId).then((event) => {
-        if (event) {
-          replyToEvent = event;
+    if (replyToTag) {
+      ndk.fetchEventFromTag(replyToTag, event).then((fetchedEvent) => {
+        if (fetchedEvent) {
+          replyToEvent = fetchedEvent;
           // Fetch the profile of the replied-to event's author
-          event.author.fetchProfile().then((profile) => {
+          fetchedEvent.author.fetchProfile().then((profile) => {
             replyToProfile = profile;
           });
         }
@@ -80,4 +80,10 @@
       @{replyToDisplayName}
     </a>
   </div>
+{:else if replyToTag && !replyToEvent}
+  <div class="flex items-center gap-1 mb-2 text-sm text-neutral-500">
+    <span>Replying to event</span>
+  </div>
+{:else}
+  {replyToEvent?.toString()}
 {/if}
