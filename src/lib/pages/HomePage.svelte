@@ -11,7 +11,9 @@
   import { Avatar } from '@nostr-dev-kit/svelte';
   import RelaySelectorIcon from '$lib/components/RelaySelectorIcon.svelte';
   import { getRelaysToUse, isAgorasSelection } from '$lib/utils/relayUtils';
+  import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
   import { sub } from 'date-fns';
+  import MediaTypeFilters from '$lib/components/MediaTypeFilters.svelte';
 
   type MediaFilter = 'conversations' | 'images' | 'videos' | 'articles';
   let selectedFilter = $state<MediaFilter>('conversations');
@@ -213,6 +215,32 @@
     return Array.from(authors);
   });
 
+  // Get the title to display in the header
+  const headerTitle = $derived.by(() => {
+    // If showing hashtag filters, return null to show hashtags instead
+    if (hashtagInterests.interests.length > 0) return null;
+
+    // If Agoras or Following is selected, show Agora logo
+    if (isAgorasSelection(settings.selectedRelay) || !settings.selectedRelay) {
+      return { type: 'logo' as const };
+    }
+
+    // If a follow pack is selected, show pack name
+    if (isFollowPackSelection(settings.selectedRelay) && selectedPackEvent) {
+      return {
+        type: 'text' as const,
+        text: selectedPackEvent.tagValue('title') || 'Untitled Pack'
+      };
+    }
+
+    // If a relay is selected, show relay name
+    const relayInfo = useRelayInfoCached(settings.selectedRelay);
+    return {
+      type: 'text' as const,
+      text: relayInfo.info?.name || settings.selectedRelay.replace('wss://', '').replace('ws://', '')
+    };
+  });
+
 </script>
 
 <div class="max-w-full mx-auto">
@@ -220,12 +248,12 @@
   <div class="sticky top-0 z-10 bg-black/90 backdrop-blur-xl border-b border-neutral-800/50">
     <div class="px-4 py-4">
       <div class="flex items-center gap-2">
-        <!-- Relay/Following selector icon -->
+        <!-- Relay/Following selector icon (always visible) -->
         <div class="flex-shrink-0 relative z-20">
           <RelaySelectorIcon />
         </div>
 
-        <!-- Hashtags scroll container -->
+        <!-- Hashtags scroll container OR Title -->
         <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide flex-1 min-w-0">
         {#if hashtagInterests.interests.length > 0}
           {#each hashtagInterests.interests as hashtag}
@@ -252,71 +280,49 @@
               </svg>
             </button>
           {/if}
-        {:else}
-          <h1 class="text-xl font-bold text-white">Home</h1>
+        {:else if headerTitle?.type === 'logo'}
+          <!-- AGORA text (icon is on the left) -->
+          <svg viewBox="0 0 575 250" class="h-8 w-auto" xmlns="http://www.w3.org/2000/svg">
+            <style>
+              .st1{fill:#FFFFFF;}
+            </style>
+            <g>
+              <path class="st1" d="M123.9,165.4v-0.9c3.6-0.3,6.4-1.1,8.4-2.4c2-1.3,3.5-3.2,4.7-5.8l24.2-54.9h3.8l28.5,57.6
+                c0.7,1.4,1.7,2.6,3.2,3.6c1.4,1,3.6,1.6,6.4,1.9v0.9h-27.7v-0.9c2.9-0.3,4.7-0.9,5.4-1.9c0.8-1,0.8-2.2,0.1-3.6l-21.5-44.6
+                L141,156.3c-1.1,2.6-0.9,4.5,0.5,5.8c1.4,1.3,3.9,2.1,7.6,2.4v0.9H123.9z M163.1,87.7h8.8l-7.8,9.2h-3L163.1,87.7z"/>
+              <path class="st1" d="M248.3,135.2c0-1.5-0.6-2.7-1.8-3.7c-1.2-0.9-3.3-1.5-6.1-1.8v-0.9H268v0.9c-2.9,0.3-4.9,0.9-6.1,1.8
+                c-1.2,0.9-1.8,2.1-1.8,3.7v32.9c0,1.5,0.6,2.7,1.8,3.7c1.2,0.9,3.3,1.5,6.1,1.8v0.9h-29v-0.9c3.5-0.3,5.9-0.9,7.2-1.8
+                c1.3-0.9,2-2.1,2-3.7v-11.1c-1.5,2.9-3.7,5.2-6.7,6.7c-2.9,1.6-6.8,2.3-11.5,2.3c-4.5,0-8.7-0.7-12.3-2.2c-3.7-1.5-6.8-3.6-9.4-6.4
+                c-2.6-2.8-4.6-6.2-6-10.2c-1.4-4-2.1-8.6-2.1-13.6c0-5.1,0.7-9.6,2.2-13.7c1.5-4.1,3.7-7.5,6.6-10.4c2.9-2.9,6.5-5.1,10.9-6.7
+                c4.4-1.6,9.4-2.3,15.1-2.3c3.8,0,7.5,0.3,11.2,1c3.7,0.7,7.2,1.7,10.6,3v15.6h-1.3c-1.1-2.5-2.3-4.8-3.7-6.8c-1.4-2-3-3.8-4.7-5.3
+                c-1.8-1.5-3.7-2.6-5.9-3.4c-2.2-0.8-4.6-1.2-7.3-1.2c-3.6,0-6.8,0.7-9.5,2.1c-2.7,1.4-4.9,3.4-6.7,6c-1.8,2.6-3.2,5.7-4,9.3
+                c-0.9,3.6-1.3,7.7-1.3,12.2c0,9.2,1.8,16.2,5.5,20.8c3.7,4.7,8.6,7,14.6,7c4.8,0,8.5-1.6,11.3-4.8c2.7-3.2,4.2-8.5,4.5-15.8V135.2z
+                "/>
+              <path class="st1" d="M370.2,101.4c12.3,0,21.4,1.4,27.3,4.3c5.8,2.9,8.8,6.9,8.8,12.1c0,3.8-1.6,7.1-4.7,9.7
+                c-3.2,2.6-8,4.5-14.7,5.6l19,25.9c0.9,1.3,2.2,2.4,3.8,3.5c1.6,1,3.8,1.7,6.7,2v0.9h-27.7v-0.9c2.9-0.3,4.5-1,4.8-2
+                c0.3-1,0-2.2-0.9-3.5l-17.9-24.8c-0.7,0.1-1.4,0.1-2.1,0.1c-0.8,0-1.5,0-2.3,0h-7.1V159c0,1.5,0.6,2.7,1.8,3.7
+                c1.2,0.9,3.3,1.5,6.1,1.8v0.9h-27.7v-0.9c2.9-0.3,4.9-0.9,6.1-1.8c1.2-0.9,1.8-2.1,1.8-3.7v-51.2c0-1.5-0.6-2.7-1.8-3.7
+                c-1.2-0.9-3.3-1.5-6.1-1.8v-0.9H370.2z M370.2,131.6c8.2,0,14.3-1.2,18.1-3.5c3.8-2.3,5.7-5.7,5.7-10.2c0-4.5-1.9-7.9-5.7-10.2
+                c-3.8-2.3-9.8-3.5-18.1-3.5h-7.1v27.5H370.2z"/>
+              <path class="st1" d="M418.9,165.4v-0.9c3.6-0.3,6.4-1.1,8.4-2.4c2-1.3,3.5-3.2,4.7-5.8l24.2-54.9h3.8l28.5,57.6
+                c0.7,1.4,1.7,2.6,3.2,3.6c1.4,1,3.6,1.6,6.4,1.9v0.9h-27.7v-0.9c2.9-0.3,4.7-0.9,5.4-1.9c0.8-1,0.8-2.2,0.1-3.6l-21.5-44.6
+                L436,156.3c-1.1,2.6-0.9,4.5,0.5,5.8c1.4,1.3,3.9,2.1,7.6,2.4v0.9H418.9z"/>
+              <path class="st1" d="M335.1,120c-1.5-4-3.7-7.5-6.5-10.3c-2.8-2.9-6.2-5.1-10.1-6.6c-4-1.6-8.4-2.3-13.4-2.3
+                c-4.9,0-9.3,0.8-13.3,2.3c-4,1.6-7.4,3.8-10.2,6.6c-2.8,2.9-5,6.3-6.5,10.3c-1.5,4-2.3,8.5-2.3,13.5s0.8,9.4,2.3,13.5
+                c1.5,4,3.7,7.5,6.5,10.3c2.8,2.9,6.2,5.1,10.2,6.6c4,1.6,8.4,2.3,13.3,2.3c5,0,9.4-0.8,13.4-2.3c3.9-1.6,7.3-3.8,10.1-6.6
+                c2.8-2.9,5-6.3,6.5-10.3c1.5-4,2.3-8.5,2.3-13.5S336.6,124,335.1,120z M305,163.4c-12.4,0-20.9-13.4-20.9-30s8.2-30,20.9-30
+                c13,0,20.9,13.4,20.9,30S318,163.4,305,163.4z"/>
+            </g>
+          </svg>
+        {:else if headerTitle}
+          <h1 class="text-xl font-bold text-white">{headerTitle.text}</h1>
         {/if}
         </div>
       </div>
     </div>
 
     <!-- Media Type Filters -->
-    <div class="flex px-4 overflow-x-auto">
-      <button
-        onclick={() => selectedFilter = 'conversations'}
-        class={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
-          selectedFilter === 'conversations'
-            ? 'text-orange-500 border-b-2 border-orange-500'
-            : 'text-neutral-400 hover:text-neutral-300'
-        }`}
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-        Conversations
-      </button>
-
-      <button
-        onclick={() => selectedFilter = 'images'}
-        class={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
-          selectedFilter === 'images'
-            ? 'text-orange-500 border-b-2 border-orange-500'
-            : 'text-neutral-400 hover:text-neutral-300'
-        }`}
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        Images
-      </button>
-
-      <button
-        onclick={() => selectedFilter = 'videos'}
-        class={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
-          selectedFilter === 'videos'
-            ? 'text-orange-500 border-b-2 border-orange-500'
-            : 'text-neutral-400 hover:text-neutral-300'
-        }`}
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-        </svg>
-        Videos
-      </button>
-
-      <button
-        onclick={() => selectedFilter = 'articles'}
-        class={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
-          selectedFilter === 'articles'
-            ? 'text-orange-500 border-b-2 border-orange-500'
-            : 'text-neutral-400 hover:text-neutral-300'
-        }`}
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-        Articles
-      </button>
-    </div>
+    <MediaTypeFilters {selectedFilter} onFilterChange={(filter) => selectedFilter = filter} />
   </div>
 
   <!-- Feed -->
@@ -358,10 +364,10 @@
     {:else}
       <!-- New Notes Indicator (Twitter-style) -->
       {#if notesFeed.pendingCount > 0}
-        <div class="flex justify-center py-2">
+        <div class="flex justify-center py-2 lg:relative lg:static fixed bottom-20 left-0 right-0 z-[500] lg:z-auto pointer-events-none">
           <button
             onclick={() => notesFeed.loadPendingEvents()}
-            class="flex items-center gap-2 px-4 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded-full transition-all shadow-lg"
+            class="flex items-center gap-2 px-4 py-2 bg-neutral-900/95 hover:bg-neutral-800 border border-orange-500/50 lg:border-neutral-700 rounded-full transition-all shadow-lg backdrop-blur-sm pointer-events-auto"
           >
             <!-- Avatars -->
             <div class="flex -space-x-2">
@@ -370,7 +376,7 @@
               {/each}
             </div>
             <!-- Text -->
-            <span class="text-sm text-neutral-200 font-medium">
+            <span class="text-sm text-orange-500 lg:text-neutral-200 font-medium">
               {notesFeed.pendingCount} new {notesFeed.pendingCount === 1 ? 'note' : 'notes'}
             </span>
           </button>

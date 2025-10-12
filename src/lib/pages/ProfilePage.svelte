@@ -264,7 +264,7 @@
 
 <svelte:window onclick={handleClickOutside} />
 
-<div class="max-w-2xl mx-auto">
+<div class="w-full">
   <!-- Profile header -->
   <div class="bg-black border-b border-neutral-800">
     <!-- Cover image -->
@@ -409,62 +409,76 @@
 
   <!-- Tabs -->
   <div class="sticky top-0 z-30 bg-black/80 backdrop-blur-sm border-b border-neutral-800">
-    <div class="flex px-4 sm:px-6 overflow-x-auto">
+    <div class="flex justify-around lg:justify-start px-2 lg:px-4 overflow-x-auto">
       <button
         onclick={() => activeTab = 'notes'}
-        class={`px-4 py-3 font-medium whitespace-nowrap ${
+        class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'notes'
             ? 'text-orange-500 border-b-2 border-orange-500'
             : 'text-neutral-400 hover:text-neutral-300'
         }`}
+        aria-label="Notes"
       >
-        Notes
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+        </svg>
+        <span class="hidden lg:inline">Notes</span>
       </button>
       <button
         onclick={() => activeTab = 'replies'}
-        class={`px-4 py-3 font-medium whitespace-nowrap ${
+        class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'replies'
             ? 'text-orange-500 border-b-2 border-orange-500'
             : 'text-neutral-400 hover:text-neutral-300'
         }`}
+        aria-label="Replies"
       >
-        Replies
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+        </svg>
+        <span class="hidden lg:inline">Replies</span>
       </button>
       <button
         onclick={() => activeTab = 'media'}
-        class={`px-4 py-3 font-medium whitespace-nowrap ${
+        class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'media'
             ? 'text-orange-500 border-b-2 border-orange-500'
             : 'text-neutral-400 hover:text-neutral-300'
         }`}
+        aria-label="Media"
       >
-        Media
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span class="hidden lg:inline">Media</span>
       </button>
       <button
         onclick={() => activeTab = 'articles'}
-        class={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
+        class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'articles'
             ? 'text-orange-500 border-b-2 border-orange-500'
             : 'text-neutral-400 hover:text-neutral-300'
         }`}
+        aria-label="Articles"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
-        Articles
+        <span class="hidden lg:inline">Articles</span>
       </button>
       <button
         onclick={() => activeTab = 'packs'}
-        class={`px-4 py-3 font-medium whitespace-nowrap flex items-center gap-1.5 ${
+        class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'packs'
             ? 'text-orange-500 border-b-2 border-orange-500'
             : 'text-neutral-400 hover:text-neutral-300'
         }`}
+        aria-label="Follow Packs"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
         </svg>
-        Follow Packs
+        <span class="hidden lg:inline">Follow Packs</span>
       </button>
     </div>
   </div>

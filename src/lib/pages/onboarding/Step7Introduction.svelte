@@ -70,36 +70,18 @@
 </script>
 
 <div class="min-h-screen flex flex-col">
-  <div class="flex-1 px-8 py-6 max-w-[1400px] mx-auto w-full">
+  <div class="flex-1 px-4 lg:px-8 py-6 max-w-[1400px] mx-auto w-full pb-32 lg:pb-6">
     <div class="text-center mb-6">
-      <h1 class="text-3xl font-bold mb-2">Introduce Yourself to the Community</h1>
+      <h1 class="text-2xl lg:text-3xl font-bold mb-2">Introduce Yourself to the Community</h1>
       <p class="text-neutral-600 dark:text-neutral-400">
         Write a brief introduction. Good introductions often earn zaps!
       </p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-200px)]">
-      <!-- Left column: Recent introductions -->
-      <div class="flex flex-col">
-        <h3 class="font-semibold text-sm text-neutral-500 uppercase tracking-wide mb-4">
-          💎 Recent Introductions
-        </h3>
-        <div class="space-y-3 overflow-y-auto flex-1 pr-2">
-          {#if introductionPosts.length > 0}
-            {#each introductionPosts as intro (intro.event.id)}
-              <NoteCard event={intro.event} />
-            {/each}
-          {:else}
-            <div class="text-center py-8 text-neutral-500">
-              <p>Loading recent introductions...</p>
-            </div>
-          {/if}
-        </div>
-      </div>
-
-      <!-- Right column: Composition area -->
-      <div class="flex flex-col">
-        <div class="p-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:h-[calc(100vh-200px)]">
+      <!-- Right column: Composition area (first on mobile) -->
+      <div class="flex flex-col order-1 lg:order-2">
+        <div class="lg:p-6">
           <label class="block font-semibold mb-3">Write Your Introduction</label>
           <textarea
             bind:value={introText}
@@ -151,8 +133,8 @@
             </div>
           {/if}
 
-          <!-- Action buttons -->
-          <div class="flex gap-3 mt-6">
+          <!-- Action buttons - hidden on mobile, shown inline on desktop -->
+          <div class="hidden lg:flex gap-3 mt-6">
             <button
               onclick={onSkip}
               class="flex-1 py-3 px-6 border border-neutral-300 dark:border-neutral-700 rounded-lg font-medium hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
@@ -175,6 +157,49 @@
           </div>
         </div>
       </div>
+
+      <!-- Left column: Recent introductions (second on mobile) -->
+      <div class="flex flex-col order-2 lg:order-1">
+        <h3 class="font-semibold text-sm text-neutral-500 uppercase tracking-wide mb-4">
+          💎 Recent Introductions
+        </h3>
+        <div class="space-y-3 overflow-y-auto flex-1 pr-2 max-h-[400px] lg:max-h-none">
+          {#if introductionPosts.length > 0}
+            {#each introductionPosts as intro (intro.event.id)}
+              <NoteCard event={intro.event} />
+            {/each}
+          {:else}
+            <div class="text-center py-8 text-neutral-500">
+              <p>Loading recent introductions...</p>
+            </div>
+          {/if}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed action buttons for mobile -->
+  <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-black border-t border-neutral-200 dark:border-neutral-800 p-4 z-50">
+    <div class="flex gap-3 max-w-[1400px] mx-auto">
+      <button
+        onclick={onSkip}
+        class="flex-1 py-3 px-6 border border-neutral-300 dark:border-neutral-700 rounded-lg font-medium hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+      >
+        Skip for now
+      </button>
+      <button
+        onclick={publishIntroduction}
+        disabled={!hasValidIntro || publishing}
+        class={`
+          flex-1 py-3 px-6 rounded-lg font-medium transition-all
+          ${hasValidIntro && !publishing
+            ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200'
+            : 'bg-neutral-100 dark:bg-black text-neutral-400 cursor-not-allowed'
+          }
+        `}
+      >
+        {publishing ? 'Publishing...' : 'Post Introduction'}
+      </button>
     </div>
   </div>
 </div>
