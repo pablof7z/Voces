@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agora Mobile UI Mockup</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Mobile container - simulates phone screen */
+    .phone-frame {
+      max-width: 390px;
+      margin: 20px auto;
+      background: #000;
+      border: 3px solid #333;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top bar */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(115,115,115,0.2);
+    }
+
+    .top-bar-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #F68E1D, #FF6B00);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .relay-selector-btn {
+      font-size: 20px;
+      font-weight: 800;
+      color: #F68E1D;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .relay-selector-btn:active {
+      opacity: 0.7;
+      transform: scale(0.98);
+    }
+
+    /* Hashtags section - separate row */
+    .hashtags-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      background: rgba(0,0,0,0.95);
+    }
+
+    .hashtags-section::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hashtag-pill {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid;
+    }
+
+    .hashtag-pill.inactive {
+      background: #262626;
+      border-color: #404040;
+      color: #a3a3a3;
+    }
+
+    .hashtag-pill.active {
+      background: #F68E1D;
+      border-color: #FF8C00;
+      color: #000;
+    }
+
+    .hashtag-pill:active {
+      transform: scale(0.95);
+    }
+
+    .clear-filters-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .clear-filters-btn:active {
+      background: rgba(239, 68, 68, 0.3);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      overflow-x: auto;
+      padding: 0 16px;
+      background: rgba(0,0,0,0.95);
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #737373;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      color: #F68E1D;
+      border-bottom-color: #F68E1D;
+    }
+
+    /* Relay Selector Modal */
+    .relay-selector-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .relay-selector-modal.active {
+      display: flex;
+    }
+
+    .relay-selector-content {
+      background: #171717;
+      border-radius: 24px 24px 0 0;
+      width: 100%;
+      max-width: 390px;
+      max-height: 70vh;
+      overflow-y: auto;
+      padding: 24px;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .relay-selector-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .relay-selector-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .relay-selector-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #262626;
+      color: #a3a3a3;
+      border: none;
+      cursor: pointer;
+    }
+
+    .relay-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 12px;
+      background: #262626;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .relay-option:active {
+      background: #333;
+      transform: scale(0.98);
+    }
+
+    .relay-option.selected {
+      background: rgba(246, 142, 29, 0.2);
+      border: 2px solid #F68E1D;
+    }
+
+    .relay-option-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #F68E1D, #FF6B00);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .relay-option-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .relay-option-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .relay-option-desc {
+      font-size: 13px;
+      color: #737373;
+    }
+
+    .relay-option-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #404040;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .relay-option.selected .relay-option-check {
+      background: #F68E1D;
+      border-color: #F68E1D;
+    }
+
+    /* Main content */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 80px; /* Space for bottom nav */
+    }
+
+    /* Note Card - MOBILE OPTIMIZED */
+    .note-card {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(115,115,115,0.2);
+      background: #000;
+      transition: background 0.2s;
+    }
+
+    .note-card:active {
+      background: rgba(115,115,115,0.1);
+    }
+
+    /* Compact header: avatar + name + time in one line */
+    .note-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .note-author {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .author-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .author-handle {
+      font-size: 14px;
+      color: #737373;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .note-time {
+      font-size: 14px;
+      color: #737373;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .note-menu {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #737373;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .note-menu:active {
+      background: rgba(115,115,115,0.2);
+    }
+
+    /* Note content - full width now */
+    .note-content {
+      font-size: 15px;
+      line-height: 1.5;
+      color: #e5e5e5;
+      margin-bottom: 12px;
+      word-wrap: break-word;
+    }
+
+    /* Reply indicator */
+    .reply-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #737373;
+      margin-bottom: 8px;
+    }
+
+    .reply-indicator svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Actions - optimized for touch */
+    .note-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      color: #737373;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 36px; /* Touch-friendly */
+    }
+
+    .action-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .action-btn:active {
+      background: rgba(115,115,115,0.1);
+    }
+
+    .action-btn.reply:hover { color: #3b82f6; }
+    .action-btn.repost:hover { color: #10b981; }
+    .action-btn.like:hover { color: #ef4444; }
+    .action-btn.zap:hover { color: #eab308; }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 390px;
+      width: 100%;
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(115,115,115,0.2);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0 20px; /* Extra padding for iPhone home indicator */
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 16px;
+      color: #737373;
+      text-decoration: none;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-width: 60px;
+      border-radius: 12px;
+    }
+
+    .nav-item:active {
+      background: rgba(115,115,115,0.1);
+    }
+
+    .nav-item.active {
+      color: #F68E1D;
+    }
+
+    .nav-item svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Compose FAB */
+    .compose-fab {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #F68E1D, #FF6B00);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(246, 142, 29, 0.4);
+      cursor: pointer;
+      z-index: 999;
+      transition: transform 0.2s;
+      border: none;
+      color: white;
+    }
+
+    .compose-fab:active {
+      transform: scale(0.95);
+    }
+
+    .compose-fab svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Media content */
+    .note-image {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      background: #171717;
+    }
+
+    /* Comparison toggle */
+    .comparison-toggle {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      background: rgba(0,0,0,0.9);
+      padding: 12px 24px;
+      border-radius: 24px;
+      border: 2px solid #F68E1D;
+      display: flex;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .toggle-btn {
+      padding: 8px 16px;
+      background: transparent;
+      color: #737373;
+      border: none;
+      border-radius: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn.active {
+      background: #F68E1D;
+      color: #000;
+    }
+
+    /* New notes banner - floating */
+    .new-notes-banner {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 500;
+      background: rgba(23, 23, 23, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid rgba(246, 142, 29, 0.5);
+      border-radius: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      max-width: 320px;
+    }
+
+    .new-notes-banner:active {
+      background: rgba(23, 23, 23, 1);
+      transform: translateX(-50%) scale(0.98);
+    }
+
+    .avatar-stack {
+      display: flex;
+      margin-left: -8px;
+    }
+
+    .avatar-stack .avatar {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #000;
+      font-size: 10px;
+      margin-left: -8px;
+    }
+
+    .new-notes-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #F68E1D;
+    }
+
+    /* Instructions panel */
+    .instructions {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: rgba(20, 20, 20, 0.95);
+      border: 1px solid #333;
+      border-radius: 12px;
+      color: #e5e5e5;
+    }
+
+    .instructions h2 {
+      color: #F68E1D;
+      margin-bottom: 16px;
+    }
+
+    .instructions ul {
+      list-style-position: inside;
+      line-height: 1.8;
+    }
+
+    .instructions strong {
+      color: #F68E1D;
+    }
+
+    /* Profile Page Styles */
+    .profile-header {
+      padding: 20px 16px;
+      background: linear-gradient(180deg, #171717 0%, #000 100%);
+    }
+
+    .profile-avatar-large {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0 auto 16px;
+    }
+
+    .profile-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .profile-handle {
+      font-size: 15px;
+      color: #737373;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .profile-bio {
+      font-size: 15px;
+      color: #e5e5e5;
+      text-align: center;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .profile-stats {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      padding: 16px 0;
+      border-top: 1px solid #262626;
+      border-bottom: 1px solid #262626;
+    }
+
+    .profile-stat {
+      text-align: center;
+    }
+
+    .profile-stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      display: block;
+    }
+
+    .profile-stat-label {
+      font-size: 13px;
+      color: #737373;
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: 8px;
+      padding: 16px;
+    }
+
+    .profile-btn {
+      flex: 1;
+      padding: 12px 24px;
+      border-radius: 24px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .profile-btn-primary {
+      background: #F68E1D;
+      color: #000;
+    }
+
+    .profile-btn-primary:active {
+      background: #e07d15;
+    }
+
+    .profile-btn-secondary {
+      background: #262626;
+      color: #fff;
+      border: 1px solid #404040;
+    }
+
+    .profile-btn-secondary:active {
+      background: #333;
+    }
+
+    /* Wallet Page Styles */
+    .wallet-header {
+      padding: 24px 16px;
+      background: linear-gradient(135deg, #F68E1D, #FF6B00);
+      text-align: center;
+    }
+
+    .wallet-balance-label {
+      font-size: 14px;
+      color: rgba(0,0,0,0.7);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .wallet-balance-value {
+      font-size: 42px;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 4px;
+    }
+
+    .wallet-balance-usd {
+      font-size: 16px;
+      color: rgba(0,0,0,0.6);
+      font-weight: 500;
+    }
+
+    .wallet-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 16px;
+      background: #000;
+    }
+
+    .wallet-action-btn {
+      padding: 16px;
+      border-radius: 12px;
+      background: #171717;
+      border: 1px solid #262626;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .wallet-action-btn:active {
+      background: #262626;
+      transform: scale(0.98);
+    }
+
+    .wallet-action-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(246, 142, 29, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #F68E1D;
+    }
+
+    .wallet-action-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .wallet-section {
+      padding: 16px;
+    }
+
+    .wallet-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .transaction-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #171717;
+      border-radius: 12px;
+      margin-bottom: 8px;
+    }
+
+    .transaction-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #10b981;
+      flex-shrink: 0;
+    }
+
+    .transaction-icon.outgoing {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+
+    .transaction-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .transaction-type {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .transaction-time {
+      font-size: 13px;
+      color: #737373;
+    }
+
+    .transaction-amount {
+      font-size: 16px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .transaction-amount.incoming {
+      color: #10b981;
+    }
+
+    .transaction-amount.outgoing {
+      color: #ef4444;
+    }
+
+    /* Page container with hidden state */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* Scrollbar styling */
+    .content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .content::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Instructions -->
+  <div class="instructions">
+    <h2>🎨 Agora Mobile UI Mockup</h2>
+    <ul>
+      <li><strong>Smart Title Bar:</strong> Tap "Following" (or "Agora", "Agora Venezuela", etc.) to switch feeds - it's the main title now</li>
+      <li><strong>Inline Hashtags:</strong> Followed hashtags scroll horizontally to the right of the title (single line, saves vertical space)</li>
+      <li><strong>Optimized NoteCard:</strong> Avatar inline with name (saves ~25% horizontal space)</li>
+      <li><strong>Touch-friendly:</strong> 44px minimum touch targets on all interactive elements</li>
+      <li><strong>Bottom Navigation:</strong> 5 key sections in thumb-reach zone</li>
+      <li><strong>Compose FAB:</strong> Floating action button for quick posting</li>
+      <li><strong>Clean hierarchy:</strong> Name → Handle → Time flow naturally left-to-right</li>
+      <li><strong>Full-width content:</strong> Text uses entire available width now</li>
+    </ul>
+    <p style="margin-top: 16px; color: #737373; font-size: 14px;">
+      <strong>Try it:</strong> Tap "Following" to open feed selector. Tap hashtags to filter. Notice everything fits on one line!
+    </p>
+  </div>
+
+  <!-- Phone Frame -->
+  <div class="phone-frame">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="top-bar-content">
+        <div class="logo">
+          <div class="logo-icon">A</div>
+          <button class="relay-selector-btn" id="openRelaySelector">
+            <span id="currentRelayName">Following</span>
+            <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Hashtags Section - separate row -->
+      <div class="hashtags-section" id="hashtagsSection">
+        <button class="hashtag-pill inactive" data-hashtag="bitcoin">
+          <span>#</span>bitcoin
+        </button>
+        <button class="hashtag-pill inactive" data-hashtag="nostr">
+          <span>#</span>nostr
+        </button>
+        <button class="hashtag-pill inactive" data-hashtag="freedom">
+          <span>#</span>freedom
+        </button>
+        <button class="hashtag-pill inactive" data-hashtag="privacy">
+          <span>#</span>privacy
+        </button>
+        <button class="hashtag-pill inactive" data-hashtag="decentralization">
+          <span>#</span>decentralization
+        </button>
+        <button class="clear-filters-btn" id="clearFilters" style="display: none;">
+          <svg style="width: 12px; height: 12px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          Clear
+        </button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab active">💬 Chats</div>
+        <div class="tab">🖼️ Images</div>
+        <div class="tab">🎥 Videos</div>
+        <div class="tab">📰 Articles</div>
+      </div>
+    </div>
+
+    <!-- Relay Selector Modal -->
+    <div class="relay-selector-modal" id="relaySelectorModal">
+      <div class="relay-selector-content">
+        <div class="relay-selector-header">
+          <div class="relay-selector-title">Select Feed</div>
+          <button class="relay-selector-close" id="closeRelaySelector">✕</button>
+        </div>
+
+        <div class="relay-option selected" data-relay="following">
+          <div class="relay-option-icon">👥</div>
+          <div class="relay-option-info">
+            <div class="relay-option-name">Following</div>
+            <div class="relay-option-desc">Posts from people you follow</div>
+          </div>
+          <div class="relay-option-check">
+            <svg style="width: 14px; height: 14px;" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="relay-option" data-relay="agoras">
+          <div class="relay-option-icon">🏛️</div>
+          <div class="relay-option-info">
+            <div class="relay-option-name">Agora</div>
+            <div class="relay-option-desc">Both Agora relays combined</div>
+          </div>
+          <div class="relay-option-check"></div>
+        </div>
+
+        <div class="relay-option" data-relay="relay1">
+          <div class="relay-option-icon">⚡</div>
+          <div class="relay-option-info">
+            <div class="relay-option-name">Agora Relay 1</div>
+            <div class="relay-option-desc">wss://relay1.agora.nostr</div>
+          </div>
+          <div class="relay-option-check"></div>
+        </div>
+
+        <div class="relay-option" data-relay="relay2">
+          <div class="relay-option-icon">⚡</div>
+          <div class="relay-option-info">
+            <div class="relay-option-name">Agora Relay 2</div>
+            <div class="relay-option-desc">wss://relay2.agora.nostr</div>
+          </div>
+          <div class="relay-option-check"></div>
+        </div>
+
+        <div class="relay-option" data-relay="custom">
+          <div class="relay-option-icon">🔧</div>
+          <div class="relay-option-info">
+            <div class="relay-option-name">Custom Relay</div>
+            <div class="relay-option-desc">Add your own relay</div>
+          </div>
+          <div class="relay-option-check"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+      <!-- HOME FEED PAGE -->
+      <div class="page active" id="homePage">
+        <!-- New Notes Banner - Floating -->
+        <div class="new-notes-banner" id="newNotesBanner">
+        <div class="avatar-stack">
+          <div class="avatar" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">A</div>
+          <div class="avatar" style="background: linear-gradient(135deg, #10b981, #14b8a6);">B</div>
+          <div class="avatar" style="background: linear-gradient(135deg, #f59e0b, #eab308);">C</div>
+        </div>
+        <div class="new-notes-text">5 new notes</div>
+      </div>
+
+      <!-- Note Cards -->
+      <div class="note-card">
+        <div class="note-header">
+          <div class="avatar" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">SN</div>
+          <div class="note-author">
+            <div class="author-name">Satoshi Nakamoto</div>
+            <div class="author-handle">@satoshi</div>
+          </div>
+          <div class="note-time">2h</div>
+          <div class="note-menu">⋯</div>
+        </div>
+        <div class="note-content">
+          The root problem with conventional currency is all the trust that's required to make it work. The central bank must be trusted not to debase the currency, but the history of fiat currencies is full of breaches of that trust.
+        </div>
+        <div class="note-actions">
+          <button class="action-btn reply">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            42
+          </button>
+          <button class="action-btn repost">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            12
+          </button>
+          <button class="action-btn like">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            156
+          </button>
+          <button class="action-btn zap">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            ⚡
+          </button>
+        </div>
+      </div>
+
+      <div class="note-card">
+        <div class="note-header">
+          <div class="avatar" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">JD</div>
+          <div class="note-author">
+            <div class="author-name">Jack Dorsey</div>
+            <div class="author-handle">@jack</div>
+          </div>
+          <div class="note-time">4h</div>
+          <div class="note-menu">⋯</div>
+        </div>
+        <div class="reply-indicator">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+          </svg>
+          Replying to @satoshi
+        </div>
+        <div class="note-content">
+          This is why we're building on #bitcoin and #nostr. Decentralized protocols are the future of the internet. No single point of control, no single point of failure.
+        </div>
+        <div class="note-actions">
+          <button class="action-btn reply">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            28
+          </button>
+          <button class="action-btn repost">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            91
+          </button>
+          <button class="action-btn like">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            342
+          </button>
+          <button class="action-btn zap">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            ⚡
+          </button>
+        </div>
+      </div>
+
+      <div class="note-card">
+        <div class="note-header">
+          <div class="avatar" style="background: linear-gradient(135deg, #10b981, #14b8a6);">VB</div>
+          <div class="note-author">
+            <div class="author-name">Vitalik Buterin</div>
+            <div class="author-handle">@vitalik</div>
+          </div>
+          <div class="note-time">6h</div>
+          <div class="note-menu">⋯</div>
+        </div>
+        <div class="note-content">
+          Excited about the future of decentralized social media. The ability to own your identity and data is fundamental to digital freedom.
+        </div>
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 200'%3E%3Crect fill='%23171717' width='400' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23404040' font-family='system-ui' font-size='14'%3EImage Preview%3C/text%3E%3C/svg%3E" class="note-image" alt="Preview">
+        <div class="note-actions">
+          <button class="action-btn reply">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            67
+          </button>
+          <button class="action-btn repost">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            23
+          </button>
+          <button class="action-btn like">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            445
+          </button>
+          <button class="action-btn zap">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            ⚡
+          </button>
+        </div>
+      </div>
+
+      <div class="note-card">
+        <div class="note-header">
+          <div class="avatar" style="background: linear-gradient(135deg, #f59e0b, #eab308);">EM</div>
+          <div class="note-author">
+            <div class="author-name">Edward Snowden</div>
+            <div class="author-handle">@snowden</div>
+          </div>
+          <div class="note-time">8h</div>
+          <div class="note-menu">⋯</div>
+        </div>
+        <div class="note-content">
+          Privacy is not about hiding something. It's about protecting everything. Every person deserves the right to think freely without surveillance.
+
+          The future of communication must be decentralized, encrypted, and censorship-resistant. Protocols, not platforms.
+        </div>
+        <div class="note-actions">
+          <button class="action-btn reply">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            234
+          </button>
+          <button class="action-btn repost">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            567
+          </button>
+          <button class="action-btn like">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            1.2k
+          </button>
+          <button class="action-btn zap">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            ⚡
+          </button>
+        </div>
+      </div>
+
+      <div class="note-card">
+        <div class="note-header">
+          <div class="avatar" style="background: linear-gradient(135deg, #ef4444, #dc2626);">AS</div>
+          <div class="note-author">
+            <div class="author-name">Andreas Antonopoulos</div>
+            <div class="author-handle">@aantonop</div>
+          </div>
+          <div class="note-time">10h</div>
+          <div class="note-menu">⋯</div>
+        </div>
+        <div class="note-content">
+          Short note example! This demonstrates how the compact layout handles brief content efficiently. Much better use of horizontal space on mobile. 📱
+        </div>
+        <div class="note-actions">
+          <button class="action-btn reply">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            18
+          </button>
+          <button class="action-btn repost">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            5
+          </button>
+          <button class="action-btn like">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            89
+          </button>
+          <button class="action-btn zap">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            ⚡
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compose FAB -->
+    <button class="compose-fab">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+      </svg>
+    </button>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <a href="#" class="nav-item active">
+        <svg fill="currentColor" viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+        Home
+      </a>
+
+      <a href="#" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        Messages
+      </a>
+
+      <a href="#" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        Market
+      </a>
+
+      <a href="#" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+        </svg>
+        Wallet
+      </a>
+
+      <a href="#" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        Profile
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Relay Selector Modal
+    const relaySelectorModal = document.getElementById('relaySelectorModal');
+    const openRelaySelectorBtn = document.getElementById('openRelaySelector');
+    const closeRelaySelectorBtn = document.getElementById('closeRelaySelector');
+    const currentRelayNameEl = document.getElementById('currentRelayName');
+
+    const relayNames = {
+      'following': 'Following',
+      'agoras': 'Agora',
+      'relay1': 'Agora Relay 1',
+      'relay2': 'Agora Relay 2',
+      'custom': 'Custom Relay'
+    };
+
+    openRelaySelectorBtn.addEventListener('click', function() {
+      relaySelectorModal.classList.add('active');
+    });
+
+    closeRelaySelectorBtn.addEventListener('click', function() {
+      relaySelectorModal.classList.remove('active');
+    });
+
+    // Close modal when clicking backdrop
+    relaySelectorModal.addEventListener('click', function(e) {
+      if (e.target === relaySelectorModal) {
+        relaySelectorModal.classList.remove('active');
+      }
+    });
+
+    // Handle relay option selection
+    document.querySelectorAll('.relay-option').forEach(option => {
+      option.addEventListener('click', function() {
+        // Remove selected state from all options
+        document.querySelectorAll('.relay-option').forEach(opt => opt.classList.remove('selected'));
+
+        // Add selected state to clicked option
+        this.classList.add('selected');
+
+        // Update button text
+        const relayId = this.dataset.relay;
+        currentRelayNameEl.textContent = relayNames[relayId] || 'Following';
+
+        // Close modal
+        setTimeout(() => {
+          relaySelectorModal.classList.remove('active');
+        }, 200);
+      });
+    });
+
+    // Hashtag Pills
+    const hashtagPills = document.querySelectorAll('.hashtag-pill');
+    const clearFiltersBtn = document.getElementById('clearFilters');
+
+    function updateClearButtonVisibility() {
+      const hasActiveHashtags = Array.from(hashtagPills).some(pill => pill.classList.contains('active'));
+      clearFiltersBtn.style.display = hasActiveHashtags ? 'flex' : 'none';
+    }
+
+    hashtagPills.forEach(pill => {
+      pill.addEventListener('click', function() {
+        this.classList.toggle('active');
+        this.classList.toggle('inactive');
+        updateClearButtonVisibility();
+      });
+    });
+
+    clearFiltersBtn.addEventListener('click', function() {
+      hashtagPills.forEach(pill => {
+        pill.classList.remove('active');
+        pill.classList.add('inactive');
+      });
+      updateClearButtonVisibility();
+    });
+
+    // Tabs
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // Bottom Nav
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // New Notes Banner
+    document.querySelector('.new-notes-banner')?.addEventListener('click', function() {
+      alert('In the real app, this would load 5 new notes at the top of the feed!');
+    });
+
+    // Compose FAB
+    document.querySelector('.compose-fab')?.addEventListener('click', function() {
+      alert('In the real app, this would open the compose dialog!');
+    });
+  </script>
+</body>
+</html>

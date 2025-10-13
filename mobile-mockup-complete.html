@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agora Mobile - Complete Mockup</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    .demo-controls {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: rgba(20, 20, 20, 0.95);
+      border: 1px solid #333;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .demo-controls h2 {
+      color: #F68E1D;
+      margin-bottom: 16px;
+    }
+
+    .demo-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .demo-btn {
+      padding: 12px 24px;
+      background: #262626;
+      color: #fff;
+      border: 2px solid #404040;
+      border-radius: 24px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .demo-btn.active {
+      background: #F68E1D;
+      color: #000;
+      border-color: #F68E1D;
+    }
+
+    .phone-frame {
+      max-width: 390px;
+      margin: 20px auto;
+      background: #000;
+      border: 3px solid #333;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      height: 844px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .top-bar {
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(115,115,115,0.2);
+    }
+
+    .top-bar-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #F68E1D, #FF6B00);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #F68E1D;
+    }
+
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 80px;
+    }
+
+    /* Profile Styles */
+    .profile-banner {
+      height: 120px;
+      background: #262626;
+      position: relative;
+    }
+
+    .profile-content {
+      padding: 0 16px;
+    }
+
+    .profile-avatar-section {
+      margin-top: -40px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .profile-avatar-large {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      border: 4px solid #000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .profile-info {
+      margin-bottom: 16px;
+    }
+
+    .profile-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .verified-badge {
+      width: 20px;
+      height: 20px;
+      background: #F68E1D;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 12px;
+    }
+
+    .profile-handle {
+      font-size: 15px;
+      color: #737373;
+      margin-bottom: 12px;
+    }
+
+    .profile-bio {
+      font-size: 15px;
+      color: #e5e5e5;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .profile-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: #737373;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .profile-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .profile-meta-item svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .profile-stats {
+      display: flex;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #262626;
+      margin-bottom: 16px;
+    }
+
+    .profile-stat {
+      cursor: pointer;
+    }
+
+    .profile-stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-right: 4px;
+    }
+
+    .profile-stat-label {
+      font-size: 14px;
+      color: #737373;
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .profile-btn {
+      flex: 1;
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .profile-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .profile-btn-primary {
+      background: #F68E1D;
+      color: #000;
+    }
+
+    .profile-btn-secondary {
+      background: #262626;
+      color: #fff;
+      border: 1px solid #404040;
+    }
+
+    .profile-btn-icon {
+      background: #262626;
+      color: #fff;
+      border: 1px solid #404040;
+      padding: 10px;
+      flex: 0;
+    }
+
+    .profile-tabs {
+      display: flex;
+      border-bottom: 1px solid #262626;
+      margin: 0 -16px;
+      padding: 0 16px;
+    }
+
+    .profile-tab {
+      flex: 1;
+      padding: 12px 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #737373;
+      border-bottom: 2px solid transparent;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .profile-tab.active {
+      color: #F68E1D;
+      border-bottom-color: #F68E1D;
+    }
+
+    /* Wallet Styles */
+    .wallet-balance-card {
+      margin: 16px;
+      padding: 24px;
+      background: #171717;
+      border-radius: 20px;
+      border: 1px solid #333;
+    }
+
+    .wallet-balance-label {
+      font-size: 13px;
+      color: #737373;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .wallet-balance-main {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .wallet-balance-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .wallet-balance-unit {
+      font-size: 18px;
+      color: #737373;
+      font-weight: 600;
+    }
+
+    .wallet-balance-usd {
+      font-size: 15px;
+      color: #737373;
+      font-weight: 500;
+    }
+
+    .wallet-primary-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      padding: 0 16px 16px;
+    }
+
+    .wallet-primary-btn {
+      padding: 16px;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .wallet-primary-btn.send {
+      background: #F68E1D;
+      color: #000;
+    }
+
+    .wallet-primary-btn.scan-qr {
+      background: #262626;
+      color: #fff;
+      border: 1px solid #404040;
+    }
+
+    .wallet-primary-btn.receive {
+      background: #262626;
+      color: #fff;
+      border: 1px solid #404040;
+    }
+
+    .wallet-primary-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .wallet-section {
+      padding: 0 16px 16px;
+    }
+
+    .wallet-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .wallet-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .wallet-filter-btn {
+      font-size: 14px;
+      color: #F68E1D;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .transaction-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .transaction-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #171717;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .transaction-item:active {
+      background: #262626;
+    }
+
+    .transaction-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 20px;
+    }
+
+    .transaction-icon.incoming {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+    }
+
+    .transaction-icon.outgoing {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+
+    .transaction-icon.zap {
+      background: rgba(234, 179, 8, 0.15);
+      color: #eab308;
+    }
+
+    .transaction-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .transaction-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .transaction-type {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .transaction-status {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .transaction-status.confirmed {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+    }
+
+    .transaction-status.pending {
+      background: rgba(234, 179, 8, 0.2);
+      color: #eab308;
+    }
+
+    .transaction-subtitle {
+      font-size: 13px;
+      color: #737373;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .transaction-amount-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .transaction-amount {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .transaction-amount.incoming {
+      color: #10b981;
+    }
+
+    .transaction-amount.outgoing {
+      color: #ef4444;
+    }
+
+    .transaction-fee {
+      font-size: 12px;
+      color: #737373;
+    }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(115,115,115,0.2);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0 20px;
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 16px;
+      color: #737373;
+      text-decoration: none;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-item.active {
+      color: #F68E1D;
+    }
+
+    .nav-item svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .page-content {
+      display: none;
+    }
+
+    .page-content.active {
+      display: block;
+    }
+
+    /* New notes floating banner */
+    .floating-new-notes {
+      position: absolute;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 500;
+      background: rgba(23, 23, 23, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(246, 142, 29, 0.5);
+      border-radius: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .avatar-stack {
+      display: flex;
+    }
+
+    .avatar-stack .mini-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #000;
+      margin-left: -8px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .avatar-stack .mini-avatar:first-child {
+      margin-left: 0;
+    }
+
+    .new-notes-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #F68E1D;
+    }
+
+    /* Feed note card (simplified) */
+    .note-card {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(115,115,115,0.2);
+    }
+
+    .profile-content .note-card {
+      padding: 12px 0;
+    }
+
+    .note-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .note-author {
+      flex: 1;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .author-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .author-handle {
+      font-size: 14px;
+      color: #737373;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .note-time {
+      font-size: 14px;
+      color: #737373;
+      white-space: nowrap;
+    }
+
+    .note-content {
+      font-size: 15px;
+      line-height: 1.5;
+      color: #e5e5e5;
+      margin-bottom: 8px;
+    }
+
+    .note-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      color: #737373;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .action-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Demo Controls -->
+  <div class="demo-controls">
+    <h2>📱 Agora Mobile Mockup - Complete</h2>
+    <p style="margin-bottom: 16px; color: #737373;">Click buttons to switch between pages:</p>
+    <div class="demo-btns">
+      <button class="demo-btn active" onclick="showPage('feed')">Feed</button>
+      <button class="demo-btn" onclick="showPage('profile')">Profile</button>
+      <button class="demo-btn" onclick="showPage('wallet')">Wallet</button>
+    </div>
+  </div>
+
+  <!-- Phone Frame -->
+  <div class="phone-frame">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="top-bar-content">
+        <div class="logo">
+          <div class="logo-icon">A</div>
+          <div class="page-title" id="pageTitle">Following</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content-area">
+      <!-- FEED PAGE -->
+      <div class="page-content active" id="feedPage">
+        <!-- Floating New Notes Banner -->
+        <div class="floating-new-notes">
+          <div class="avatar-stack">
+            <div class="mini-avatar" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">A</div>
+            <div class="mini-avatar" style="background: linear-gradient(135deg, #10b981, #14b8a6);">B</div>
+            <div class="mini-avatar" style="background: linear-gradient(135deg, #f59e0b, #eab308);">C</div>
+          </div>
+          <div class="new-notes-text">5 new notes</div>
+        </div>
+
+        <!-- Sample Notes -->
+        <div class="note-card">
+          <div class="note-header">
+            <div class="avatar" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">SN</div>
+            <div class="note-author">
+              <div class="author-name">Satoshi Nakamoto</div>
+              <div class="author-handle">@satoshi</div>
+            </div>
+            <div class="note-time">2h</div>
+          </div>
+          <div class="note-content">
+            The root problem with conventional currency is all the trust that's required to make it work.
+          </div>
+        </div>
+
+        <div class="note-card">
+          <div class="note-header">
+            <div class="avatar" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">JD</div>
+            <div class="note-author">
+              <div class="author-name">Jack Dorsey</div>
+              <div class="author-handle">@jack</div>
+            </div>
+            <div class="note-time">4h</div>
+          </div>
+          <div class="note-content">
+            Building on #bitcoin and #nostr. Decentralized protocols are the future!
+          </div>
+        </div>
+
+        <div class="note-card">
+          <div class="note-header">
+            <div class="avatar" style="background: linear-gradient(135deg, #10b981, #14b8a6);">VB</div>
+            <div class="note-author">
+              <div class="author-name">Vitalik Buterin</div>
+              <div class="author-handle">@vitalik</div>
+            </div>
+            <div class="note-time">6h</div>
+          </div>
+          <div class="note-content">
+            Excited about decentralized social media and digital freedom.
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE PAGE -->
+      <div class="page-content" id="profilePage">
+        <!-- Banner -->
+        <div class="profile-banner"></div>
+
+        <!-- Profile Content -->
+        <div class="profile-content">
+          <!-- Avatar overlapping banner -->
+          <div class="profile-avatar-section">
+            <div class="profile-avatar-large">SN</div>
+          </div>
+
+          <!-- Profile Info -->
+          <div class="profile-info">
+            <div class="profile-name">
+              Satoshi Nakamoto
+              <div class="verified-badge">✓</div>
+            </div>
+            <div class="profile-handle">@satoshi</div>
+            <div class="profile-bio">
+              Creator of Bitcoin. Cypherpunk. Believer in decentralization and individual sovereignty.
+            </div>
+
+            <!-- Meta info -->
+            <div class="profile-meta">
+              <div class="profile-meta-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Joined Jan 2009
+              </div>
+              <div class="profile-meta-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                satoshi@bitcoin.org
+              </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="profile-stats">
+              <div class="profile-stat">
+                <span class="profile-stat-value">1.2M</span>
+                <span class="profile-stat-label">Following</span>
+              </div>
+              <div class="profile-stat">
+                <span class="profile-stat-value">8.5M</span>
+                <span class="profile-stat-label">Followers</span>
+              </div>
+              <div class="profile-stat">
+                <span class="profile-stat-value">3.4K</span>
+                <span class="profile-stat-label">Notes</span>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="profile-actions">
+              <button class="profile-btn profile-btn-primary">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Follow
+              </button>
+              <button class="profile-btn profile-btn-secondary">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                Message
+              </button>
+              <button class="profile-btn profile-btn-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="profile-tabs">
+              <div class="profile-tab active">Notes</div>
+              <div class="profile-tab">Replies</div>
+              <div class="profile-tab">Media</div>
+              <div class="profile-tab">Zaps</div>
+            </div>
+          </div>
+
+          <!-- Recent Notes -->
+          <div class="note-card">
+            <div class="note-header">
+              <div class="avatar" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">SN</div>
+              <div class="note-author">
+                <div class="author-name">Satoshi Nakamoto</div>
+              </div>
+              <div class="note-time">2h</div>
+            </div>
+            <div class="note-content">
+              The root problem with conventional currency is all the trust that's required to make it work. The central bank must be trusted not to debase the currency.
+            </div>
+            <div class="note-actions">
+              <button class="action-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                42
+              </button>
+              <button class="action-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                12
+              </button>
+              <button class="action-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                156
+              </button>
+            </div>
+          </div>
+
+          <div class="note-card">
+            <div class="note-header">
+              <div class="avatar" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">SN</div>
+              <div class="note-author">
+                <div class="author-name">Satoshi Nakamoto</div>
+              </div>
+              <div class="note-time">5h</div>
+            </div>
+            <div class="note-content">
+              What is needed is an electronic payment system based on cryptographic proof instead of trust, allowing any two willing parties to transact directly.
+            </div>
+            <div class="note-actions">
+              <button class="action-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                28
+              </button>
+              <button class="action-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                91
+              </button>
+              <button class="action-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                342
+              </button>
+            </div>
+          </div>
+
+          <div class="note-card">
+            <div class="note-header">
+              <div class="avatar" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">SN</div>
+              <div class="note-author">
+                <div class="author-name">Satoshi Nakamoto</div>
+              </div>
+              <div class="note-time">1d</div>
+            </div>
+            <div class="note-content">
+              The steady addition of a constant of amount of new coins is analogous to gold miners expending resources to add gold to circulation.
+            </div>
+            <div class="note-actions">
+              <button class="action-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                67
+              </button>
+              <button class="action-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                23
+              </button>
+              <button class="action-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                445
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WALLET PAGE -->
+      <div class="page-content" id="walletPage">
+        <!-- Balance Card -->
+        <div class="wallet-balance-card">
+          <div class="wallet-balance-label">Total Balance</div>
+          <div class="wallet-balance-main">
+            <div class="wallet-balance-value">125,450</div>
+            <div class="wallet-balance-unit">sats</div>
+          </div>
+          <div class="wallet-balance-usd">≈ $52,389 USD</div>
+        </div>
+
+        <!-- Primary Actions -->
+        <div class="wallet-primary-actions">
+          <button class="wallet-primary-btn send">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+            Send
+          </button>
+          <button class="wallet-primary-btn scan-qr">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <rect x="4" y="4" width="6" height="6" stroke="currentColor" stroke-width="2" fill="none" rx="1"/>
+              <rect x="14" y="4" width="6" height="6" stroke="currentColor" stroke-width="2" fill="none" rx="1"/>
+              <rect x="4" y="14" width="6" height="6" stroke="currentColor" stroke-width="2" fill="none" rx="1"/>
+              <rect x="14" y="14" width="6" height="6" stroke="currentColor" stroke-width="2" fill="none" rx="1"/>
+            </svg>
+            Scan QR
+          </button>
+          <button class="wallet-primary-btn receive">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4" />
+            </svg>
+            Receive
+          </button>
+        </div>
+
+        <!-- Transactions -->
+        <div class="wallet-section">
+          <div class="wallet-section-header">
+            <div class="wallet-section-title">Recent Activity</div>
+            <button class="wallet-filter-btn">Filter ›</button>
+          </div>
+
+          <div class="transaction-list">
+            <div class="transaction-item">
+              <div class="transaction-icon zap">⚡</div>
+              <div class="transaction-details">
+                <div class="transaction-header">
+                  <div class="transaction-type">Zap Received</div>
+                  <div class="transaction-status confirmed">✓</div>
+                </div>
+                <div class="transaction-subtitle">From @jack • 2 hours ago</div>
+              </div>
+              <div class="transaction-amount-section">
+                <div class="transaction-amount incoming">+5,000</div>
+                <div class="transaction-fee">0 fee</div>
+              </div>
+            </div>
+
+            <div class="transaction-item">
+              <div class="transaction-icon outgoing">↑</div>
+              <div class="transaction-details">
+                <div class="transaction-header">
+                  <div class="transaction-type">Payment Sent</div>
+                  <div class="transaction-status confirmed">✓</div>
+                </div>
+                <div class="transaction-subtitle">To @vitalik • 5 hours ago</div>
+              </div>
+              <div class="transaction-amount-section">
+                <div class="transaction-amount outgoing">-2,100</div>
+                <div class="transaction-fee">-21 fee</div>
+              </div>
+            </div>
+
+            <div class="transaction-item">
+              <div class="transaction-icon zap">⚡</div>
+              <div class="transaction-details">
+                <div class="transaction-header">
+                  <div class="transaction-type">Zap Received</div>
+                  <div class="transaction-status confirmed">✓</div>
+                </div>
+                <div class="transaction-subtitle">From @snowden • 1 day ago</div>
+              </div>
+              <div class="transaction-amount-section">
+                <div class="transaction-amount incoming">+10,500</div>
+                <div class="transaction-fee">0 fee</div>
+              </div>
+            </div>
+
+            <div class="transaction-item">
+              <div class="transaction-icon outgoing">↑</div>
+              <div class="transaction-details">
+                <div class="transaction-header">
+                  <div class="transaction-type">Payment Sent</div>
+                  <div class="transaction-status pending">⏳</div>
+                </div>
+                <div class="transaction-subtitle">To Lightning Address • 1 day ago</div>
+              </div>
+              <div class="transaction-amount-section">
+                <div class="transaction-amount outgoing">-8,200</div>
+                <div class="transaction-fee">-82 fee</div>
+              </div>
+            </div>
+
+            <div class="transaction-item">
+              <div class="transaction-icon incoming">↓</div>
+              <div class="transaction-details">
+                <div class="transaction-header">
+                  <div class="transaction-type">Received</div>
+                  <div class="transaction-status confirmed">✓</div>
+                </div>
+                <div class="transaction-subtitle">On-chain • 2 days ago</div>
+              </div>
+              <div class="transaction-amount-section">
+                <div class="transaction-amount incoming">+25,000</div>
+                <div class="transaction-fee">0 fee</div>
+              </div>
+            </div>
+
+            <div class="transaction-item">
+              <div class="transaction-icon zap">⚡</div>
+              <div class="transaction-details">
+                <div class="transaction-header">
+                  <div class="transaction-type">Zap Sent</div>
+                  <div class="transaction-status confirmed">✓</div>
+                </div>
+                <div class="transaction-subtitle">To @satoshi's note • 3 days ago</div>
+              </div>
+              <div class="transaction-amount-section">
+                <div class="transaction-amount outgoing">-1,000</div>
+                <div class="transaction-fee">-10 fee</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <a class="nav-item active" onclick="showPage('feed')">
+        <svg fill="currentColor" viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+        Home
+      </a>
+
+      <a class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        Messages
+      </a>
+
+      <a class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        Market
+      </a>
+
+      <a class="nav-item" onclick="showPage('wallet')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+        </svg>
+        Wallet
+      </a>
+
+      <a class="nav-item" onclick="showPage('profile')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        Profile
+      </a>
+    </div>
+  </div>
+
+  <script>
+    function showPage(pageName) {
+      // Update demo buttons
+      document.querySelectorAll('.demo-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // Update pages
+      document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+      const topBar = document.querySelector('.top-bar');
+
+      // Show selected page
+      if (pageName === 'feed') {
+        document.getElementById('feedPage').classList.add('active');
+        document.getElementById('pageTitle').textContent = 'Following';
+        document.querySelector('.bottom-nav .nav-item:nth-child(1)').classList.add('active');
+        topBar.style.display = 'block';
+      } else if (pageName === 'profile') {
+        document.getElementById('profilePage').classList.add('active');
+        document.querySelector('.bottom-nav .nav-item:nth-child(5)').classList.add('active');
+        topBar.style.display = 'none';
+      } else if (pageName === 'wallet') {
+        document.getElementById('walletPage').classList.add('active');
+        document.querySelector('.bottom-nav .nav-item:nth-child(4)').classList.add('active');
+        topBar.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -7,7 +7,7 @@
 
   const wallet = useWallet(ndk);
 
-  type TabView = 'wallet' | 'send' | 'receive';
+  type TabView = 'wallet' | 'send' | 'receive' | 'scan';
   let currentTab = $state<TabView>('wallet');
 </script>
 
@@ -26,6 +26,15 @@
             <span class="action-icon">↑</span>
             <span class="action-label">Send</span>
           </button>
+          <button class="action-btn scan" onclick={() => currentTab = 'scan'}>
+            <svg class="action-icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <rect x="4" y="4" width="6" height="6" stroke="currentColor" stroke-width="2" fill="none" rx="1"/>
+              <rect x="14" y="4" width="6" height="6" stroke="currentColor" stroke-width="2" fill="none" rx="1"/>
+              <rect x="4" y="14" width="6" height="6" stroke="currentColor" stroke-width="2" fill="none" rx="1"/>
+              <rect x="14" y="14" width="6" height="6" stroke="currentColor" stroke-width="2" fill="none" rx="1"/>
+            </svg>
+            <span class="action-label">Scan QR</span>
+          </button>
           <button class="action-btn receive" onclick={() => currentTab = 'receive'}>
             <span class="action-icon">↓</span>
             <span class="action-label">Receive</span>
@@ -35,6 +44,9 @@
         <SendView {wallet} onBack={() => currentTab = 'wallet'} />
       {:else if currentTab === 'receive'}
         <ReceiveView {wallet} onBack={() => currentTab = 'wallet'} />
+      {:else if currentTab === 'scan'}
+        <!-- Scan QR - redirect to send for now, can be enhanced later with camera -->
+        <SendView {wallet} onBack={() => currentTab = 'wallet'} />
       {/if}
     </div>
   </div>
@@ -86,8 +98,8 @@
 
   .action-buttons {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
   }
 
   .action-btn {
@@ -128,13 +140,25 @@
     background: rgba(34, 197, 94, 0.1);
   }
 
+  .action-btn.scan:hover {
+    border-color: rgba(168, 85, 247, 0.5);
+    background: rgba(168, 85, 247, 0.1);
+  }
+
   .action-icon {
     font-size: 2rem;
     line-height: 1;
     transition: transform 0.2s;
   }
 
-  .action-btn:hover .action-icon {
+  .action-icon-svg {
+    width: 2rem;
+    height: 2rem;
+    transition: transform 0.2s;
+  }
+
+  .action-btn:hover .action-icon,
+  .action-btn:hover .action-icon-svg {
     transform: scale(1.15);
   }
 
@@ -144,6 +168,10 @@
 
   .action-btn.receive .action-icon {
     color: #22c55e;
+  }
+
+  .action-btn.scan .action-icon-svg {
+    color: #a855f7;
   }
 
   .action-label {

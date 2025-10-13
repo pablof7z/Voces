@@ -14,6 +14,8 @@
   import UserMenu from './UserMenu.svelte';
   import MarketplaceSidebar from './MarketplaceSidebar.svelte';
   import NewMembersWidget from './NewMembersWidget.svelte';
+  import MobileBottomNav from './MobileBottomNav.svelte';
+  import MobileComposeFAB from './MobileComposeFAB.svelte';
   import type { Snippet } from 'svelte';
 
   interface Props {
@@ -284,7 +286,7 @@
     <!-- Main Content Container -->
     <div class="flex-1 flex {sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'} transition-all duration-300 ease-in-out">
       <!-- Center column - Main content -->
-      <div class={`flex-1 ${hideRightSidebar ? 'max-w-[900px]' : 'max-w-[600px]'} flex flex-col min-h-screen border-x border-neutral-800/50`}>
+      <div class={`w-full lg:flex-1 ${hideRightSidebar ? 'lg:max-w-[900px]' : 'lg:max-w-[600px]'} min-w-0 flex flex-col min-h-screen border-x border-neutral-800/50`}>
         <!-- Page content -->
         <main class="flex-1 pb-20 md:pb-0 bg-black">
           {@render children()}
@@ -381,4 +383,12 @@
       {/if}
     </div>
   </div>
+
+  <!-- Mobile Bottom Navigation -->
+  <MobileBottomNav />
+
+  <!-- Mobile Compose FAB (only on home page) -->
+  {#if path === '/'}
+    <MobileComposeFAB />
+  {/if}
 </div>

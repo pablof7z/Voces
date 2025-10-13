@@ -7,6 +7,7 @@
   import Toaster from '$lib/components/Toaster.svelte';
   import LoginModal from '$lib/components/LoginModal.svelte';
   import RelayAuthModal from '$lib/components/RelayAuthModal.svelte';
+  import PWAInstallPrompt from '$lib/components/PWAInstallPrompt.svelte';
   import Hashtag from '$lib/components/Hashtag.svelte';
   import '../app.css';
   import type { Snippet } from 'svelte';
@@ -63,6 +64,7 @@
 <Toaster />
 <LoginModal />
 <RelayAuthModal />
+<PWAInstallPrompt />
 
 {#if ready}
   <svelte:boundary onerror={(e) => {

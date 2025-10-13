@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 130" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#F68E1D;}
+	.st2{fill:#FDFDFD;}
+</style>
+<!-- Orange background square with padding -->
+<rect class="st0" x="10" y="10" width="110" height="110" rx="24"/>
+
+<!-- Top bar -->
+<polygon class="st2" points="33,28 45,31 85,31 97,28"/>
+<!-- Second bar -->
+<polygon class="st2" points="46,33 47,34 83,34 84,33"/>
+
+<!-- Left pillar -->
+<g>
+	<rect class="st2" x="46" y="38" width="3" height="55"/>
+	<rect class="st2" x="52" y="38" width="3" height="55"/>
+	<polygon class="st2" points="44,36 44,38 58,38 58,36 52,34 50,34"/>
+	<rect class="st2" x="44" y="93" width="14" height="2"/>
+</g>
+
+<!-- Middle pillar -->
+<g>
+	<rect class="st2" x="63.5" y="38" width="3" height="55"/>
+	<rect class="st2" x="69.5" y="38" width="3" height="55"/>
+	<polygon class="st2" points="61.5,36 61.5,38 75.5,38 75.5,36 69.5,34 67.5,34"/>
+	<rect class="st2" x="61.5" y="93" width="14" height="2"/>
+</g>
+
+<!-- Right pillar -->
+<g>
+	<rect class="st2" x="81" y="38" width="3" height="55"/>
+	<rect class="st2" x="87" y="38" width="3" height="55"/>
+	<polygon class="st2" points="79,36 79,38 93,38 93,36 87,34 85,34"/>
+	<rect class="st2" x="79" y="93" width="14" height="2"/>
+</g>
+</svg>

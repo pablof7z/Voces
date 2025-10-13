@@ -21,6 +21,7 @@ export default defineConfig({
     }
   },
   preview: {
+    host: true,
     headers: {
       'Cross-Origin-Embedder-Policy': 'credentialless',
       'Cross-Origin-Opener-Policy': 'same-origin',

@@ -79,7 +79,7 @@
   const avatarSize = $derived(
     variant === 'thread-main' ? 'w-14 h-14' :
     variant === 'thread-reply' ? 'w-10 h-10' :
-    'w-12 h-12'
+    'w-9 h-9 sm:w-12 sm:h-12'
   );
 
   const textSize = $derived(
@@ -282,7 +282,7 @@
 </script>
 
 <article
-  class="p-4 {bgClass} transition-colors {clickable ? 'cursor-pointer' : ''} border-b border-neutral-800 relative"
+  class="p-3 sm:p-4 {bgClass} transition-colors {clickable ? 'cursor-pointer' : ''} border-b border-neutral-800 relative min-w-0"
   onclick={clickable ? navigateToEvent : undefined}
   role={clickable ? 'button' : undefined}
   tabindex={clickable ? 0 : undefined}
@@ -292,171 +292,172 @@
     <div class="absolute left-[29px] top-[73px] bottom-0 w-0.5 bg-neutral-700"></div>
   {/if}
 
-  <div class="flex gap-3">
-    <!-- Avatar -->
+  <!-- Header Row: Avatar + Name/Handle/Time -->
+  <div class="flex items-center gap-2 sm:gap-3 {variant === 'thread-main' ? 'mb-2' : 'mb-1.5'}">
     <button
       bind:this={avatarElement}
       type="button"
       onclick={(e) => { e.stopPropagation(); navigateToProfile(); }}
       onmouseenter={handleAvatarMouseEnter}
       onmouseleave={handleAvatarMouseLeave}
-      class="flex-shrink-0 self-start"
+      class="flex-shrink-0"
     >
       <Avatar {ndk} pubkey={event.pubkey} class="{avatarSize} cursor-pointer hover:opacity-80 transition-opacity" />
     </button>
 
-    <!-- Content -->
-    <div class="flex-1 min-w-0">
-      <div class="flex items-center gap-2 {variant === 'thread-main' ? 'mb-2' : 'mb-1'}">
-        <span class="{nameSize} text-white truncate">
+    <div class="flex items-center gap-2 flex-1 min-w-0">
+      <div class="flex items-center gap-2 min-w-0 flex-shrink">
+        <span class="{nameSize} text-white truncate min-w-0">
           {profile?.displayName || profile?.name || `${event.pubkey.slice(0, 8)}...`}
         </span>
         {#if variant === 'default' || variant === 'thread-reply'}
-          <span class="text-neutral-500 text-sm truncate">
+          <span class="text-neutral-500 text-sm truncate min-w-0">
             @{profile?.name || event.pubkey.slice(0, 8)}
           </span>
         {/if}
-        <span class="text-neutral-500 text-sm">·</span>
-        {#if event.created_at}
-          <TimeAgo timestamp={event.created_at} class="text-neutral-500 text-sm" />
-        {/if}
-        <div class="ml-auto relative">
+      </div>
+      <span class="text-neutral-500 text-sm flex-shrink-0">·</span>
+      {#if event.created_at}
+        <TimeAgo timestamp={event.created_at} class="text-neutral-500 text-sm flex-shrink-0" />
+      {/if}
+    </div>
+
+    <div class="relative flex-shrink-0">
+      <button
+        onclick={(e) => { e.stopPropagation(); showOptionsMenu = !showOptionsMenu; }}
+        class="p-1 hover:bg-neutral-800 rounded-full transition-colors"
+        type="button"
+        aria-label="More options"
+      >
+        <svg class="w-5 h-5 text-neutral-500" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+        </svg>
+      </button>
+
+      {#if showOptionsMenu}
+        <div
+          class="absolute right-0 mt-1 w-72 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg z-10 max-h-96 overflow-y-auto"
+          onclick={(e) => e.stopPropagation()}
+        >
           <button
-            onclick={(e) => { e.stopPropagation(); showOptionsMenu = !showOptionsMenu; }}
-            class="p-1 hover:bg-neutral-800 rounded-full transition-colors"
+            onclick={copyAuthorNprofile}
+            class="w-full px-4 py-2 text-left text-sm text-neutral-200 hover:bg-neutral-700 transition-colors first:rounded-t-lg"
             type="button"
-            aria-label="More options"
           >
-            <svg class="w-5 h-5 text-neutral-500" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-            </svg>
+            Copy author (nprofile)
+          </button>
+          <button
+            onclick={copyEventId}
+            class="w-full px-4 py-2 text-left text-sm text-neutral-200 hover:bg-neutral-700 transition-colors"
+            type="button"
+          >
+            Copy ID (nevent)
+          </button>
+          <button
+            onclick={copyRawEvent}
+            class="w-full px-4 py-2 text-left text-sm text-neutral-200 hover:bg-neutral-700 transition-colors"
+            type="button"
+          >
+            Copy raw event
           </button>
 
-          {#if showOptionsMenu}
-            <div
-              class="absolute right-0 mt-1 w-72 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg z-10 max-h-96 overflow-y-auto"
-              onclick={(e) => e.stopPropagation()}
-            >
-              <button
-                onclick={copyAuthorNprofile}
-                class="w-full px-4 py-2 text-left text-sm text-neutral-200 hover:bg-neutral-700 transition-colors first:rounded-t-lg"
-                type="button"
-              >
-                Copy author (nprofile)
-              </button>
-              <button
-                onclick={copyEventId}
-                class="w-full px-4 py-2 text-left text-sm text-neutral-200 hover:bg-neutral-700 transition-colors"
-                type="button"
-              >
-                Copy ID (nevent)
-              </button>
-              <button
-                onclick={copyRawEvent}
-                class="w-full px-4 py-2 text-left text-sm text-neutral-200 hover:bg-neutral-700 transition-colors"
-                type="button"
-              >
-                Copy raw event
-              </button>
-
-              {#if event.onRelays && event.onRelays.size > 0}
-                <div class="border-t border-neutral-700 mt-1 pt-1">
-                  <div class="px-4 py-2 text-xs text-neutral-500 font-medium">
-                    Seen on {event.onRelays.size} relay{event.onRelays.size === 1 ? '' : 's'}
-                  </div>
-                  <div class="px-2 pb-2 space-y-1">
-                    {#each Array.from(event.onRelays) as relay (relay.url)}
-                      <RelayBadge {relay} variant="compact" />
-                    {/each}
-                  </div>
-                </div>
-              {/if}
+          {#if event.onRelays && event.onRelays.size > 0}
+            <div class="border-t border-neutral-700 mt-1 pt-1">
+              <div class="px-4 py-2 text-xs text-neutral-500 font-medium">
+                Seen on {event.onRelays.size} relay{event.onRelays.size === 1 ? '' : 's'}
+              </div>
+              <div class="px-2 pb-2 space-y-1">
+                {#each Array.from(event.onRelays) as relay (relay.url)}
+                  <RelayBadge {relay} variant="compact" />
+                {/each}
+              </div>
             </div>
           {/if}
-        </div>
-      </div>
-
-      <!-- Reply indicator -->
-      {#if variant === 'default'}
-        <ReplyIndicator {event} />
-      {/if}
-
-      <div class="text-neutral-200 whitespace-pre-wrap break-words {textSize}">
-        <EventContent {ndk} event={event} />
-      </div>
-
-      <!-- Actions -->
-      {#if showActions}
-        <div class="flex items-center gap-6 {variant === 'thread-main' ? 'mt-4 border-t border-neutral-700 pt-3' : 'mt-3'} text-neutral-500">
-          <button
-            onclick={(e) => { e.stopPropagation(); showReplyDialog = true; }}
-            class="flex items-center gap-2 hover:text-purple-400 transition-colors group"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-            <span class="text-sm group-hover:underline">{replyCount}</span>
-          </button>
-
-          <button
-            onclick={(e) => { e.stopPropagation(); handleRepost(); }}
-            class="flex items-center gap-2 hover:text-green-400 transition-colors group"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            <span class="text-sm group-hover:underline">{repostCount}</span>
-          </button>
-
-          <button
-            onclick={(e) => { e.stopPropagation(); handleReact('❤️'); }}
-            class="flex items-center gap-2 hover:text-red-400 transition-colors group"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-            <span class="text-sm group-hover:underline">{reactionCount}</span>
-          </button>
-
-          <button
-            bind:this={zapButtonElement}
-            onmousedown={handleZapLongPressStart}
-            onmouseup={handleZapLongPressEnd}
-            onmouseleave={handleZapLongPressCancel}
-            ontouchstart={handleZapLongPressStart}
-            ontouchend={handleZapLongPressEnd}
-            ontouchcancel={handleZapLongPressCancel}
-            disabled={isZapping}
-            class="relative flex items-center gap-2 transition-colors group {zapSuccess ? 'text-yellow-400' : 'hover:text-yellow-400'} {isZapping ? 'opacity-50 cursor-wait' : ''}"
-            type="button"
-          >
-            {#if isZapping}
-              <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            {:else if zapSuccess}
-              <svg class="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            {:else}
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            {/if}
-            <span class="text-sm group-hover:underline">
-              {#if zapSuccess}
-                Zapped!
-              {:else if isZapping}
-                Zapping...
-              {:else}
-                Zap
-              {/if}
-            </span>
-          </button>
         </div>
       {/if}
     </div>
   </div>
+
+  <!-- Reply indicator -->
+  {#if variant === 'default'}
+    <ReplyIndicator {event} />
+  {/if}
+
+  <!-- Content -->
+  <div class="text-neutral-200 whitespace-pre-wrap break-words {textSize} mb-2 overflow-hidden">
+    <EventContent {ndk} event={event} />
+  </div>
+
+  <!-- Actions -->
+  {#if showActions}
+    <div class="flex items-center gap-3 sm:gap-6 {variant === 'thread-main' ? 'border-t border-neutral-700 pt-3' : ''} text-neutral-500">
+      <button
+        onclick={(e) => { e.stopPropagation(); showReplyDialog = true; }}
+        class="flex items-center gap-2 hover:text-purple-400 transition-colors group"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <span class="text-sm group-hover:underline">{replyCount}</span>
+      </button>
+
+      <button
+        onclick={(e) => { e.stopPropagation(); handleRepost(); }}
+        class="flex items-center gap-2 hover:text-green-400 transition-colors group"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span class="text-sm group-hover:underline">{repostCount}</span>
+      </button>
+
+      <button
+        onclick={(e) => { e.stopPropagation(); handleReact('❤️'); }}
+        class="flex items-center gap-2 hover:text-red-400 transition-colors group"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+        <span class="text-sm group-hover:underline">{reactionCount}</span>
+      </button>
+
+      <button
+        bind:this={zapButtonElement}
+        onmousedown={handleZapLongPressStart}
+        onmouseup={handleZapLongPressEnd}
+        onmouseleave={handleZapLongPressCancel}
+        ontouchstart={handleZapLongPressStart}
+        ontouchend={handleZapLongPressEnd}
+        ontouchcancel={handleZapLongPressCancel}
+        disabled={isZapping}
+        class="relative flex items-center gap-2 transition-colors group {zapSuccess ? 'text-yellow-400' : 'hover:text-yellow-400'} {isZapping ? 'opacity-50 cursor-wait' : ''}"
+        type="button"
+      >
+        {#if isZapping}
+          <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        {:else if zapSuccess}
+          <svg class="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        {:else}
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        {/if}
+        <span class="text-sm group-hover:underline">
+          {#if zapSuccess}
+            Zapped!
+          {:else if isZapping}
+            Zapping...
+          {:else}
+            Zap
+          {/if}
+        </span>
+      </button>
+    </div>
+  {/if}
 </article>
 
 <ComposeDialog bind:open={showReplyDialog} replyTo={event} />
