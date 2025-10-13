@@ -30,11 +30,11 @@
 
 <a
   href={articleUrl}
-  class="group block flex-shrink-0 rounded-2xl overflow-hidden bg-card hover:bg-muted transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-orange-500/10"
+  class="group block flex-shrink-0 rounded-2xl overflow-hidden bg-card hover:bg-muted transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/10"
   style="width: {CARD_WIDTH}px; height: {CARD_HEIGHT}px;"
 >
   <!-- Cover Image -->
-  <div class="relative w-full h-48 overflow-hidden bg-gradient-to-br from-orange-500/20 to-red-500/20">
+  <div class="relative w-full h-48 overflow-hidden bg-gradient-to-br bg-primary/20">
     {#if imageUrl}
       <img
         src={imageUrl}

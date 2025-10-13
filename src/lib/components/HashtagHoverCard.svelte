@@ -105,7 +105,7 @@
       <!-- Main card -->
       <div class="relative w-80 bg-card border border-border rounded-xl shadow-2xl overflow-hidden">
         <!-- Gradient header -->
-        <div class="relative h-20 bg-gradient-to-br from-orange-900 via-neutral-800 to-neutral-900">
+        <div class="relative h-20 bg-gradient-to-br bg-primary/30">
           <div class="absolute inset-0 bg-gradient-to-b from-transparent to-neutral-900 opacity-60"></div>
           <!-- Hashtag overlay -->
           <div class="absolute inset-0 flex items-center justify-center">

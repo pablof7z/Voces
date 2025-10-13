@@ -34,10 +34,10 @@
 
 <div class="border-t border pt-12">
   <div class="mb-8">
-    <h2 class="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-foreground font-serif mb-2">
+    <h2 class="text-2xl sm:text-3xl font-bold text-foreground font-serif mb-2">
       Discussion
     </h2>
-    <p class="text-muted-foreground dark:text-muted-foreground">
+    <p class="text-muted-foreground">
       {comments.length} {comments.length === 1 ? 'comment' : 'comments'}
     </p>
   </div>

@@ -1,4 +1,5 @@
 import { AGORA_RELAYS } from '$lib/utils/relayUtils';
+import { applyThemeColor, type ThemeColor } from '$lib/theme/colors';
 
 export interface Relay {
   url: string;
@@ -11,8 +12,8 @@ interface AppSettings {
   relays: Relay[];
   selectedRelay: string | null;
   theme: 'light' | 'dark' | 'system';
-  themeColor: 'red' | 'cyan' | 'yellow' | 'lime';
-  language: 'en' | 'es';
+  themeColor: ThemeColor;
+  language: 'en' | 'es' | 'fa' | 'km' | 'sn';
   notifications: {
     enabled: boolean;
     mentions: boolean;
@@ -39,7 +40,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   relays: DEFAULT_RELAYS,
   selectedRelay: 'agoras',
   theme: 'system',
-  themeColor: 'red',
+  themeColor: 'orange',
   language: 'en',
   notifications: {
     enabled: true,
@@ -163,37 +164,25 @@ class SettingsStore {
     saveSettings(this.state);
 
     if (typeof window !== 'undefined') {
-      if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+      if (isDark) {
+        document.documentElement.classList.remove('light');
         document.documentElement.classList.add('dark');
       } else {
         document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
       }
     }
   }
 
-  setThemeColor(color: 'red' | 'cyan' | 'yellow' | 'lime') {
+  setThemeColor(color: ThemeColor) {
     this.state.themeColor = color;
     saveSettings(this.state);
-
-    if (typeof window !== 'undefined') {
-      const colorMapHSL = {
-        red: '342 87% 48%',
-        cyan: '189 100% 41%',
-        yellow: '52 100% 50%',
-        lime: '74 85% 40%'
-      };
-      const colorMapDarkHSL = {
-        red: '342 87% 42%',
-        cyan: '189 100% 35%',
-        yellow: '52 100% 44%',
-        lime: '74 85% 34%'
-      };
-      document.documentElement.style.setProperty('--theme-color-hsl', colorMapHSL[color]);
-      document.documentElement.style.setProperty('--theme-color-dark-hsl', colorMapDarkHSL[color]);
-    }
+    applyThemeColor(color);
   }
 
-  setLanguage(language: 'en' | 'es') {
+  setLanguage(language: 'en' | 'es' | 'fa' | 'km' | 'sn') {
     this.state.language = language;
     saveSettings(this.state);
   }

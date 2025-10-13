@@ -11,7 +11,7 @@
 
   let { content, emojiTags, highlights = [], onTextSelected }: Props = $props();
 
-  let contentElement: HTMLDivElement;
+  let contentElement = $state<HTMLDivElement>();
 
   const hasMarkdown = $derived.by(() => {
     const markdownPatterns = [
@@ -131,6 +131,7 @@
   <div
     bind:this={contentElement}
     onmouseup={handleMouseUp}
+    role="article"
     class="article-content prose prose-lg dark:prose-invert max-w-none select-text"
   >
     {@html htmlContent}
@@ -139,7 +140,8 @@
   <div
     bind:this={contentElement}
     onmouseup={handleMouseUp}
-    class="article-content text-lg leading-[1.8] text-neutral-800 dark:text-foreground font-serif whitespace-pre-wrap select-text"
+    role="article"
+    class="article-content text-lg leading-[1.8] font-serif whitespace-pre-wrap select-text"
   >
     {content}
   </div>
@@ -149,23 +151,27 @@
   @reference "../../app.css";
 
   :global(.article-content) {
-    @apply text-neutral-900 dark:text-foreground;
+    color: hsl(var(--foreground));
   }
 
   :global(.article-content h1) {
-    @apply text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-foreground mt-12 mb-6 font-serif;
+    @apply text-3xl sm:text-4xl font-bold mt-12 mb-6 font-serif;
+    color: hsl(var(--foreground));
   }
 
   :global(.article-content h2) {
-    @apply text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-foreground mt-10 mb-5 font-serif;
+    @apply text-2xl sm:text-3xl font-bold mt-10 mb-5 font-serif;
+    color: hsl(var(--foreground));
   }
 
   :global(.article-content h3) {
-    @apply text-xl sm:text-2xl font-bold text-neutral-900 dark:text-foreground mt-8 mb-4 font-serif;
+    @apply text-xl sm:text-2xl font-bold mt-8 mb-4 font-serif;
+    color: hsl(var(--foreground));
   }
 
   :global(.article-content p) {
-    @apply text-lg leading-[1.8] text-neutral-800 dark:text-foreground mb-6 font-serif;
+    @apply text-lg leading-[1.8] mb-6 font-serif;
+    color: hsl(var(--foreground));
   }
 
   :global(.article-content a) {
@@ -177,11 +183,13 @@
   }
 
   :global(.article-content ul) {
-    @apply list-disc pl-6 mb-6 space-y-2 text-lg text-neutral-800 dark:text-foreground font-serif;
+    @apply list-disc pl-6 mb-6 space-y-2 text-lg font-serif;
+    color: hsl(var(--foreground));
   }
 
   :global(.article-content ol) {
-    @apply list-decimal pl-6 mb-6 space-y-2 text-lg text-neutral-800 dark:text-foreground font-serif;
+    @apply list-decimal pl-6 mb-6 space-y-2 text-lg font-serif;
+    color: hsl(var(--foreground));
   }
 
   :global(.article-content li) {
@@ -189,11 +197,15 @@
   }
 
   :global(.article-content blockquote) {
-    @apply border-l-4 border pl-6 my-8 italic text-xl text-neutral-700 dark:text-muted-foreground font-serif leading-[1.8];
+    @apply border-l-4 pl-6 my-8 italic text-xl font-serif leading-[1.8];
+    border-color: hsl(var(--border));
+    color: hsl(var(--muted-foreground));
   }
 
   :global(.article-content code) {
-    @apply px-1.5 py-0.5 bg-neutral-100 dark:bg-card text-neutral-800 dark:text-foreground rounded text-sm font-mono;
+    @apply px-1.5 py-0.5 rounded text-sm font-mono;
+    background-color: hsl(var(--muted));
+    color: hsl(var(--foreground));
   }
 
   :global(.article-content pre) {
@@ -201,15 +213,19 @@
   }
 
   :global(.article-content pre code) {
-    @apply block bg-neutral-50 dark:bg-background border border rounded-lg p-4 overflow-x-auto text-sm font-mono leading-relaxed;
+    @apply block border rounded-lg p-4 overflow-x-auto text-sm font-mono leading-relaxed;
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--border));
   }
 
   :global(.article-content hr) {
-    @apply my-12 border-t border;
+    @apply my-12 border-t;
+    border-color: hsl(var(--border));
   }
 
   :global(.article-content strong) {
-    @apply font-bold text-neutral-900 dark:text-foreground;
+    @apply font-bold;
+    color: hsl(var(--foreground));
   }
 
   :global(.article-content em) {

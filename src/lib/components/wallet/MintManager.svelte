@@ -6,7 +6,7 @@
   const mintBalances = $derived(() => {
     const balances = new Map<string, number>();
     mints.forEach(mint => {
-      const walletInstance = (wallet as any)._wallet;
+      const walletInstance = wallet.wallet;
       if (walletInstance?.mintBalance) {
         balances.set(mint, walletInstance.mintBalance(mint));
       }
@@ -30,7 +30,7 @@
     }
 
     try {
-      const walletInstance = (wallet as any)._wallet;
+      const walletInstance = wallet.wallet;
       if (!walletInstance) {
         error = 'Wallet not initialized';
         return;
@@ -50,7 +50,7 @@
   async function removeMint(mint: string) {
     if (confirm(`Remove mint: ${mint}?`)) {
       try {
-        const walletInstance = (wallet as any)._wallet;
+        const walletInstance = wallet.wallet;
         if (!walletInstance) {
           error = 'Wallet not initialized';
           return;

@@ -35,16 +35,16 @@
 <div class="space-y-6">
   <!-- Total Shards -->
   <div>
-    <label class="block text-sm font-medium text-neutral-900 dark:text-foreground mb-2">
+    <label class="block text-sm font-medium text-foreground mb-2">
       Total Key Pieces
     </label>
-    <p class="text-xs text-muted-foreground dark:text-muted-foreground mb-3">
+    <p class="text-xs text-muted-foreground mb-3">
       How many pieces should your key be split into?
     </p>
     <select
       value={totalShards}
       onchange={(e) => handleTotalShardsChange(parseInt(e.currentTarget.value))}
-      class="w-full px-3 py-2 bg-white dark:bg-card border border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      class="w-full px-3 py-2 bg-card border border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
     >
       {#each shardsOptions as num}
         <option value={num}>{num} pieces</option>
@@ -54,16 +54,16 @@
 
   <!-- Threshold -->
   <div>
-    <label class="block text-sm font-medium text-neutral-900 dark:text-foreground mb-2">
+    <label class="block text-sm font-medium text-foreground mb-2">
       Required for Recovery
     </label>
-    <p class="text-xs text-muted-foreground dark:text-muted-foreground mb-3">
+    <p class="text-xs text-muted-foreground mb-3">
       How many pieces are needed to recover your key?
     </p>
     <select
       value={threshold}
       onchange={(e) => onThresholdChange(parseInt(e.currentTarget.value))}
-      class="w-full px-3 py-2 bg-white dark:bg-card border border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      class="w-full px-3 py-2 bg-card border border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
     >
       {#each thresholdOptions as num}
         <option value={num}>{num} pieces</option>

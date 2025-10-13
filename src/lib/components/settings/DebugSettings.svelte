@@ -61,8 +61,8 @@
   <!-- Header with refresh button -->
   <div class="flex items-center justify-between">
     <div>
-      <h2 class="text-lg font-semibold text-neutral-900 dark:text-foreground">Cache Statistics</h2>
-      <p class="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
+      <h2 class="text-lg font-semibold text-foreground">Cache Statistics</h2>
+      <p class="text-sm text-muted-foreground mt-1">
         Local database cache information
       </p>
     </div>
@@ -71,7 +71,7 @@
       class="p-2 hover:bg-neutral-200/50 dark:hover:bg-muted/30 rounded-lg transition-all"
       title="Refresh"
     >
-      <svg class="w-5 h-5 text-neutral-700 dark:text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
       </svg>
     </button>
@@ -80,7 +80,7 @@
   {#if loading}
     <div class="flex flex-col items-center justify-center py-12 gap-3">
       <div class="w-10 h-10 border-4 border border-t-orange-500 rounded-full animate-spin"></div>
-      <p class="text-sm text-muted-foreground dark:text-muted-foreground">Loading cache statistics...</p>
+      <p class="text-sm text-muted-foreground">Loading cache statistics...</p>
     </div>
   {:else if error}
     <div class="flex flex-col items-center justify-center py-12 gap-3">
@@ -96,7 +96,7 @@
     <div class="space-y-6">
       <!-- Overview Section -->
       <div>
-        <h3 class="text-xs font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider mb-3">
+        <h3 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
           Cache Overview
         </h3>
         <div class="grid grid-cols-2 gap-3">
@@ -104,7 +104,7 @@
             <div class="text-2xl font-bold text-primary mb-1">
               {stats.totalEvents.toLocaleString()}
             </div>
-            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
+            <div class="text-xs text-muted-foreground font-medium">
               Total Events
             </div>
           </div>
@@ -112,7 +112,7 @@
             <div class="text-2xl font-bold text-primary mb-1">
               {stats.totalProfiles.toLocaleString()}
             </div>
-            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
+            <div class="text-xs text-muted-foreground font-medium">
               Profiles
             </div>
           </div>
@@ -120,7 +120,7 @@
             <div class="text-2xl font-bold text-primary mb-1">
               {stats.totalEventTags.toLocaleString()}
             </div>
-            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
+            <div class="text-xs text-muted-foreground font-medium">
               Event Tags
             </div>
           </div>
@@ -128,7 +128,7 @@
             <div class="text-2xl font-bold text-primary mb-1">
               {stats.eventRelays.toLocaleString()}
             </div>
-            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
+            <div class="text-xs text-muted-foreground font-medium">
               Event-Relay Links
             </div>
           </div>
@@ -137,7 +137,7 @@
 
       <!-- Events by Kind Section -->
       <div>
-        <h3 class="text-xs font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider mb-3">
+        <h3 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
           Events by Kind
         </h3>
         <div class="space-y-2">
@@ -147,11 +147,11 @@
                 <span class="font-mono text-sm text-primary font-semibold min-w-[3rem]">
                   {kind}
                 </span>
-                <span class="text-sm text-neutral-700 dark:text-muted-foreground">
+                <span class="text-sm text-muted-foreground">
                   {getKindName(Number(kind))}
                 </span>
               </div>
-              <div class="text-sm font-semibold text-neutral-900 dark:text-foreground">
+              <div class="text-sm font-semibold text-foreground">
                 {count.toLocaleString()}
               </div>
             </div>
@@ -161,7 +161,7 @@
 
       <!-- Other Tables Section -->
       <div>
-        <h3 class="text-xs font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider mb-3">
+        <h3 class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
           Other Cache Tables
         </h3>
         <div class="grid grid-cols-3 gap-3">
@@ -169,7 +169,7 @@
             <div class="text-2xl font-bold text-primary mb-1">
               {stats.totalDecryptedEvents.toLocaleString()}
             </div>
-            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
+            <div class="text-xs text-muted-foreground font-medium">
               Decrypted Events
             </div>
           </div>
@@ -177,7 +177,7 @@
             <div class="text-2xl font-bold text-primary mb-1">
               {stats.totalUnpublishedEvents.toLocaleString()}
             </div>
-            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
+            <div class="text-xs text-muted-foreground font-medium">
               Unpublished Events
             </div>
           </div>
@@ -185,7 +185,7 @@
             <div class="text-2xl font-bold text-primary mb-1">
               {stats.cacheData.toLocaleString()}
             </div>
-            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
+            <div class="text-xs text-muted-foreground font-medium">
               Cache Data
             </div>
           </div>

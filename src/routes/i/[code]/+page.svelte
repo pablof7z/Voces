@@ -164,26 +164,26 @@
 	<div class="w-full max-w-xl">
 		{#if isLoading}
 			<!-- Loading State -->
-			<div class="relative bg-white dark:bg-neutral-900 rounded-2xl shadow-xl overflow-hidden p-8">
+			<div class="relative bg-card dark:bg-neutral-900 rounded-2xl shadow-xl overflow-hidden p-8">
 				<div class="text-center">
-					<div class="animate-spin rounded-full h-12 w-12 border-4 border-orange-200 border-t-orange-600 mx-auto mb-4"></div>
-					<p class="text-neutral-600 dark:text-neutral-400">Loading invite...</p>
+					<div class="animate-spin rounded-full h-12 w-12 border-4 border-primary-200 border-t-orange-600 mx-auto mb-4"></div>
+					<p class="text-muted-foreground">Loading invite...</p>
 				</div>
 			</div>
 		{:else if error}
 			<!-- Error State -->
-			<div class="relative bg-white dark:bg-neutral-900 rounded-2xl shadow-xl overflow-hidden p-8">
+			<div class="relative bg-card dark:bg-neutral-900 rounded-2xl shadow-xl overflow-hidden p-8">
 				<div class="text-center">
 					<div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-4">
 						<svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
 						</svg>
 					</div>
-					<h2 class="text-xl font-bold text-neutral-900 dark:text-white mb-2">Invite Not Found</h2>
-					<p class="text-neutral-600 dark:text-neutral-400 mb-6">{error}</p>
+					<h2 class="text-xl font-bold text-foreground mb-2">Invite Not Found</h2>
+					<p class="text-muted-foreground mb-6">{error}</p>
 					<button
 						onclick={() => goto('/')}
-						class="px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-xl transition-colors"
+						class="px-6 py-2 bg-primary hover:bg-primary-700 text-white font-semibold rounded-xl transition-colors"
 					>
 						Go Home
 					</button>
@@ -191,9 +191,9 @@
 			</div>
 		{:else}
 			<!-- Main Card -->
-			<div class="relative bg-white dark:bg-neutral-900 rounded-2xl shadow-xl overflow-hidden">
+			<div class="relative bg-card dark:bg-neutral-900 rounded-2xl shadow-xl overflow-hidden">
 			<!-- Hero Banner -->
-			<div class="h-32 bg-gradient-to-br from-orange-600 via-red-500 to-red-600" />
+			<div class="h-32 bg-primary opacity-90"></div>
 
 			<!-- Content Container -->
 			<div class="px-8 pb-8 pt-12">
@@ -206,7 +206,7 @@
 							</div>
 						</div>
 						<div class="text-center">
-							<h2 class="text-xl font-bold text-neutral-900 dark:text-white">
+							<h2 class="text-xl font-bold text-foreground">
 								{inviterProfile?.displayName || inviterProfile?.name || 'Someone'}
 							</h2>
 							<p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">invited you to join Agora</p>
@@ -216,8 +216,8 @@
 
 				<!-- Welcome Message -->
 				{#if inviteData?.welcomeMessage}
-					<div class="mb-8 p-6 bg-neutral-50 dark:bg-neutral-800/50 rounded-xl border border-neutral-200 dark:border-neutral-700">
-						<p class="text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap leading-relaxed">
+					<div class="mb-8 p-6 bg-neutral-50 dark:bg-neutral-800/50 rounded-xl border border-border">
+						<p class="text-foreground whitespace-pre-wrap leading-relaxed">
 							{inviteData.welcomeMessage}
 						</p>
 					</div>
@@ -225,10 +225,10 @@
 
 				<!-- Title Section -->
 				<div class="text-center mb-8">
-					<h1 class="text-3xl font-bold mb-3 text-neutral-900 dark:text-white">
+					<h1 class="text-3xl font-bold mb-3 text-foreground">
 						Your Voice Matters
 					</h1>
-					<p class="text-neutral-600 dark:text-neutral-400">
+					<p class="text-muted-foreground">
 						Join a global community where every story counts
 					</p>
 				</div>
@@ -236,16 +236,16 @@
 				<!-- Feature Points -->
 				<div class="space-y-5 mb-10">
 					<div class="flex items-start gap-4">
-						<div class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-							<svg class="w-6 h-6 text-orange-600 dark:text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<div class="w-12 h-12 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+							<svg class="w-6 h-6 text-primary dark:text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 							</svg>
 						</div>
 						<div class="flex-1">
-							<h3 class="font-semibold text-lg mb-1 text-neutral-900 dark:text-white">
+							<h3 class="font-semibold text-lg mb-1 text-foreground">
 								Own Your Voice
 							</h3>
-							<p class="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+							<p class="text-muted-foreground leading-relaxed">
 								No censorship. No gatekeepers. Your content, your control, forever.
 							</p>
 						</div>
@@ -258,10 +258,10 @@
 							</svg>
 						</div>
 						<div class="flex-1">
-							<h3 class="font-semibold text-lg mb-1 text-neutral-900 dark:text-white">
+							<h3 class="font-semibold text-lg mb-1 text-foreground">
 								Earn From Your Stories
 							</h3>
-							<p class="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+							<p class="text-muted-foreground leading-relaxed">
 								Get paid instantly in Bitcoin for valuable content. No banks, no fees.
 							</p>
 						</div>
@@ -274,10 +274,10 @@
 							</svg>
 						</div>
 						<div class="flex-1">
-							<h3 class="font-semibold text-lg mb-1 text-neutral-900 dark:text-white">
+							<h3 class="font-semibold text-lg mb-1 text-foreground">
 								Connect With Your Community
 							</h3>
-							<p class="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+							<p class="text-muted-foreground leading-relaxed">
 								Trade, share, and build with people who understand your journey.
 							</p>
 						</div>
@@ -288,7 +288,7 @@
 				<div class="space-y-4">
 					<button
 						onclick={handleStartJourney}
-						class="w-full py-6 text-lg font-semibold bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white shadow-lg transition-all duration-200 hover:shadow-xl rounded-xl flex items-center justify-center gap-2"
+						class="w-full py-6 text-lg font-semibold bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white shadow-lg transition-all duration-200 hover:shadow-xl rounded-xl flex items-center justify-center gap-2"
 					>
 						Start Your Journey
 						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -298,7 +298,7 @@
 
 					<button
 						onclick={handleSignIn}
-						class="w-full text-center text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors py-2"
+						class="w-full text-center text-muted-foreground hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors py-2"
 					>
 						Already have a Nostr account?{' '}
 						<span class="font-semibold underline">Sign in here</span>

@@ -29,7 +29,7 @@
 </script>
 
 <div>
-  <label class="block text-sm font-medium text-neutral-900 dark:text-foreground mb-2">
+  <label class="block text-sm font-medium text-foreground mb-2">
     {label}
   </label>
   <div class="relative">
@@ -39,7 +39,7 @@
       oninput={(e) => onChange(e.currentTarget.value)}
       onblur={onBlur}
       {placeholder}
-      class="w-full px-3 py-2 pr-10 bg-white dark:bg-card border rounded-lg text-sm focus:outline-none focus:ring-2 {hasErrors ? 'border-red-500 focus:ring-red-500' : 'border focus:ring-orange-500'}"
+      class="w-full px-3 py-2 pr-10 bg-card border rounded-lg text-sm focus:outline-none focus:ring-2 {hasErrors ? 'border-red-500 focus:ring-red-500' : 'border focus:ring-orange-500'}"
     />
     <button
       type="button"

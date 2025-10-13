@@ -47,10 +47,10 @@
 
 <div class="space-y-6">
   <div>
-    <h2 class="text-xl font-semibold text-neutral-900 dark:text-foreground mb-2">
+    <h2 class="text-xl font-semibold text-foreground mb-2">
       Relay Configuration
     </h2>
-    <p class="text-sm text-muted-foreground dark:text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Configure which Nostr relays your app connects to for reading and publishing events.
     </p>
   </div>
@@ -64,7 +64,7 @@
         </svg>
         <span class="text-xs md:text-sm font-medium">Active</span>
       </div>
-      <div class="text-xl md:text-2xl font-bold text-neutral-900 dark:text-foreground">
+      <div class="text-xl md:text-2xl font-bold text-foreground">
         {relays.filter(r => r.enabled).length}
       </div>
     </div>
@@ -75,7 +75,7 @@
         </svg>
         <span class="text-xs md:text-sm font-medium">Read</span>
       </div>
-      <div class="text-xl md:text-2xl font-bold text-neutral-900 dark:text-foreground">
+      <div class="text-xl md:text-2xl font-bold text-foreground">
         {relays.filter(r => r.enabled && r.read).length}
       </div>
     </div>
@@ -86,7 +86,7 @@
         </svg>
         <span class="text-xs md:text-sm font-medium">Write</span>
       </div>
-      <div class="text-xl md:text-2xl font-bold text-neutral-900 dark:text-foreground">
+      <div class="text-xl md:text-2xl font-bold text-foreground">
         {relays.filter(r => r.enabled && r.write).length}
       </div>
     </div>
@@ -97,7 +97,7 @@
     {#each relays as relay (relay.url)}
       {@const status = getRelayStatus(relay.url)}
       <div class="border rounded-lg p-4 transition-all {relay.enabled
-        ? 'bg-white dark:bg-background border'
+        ? 'bg-card border'
         : 'bg-neutral-50 dark:bg-background border opacity-60'}">
         <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
           <div class="flex-1">
@@ -105,8 +105,8 @@
               <button
                 onclick={() => settings.toggleRelay(relay.url)}
                 class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 mt-0.5 md:mt-0 {relay.enabled
-                  ? 'bg-primary border-orange-600'
-                  : 'bg-white dark:bg-background border dark:border'}"
+                  ? 'bg-primary border-primary'
+                  : 'bg-card border dark:border'}"
               >
                 {#if relay.enabled}
                   <svg class="w-3 h-3 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -144,13 +144,13 @@
 
     <!-- Add New Relay -->
     {#if isAdding}
-      <div class="border-2 border-dashed border-orange-300 dark:border-orange-700 rounded-lg p-4">
+      <div class="border-2 border-dashed border-primary-300 dark:border-primary-700 rounded-lg p-4">
         <div class="space-y-3">
           <input
             type="text"
             bind:value={newRelay.url}
             placeholder="wss://relay.example.com"
-            class="w-full px-3 py-2 bg-white dark:bg-background border border dark:border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            class="w-full px-3 py-2 bg-card border border dark:border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             autofocus
           />
           <div class="flex items-center gap-4">
@@ -160,7 +160,7 @@
                 bind:checked={newRelay.read}
                 class="w-4 h-4 text-primary rounded focus:ring-orange-500"
               />
-              <span class="text-sm text-muted-foreground dark:text-muted-foreground">Read</span>
+              <span class="text-sm text-muted-foreground">Read</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
               <input
@@ -168,14 +168,14 @@
                 bind:checked={newRelay.write}
                 class="w-4 h-4 text-primary rounded focus:ring-orange-500"
               />
-              <span class="text-sm text-muted-foreground dark:text-muted-foreground">Write</span>
+              <span class="text-sm text-muted-foreground">Write</span>
             </label>
           </div>
           <div class="flex gap-2">
             <button
               onclick={handleAddRelay}
               disabled={!newRelay.url}
-              class="px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Add Relay
             </button>
@@ -184,7 +184,7 @@
                 isAdding = false;
                 newRelay = { url: '', read: true, write: true };
               }}
-              class="px-4 py-2 bg-neutral-200 dark:bg-background text-neutral-700 dark:text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-card transition-colors"
+              class="px-4 py-2 bg-neutral-200 dark:bg-background text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-card transition-colors"
             >
               Cancel
             </button>
@@ -194,7 +194,7 @@
     {:else}
       <button
         onclick={() => isAdding = true}
-        class="w-full border-2 border-dashed border rounded-lg p-4 hover:border-primary dark:hover:border-orange-600 transition-colors group"
+        class="w-full border-2 border-dashed border rounded-lg p-4 hover:border-primary dark:hover:border-primary transition-colors group"
       >
         <div class="flex items-center justify-center gap-2 text-muted-foreground group-hover:text-primary dark:group-hover:text-primary">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

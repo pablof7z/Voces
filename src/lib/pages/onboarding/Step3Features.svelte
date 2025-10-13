@@ -11,7 +11,7 @@
     <!-- Header -->
     <div class="text-center mb-12">
       <h2 class="text-3xl font-bold mb-3">What You Can Do Here</h2>
-      <p class="text-lg text-muted-foreground dark:text-muted-foreground">
+      <p class="text-lg text-muted-foreground">
         Your community, your marketplace, your news — all in one place
       </p>
     </div>
@@ -22,10 +22,10 @@
       <div class="bg-neutral-50 dark:bg-card rounded-xl p-6 border border">
         <div class="text-5xl mb-4 text-center">🛍️</div>
         <h3 class="text-xl font-bold mb-2 text-center">Local Marketplace</h3>
-        <p class="text-sm text-muted-foreground dark:text-muted-foreground mb-4 text-center">
+        <p class="text-sm text-muted-foreground mb-4 text-center">
           Buy and sell with neighbors. No middlemen, no fees.
         </p>
-        <div class="bg-white dark:bg-background rounded-lg p-4 text-left border border">
+        <div class="bg-card rounded-lg p-4 text-left border border">
           <div class="flex items-center gap-2 mb-2">
             <div class="w-8 h-8 bg-neutral-300 dark:bg-muted rounded-full flex items-center justify-center text-xs font-medium">
               MR
@@ -36,7 +36,7 @@
             </div>
           </div>
           <div class="text-sm font-medium mb-1">Fresh Bread & Pastries</div>
-          <div class="text-xs text-muted-foreground dark:text-muted-foreground mb-2">
+          <div class="text-xs text-muted-foreground mb-2">
             Daily baked goods, accepting sats
           </div>
           <div class="text-sm font-semibold">2,500 sats / dozen</div>
@@ -47,10 +47,10 @@
       <div class="bg-neutral-50 dark:bg-card rounded-xl p-6 border border">
         <div class="text-5xl mb-4 text-center">🤝</div>
         <h3 class="text-xl font-bold mb-2 text-center">P2P Trading</h3>
-        <p class="text-sm text-muted-foreground dark:text-muted-foreground mb-4 text-center">
+        <p class="text-sm text-muted-foreground mb-4 text-center">
           Trade directly with verified members. Escrow protected.
         </p>
-        <div class="bg-white dark:bg-background rounded-lg p-4 border border">
+        <div class="bg-card rounded-lg p-4 border border">
           <div class="space-y-2">
             <div class="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded text-xs">
               <div class="flex items-center gap-2">
@@ -84,10 +84,10 @@
       <div class="bg-neutral-50 dark:bg-card rounded-xl p-6 border border">
         <div class="text-5xl mb-4 text-center">📰</div>
         <h3 class="text-xl font-bold mb-2 text-center">Real News</h3>
-        <p class="text-sm text-muted-foreground dark:text-muted-foreground mb-4 text-center">
+        <p class="text-sm text-muted-foreground mb-4 text-center">
           Authentic stories from your community. No censorship.
         </p>
-        <div class="bg-white dark:bg-background rounded-lg p-4 text-left border border">
+        <div class="bg-card rounded-lg p-4 text-left border border">
           <div class="flex items-center gap-2 mb-2">
             <div class="w-8 h-8 bg-neutral-300 dark:bg-muted rounded-full flex items-center justify-center text-xs font-medium">
               CM
@@ -98,7 +98,7 @@
             </div>
           </div>
           <div class="text-sm font-medium mb-1">Alternative Supply Chain</div>
-          <div class="text-xs text-muted-foreground dark:text-muted-foreground mb-2">
+          <div class="text-xs text-muted-foreground mb-2">
             Direct farmer-to-community network reduces costs by 40%...
           </div>
           <div class="flex items-center gap-3 text-xs text-muted-foreground">

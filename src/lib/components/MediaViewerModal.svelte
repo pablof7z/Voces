@@ -2,6 +2,7 @@
   import type { NDKEvent, NDKImetaTag } from '@nostr-dev-kit/ndk';
   import { NDKKind } from '@nostr-dev-kit/ndk';
   import { ndk } from '$lib/ndk.svelte';
+  import { portal } from '$lib/utils/portal.svelte';
   import CommentCard from './CommentCard.svelte';
   import CommentForm from './CommentForm.svelte';
   import { Avatar } from '@nostr-dev-kit/svelte';
@@ -71,6 +72,7 @@
 
 {#if open}
   <div
+    use:portal
     class="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-sm"
     onclick={onClose}
     onkeydown={handleKeydown}
@@ -115,7 +117,7 @@
               <track kind="captions" />
             </video>
           {:else if mediaType === 'audio'}
-            <div class="w-full max-w-md p-8 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg">
+            <div class="w-full max-w-md p-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg">
               <audio src={imeta.url} controls class="w-full"></audio>
             </div>
           {/if}

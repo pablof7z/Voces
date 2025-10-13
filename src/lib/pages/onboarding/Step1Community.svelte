@@ -78,7 +78,7 @@
         onerror={() => mainImageError = true}
       />
     {:else}
-      <div class="absolute inset-0 bg-gradient-to-br from-orange-600 to-red-600" />
+      <div class="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-700" />
     {/if}
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
     <div class="absolute bottom-12 left-12 right-12 text-foreground">
@@ -97,14 +97,14 @@
     <div class="max-w-xl w-full">
       <div class="mb-12 lg:hidden">
         <h1 class="text-4xl font-bold mb-3">Your Voice Matters</h1>
-        <p class="text-muted-foreground dark:text-muted-foreground">
+        <p class="text-muted-foreground">
           Choose your community to connect with local voices
         </p>
       </div>
 
       <div class="lg:mb-8">
         <h2 class="text-2xl font-semibold mb-3">Choose Your Community</h2>
-        <p class="text-muted-foreground dark:text-muted-foreground text-sm">
+        <p class="text-muted-foreground text-sm">
           Select where you want to connect and contribute
         </p>
       </div>

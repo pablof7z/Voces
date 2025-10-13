@@ -3,10 +3,9 @@
 
   interface Props {
     wallet: WalletAPI;
-    onBack: () => void;
   }
 
-  let { wallet, onBack }: Props = $props();
+  let { wallet }: Props = $props();
 
   let amount = $state('');
   let memo = $state('');
@@ -57,12 +56,6 @@
 </script>
 
 <div class="send-view">
-  <div class="view-header">
-    <button class="back-button" onclick={onBack}>← Back</button>
-    <h2>Send Ecash</h2>
-    <div></div>
-  </div>
-
   {#if !token}
     <div class="send-form">
       <div class="form-section">
@@ -130,8 +123,7 @@
       {/if}
 
       <div class="actions">
-        <button onclick={reset}>Send Another</button>
-        <button class="primary" onclick={onBack}>Done</button>
+        <button class="primary" onclick={reset}>Send Another</button>
       </div>
     </div>
   {/if}
@@ -142,27 +134,6 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-  }
-
-  .view-header {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .back-button {
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-  }
-
-  h2 {
-    text-align: center;
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 700;
   }
 
   .send-form {
@@ -180,25 +151,24 @@
   label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--color-foreground);
   }
 
   input, textarea {
     width: 100%;
     padding: 0.875rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
-    color: white;
+    color: var(--color-foreground);
     font-size: 0.9rem;
     transition: all 0.2s;
   }
 
   input:focus, textarea:focus {
     outline: none;
-    border-color: rgba(249, 115, 22, 0.5);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    border-color: var(--color-primary);
+    background: var(--color-muted);
   }
 
   textarea {
@@ -219,39 +189,38 @@
   .amount-unit {
     position: absolute;
     right: 1rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--color-muted-foreground);
     font-weight: 600;
     pointer-events: none;
   }
 
   .balance-info {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--color-muted-foreground);
   }
 
   .error-message {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: var(--color-destructive);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     padding: 0.75rem;
-    color: #f87171;
+    color: var(--color-foreground);
     font-size: 0.875rem;
   }
 
   button {
     padding: 0.875rem 1.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
-    color: white;
+    color: var(--color-foreground);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   button:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: var(--color-muted);
   }
 
   button:disabled {
@@ -260,12 +229,13 @@
   }
 
   button.primary {
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    background: var(--color-primary);
     border: none;
+    color: white;
   }
 
   button.primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+    opacity: 0.9;
   }
 
   .token-result {
@@ -280,7 +250,7 @@
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: var(--color-primary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -292,10 +262,11 @@
     margin: 0;
     font-size: 1.75rem;
     font-weight: 700;
+    color: var(--color-foreground);
   }
 
   .success-message {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--color-muted-foreground);
     text-align: center;
   }
 
@@ -304,8 +275,8 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
     border-radius: 12px;
     padding: 1rem;
   }
@@ -314,7 +285,7 @@
     font-family: monospace;
     font-size: 0.75rem;
     word-break: break-all;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--color-foreground);
     line-height: 1.5;
   }
 
@@ -325,11 +296,11 @@
   .memo-display {
     width: 100%;
     padding: 1rem;
-    background: rgba(249, 115, 22, 0.05);
-    border: 1px solid rgba(249, 115, 22, 0.2);
+    background: var(--color-muted);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--color-foreground);
   }
 
   .actions {

@@ -12,6 +12,11 @@
 		generateInviteCode,
 		encryptInvitePayload
 	} from '$lib/utils/inviteEncryption';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import { Button } from '$lib/components/ui/button';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
+	import { Textarea } from '$lib/components/ui/textarea';
 
 	interface Props {
 		isOpen: boolean;
@@ -194,53 +199,31 @@ Looking forward to connecting with you on the open social web!`;
 	}
 </script>
 
-{#if isOpen}
-	<div
-		use:portal
-		class="fixed inset-0 z-[10000] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4"
-		onclick={handleBackdropClick}
-		role="presentation"
-	>
-		<div
-			class="bg-card rounded-2xl border border-border shadow-2xl w-full max-w-lg relative"
-			onclick={(e) => e.stopPropagation()}
-			role="dialog"
-			aria-modal="true"
-		>
-			<div class="p-8">
-			<button
-				onclick={handleClose}
-				class="absolute top-4 right-4 p-2 hover:bg-muted rounded-lg transition-colors"
-			>
-				<svg class="w-5 h-5 text-muted-foreground hover:text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-				</svg>
-			</button>
+<Dialog.Root open={isOpen} onOpenChange={(newOpen) => {
+    isOpen = newOpen;
+    if (!newOpen) handleClose();
+  }}>
+	<Dialog.Content class="max-w-lg max-h-[90vh] overflow-y-auto">
+		<Dialog.Header>
+			<Dialog.Title>Create an Invite</Dialog.Title>
+			<Dialog.Description>
+				Invite someone to join Agora with a personal message
+			</Dialog.Description>
+		</Dialog.Header>
 
-			<div class="mb-6">
-				<h2 class="text-2xl font-bold text-foreground mb-1">Create an Invite</h2>
-				<p class="text-sm text-muted-foreground">
-					Invite someone to join Agora with a personal message
-				</p>
-			</div>
+		<div class="space-y-6">
 
 			{#if !inviteLink}
-				<div class="space-y-6">
 					<!-- Welcome Message -->
 					<div>
-						<label
-							for="welcome-message"
-							class="block text-sm font-medium text-muted-foreground mb-2"
-						>
-							Welcome Message
-						</label>
-						<textarea
+						<Label for="welcome-message">Welcome Message</Label>
+						<Textarea
 							id="welcome-message"
 							bind:value={welcomeMessage}
-							rows="6"
-							class="w-full px-4 py-3 border border-border rounded-xl bg-muted text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+							rows={6}
 							placeholder="Write a welcome message..."
-						></textarea>
+							class="mt-2 resize-none"
+						/>
 					</div>
 
 					<!-- Agora Selection -->
@@ -279,7 +262,7 @@ Looking forward to connecting with you on the open social web!`;
 						{#if isRelayDropdownOpen}
 							<div
 								use:clickOutside={handleRelayDropdownClickOutside}
-								class="absolute z-10 mt-1 w-full bg-popover border border-border rounded-xl shadow-lg max-h-64 overflow-y-auto"
+								class="absolute z-[60] mt-1 w-full bg-popover border border-border rounded-xl shadow-lg max-h-64 overflow-y-auto"
 							>
 								{#if agoraRelays.length === 0}
 									<p class="text-sm text-muted-foreground text-center py-4">No Agora relays configured</p>
@@ -337,19 +320,14 @@ Looking forward to connecting with you on the open social web!`;
 
 					<!-- Max Uses -->
 					<div>
-						<label
-							for="max-uses"
-							class="block text-sm font-medium text-muted-foreground mb-2"
-						>
-							Maximum Uses
-						</label>
-						<input
+						<Label for="max-uses">Maximum Uses</Label>
+						<Input
 							id="max-uses"
 							type="number"
 							bind:value={maxUses}
 							min="1"
 							max="500"
-							class="w-full px-4 py-2 border border-border rounded-xl bg-muted text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+							class="mt-2"
 						/>
 						<p class="mt-1 text-xs text-muted-foreground">
 							How many people can use this invite (1-500)
@@ -376,40 +354,34 @@ Looking forward to connecting with you on the open social web!`;
 					{#if isPersonalized}
 						<div class="space-y-4 border-l-4 border-primary pl-4">
 							<div>
-								<label
-									for="recipient-name"
-									class="flex items-center text-sm font-medium text-muted-foreground mb-2"
-								>
-									<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<Label for="recipient-name" class="flex items-center gap-2">
+									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
 									</svg>
 									Recipient's Name
-								</label>
-								<input
+								</Label>
+								<Input
 									id="recipient-name"
 									type="text"
 									bind:value={recipientName}
-									class="w-full px-4 py-2 border border-border rounded-xl bg-muted text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
 									placeholder="John Doe"
+									class="mt-2"
 								/>
 							</div>
 
 							<div>
-								<label
-									for="cashu-amount"
-									class="flex items-center text-sm font-medium text-muted-foreground mb-2"
-								>
-									<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<Label for="cashu-amount" class="flex items-center gap-2">
+									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
 									</svg>
 									Include Cashu Token (sats)
-								</label>
-								<input
+								</Label>
+								<Input
 									id="cashu-amount"
 									type="number"
 									bind:value={cashuAmount}
-									class="w-full px-4 py-2 border border-border rounded-xl bg-muted text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
 									placeholder="Amount in sats (optional)"
+									class="mt-2"
 								/>
 								<p class="mt-1 text-xs text-muted-foreground">
 									Add sats to help them get started on Nostr
@@ -419,10 +391,10 @@ Looking forward to connecting with you on the open social web!`;
 					{/if}
 
 					<!-- Generate Button -->
-					<button
+					<Button
 						onclick={generateInvite}
 						disabled={isGenerating || !welcomeMessage.trim() || selectedRelayUrls.length === 0}
-						class="w-full py-3 px-4 bg-primary hover:bg-accent-dark disabled:bg-neutral-400 text-foreground font-semibold rounded-xl transition-colors disabled:cursor-not-allowed flex items-center justify-center"
+						class="w-full"
 					>
 						{#if isGenerating}
 							<div
@@ -432,8 +404,7 @@ Looking forward to connecting with you on the open social web!`;
 						{:else}
 							Generate Invite Link
 						{/if}
-					</button>
-				</div>
+					</Button>
 			{:else}
 				<div class="space-y-6">
 					<div class="text-center py-8">
@@ -456,48 +427,48 @@ Looking forward to connecting with you on the open social web!`;
 
 					<div class="bg-muted rounded-xl p-4">
 						<div class="flex items-center space-x-2">
-							<input
+							<Input
 								type="text"
 								value={inviteLink}
 								readonly
-								class="flex-1 bg-transparent text-sm text-muted-foreground outline-none truncate"
+								class="flex-1 bg-transparent"
 							/>
-							<button
+							<Button
 								onclick={copyToClipboard}
-								class="px-3 py-1.5 bg-primary hover:bg-accent-dark text-foreground rounded-lg transition-colors flex items-center space-x-1 text-sm"
+								size="sm"
 							>
 								{#if isCopied}
-									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
 									</svg>
-									<span>Copied!</span>
+									Copied!
 								{:else}
-									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
 									</svg>
-									<span>Copy</span>
+									Copy
 								{/if}
-							</button>
+							</Button>
 						</div>
 					</div>
 
-					<div class="flex space-x-3">
-						<button
+					<Dialog.Footer class="flex gap-3 sm:space-x-0">
+						<Button
+							variant="outline"
 							onclick={() => (inviteLink = '')}
-							class="flex-1 py-2.5 px-4 border border-border text-muted-foreground font-medium rounded-xl hover:bg-muted transition-colors"
+							class="flex-1"
 						>
 							Create Another
-						</button>
-						<button
+						</Button>
+						<Button
 							onclick={handleClose}
-							class="flex-1 py-2.5 px-4 bg-primary hover:bg-accent-dark text-foreground font-medium rounded-xl transition-colors"
+							class="flex-1"
 						>
 							Done
-						</button>
-					</div>
+						</Button>
+					</Dialog.Footer>
 				</div>
 			{/if}
-			</div>
 		</div>
-	</div>
-{/if}
+	</Dialog.Content>
+</Dialog.Root>

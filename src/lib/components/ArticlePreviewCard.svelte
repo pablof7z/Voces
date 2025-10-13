@@ -36,7 +36,7 @@
 {#if variant === 'compact'}
   <a
     href={articleUrl}
-    class="block p-3 hover:bg-neutral-50 dark:hover:bg-card/50 transition-colors rounded-lg"
+    class="block p-3 hover:bg-accent/50 transition-colors rounded-lg"
   >
     <div class="flex items-start gap-3">
       <div class="flex-shrink-0 w-10 h-10 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center">
@@ -45,10 +45,10 @@
         </svg>
       </div>
       <div class="flex-1 min-w-0">
-        <h3 class="font-semibold text-sm text-neutral-900 dark:text-foreground line-clamp-2 mb-1">
+        <h3 class="font-semibold text-sm text-foreground line-clamp-2 mb-1">
           {title}
         </h3>
-        <div class="flex items-center gap-2 text-xs text-muted-foreground dark:text-muted-foreground">
+        <div class="flex items-center gap-2 text-xs text-muted-foreground">
           <span>{authorName}</span>
           {#if publishedAt}
             <span>·</span>

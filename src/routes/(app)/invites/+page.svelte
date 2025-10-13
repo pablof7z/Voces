@@ -80,12 +80,12 @@
 	}
 </script>
 
-<div class="min-h-screen bg-neutral-50 dark:bg-black">
+<div class="min-h-screen bg-neutral-50 dark:bg-background">
 	<div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
 		<!-- Header -->
 		<div class="mb-8">
-			<h1 class="text-3xl font-bold text-neutral-900 dark:text-white mb-2">My Invites</h1>
-			<p class="text-neutral-600 dark:text-neutral-400">
+			<h1 class="text-3xl font-bold text-foreground mb-2">My Invites</h1>
+			<p class="text-muted-foreground">
 				View and manage invites you've sent to join Agora
 			</p>
 		</div>
@@ -97,10 +97,10 @@
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76" />
 					</svg>
 				</div>
-				<h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
+				<h3 class="text-lg font-semibold text-foreground mb-2">
 					No invites yet
 				</h3>
-				<p class="text-sm text-neutral-600 dark:text-neutral-400">
+				<p class="text-sm text-muted-foreground">
 					Create your first invite to start sharing Agora with others
 				</p>
 			</div>
@@ -114,20 +114,20 @@
 							<div class="flex-1">
 								<div class="flex items-center gap-2 mb-2">
 									{#if inviteData.isPersonalized}
-										<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400">
+										<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-400">
 											<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
 											</svg>
 											Personalized
 										</span>
 									{:else}
-										<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-400">
+										<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-neutral-800 dark:text-neutral-400">
 											General Invite
 										</span>
 									{/if}
 								</div>
 								{#if inviteData.recipientName}
-									<h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-1">
+									<h3 class="text-lg font-semibold text-foreground mb-1">
 										For {inviteData.recipientName}
 									</h3>
 								{/if}
@@ -148,22 +148,22 @@
 
 						{#if inviteData.welcomeMessage}
 							<div class="mb-4 p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-								<p class="text-sm text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap line-clamp-3">
+								<p class="text-sm text-foreground whitespace-pre-wrap line-clamp-3">
 									{inviteData.welcomeMessage}
 								</p>
 							</div>
 						{/if}
 
-						<div class="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-3 flex items-center space-x-2">
+						<div class="bg-muted rounded-lg p-3 flex items-center space-x-2">
 							<input
 								type="text"
 								value={inviteLink}
 								readonly
-								class="flex-1 bg-transparent text-sm text-neutral-700 dark:text-neutral-300 outline-none truncate"
+								class="flex-1 bg-transparent text-sm text-foreground outline-none truncate"
 							/>
 							<button
 								onclick={() => copyToClipboard(inviteLink, invite.id)}
-								class="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors flex items-center space-x-1 text-sm flex-shrink-0"
+								class="px-3 py-1.5 bg-primary hover:bg-primary-700 text-white rounded-lg transition-colors flex items-center space-x-1 text-sm flex-shrink-0"
 							>
 								{#if copiedId === invite.id}
 									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

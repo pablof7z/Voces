@@ -34,7 +34,7 @@
     {/if}
 
     <!-- URL -->
-    <span class="font-mono text-xs md:text-sm text-neutral-900 dark:text-foreground break-all">
+    <span class="font-mono text-xs md:text-sm text-foreground break-all">
       {relay.url}
     </span>
 
@@ -60,22 +60,22 @@
     <div class="mt-2 space-y-1">
       {#if info.name}
         <div class="flex items-start gap-2">
-          <span class="text-xs font-medium text-muted-foreground dark:text-muted-foreground min-w-[60px]">Name:</span>
-          <span class="text-sm font-semibold text-neutral-900 dark:text-foreground">{info.name}</span>
+          <span class="text-xs font-medium text-muted-foreground min-w-[60px]">Name:</span>
+          <span class="text-sm font-semibold text-foreground">{info.name}</span>
         </div>
       {/if}
 
       {#if info.description}
         <div class="flex items-start gap-2">
-          <span class="text-xs font-medium text-muted-foreground dark:text-muted-foreground min-w-[60px]">About:</span>
-          <span class="text-sm text-neutral-700 dark:text-muted-foreground">{info.description}</span>
+          <span class="text-xs font-medium text-muted-foreground min-w-[60px]">About:</span>
+          <span class="text-sm text-muted-foreground">{info.description}</span>
         </div>
       {/if}
 
       {#if info.software || info.version}
         <div class="flex items-start gap-2">
-          <span class="text-xs font-medium text-muted-foreground dark:text-muted-foreground min-w-[60px]">Software:</span>
-          <span class="text-sm text-neutral-700 dark:text-muted-foreground">
+          <span class="text-xs font-medium text-muted-foreground min-w-[60px]">Software:</span>
+          <span class="text-sm text-muted-foreground">
             {info.software}{info.version ? ` v${info.version}` : ''}
           </span>
         </div>
@@ -86,7 +86,7 @@
           <svg class="w-3 h-3 text-muted-foreground mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
-          <span class="text-sm text-neutral-700 dark:text-muted-foreground">
+          <span class="text-sm text-muted-foreground">
             {info.relay_countries.join(', ')}
           </span>
         </div>
@@ -98,7 +98,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <div class="flex-1">
-            <span class="text-xs text-muted-foreground dark:text-muted-foreground">
+            <span class="text-xs text-muted-foreground">
               Supports {info.supported_nips.length} NIPs: {info.supported_nips.slice(0, 5).join(', ')}
               {#if info.supported_nips.length > 5}...{/if}
             </span>
@@ -119,7 +119,7 @@
           </span>
         {/if}
         {#if info.contact}
-          <span class="text-xs bg-neutral-100 dark:bg-muted text-neutral-700 dark:text-muted-foreground px-2 py-0.5 rounded-full">
+          <span class="text-xs bg-neutral-100 dark:bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
             📧 {info.contact}
           </span>
         {/if}
@@ -136,7 +136,7 @@
         onchange={(e) => settings.updateRelay(relay.url, { read: e.currentTarget.checked })}
         class="w-4 h-4 text-primary rounded focus:ring-orange-500"
       />
-      <span class="text-sm text-muted-foreground dark:text-muted-foreground">
+      <span class="text-sm text-muted-foreground">
         Read
       </span>
     </label>
@@ -147,7 +147,7 @@
         onchange={(e) => settings.updateRelay(relay.url, { write: e.currentTarget.checked })}
         class="w-4 h-4 text-primary rounded focus:ring-orange-500"
       />
-      <span class="text-sm text-muted-foreground dark:text-muted-foreground">
+      <span class="text-sm text-muted-foreground">
         Write
       </span>
     </label>

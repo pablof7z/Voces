@@ -1,15 +1,19 @@
 <script lang="ts">
   import type { NDKEvent } from '@nostr-dev-kit/ndk';
   import { settings } from '$lib/stores/settings.svelte';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
 
   interface Props {
-    open: boolean;
+    open?: boolean;
     event: NDKEvent;
     onZap: (amount: number) => void;
     onCancel: () => void;
   }
 
-  const { open, event, onZap, onCancel }: Props = $props();
+  let { open = $bindable(false), event, onZap, onCancel }: Props = $props();
 
   const amounts = [
     { value: 10, label: '10', emoji: '☕' },
@@ -47,87 +51,69 @@
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape') {
-      onCancel();
-    } else if (e.key === 'Enter' && selectedAmount > 0) {
+    if (e.key === 'Enter' && selectedAmount > 0) {
       handleZap();
     }
   }
 </script>
 
-{#if open}
-  <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
-    onclick={onCancel}
-    onkeydown={handleKeydown}
-    role="button"
-    tabindex="-1"
-  >
-    <div
-      class="relative w-full max-w-md mx-4 bg-gradient-to-br from-neutral-900 to-black border-2 border-orange-600/30 rounded-3xl shadow-2xl shadow-orange-900/50 overflow-hidden"
-      onclick={(e) => e.stopPropagation()}
-      role="dialog"
-      aria-modal="true"
-    >
+<svelte:window onkeydown={handleKeydown} />
+
+<Dialog.Root open={open} onOpenChange={(isOpen) => {
+    if (!isOpen) {
+      onCancel();
+    } else {
+      open = true;
+    }
+  }}>
+    <Dialog.Content class="max-w-md bg-background border-2 border-primary/30 shadow-2xl shadow-primary/50">
       <!-- Header with glow effect -->
-      <div class="relative px-6 py-6 border-b border-orange-600/20 bg-gradient-to-r from-orange-900/20 to-red-900/20">
-        <div class="absolute inset-0 bg-gradient-to-r from-orange-600/10 to-red-600/10 blur-xl"></div>
-        <div class="relative flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-600 to-red-600 flex items-center justify-center shadow-lg shadow-orange-600/50">
-              <span class="text-2xl">⚡</span>
-            </div>
-            <div>
-              <h2 class="text-xl font-bold text-foreground">Zap Amount</h2>
-              <p class="text-sm text-orange-300">Choose your zap amount</p>
-            </div>
+      <div class="relative -mx-6 -mt-6 px-6 py-6 mb-6 border-b border-border bg-primary/10">
+        <div class="absolute inset-0 bg-primary/5 blur-xl"></div>
+        <div class="relative flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/50">
+            <span class="text-2xl">⚡</span>
           </div>
-          <button
-            onclick={onCancel}
-            class="w-10 h-10 rounded-full hover:bg-white/10 transition-colors flex items-center justify-center"
-            type="button"
-            aria-label="Close"
-          >
-            <svg class="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <div>
+            <Dialog.Title class="text-xl text-foreground">Zap Amount</Dialog.Title>
+            <Dialog.Description class="text-sm text-muted-foreground">Choose your zap amount</Dialog.Description>
+          </div>
         </div>
       </div>
 
       <!-- Amount Grid -->
-      <div class="p-6 space-y-6">
+      <div class="space-y-6">
         <div class="grid grid-cols-4 gap-3">
           {#each amounts as amount}
-            <button
+            <Button
+              variant="ghost"
               onclick={() => handleAmountSelect(amount.value)}
-              class="group relative overflow-hidden rounded-2xl p-4 transition-all duration-200 {selectedAmount === amount.value && !isCustom
-                ? 'bg-gradient-to-br from-orange-600 to-red-600 shadow-lg shadow-orange-600/50 scale-105'
-                : 'bg-gradient-to-br from-neutral-800 to-neutral-900 hover:from-neutral-700 hover:to-neutral-800 hover:scale-105'}"
-              type="button"
+              class="group relative overflow-hidden rounded-2xl p-4 h-auto transition-all duration-200 {selectedAmount === amount.value && !isCustom
+                ? 'bg-primary shadow-lg shadow-primary/50 scale-105'
+                : 'bg-muted hover:bg-muted/80 hover:scale-105'}"
             >
-              <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div class="relative flex flex-col items-center gap-2">
                 <span class="text-2xl">{amount.emoji}</span>
-                <span class="text-xs font-bold text-foreground">{amount.label}</span>
+                <span class="text-xs font-bold {selectedAmount === amount.value && !isCustom ? 'text-primary-foreground' : 'text-foreground'}">{amount.label}</span>
               </div>
-            </button>
+            </Button>
           {/each}
         </div>
 
         <!-- Custom Amount Input -->
         <div class="space-y-2">
-          <label for="custom-amount" class="text-sm font-semibold text-orange-300">
+          <Label for="custom-amount" class="text-sm font-semibold text-muted-foreground">
             Custom Amount
-          </label>
+          </Label>
           <div class="relative">
-            <input
+            <Input
               id="custom-amount"
               type="number"
               bind:value={customAmount}
               oninput={handleCustomInput}
               placeholder="Enter custom amount..."
-              class="w-full px-4 py-4 bg-gradient-to-br from-neutral-800 to-neutral-900 border-2 {isCustom ? 'border-orange-600' : 'border-border'} rounded-2xl text-foreground placeholder-neutral-500 focus:outline-none focus:border-orange-600 transition-colors text-lg font-semibold"
+              class="w-full px-4 py-4 bg-muted border-2 {isCustom ? 'border-primary' : 'border-border'} rounded-2xl text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-primary transition-colors text-lg font-semibold pr-16"
             />
             <div class="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold">
               sats
@@ -137,10 +123,10 @@
 
         <!-- Selected Amount Display -->
         {#if selectedAmount > 0}
-          <div class="p-4 rounded-2xl bg-gradient-to-br from-orange-900/30 to-red-900/30 border border-orange-600/30">
+          <div class="p-4 rounded-2xl bg-primary/20 border-2 border-primary/30">
             <div class="flex items-center justify-between">
-              <span class="text-sm text-orange-300">Selected Amount:</span>
-              <span class="text-2xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+              <span class="text-sm text-foreground/70">Selected Amount:</span>
+              <span class="text-2xl font-bold text-foreground">
                 {selectedAmount.toLocaleString()} sats
               </span>
             </div>
@@ -148,25 +134,23 @@
         {/if}
 
         <!-- Action Buttons -->
-        <div class="flex gap-3">
-          <button
+        <Dialog.Footer class="flex gap-3 sm:space-x-0">
+          <Button
+            variant="outline"
             onclick={onCancel}
-            class="flex-1 px-6 py-4 rounded-2xl bg-gradient-to-br from-neutral-800 to-neutral-900 hover:from-neutral-700 hover:to-neutral-800 text-foreground font-semibold transition-all"
-            type="button"
+            class="flex-1 px-6 py-4 rounded-2xl"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onclick={handleZap}
             disabled={selectedAmount <= 0}
-            class="flex-1 px-6 py-4 rounded-2xl bg-gradient-to-br from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 disabled:from-neutral-700 disabled:to-neutral-800 disabled:cursor-not-allowed text-foreground font-bold shadow-lg shadow-orange-600/50 hover:shadow-orange-600/70 transition-all disabled:shadow-none flex items-center justify-center gap-2"
-            type="button"
+            class="flex-1 px-6 py-4 rounded-2xl bg-primary hover:opacity-90 shadow-lg shadow-primary/50 hover:shadow-primary/70 disabled:opacity-50 disabled:shadow-none"
           >
-            <span class="text-xl">⚡</span>
+            <span class="text-xl mr-2">⚡</span>
             Zap {selectedAmount > 0 ? selectedAmount.toLocaleString() : ''}
-          </button>
-        </div>
+          </Button>
+        </Dialog.Footer>
       </div>
-    </div>
-  </div>
-{/if}
+    </Dialog.Content>
+</Dialog.Root>

@@ -60,7 +60,7 @@ export function useWallet(ndk: NDKSvelte): WalletAPI {
 
         // App-specific methods (proofs/tokens/validation - not in ReactiveWalletStore)
         getProofEntries(opts = {}) {
-            const wallet = (walletStore as any)._wallet;
+            const wallet = walletStore.wallet;
             if (!(wallet instanceof NDKCashuWallet)) return [];
 
             const entries = wallet.state.getProofEntries(opts);
@@ -73,7 +73,7 @@ export function useWallet(ndk: NDKSvelte): WalletAPI {
             }));
         },
         getTokens(opts = {}) {
-            const wallet = (walletStore as any)._wallet;
+            const wallet = walletStore.wallet;
             if (!(wallet instanceof NDKCashuWallet)) return [];
 
             const tokensMap = wallet.state.getTokens(opts);
@@ -91,7 +91,7 @@ export function useWallet(ndk: NDKSvelte): WalletAPI {
             }));
         },
         async validateProofs(mint: string) {
-            const wallet = (walletStore as any)._wallet;
+            const wallet = walletStore.wallet;
             if (!(wallet instanceof NDKCashuWallet)) throw new Error("No wallet");
 
             const allProofs = wallet.state.getProofs({ mint, includeDeleted: true, onlyAvailable: false });

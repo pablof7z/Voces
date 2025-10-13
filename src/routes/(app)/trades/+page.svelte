@@ -17,11 +17,11 @@
 
 <div class="min-h-screen">
   <!-- Header -->
-  <div class="border-b border-neutral-800 sticky top-0 z-20 bg-black">
+  <div class="border-b border-border sticky top-0 z-20 bg-background">
     <div class="px-4 sm:px-6 lg:px-8 py-4">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold text-white">P2P Trading</h1>
+          <h1 class="text-2xl font-bold text-foreground">P2P Trading</h1>
           <p class="text-sm text-neutral-400 mt-1">
             Buy and sell Bitcoin directly
           </p>
@@ -30,7 +30,7 @@
         {#if ndk.$currentUser}
           <button
             onclick={() => showCreateModal = true}
-            class="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+            class="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

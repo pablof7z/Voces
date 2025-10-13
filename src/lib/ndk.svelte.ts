@@ -1,6 +1,7 @@
 import NDKCacheSqliteWasm from "@nostr-dev-kit/cache-sqlite-wasm";
 import { NDKSvelte } from '@nostr-dev-kit/svelte';
 import { LocalStorage } from '@nostr-dev-kit/sessions';
+import { NDKEvent, NDKKind } from '@nostr-dev-kit/ndk';
 import { browser } from '$app/environment';
 import { createAuthPolicyWithConfirmation } from './relayAuthPolicy.svelte';
 import { createHashtagInterestsStore } from './stores/hashtagInterests.svelte';
@@ -39,7 +40,9 @@ export const ndk = new NDKSvelte({
       mutes: true,
       wallet: true,
       relayList: true,
-      events: new Map([[10015, undefined]]) // Fetch kind 10015 (Interest List)
+      events: new Map<NDKKind, { from(event: NDKEvent): NDKEvent }>([
+        [10015 as NDKKind, { from: (event: NDKEvent) => event }] // Fetch kind 10015 (Interest List)
+      ])
     }
   } : undefined
 });

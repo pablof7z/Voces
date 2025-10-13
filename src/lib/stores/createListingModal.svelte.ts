@@ -1,12 +1,17 @@
-let showModal = $state(false);
+class CreateListingModalStore {
+  private _show = $state(false);
 
-export const createListingModal = {
-  get show() { return showModal; },
-  set show(value: boolean) { showModal = value; },
-  open() {
-    showModal = true;
-  },
-  close() {
-    showModal = false;
+  get show() {
+    return this._show;
   }
-};
+
+  open() {
+    this._show = true;
+  }
+
+  close() {
+    this._show = false;
+  }
+}
+
+export const createListingModal = new CreateListingModalStore();

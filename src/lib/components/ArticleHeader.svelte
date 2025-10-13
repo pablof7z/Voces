@@ -46,12 +46,12 @@
 </script>
 
 <div class="mb-12">
-  <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-neutral-900 dark:text-foreground mb-6 leading-[1.1] tracking-tight font-serif">
+  <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-[1.1] tracking-tight font-serif">
     {title}
   </h1>
 
   {#if shouldShowSummary}
-    <p class="text-xl sm:text-2xl text-muted-foreground dark:text-muted-foreground mb-8 leading-relaxed font-light">
+    <p class="text-xl sm:text-2xl text-muted-foreground mb-8 leading-relaxed font-light">
       {summary}
     </p>
   {/if}
@@ -64,11 +64,11 @@
     <div class="flex-1">
       <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
         <button type="button" onclick={navigateToProfile} class="group text-left">
-          <div class="font-semibold text-lg text-neutral-900 dark:text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+          <div class="font-semibold text-lg text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
             {authorName}
           </div>
           {#if authorBio}
-            <p class="text-sm text-muted-foreground dark:text-muted-foreground line-clamp-1 max-w-md">
+            <p class="text-sm text-muted-foreground line-clamp-1 max-w-md">
               {authorBio}
             </p>
           {/if}
@@ -77,7 +77,7 @@
     </div>
   </div>
 
-  <div class="flex items-center gap-2 text-sm text-muted-foreground dark:text-muted-foreground">
+  <div class="flex items-center gap-2 text-sm text-muted-foreground">
     {#if publishedAt}
       <time datetime={new Date(publishedAt * 1000).toISOString()}>
         {new Date(publishedAt * 1000).toLocaleDateString('en-US', {
@@ -91,5 +91,5 @@
     <span>{readingTime} min read</span>
   </div>
 
-  <div class="mt-8 border-t border" />
+  <div class="mt-8 border-t border"></div>
 </div>

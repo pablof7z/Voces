@@ -2,6 +2,7 @@
   import { ndk } from '$lib/ndk.svelte';
   import { NDKFollowPack, NDKKind } from '@nostr-dev-kit/ndk';
   import { Avatar } from '@nostr-dev-kit/svelte';
+  import { portal } from '$lib/utils/portal.svelte';
   import { toast } from '$lib/stores/toast.svelte';
 
   interface Props {
@@ -186,6 +187,7 @@
 
 {#if open}
   <div
+    use:portal
     class="fixed inset-0 z-50 flex items-start justify-center bg-background/80 backdrop-blur-sm overflow-y-auto py-8"
     onclick={handleBackdropClick}
     role="presentation"

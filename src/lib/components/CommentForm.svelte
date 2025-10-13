@@ -66,9 +66,9 @@
         <textarea
           bind:value={replyContent}
           placeholder="Share your thoughts..."
-          class="w-full p-3 bg-neutral-50 dark:bg-card border border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all min-h-[100px] text-neutral-900 dark:text-foreground placeholder:text-muted-foreground dark:placeholder:text-muted-foreground"
+          class="w-full p-3 bg-neutral-50 dark:bg-card border border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all min-h-[100px] text-foreground placeholder:text-muted-foreground dark:placeholder:text-muted-foreground"
           disabled={isSubmitting}
-        />
+        ></textarea>
         <div class="flex justify-end mt-2">
           <button
             type="button"

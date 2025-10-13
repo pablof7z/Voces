@@ -33,7 +33,7 @@
   const mintBalances = $derived.by(() => {
     const balances = new Map<string, number>();
     mints.forEach(mint => {
-      const walletInstance = (wallet as any)._wallet;
+      const walletInstance = wallet.wallet;
       if (walletInstance?.mintBalance) {
         balances.set(mint, walletInstance.mintBalance(mint));
       }
@@ -67,7 +67,7 @@
     isSaving = true;
 
     try {
-      const walletInstance = (wallet as any)._wallet;
+      const walletInstance = wallet.wallet;
 
       // Create wallet if it doesn't exist
       if (!(walletInstance instanceof NDKCashuWallet)) {
@@ -229,10 +229,10 @@
 <div class="space-y-6">
   <!-- Header -->
   <div>
-    <h2 class="text-xl font-semibold text-neutral-900 dark:text-foreground mb-2">
+    <h2 class="text-xl font-semibold text-foreground mb-2">
       Wallet Configuration
     </h2>
-    <p class="text-sm text-muted-foreground dark:text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Manage your Cashu mints and wallet relays for ecash transactions.
     </p>
   </div>
@@ -263,10 +263,10 @@
   <!-- Cashu Mints Section -->
   <div class="space-y-3">
     <div class="flex items-center justify-between">
-      <h3 class="text-lg font-semibold text-neutral-900 dark:text-foreground">
+      <h3 class="text-lg font-semibold text-foreground">
         Cashu Mints
       </h3>
-      <span class="text-sm text-muted-foreground dark:text-muted-foreground">
+      <span class="text-sm text-muted-foreground">
         {mints.length} {mints.length === 1 ? 'mint' : 'mints'}
       </span>
     </div>
@@ -274,7 +274,7 @@
     <!-- Mint List -->
     <div class="space-y-2">
       {#each mints as mint (mint)}
-        <div class="border rounded-lg p-4 bg-white dark:bg-background border">
+        <div class="border rounded-lg p-4 bg-card border">
           <div class="flex items-center justify-between">
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2">
@@ -282,10 +282,10 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
                 <div class="flex-1 min-w-0">
-                  <div class="text-sm font-medium text-neutral-900 dark:text-foreground truncate">
+                  <div class="text-sm font-medium text-foreground truncate">
                     {getMintName(mint)}
                   </div>
-                  <div class="text-xs text-muted-foreground dark:text-muted-foreground truncate">
+                  <div class="text-xs text-muted-foreground truncate">
                     {mint}
                   </div>
                 </div>
@@ -312,7 +312,7 @@
       {/each}
 
       {#if mints.length === 0}
-        <div class="text-center py-8 text-muted-foreground dark:text-muted-foreground">
+        <div class="text-center py-8 text-muted-foreground">
           <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
           </svg>
@@ -322,20 +322,20 @@
 
       <!-- Add New Mint -->
       {#if isAddingMint}
-        <div class="border-2 border-dashed border-orange-300 dark:border-orange-700 rounded-lg p-4">
+        <div class="border-2 border-dashed border-primary-300 dark:border-primary-700 rounded-lg p-4">
           <div class="space-y-3">
             <input
               type="url"
               bind:value={newMintUrl}
               placeholder="https://mint.example.com"
-              class="w-full px-3 py-2 bg-white dark:bg-background border border dark:border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-neutral-900 dark:text-foreground"
+              class="w-full px-3 py-2 bg-card border border dark:border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-foreground"
               autofocus
             />
             <div class="flex gap-2">
               <button
                 onclick={handleAddMint}
                 disabled={!newMintUrl.trim()}
-                class="px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                class="px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Add Mint
               </button>
@@ -345,7 +345,7 @@
                   newMintUrl = '';
                   error = null;
                 }}
-                class="px-4 py-2 bg-neutral-200 dark:bg-muted text-neutral-700 dark:text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted transition-colors"
+                class="px-4 py-2 bg-neutral-200 dark:bg-muted text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted transition-colors"
               >
                 Cancel
               </button>
@@ -356,7 +356,7 @@
         <div class="flex gap-2">
           <button
             onclick={() => isAddingMint = true}
-            class="flex-1 border-2 border-dashed border rounded-lg p-4 hover:border-primary dark:hover:border-orange-600 transition-colors group"
+            class="flex-1 border-2 border-dashed border rounded-lg p-4 hover:border-primary dark:hover:border-primary transition-colors group"
           >
             <div class="flex items-center justify-center gap-2 text-muted-foreground group-hover:text-primary dark:group-hover:text-primary">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -367,7 +367,7 @@
           </button>
           <button
             onclick={() => isBrowsingMints = true}
-            class="flex-1 border-2 border-dashed border rounded-lg p-4 hover:border-primary dark:hover:border-orange-600 transition-colors group"
+            class="flex-1 border-2 border-dashed border rounded-lg p-4 hover:border-primary dark:hover:border-primary transition-colors group"
           >
             <div class="flex items-center justify-center gap-2 text-muted-foreground group-hover:text-primary dark:group-hover:text-primary">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -384,10 +384,10 @@
   <!-- Wallet Relays Section -->
   <div class="space-y-3">
     <div class="flex items-center justify-between">
-      <h3 class="text-lg font-semibold text-neutral-900 dark:text-foreground">
+      <h3 class="text-lg font-semibold text-foreground">
         Wallet Relays
       </h3>
-      <span class="text-sm text-muted-foreground dark:text-muted-foreground">
+      <span class="text-sm text-muted-foreground">
         {relays.length} {relays.length === 1 ? 'relay' : 'relays'}
       </span>
     </div>
@@ -395,7 +395,7 @@
     <!-- Relay List -->
     <div class="space-y-2">
       {#each relays as relay (relay)}
-        <div class="border rounded-lg p-4 bg-white dark:bg-background border">
+        <div class="border rounded-lg p-4 bg-card border">
           <div class="flex items-center justify-between">
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2">
@@ -403,10 +403,10 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
                 </svg>
                 <div class="flex-1 min-w-0">
-                  <div class="text-sm font-medium text-neutral-900 dark:text-foreground truncate">
+                  <div class="text-sm font-medium text-foreground truncate">
                     {getRelayName(relay)}
                   </div>
-                  <div class="text-xs text-muted-foreground dark:text-muted-foreground truncate">
+                  <div class="text-xs text-muted-foreground truncate">
                     {relay}
                   </div>
                 </div>
@@ -426,7 +426,7 @@
       {/each}
 
       {#if relays.length === 0}
-        <div class="text-center py-8 text-muted-foreground dark:text-muted-foreground">
+        <div class="text-center py-8 text-muted-foreground">
           <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
           </svg>
@@ -442,10 +442,10 @@
               type="text"
               bind:value={newRelayUrl}
               placeholder="wss://relay.example.com"
-              class="w-full px-3 py-2 bg-white dark:bg-background border border dark:border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-neutral-900 dark:text-foreground"
+              class="w-full px-3 py-2 bg-card border border dark:border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-foreground"
               autofocus
             />
-            <div class="text-xs text-muted-foreground dark:text-muted-foreground">
+            <div class="text-xs text-muted-foreground">
               URL will automatically be prefixed with wss:// if not provided
             </div>
             <div class="flex gap-2">
@@ -462,7 +462,7 @@
                   newRelayUrl = '';
                   error = null;
                 }}
-                class="px-4 py-2 bg-neutral-200 dark:bg-muted text-neutral-700 dark:text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted transition-colors"
+                class="px-4 py-2 bg-neutral-200 dark:bg-muted text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted transition-colors"
               >
                 Cancel
               </button>
@@ -501,26 +501,26 @@
 
   <!-- Save/Discard Actions -->
   {#if hasPendingChanges}
-    <div class="sticky bottom-0 -mx-6 px-6 py-4 bg-white dark:bg-background border-t border shadow-lg">
+    <div class="sticky bottom-0 -mx-6 px-6 py-4 bg-card border-t border shadow-lg">
       <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-2 text-sm">
           <svg class="w-5 h-5 text-primary animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
-          <span class="text-neutral-700 dark:text-muted-foreground font-medium">You have unsaved changes</span>
+          <span class="text-muted-foreground font-medium">You have unsaved changes</span>
         </div>
         <div class="flex gap-3">
           <button
             onclick={discardChanges}
             disabled={isSaving}
-            class="px-4 py-2 bg-neutral-200 dark:bg-muted text-neutral-700 dark:text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            class="px-4 py-2 bg-neutral-200 dark:bg-muted text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
             Discard Changes
           </button>
           <button
             onclick={saveChanges}
             disabled={isSaving}
-            class="px-6 py-2 bg-primary text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2"
+            class="px-6 py-2 bg-primary text-foreground rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2"
           >
             {#if isSaving}
               <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">

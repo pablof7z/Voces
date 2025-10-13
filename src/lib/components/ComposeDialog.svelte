@@ -7,6 +7,10 @@
   import { settings } from '$lib/stores/settings.svelte';
   import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
   import { clickOutside } from '$lib/utils/clickOutside';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Switch } from '$lib/components/ui/switch';
+  import { Label } from '$lib/components/ui/label';
 
   interface Props {
     open?: boolean;
@@ -111,261 +115,263 @@
     }
   }
 
-  function handleBackdropClick(e: MouseEvent) {
-    if (e.target === e.currentTarget) {
-      handleClose();
-    }
-  }
-
   function handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape' && !isPublishing) {
-      handleClose();
-    }
     if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
       publishNote();
     }
   }
 </script>
 
+<style>
+  /* Mobile-specific slide-up animation */
+  @media (max-width: 767px) {
+    :global([data-slot="dialog-content"]) {
+      animation: slideUp 0.3s ease-out !important;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+</style>
+
 <svelte:window onkeydown={handleKeydown} />
 
-{#if open}
-  <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
-    onclick={handleBackdropClick}
-    role="presentation"
-  >
-    <div
-      class="w-full max-w-2xl mx-4 bg-card rounded-2xl border border-border shadow-2xl"
-      onclick={(e) => e.stopPropagation()}
-      role="dialog"
-      aria-modal="true"
-    >
-      <!-- Header -->
-      <div class="flex items-center justify-between px-4 py-3 border-b border-border">
-        <button
-          onclick={handleClose}
-          disabled={isPublishing}
-          class="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
-          aria-label="Close"
-        >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <h2 class="text-lg font-semibold text-foreground">
-          {replyTo ? 'Reply' : 'Compose'}
-        </h2>
-        <button
-          onclick={publishNote}
-          disabled={!content.trim() || isPublishing || selectedRelayUrls.length === 0}
-          class="px-4 py-2 bg-primary hover:bg-accent-dark disabled:bg-muted disabled:cursor-not-allowed text-foreground rounded-full transition-colors font-semibold text-sm"
-        >
-          {isPublishing ? 'Publishing...' : 'Post'}
-        </button>
-      </div>
+<Dialog.Root {open} onOpenChange={(isOpen) => {
+    if (!isOpen) {
+      handleClose();
+    } else {
+      open = true;
+    }
+  }}>
+  <Dialog.Content class="max-md:!max-w-none max-md:!w-full max-md:!h-[95vh] max-md:!m-0 max-md:!rounded-b-none max-md:!fixed max-md:!bottom-0 max-md:!left-0 max-md:!right-0 max-md:!top-auto max-md:!translate-x-0 max-md:!translate-y-0 max-md:flex max-md:flex-col md:max-w-[700px]">
+    <!-- Header -->
+    <div class="flex items-center justify-between -mx-6 -mt-6 px-4 py-3 mb-4 border-b border-border">
+      <Button
+        variant="ghost"
+        size="icon"
+        onclick={handleClose}
+        disabled={isPublishing}
+        class="h-10 w-10"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </Button>
+      <Dialog.Title class="text-lg">
+        {replyTo ? 'Reply' : 'Compose'}
+      </Dialog.Title>
+      <Button
+        onclick={publishNote}
+        disabled={!content.trim() || isPublishing || selectedRelayUrls.length === 0}
+        class="rounded-full"
+        size="sm"
+      >
+        {isPublishing ? 'Publishing...' : 'Post'}
+      </Button>
+    </div>
 
-      <!-- Reply context (if replying) -->
-      {#if replyTo && replyToProfile}
-        <div class="px-4 py-3 border-b border-border bg-card/50">
-          <div class="flex gap-3">
-            <Avatar {ndk} pubkey={replyTo.pubkey} class="w-10 h-10" />
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-1">
-                <span class="font-semibold text-foreground text-sm">
-                  {replyToProfile.displayName || replyToProfile.name || `${replyTo.pubkey.slice(0, 8)}...`}
-                </span>
-                <span class="text-muted-foreground text-xs">
-                  @{replyToProfile.name || replyTo.pubkey.slice(0, 8)}
-                </span>
-              </div>
-              <p class="text-muted-foreground text-sm line-clamp-3">
-                {replyTo.content}
-              </p>
-            </div>
-          </div>
-        </div>
-      {/if}
-
-      <!-- Compose area -->
-      <div class="p-4">
+    <!-- Reply context (if replying) -->
+    {#if replyTo && replyToProfile}
+      <div class="-mx-6 px-4 py-3 mb-4 border-b border-border bg-card/50">
         <div class="flex gap-3">
-          {#if ndk.$currentUser}
-            <Avatar {ndk} pubkey={ndk.$currentUser.pubkey} class="w-12 h-12 flex-shrink-0" />
-          {:else}
-            <div class="w-12 h-12 rounded-full bg-muted flex-shrink-0"></div>
-          {/if}
+          <Avatar {ndk} pubkey={replyTo.pubkey} class="w-10 h-10" />
           <div class="flex-1 min-w-0">
-            <textarea
-              bind:value={content}
-              placeholder={replyTo ? 'Write your reply...' : "What's on your mind?"}
-              class="w-full min-h-[120px] bg-transparent text-foreground placeholder-neutral-500 resize-none focus:outline-none text-lg"
-              autofocus
-            ></textarea>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="font-semibold text-foreground text-sm">
+                {replyToProfile.displayName || replyToProfile.name || `${replyTo.pubkey.slice(0, 8)}...`}
+              </span>
+              <span class="text-muted-foreground text-xs">
+                @{replyToProfile.name || replyTo.pubkey.slice(0, 8)}
+              </span>
+            </div>
+            <p class="text-muted-foreground text-sm line-clamp-3">
+              {replyTo.content}
+            </p>
           </div>
         </div>
       </div>
+    {/if}
 
-      <!-- Relay selector -->
-      <div class="px-4 pb-3 border-t border-border">
-        <div class="relative" use:clickOutside={handleRelayDropdownClickOutside}>
-          <button
-            onclick={() => isRelayDropdownOpen = !isRelayDropdownOpen}
-            class="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/50 hover:bg-muted transition-colors text-sm w-full"
-            disabled={isPublishing}
-          >
-            {#if selectedRelayUrls.length === 0}
-              <svg class="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-              </svg>
-              <span class="flex-1 text-left text-muted-foreground">Select relays</span>
-            {:else if selectedRelayUrls.length < 3}
-              <div class="flex items-center gap-1.5 flex-1">
-                {#each selectedRelayUrls as relayUrl}
-                  {@const relay = allRelays.find(r => r.url === relayUrl)}
-                  {@const relayInfo = relay ? useRelayInfoCached(relay.url) : null}
-                  {#if relayInfo?.info?.icon}
-                    <img src={relayInfo.info.icon} alt="" class="w-5 h-5 rounded flex-shrink-0" />
-                  {:else}
-                    <div class="w-5 h-5 rounded bg-muted flex items-center justify-center flex-shrink-0">
-                      <svg class="w-3 h-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-                      </svg>
-                    </div>
-                  {/if}
-                {/each}
-              </div>
-            {:else}
-              <svg class="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-              </svg>
-              <span class="flex-1 text-left text-muted-foreground">
-                {selectedRelayUrls.length} relays selected
-              </span>
-            {/if}
-            <svg
-              class="w-4 h-4 text-muted-foreground transition-transform {isRelayDropdownOpen ? 'rotate-180' : ''}"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          {#if isRelayDropdownOpen}
-            <div class="absolute top-full left-0 right-0 mt-2 bg-popover border border-border rounded-lg shadow-xl z-50 max-h-[400px] overflow-y-auto">
-              <div class="p-2">
-                <!-- Protected mode toggle -->
-                <div class="px-2 py-2 mb-2 border-b border-border">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                      <svg class="w-4 h-4 {isProtected ? 'text-primary' : 'text-muted-foreground'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                      </svg>
-                      <span class="text-sm {isProtected ? 'text-primary font-medium' : 'text-muted-foreground'}">
-                        Protected
-                      </span>
-                      <div class="relative">
-                        <button
-                          onclick={() => showProtectedInfo = !showProtectedInfo}
-                          onmouseover={() => showProtectedInfo = true}
-                          onmouseleave={() => showProtectedInfo = false}
-                          class="text-muted-foreground hover:text-muted-foreground transition-colors"
-                          aria-label="Info about protected mode"
-                        >
-                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </button>
-                        {#if showProtectedInfo}
-                          <div class="absolute left-0 bottom-full mb-2 w-64 bg-card border border-border rounded-lg shadow-xl z-50 p-2 text-xs">
-                            <div class="font-semibold text-foreground mb-1">Protected Mode (NIP-70)</div>
-                            <div class="text-muted-foreground text-xs">
-                              Protected events cannot be republished to other relays without your permission.
-                            </div>
-                          </div>
-                        {/if}
-                      </div>
-                    </div>
-                    <!-- Switch toggle -->
-                    <button
-                      onclick={() => isProtected = !isProtected}
-                      class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors {isProtected ? 'bg-primary' : 'bg-muted'}"
-                      role="switch"
-                      aria-checked={isProtected}
-                    >
-                      <span
-                        class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform {isProtected ? 'translate-x-6' : 'translate-x-1'}"
-                      ></span>
-                    </button>
-                  </div>
-                </div>
-
-                <div class="text-xs text-muted-foreground px-2 py-1.5 font-medium">Select Relays to Publish</div>
-                {#each allRelays as relay (relay.url)}
-                  {@const relayInfo = useRelayInfoCached(relay.url)}
-                  {@const isSelected = selectedRelayUrls.includes(relay.url)}
-                  {@const isReadOnly = !relay.write}
-                  <div class="group relative flex items-center">
-                    <button
-                      onclick={() => toggleRelay(relay.url)}
-                      class="flex-1 px-2 py-2 rounded-lg hover:bg-muted transition-colors text-left flex items-center gap-3 {isSelected ? 'bg-muted/50' : ''} {isReadOnly ? 'opacity-60' : ''}"
-                    >
-                      {#if relayInfo.info?.icon}
-                        <img src={relayInfo.info.icon} alt="" class="w-5 h-5 rounded flex-shrink-0" />
-                      {:else}
-                        <div class="w-5 h-5 rounded bg-muted flex items-center justify-center flex-shrink-0">
-                          <svg class="w-3 h-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-                          </svg>
-                        </div>
-                      {/if}
-                      <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
-                          <div class="text-sm font-medium text-foreground truncate">
-                            {relayInfo.info?.name || relay.url.replace('wss://', '').replace('ws://', '')}
-                          </div>
-                          {#if isReadOnly}
-                            <span class="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">read-only</span>
-                          {/if}
-                        </div>
-                        {#if relayInfo.info?.description}
-                          <div class="text-xs text-muted-foreground truncate">
-                            {relayInfo.info.description}
-                          </div>
-                        {/if}
-                      </div>
-                      {#if isSelected}
-                        <svg class="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                      {/if}
-                    </button>
-                    <!-- "Only" button - appears on hover -->
-                    <button
-                      onclick={(e) => { e.stopPropagation(); selectOnlyRelay(relay.url); }}
-                      class="absolute right-2 px-2 py-1 text-xs bg-primary hover:bg-accent-dark text-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                      title="Publish only to this relay"
-                    >
-                      Only
-                    </button>
-                  </div>
-                {/each}
-              </div>
-            </div>
-          {/if}
+    <!-- Compose area -->
+    <div class="mb-4 max-md:flex-1 max-md:flex max-md:flex-col max-md:overflow-hidden">
+      <div class="flex gap-3 max-md:flex-1 max-md:overflow-hidden">
+        {#if ndk.$currentUser}
+          <Avatar {ndk} pubkey={ndk.$currentUser.pubkey} class="w-12 h-12 flex-shrink-0" />
+        {:else}
+          <div class="w-12 h-12 rounded-full bg-muted flex-shrink-0"></div>
+        {/if}
+        <div class="flex-1 min-w-0 max-md:flex max-md:flex-col max-md:overflow-hidden">
+          <textarea
+            bind:value={content}
+            placeholder={replyTo ? 'Write your reply...' : "What's on your mind?"}
+            class="w-full min-h-[120px] max-md:flex-1 max-md:min-h-0 bg-transparent text-foreground placeholder-neutral-500 resize-none focus:outline-none text-lg"
+            autofocus
+          ></textarea>
         </div>
-      </div>
-
-      <!-- Footer hint -->
-      <div class="px-4 py-3 border-t border-border">
-        <p class="text-xs text-muted-foreground">
-          Press <kbd class="px-1.5 py-0.5 bg-muted rounded text-muted-foreground">Esc</kbd> to cancel,
-          <kbd class="px-1.5 py-0.5 bg-muted rounded text-muted-foreground">⌘</kbd> +
-          <kbd class="px-1.5 py-0.5 bg-muted rounded text-muted-foreground">Enter</kbd> to post
-        </p>
       </div>
     </div>
-  </div>
-{/if}
+
+    <!-- Relay selector -->
+    <div class="-mx-6 px-4 pb-3 pt-3 border-t border-border">
+      <div class="relative" use:clickOutside={handleRelayDropdownClickOutside}>
+        <Button
+          variant="outline"
+          onclick={() => isRelayDropdownOpen = !isRelayDropdownOpen}
+          disabled={isPublishing}
+          class="w-full justify-start"
+        >
+          {#if selectedRelayUrls.length === 0}
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+            </svg>
+            <span class="flex-1 text-left">Select relays</span>
+          {:else if selectedRelayUrls.length < 3}
+            <div class="flex items-center gap-1.5 flex-1">
+              {#each selectedRelayUrls as relayUrl}
+                {@const relay = allRelays.find(r => r.url === relayUrl)}
+                {@const relayInfo = relay ? useRelayInfoCached(relay.url) : null}
+                {#if relayInfo?.info?.icon}
+                  <img src={relayInfo.info.icon} alt="" class="w-5 h-5 rounded flex-shrink-0" />
+                {:else}
+                  <div class="w-5 h-5 rounded bg-muted flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3 h-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                    </svg>
+                  </div>
+                {/if}
+              {/each}
+            </div>
+          {:else}
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+            </svg>
+            <span class="flex-1 text-left">
+              {selectedRelayUrls.length} relays selected
+            </span>
+          {/if}
+          <svg
+            class="w-4 h-4 ml-2 transition-transform {isRelayDropdownOpen ? 'rotate-180' : ''}"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </Button>
+
+        {#if isRelayDropdownOpen}
+          <div class="absolute top-full left-0 right-0 mt-2 bg-popover border border-border rounded-lg shadow-xl z-50 max-h-[400px] max-md:max-h-[50vh] overflow-y-auto">
+            <div class="p-2">
+              <!-- Protected mode toggle -->
+              <div class="px-2 py-2 mb-2 border-b border-border">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 {isProtected ? 'text-primary' : 'text-muted-foreground'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <Label for="protected-switch" class="text-sm {isProtected ? 'text-primary font-medium' : 'text-muted-foreground'}">
+                      Protected
+                    </Label>
+                    <div class="relative">
+                      <button
+                        onclick={() => showProtectedInfo = !showProtectedInfo}
+                        onmouseover={() => showProtectedInfo = true}
+                        onmouseleave={() => showProtectedInfo = false}
+                        class="text-muted-foreground hover:text-muted-foreground transition-colors"
+                        aria-label="Info about protected mode"
+                        type="button"
+                      >
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </button>
+                      {#if showProtectedInfo}
+                        <div class="absolute left-0 bottom-full mb-2 w-64 bg-card border border-border rounded-lg shadow-xl z-50 p-2 text-xs">
+                          <div class="font-semibold text-foreground mb-1">Protected Mode (NIP-70)</div>
+                          <div class="text-muted-foreground text-xs">
+                            Protected events cannot be republished to other relays without your permission.
+                          </div>
+                        </div>
+                      {/if}
+                    </div>
+                  </div>
+                  <Switch id="protected-switch" bind:checked={isProtected} />
+                </div>
+              </div>
+
+              <div class="text-xs text-muted-foreground px-2 py-1.5 font-medium">Select Relays to Publish</div>
+              {#each allRelays as relay (relay.url)}
+                {@const relayInfo = useRelayInfoCached(relay.url)}
+                {@const isSelected = selectedRelayUrls.includes(relay.url)}
+                {@const isReadOnly = !relay.write}
+                <div class="group relative flex items-center">
+                  <Button
+                    variant="ghost"
+                    onclick={() => toggleRelay(relay.url)}
+                    class="flex-1 justify-start h-auto py-2 {isSelected ? 'bg-muted/50' : ''} {isReadOnly ? 'opacity-60' : ''}"
+                  >
+                    {#if relayInfo.info?.icon}
+                      <img src={relayInfo.info.icon} alt="" class="w-5 h-5 rounded flex-shrink-0 mr-3" />
+                    {:else}
+                      <div class="w-5 h-5 rounded bg-muted flex items-center justify-center flex-shrink-0 mr-3">
+                        <svg class="w-3 h-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                        </svg>
+                      </div>
+                    {/if}
+                    <div class="flex-1 min-w-0 text-left">
+                      <div class="flex items-center gap-2">
+                        <div class="text-sm font-medium text-foreground truncate">
+                          {relayInfo.info?.name || relay.url.replace('wss://', '').replace('ws://', '')}
+                        </div>
+                        {#if isReadOnly}
+                          <span class="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">read-only</span>
+                        {/if}
+                      </div>
+                      {#if relayInfo.info?.description}
+                        <div class="text-xs text-muted-foreground truncate">
+                          {relayInfo.info.description}
+                        </div>
+                      {/if}
+                    </div>
+                    {#if isSelected}
+                      <svg class="w-5 h-5 text-primary flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                    {/if}
+                  </Button>
+                  <!-- "Only" button - appears on hover -->
+                  <Button
+                    size="sm"
+                    onclick={(e) => { e.stopPropagation(); selectOnlyRelay(relay.url); }}
+                    class="absolute right-2 px-2 py-1 h-auto text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                    title="Publish only to this relay"
+                  >
+                    Only
+                  </Button>
+                </div>
+              {/each}
+            </div>
+          </div>
+        {/if}
+      </div>
+    </div>
+
+    <!-- Footer hint -->
+    <div class="-mx-6 px-4 py-3 border-t border-border">
+      <p class="text-xs text-muted-foreground">
+        Press <kbd class="px-1.5 py-0.5 bg-muted rounded text-muted-foreground">Esc</kbd> to cancel,
+        <kbd class="px-1.5 py-0.5 bg-muted rounded text-muted-foreground">⌘</kbd> +
+        <kbd class="px-1.5 py-0.5 bg-muted rounded text-muted-foreground">Enter</kbd> to post
+      </p>
+    </div>
+  </Dialog.Content>
+</Dialog.Root>

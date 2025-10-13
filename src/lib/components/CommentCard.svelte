@@ -27,11 +27,11 @@
     </button>
     <div class="flex-1 min-w-0">
       <div class="flex items-baseline gap-2 mb-1">
-        <span class="font-semibold text-neutral-900 dark:text-foreground">
+        <span class="font-semibold text-foreground">
           {displayName}
         </span>
         {#if event.created_at}
-          <TimeAgo timestamp={event.created_at} class="text-sm text-muted-foreground dark:text-muted-foreground" />
+          <TimeAgo timestamp={event.created_at} class="text-sm text-muted-foreground" />
         {/if}
       </div>
       <div class="text-neutral-800 dark:text-foreground leading-relaxed whitespace-pre-wrap break-words">

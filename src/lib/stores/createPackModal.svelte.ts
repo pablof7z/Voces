@@ -1,18 +1,26 @@
 import type { NDKEvent } from '@nostr-dev-kit/ndk';
 
-let showModal = $state(false);
-let editingPack = $state<NDKEvent | null>(null);
+class CreatePackModalStore {
+  private _show = $state(false);
+  private _editingPack = $state<NDKEvent | null>(null);
 
-export const createPackModal = {
-  get show() { return showModal; },
-  set show(value: boolean) { showModal = value; },
-  get editingPack() { return editingPack; },
-  open(packEvent?: NDKEvent) {
-    editingPack = packEvent || null;
-    showModal = true;
-  },
-  close() {
-    showModal = false;
-    editingPack = null;
+  get show() {
+    return this._show;
   }
-};
+
+  get editingPack() {
+    return this._editingPack;
+  }
+
+  open(packEvent?: NDKEvent) {
+    this._editingPack = packEvent || null;
+    this._show = true;
+  }
+
+  close() {
+    this._show = false;
+    this._editingPack = null;
+  }
+}
+
+export const createPackModal = new CreatePackModalStore();

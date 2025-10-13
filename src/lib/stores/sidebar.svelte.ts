@@ -1,25 +1,19 @@
 import type { Snippet } from 'svelte';
 
-interface SidebarState {
-  rightSidebar: Snippet | null;
+class SidebarStore {
+  private _rightSidebar = $state<Snippet | null>(null);
+
+  get rightSidebar() {
+    return this._rightSidebar;
+  }
+
+  set rightSidebar(sidebar: Snippet | null) {
+    this._rightSidebar = sidebar;
+  }
+
+  clear() {
+    this._rightSidebar = null;
+  }
 }
 
-function createSidebarStore() {
-  let state = $state<SidebarState>({
-    rightSidebar: null
-  });
-
-  return {
-    get rightSidebar() {
-      return state.rightSidebar;
-    },
-    set rightSidebar(sidebar: Snippet | null) {
-      state.rightSidebar = sidebar;
-    },
-    clear() {
-      state.rightSidebar = null;
-    }
-  };
-}
-
-export const sidebarStore = createSidebarStore();
+export const sidebarStore = new SidebarStore();

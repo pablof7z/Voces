@@ -102,8 +102,8 @@ export function createAuthPolicyWithConfirmation({ ndk }: { ndk?: NDK } = {}): N
         ['challenge', challenge]
       ];
 
-      // Try to get signer from ndk or activeUser
-      const signer = ndk?.signer || ndk?.activeUser?.signer;
+      // Try to get signer from ndk
+      const signer = ndk?.signer;
       if (signer) {
         try {
           await event.sign(signer);

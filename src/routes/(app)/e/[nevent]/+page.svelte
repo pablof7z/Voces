@@ -5,6 +5,7 @@
   import { Avatar } from '@nostr-dev-kit/svelte';
   import { toast } from '$lib/stores/toast.svelte';
   import NoteCard from '$lib/components/NoteCard.svelte';
+  import HighlightCard from '$lib/components/HighlightCard.svelte';
 
   // Decode the nevent parameter
   const neventId = $derived($page.params.nevent);
@@ -54,7 +55,7 @@
     return {
       filters: [
         { ids: [rootEventId] },
-        { kinds: [1], '#e': [rootEventId] }
+        { kinds: [1, 9802], '#e': [rootEventId] }
       ],
       subId: 'thread-events'
     };
@@ -65,8 +66,8 @@
     if (!mainEvent) return undefined;
     return {
       filters: [
-        { kinds: [1], '#e': [mainEvent.id] },
-        { kinds: [1], '#e': [mainEvent.id] },
+        { kinds: [1, 9802], '#e': [mainEvent.id] },
+        { kinds: [1, 9802], '#e': [mainEvent.id] },
       ],
       subId: 'main-event-replies'
     };
@@ -179,9 +180,9 @@
   }
 </script>
 
-<div class="min-h-screen bg-black">
+<div class="min-h-screen bg-background">
   <!-- Header -->
-  <header class="sticky top-0 z-10 bg-black/80 backdrop-blur-md border-b border-neutral-800">
+  <header class="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border">
     <div class="flex items-center gap-4 px-4 py-3">
       <button
         onclick={() => history.back()}
@@ -197,28 +198,36 @@
 
   {#if !mainEvent}
     <div class="flex flex-col items-center justify-center mt-20">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       <p class="mt-4 text-neutral-400">Loading note...</p>
     </div>
   {:else}
     <main class="max-w-2xl mx-auto">
       <!-- Parent Notes (Thread Context) -->
       {#each parentChain as parentNote, index}
-        <NoteCard
-          event={parentNote}
-          variant="thread-parent"
-          showThreadLine={index < parentChain.length - 1}
-          onNavigate={() => handleEventNavigation(parentNote)}
-        />
+        {#if parentNote.kind === 9802}
+          <HighlightCard event={parentNote} variant="default" />
+        {:else}
+          <NoteCard
+            event={parentNote}
+            variant="thread-parent"
+            showThreadLine={index < parentChain.length - 1}
+            onNavigate={() => handleEventNavigation(parentNote)}
+          />
+        {/if}
       {/each}
 
       <!-- Main Note - Highlighted with larger text -->
       {#if mainEvent}
-        <NoteCard
-          event={mainEvent}
-          variant="thread-main"
-          showThreadLine={false}
-        />
+        {#if mainEvent.kind === 9802}
+          <HighlightCard event={mainEvent} variant="default" />
+        {:else}
+          <NoteCard
+            event={mainEvent}
+            variant="thread-main"
+            showThreadLine={false}
+          />
+        {/if}
       {/if}
 
       <!-- Reply Box -->
@@ -230,14 +239,14 @@
               <textarea
                 bind:value={replyContent}
                 placeholder={`Reply to ${mainProfile?.name || 'this note'}...`}
-                class="w-full min-h-[100px] p-3 bg-black border border-neutral-700 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 text-white"
+                class="w-full min-h-[100px] p-3 bg-background border border-border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
                 disabled={isSubmitting}
-              />
+              ></textarea>
               <div class="flex justify-end mt-2">
                 <button
                   onclick={handleReply}
                   disabled={!replyContent.trim() || isSubmitting}
-                  class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {isSubmitting ? 'Posting...' : 'Reply'}
                 </button>
@@ -250,17 +259,21 @@
       <!-- Replies -->
       <div>
         {#if directReplies.length > 0}
-          <div class="px-4 py-3 border-b border-neutral-800">
-            <h2 class="font-semibold text-white">
+          <div class="px-4 py-3 border-b border-border">
+            <h2 class="font-semibold text-foreground">
               {directReplies.length} {directReplies.length === 1 ? 'Reply' : 'Replies'}
             </h2>
           </div>
           {#each directReplies as reply}
-            <NoteCard
-              event={reply}
-              variant="thread-reply"
-              onNavigate={() => handleEventNavigation(reply)}
-            />
+            {#if reply.kind === 9802}
+              <HighlightCard event={reply} variant="default" />
+            {:else}
+              <NoteCard
+                event={reply}
+                variant="thread-reply"
+                onNavigate={() => handleEventNavigation(reply)}
+              />
+            {/if}
           {/each}
         {:else}
           <div class="p-8 text-center text-neutral-400">

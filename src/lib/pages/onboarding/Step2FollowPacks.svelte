@@ -106,7 +106,7 @@
     <div class="max-w-xl w-full">
       <div class="mb-6 lg:mb-8">
         <h1 class="text-2xl lg:text-3xl font-bold mb-2 lg:mb-3">Build Your Network</h1>
-        <p class="text-sm lg:text-base text-muted-foreground dark:text-muted-foreground">
+        <p class="text-sm lg:text-base text-muted-foreground">
           Follow curated packs from the {communityInfo.name} community
         </p>
       </div>
@@ -114,10 +114,10 @@
         {#if loading}
           <div class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <p class="mt-4 text-sm text-muted-foreground dark:text-muted-foreground">Loading follow packs...</p>
+            <p class="mt-4 text-sm text-muted-foreground">Loading follow packs...</p>
           </div>
         {:else if followPacks.length === 0}
-          <div class="text-center py-8 text-muted-foreground dark:text-muted-foreground">
+          <div class="text-center py-8 text-muted-foreground">
             No follow packs available for this community yet
           </div>
         {:else}
@@ -128,8 +128,8 @@
                 onclick={() => handlePackClick(pack)}
                 class={`
                   relative w-full cursor-pointer rounded-xl transition-all text-left
-                  flex gap-3 sm:gap-4 p-3 sm:p-4 bg-white dark:bg-background hover:bg-neutral-50 dark:hover:bg-card border border dark:border
-                  ${isSelected ? 'ring-2 ring-orange-500 bg-orange-50 dark:bg-orange-950/20' : ''}
+                  flex gap-3 sm:gap-4 p-3 sm:p-4 bg-card hover:bg-accent border border dark:border
+                  ${isSelected ? 'ring-2 ring-orange-500 bg-primary-50 dark:bg-primary-950/20' : ''}
                 `}
               >
                 <!-- Image -->
@@ -140,23 +140,23 @@
                     class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover flex-shrink-0"
                   />
                 {:else}
-                  <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center flex-shrink-0">
+                  <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center flex-shrink-0">
                     <span class="text-xl sm:text-2xl">📦</span>
                   </div>
                 {/if}
 
                 <!-- Content -->
                 <div class="flex-1 min-w-0">
-                  <h4 class="font-semibold text-sm sm:text-base text-neutral-900 dark:text-foreground truncate">
+                  <h4 class="font-semibold text-sm sm:text-base text-foreground truncate">
                     {pack.title}
                   </h4>
                   {#if pack.description}
-                    <p class="text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground line-clamp-1 sm:truncate">
+                    <p class="text-xs sm:text-sm text-muted-foreground line-clamp-1 sm:truncate">
                       {pack.description}
                     </p>
                   {/if}
                   <div class="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-2">
-                    <span class="text-[10px] sm:text-xs text-muted-foreground dark:text-muted-foreground">
+                    <span class="text-[10px] sm:text-xs text-muted-foreground">
                       {pack.pubkeys?.length || 0} members
                     </span>
                   </div>

@@ -73,7 +73,7 @@
   <div class="flex-1 px-4 lg:px-8 py-6 max-w-[1400px] mx-auto w-full pb-32 lg:pb-6">
     <div class="text-center mb-6">
       <h1 class="text-2xl lg:text-3xl font-bold mb-2">Introduce Yourself to the Community</h1>
-      <p class="text-muted-foreground dark:text-muted-foreground">
+      <p class="text-muted-foreground">
         Write a brief introduction. Good introductions often earn zaps!
       </p>
     </div>
@@ -86,7 +86,7 @@
           <textarea
             bind:value={introText}
             placeholder="Tell the community who you are, what you do, and what brings you here."
-            class="w-full min-h-[200px] p-4 bg-white dark:bg-background border border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
+            class="w-full min-h-[200px] p-4 bg-card border border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
             rows={8}
           />
           <div class="flex items-center justify-between mt-3">
@@ -104,14 +104,14 @@
 
           <!-- Inviter Mention -->
           {#if inviterPubkey}
-            <div class="mt-4 p-3 bg-orange-50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-800 rounded-lg">
+            <div class="mt-4 p-3 bg-primary-50 dark:bg-primary-900/10 border border-primary-200 dark:border-primary-800 rounded-lg">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2 text-sm">
                   {#if mentionInviter}
                     <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                     </svg>
-                    <span class="text-neutral-700 dark:text-muted-foreground">
+                    <span class="text-muted-foreground">
                       Will notify <span class="font-semibold">{inviterName}</span> who invited you
                     </span>
                   {:else}
@@ -125,7 +125,7 @@
                 </div>
                 <button
                   onclick={() => mentionInviter = !mentionInviter}
-                  class="text-xs px-2 py-1 rounded hover:bg-orange-100 dark:hover:bg-orange-900/20 transition-colors text-primary dark:text-primary font-medium"
+                  class="text-xs px-2 py-1 rounded hover:bg-primary-100 dark:hover:bg-primary-900/20 transition-colors text-primary dark:text-primary font-medium"
                 >
                   {mentionInviter ? 'Remove' : 'Add back'}
                 </button>
@@ -137,7 +137,7 @@
           <div class="hidden lg:flex gap-3 mt-6">
             <button
               onclick={onSkip}
-              class="flex-1 py-3 px-6 border border rounded-lg font-medium hover:bg-neutral-50 dark:hover:bg-card transition-colors"
+              class="flex-1 py-3 px-6 border border rounded-lg font-medium hover:bg-accent transition-colors"
             >
               Skip for now
             </button>
@@ -179,11 +179,11 @@
   </div>
 
   <!-- Fixed action buttons for mobile -->
-  <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-background border-t border p-4 z-50">
+  <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-card border-t border p-4 z-50">
     <div class="flex gap-3 max-w-[1400px] mx-auto">
       <button
         onclick={onSkip}
-        class="flex-1 py-3 px-6 border border rounded-lg font-medium hover:bg-neutral-50 dark:hover:bg-card transition-colors"
+        class="flex-1 py-3 px-6 border border rounded-lg font-medium hover:bg-accent transition-colors"
       >
         Skip for now
       </button>

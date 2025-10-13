@@ -5,31 +5,39 @@ interface RelayAuthRequest {
 }
 
 class RelayAuthModalStore {
-  show = $state(false);
-  request = $state<RelayAuthRequest | null>(null);
+  private _show = $state(false);
+  private _request = $state<RelayAuthRequest | null>(null);
+
+  get show() {
+    return this._show;
+  }
+
+  get request() {
+    return this._request;
+  }
 
   open(request: RelayAuthRequest) {
-    this.request = request;
-    this.show = true;
+    this._request = request;
+    this._show = true;
   }
 
   confirm() {
-    if (this.request) {
-      this.request.onConfirm();
+    if (this._request) {
+      this._request.onConfirm();
       this.close();
     }
   }
 
   reject() {
-    if (this.request) {
-      this.request.onReject();
+    if (this._request) {
+      this._request.onReject();
       this.close();
     }
   }
 
   close() {
-    this.show = false;
-    this.request = null;
+    this._show = false;
+    this._request = null;
   }
 }
 

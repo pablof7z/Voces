@@ -16,7 +16,7 @@
   <div class="max-w-2xl w-full text-center">
     <div class="text-7xl mb-6">🎉</div>
     <h1 class="text-4xl font-bold mb-4">Welcome to Agora, {profileData.name || 'Friend'}!</h1>
-    <p class="text-xl text-muted-foreground dark:text-muted-foreground mb-12">
+    <p class="text-xl text-muted-foreground mb-12">
       Your voice matters. Your community is here.
     </p>
 

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { pwaStore } from '$lib/stores/pwa.svelte';
+  import { portal } from '$lib/utils/portal.svelte';
   import { fade, fly } from 'svelte/transition';
 
   // Only show on mobile devices when not installed
@@ -40,7 +41,7 @@
     class="fixed bottom-20 md:bottom-4 left-4 right-4 z-50"
     transition:fly={{ y: 100, duration: 300 }}
   >
-    <div class="bg-gradient-to-r from-orange-600 to-orange-500 text-foreground rounded-2xl shadow-2xl p-4 max-w-md mx-auto">
+    <div class="bg-gradient-to-r bg-primary opacity-90 text-foreground rounded-2xl shadow-2xl p-4 max-w-md mx-auto">
       <!-- Close button -->
       <button
         onclick={handleDismiss}
@@ -54,7 +55,7 @@
 
       <!-- Content -->
       <div class="flex items-start gap-4 mb-4">
-        <div class="flex-shrink-0 w-14 h-14 bg-white rounded-2xl p-2 shadow-lg">
+        <div class="flex-shrink-0 w-14 h-14 bg-card rounded-2xl p-2 shadow-lg">
           <img src="/icons/manifest-icon-192.png" alt="Agora icon" class="w-full h-full" />
         </div>
         <div class="flex-1 pr-6">
@@ -69,7 +70,7 @@
       <div class="flex gap-2">
         <button
           onclick={handleInstall}
-          class="flex-1 bg-white text-primary font-semibold py-3 px-4 rounded-xl hover:bg-orange-50 transition-colors"
+          class="flex-1 bg-card text-primary font-semibold py-3 px-4 rounded-xl hover:bg-primary-50 transition-colors"
         >
           {#if pwaStore.isIOSDevice}
             View Instructions
@@ -90,6 +91,7 @@
 
 {#if showIOSInstructions}
   <div
+    use:portal
     class="fixed inset-0 bg-background/70 backdrop-blur-sm z-50 flex items-end md:items-center justify-center p-4"
     transition:fade={{ duration: 200 }}
     onclick={closeIOSInstructions}

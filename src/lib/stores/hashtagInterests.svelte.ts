@@ -3,7 +3,7 @@ import type { NDKSvelte } from '@nostr-dev-kit/svelte';
 
 export function createHashtagInterestsStore(ndk: NDKSvelte) {
   // Get the interest list event from session
-  const interestsEvent = $derived(ndk.$sessions.getSessionEvent(10015));
+  const interestsEvent = $derived(ndk.$sessions?.getSessionEvent(10015));
 
   // Extract interests from the session event
   const interests = $derived.by(() => {
@@ -23,7 +23,7 @@ export function createHashtagInterestsStore(ndk: NDKSvelte) {
 
     // Get existing event or create new one
     const existingEvent = interestsEvent;
-    const event = new NDKEvent(ndk);
+    const event = new NDKEvent(ndk as any);
     event.kind = NDKKind.InterestList;
 
     // Preserve existing tags and add the new hashtag
@@ -52,7 +52,7 @@ export function createHashtagInterestsStore(ndk: NDKSvelte) {
     if (!existingEvent) return;
 
     // Create new event without the removed hashtag
-    const event = new NDKEvent(ndk);
+    const event = new NDKEvent(ndk as any);
     event.kind = NDKKind.InterestList;
     event.tags = existingEvent.tags
       .filter(tag => !(tag[0] === 't' && tag[1]?.toLowerCase() === normalizedHashtag));

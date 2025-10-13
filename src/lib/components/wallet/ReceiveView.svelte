@@ -5,10 +5,9 @@
 
   interface Props {
     wallet: WalletAPI;
-    onBack: () => void;
   }
 
-  let { wallet, onBack }: Props = $props();
+  let { wallet }: Props = $props();
 
   let activeTab = $state<'paste' | 'mint'>('mint');
   let tokenInput = $state('');
@@ -135,12 +134,6 @@
 </script>
 
 <div class="receive-view">
-  <div class="view-header">
-    <button class="back-button" onclick={onBack}>← Back</button>
-    <h2>Receive Ecash</h2>
-    <div></div>
-  </div>
-
   {#if success}
     <div class="success-screen">
       <div class="success-backdrop"></div>
@@ -150,8 +143,8 @@
         </div>
         <h3 class="success-title">Payment Received!</h3>
         <p class="success-amount">{new Intl.NumberFormat('en-US').format(success.amount)} sats</p>
-        <button class="primary" onclick={() => { reset(); onBack(); }}>
-          Done
+        <button class="primary" onclick={reset}>
+          Continue
         </button>
       </div>
     </div>
@@ -301,33 +294,12 @@
     gap: 1.5rem;
   }
 
-  .view-header {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .back-button {
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-  }
-
-  h2 {
-    text-align: center;
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 700;
-  }
-
   .tabs {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
     padding: 0.25rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--color-muted);
     border-radius: 12px;
   }
 
@@ -337,11 +309,12 @@
     border: none;
     border-radius: 8px;
     transition: all 0.2s;
+    color: var(--color-foreground);
   }
 
   .tabs button.active {
-    background: rgba(249, 115, 22, 0.15);
-    color: #f97316;
+    background: var(--color-primary);
+    color: white;
     font-weight: 600;
   }
 
@@ -360,25 +333,24 @@
   label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--color-foreground);
   }
 
   input, textarea, select {
     width: 100%;
     padding: 0.875rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
-    color: white;
+    color: var(--color-foreground);
     font-size: 0.9rem;
     transition: all 0.2s;
   }
 
   input:focus, textarea:focus, select:focus {
     outline: none;
-    border-color: rgba(249, 115, 22, 0.5);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    border-color: var(--color-primary);
+    background: var(--color-muted);
   }
 
   select {
@@ -386,8 +358,8 @@
   }
 
   select option {
-    background: #1a1a1a;
-    color: white;
+    background: var(--color-card);
+    color: var(--color-foreground);
   }
 
   textarea {
@@ -399,7 +371,7 @@
 
   .hint {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--color-muted-foreground);
     margin: 0;
   }
 
@@ -416,34 +388,33 @@
   .amount-unit {
     position: absolute;
     right: 1rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--color-muted-foreground);
     font-weight: 600;
     pointer-events: none;
   }
 
   .error-message {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: var(--color-destructive);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     padding: 0.75rem;
-    color: #f87171;
+    color: var(--color-foreground);
     font-size: 0.875rem;
   }
 
   button {
     padding: 0.875rem 1.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
-    color: white;
+    color: var(--color-foreground);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   button:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: var(--color-muted);
   }
 
   button:disabled {
@@ -452,12 +423,13 @@
   }
 
   button.primary {
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    background: var(--color-primary);
     border: none;
+    color: white;
   }
 
   button.primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+    opacity: 0.9;
   }
 
   .preset-buttons {
@@ -469,18 +441,18 @@
   .preset-btn {
     flex: 1;
     padding: 0.5rem;
-    background: rgba(249, 115, 22, 0.1);
-    border: 1px solid rgba(249, 115, 22, 0.3);
+    background: var(--color-muted);
+    border: 1px solid var(--color-border);
     border-radius: 6px;
     font-size: 0.875rem;
     font-weight: 600;
-    color: #f97316;
+    color: var(--color-primary);
     transition: all 0.2s;
   }
 
   .preset-btn:hover {
-    background: rgba(249, 115, 22, 0.2);
-    border-color: rgba(249, 115, 22, 0.5);
+    background: var(--color-card);
+    border-color: var(--color-primary);
     transform: translateY(-1px);
   }
 
@@ -496,7 +468,8 @@
   .success-backdrop {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, rgba(249, 115, 22, 0.15) 0%, rgba(0, 0, 0, 0.85) 100%);
+    background: var(--color-background);
+    opacity: 0.95;
     animation: fadeIn 0.4s ease-out;
   }
 
@@ -513,11 +486,10 @@
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: var(--color-primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 40px rgba(16, 185, 129, 0.4);
     animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
@@ -531,17 +503,14 @@
     margin: 0;
     font-size: 1.75rem;
     font-weight: 700;
-    color: white;
+    color: var(--color-foreground);
     animation: fadeSlideUp 0.4s 0.5s ease-out both;
   }
 
   .success-amount {
     font-size: 2.5rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--color-primary);
     margin: 0;
     animation: fadeSlideUp 0.4s 0.6s ease-out both;
   }
@@ -603,17 +572,14 @@
     text-align: center;
     margin: 0;
     font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--color-foreground);
   }
 
   .quote-amount {
     text-align: center;
     font-size: 2rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--color-primary);
     margin: 0;
   }
 
@@ -642,14 +608,14 @@
     align-items: center;
     gap: 1rem;
     padding: 1.5rem;
-    background: rgba(249, 115, 22, 0.05);
-    border: 1px solid rgba(249, 115, 22, 0.2);
+    background: var(--color-muted);
+    border: 1px solid var(--color-border);
     border-radius: 12px;
   }
 
   .waiting-status p {
     margin: 0;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--color-foreground);
     font-weight: 500;
   }
 
@@ -657,8 +623,8 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
     border-radius: 12px;
     padding: 1rem;
   }
@@ -667,7 +633,7 @@
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--color-muted-foreground);
     font-weight: 600;
   }
 
@@ -675,10 +641,10 @@
     font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
     font-size: 0.7rem;
     word-break: break-all;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--color-foreground);
     line-height: 1.6;
     padding: 1rem;
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--color-muted);
     border-radius: 8px;
     max-height: 100px;
     overflow-y: auto;
@@ -694,15 +660,15 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background: rgba(249, 115, 22, 0.1);
-    border: 1px solid rgba(249, 115, 22, 0.3);
-    color: #f97316;
+    background: var(--color-muted);
+    border: 1px solid var(--color-border);
+    color: var(--color-primary);
     font-weight: 600;
   }
 
   .copy-button:hover {
-    background: rgba(249, 115, 22, 0.2);
-    border-color: rgba(249, 115, 22, 0.5);
+    background: var(--color-card);
+    border-color: var(--color-primary);
   }
 
   .copy-icon {
@@ -715,21 +681,21 @@
     align-items: center;
     gap: 1rem;
     padding: 2rem 1rem;
-    background: rgba(249, 115, 22, 0.05);
-    border: 1px solid rgba(249, 115, 22, 0.2);
+    background: var(--color-muted);
+    border: 1px solid var(--color-border);
     border-radius: 12px;
   }
 
   .checking-status p {
     margin: 0;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--color-foreground);
   }
 
   .spinner {
     width: 32px;
     height: 32px;
-    border: 3px solid rgba(249, 115, 22, 0.2);
-    border-top-color: #f97316;
+    border: 3px solid var(--color-muted);
+    border-top-color: var(--color-primary);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }

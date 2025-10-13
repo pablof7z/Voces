@@ -118,7 +118,7 @@
       <div class="w-full h-full bg-neutral-100 dark:bg-muted flex flex-col items-center justify-center">
         <div class="w-12 h-12 border-4 border border-t-neutral-900 dark:border-t-white rounded-full animate-spin"></div>
         {#if upload.progress}
-          <p class="text-xs mt-2 text-muted-foreground dark:text-muted-foreground">{upload.progress.percentage}%</p>
+          <p class="text-xs mt-2 text-muted-foreground">{upload.progress.percentage}%</p>
         {/if}
       </div>
     {:else}
@@ -149,7 +149,7 @@
     </p>
   {/if}
 
-  <p class="text-xs text-muted-foreground dark:text-muted-foreground mt-2 text-center">
+  <p class="text-xs text-muted-foreground mt-2 text-center">
     Click or drag to upload photo
   </p>
 </div>

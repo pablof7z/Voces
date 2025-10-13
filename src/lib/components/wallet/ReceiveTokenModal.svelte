@@ -1,5 +1,10 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { Textarea } from '$lib/components/ui/textarea';
 
   let { isOpen = $bindable(false) } = $props();
 
@@ -41,61 +46,63 @@
   }
 </script>
 
-{#if isOpen}
-  <div class="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onclick={close}>
-    <div class="bg-background border border-border rounded-xl max-w-md w-full p-6" onclick={(e) => e.stopPropagation()}>
-      <h2 class="text-2xl font-bold text-foreground mb-4">Receive Cashu Token</h2>
+<Dialog.Root open={isOpen} onOpenChange={(newOpen) => {
+    isOpen = newOpen;
+    if (!newOpen) close();
+  }}>
+  <Dialog.Content class="max-w-md">
+    <Dialog.Header>
+      <Dialog.Title>Receive Cashu Token</Dialog.Title>
+    </Dialog.Header>
 
-      {#if success}
-        <div class="mb-4 p-4 bg-green-900/20 border border-green-800 rounded-lg text-green-400 text-center">
-          ✓ Token received successfully!
-        </div>
-      {/if}
+    {#if success}
+      <div class="p-4 bg-green-900/20 border border-green-800 rounded-lg text-green-400 text-center">
+        ✓ Token received successfully!
+      </div>
+    {/if}
 
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-muted-foreground mb-2">
-          Cashu Token
-        </label>
-        <textarea
+    <div class="space-y-4">
+      <div>
+        <Label for="token">Cashu Token</Label>
+        <Textarea
+          id="token"
           bind:value={token}
           placeholder="Paste Cashu token here (cashuA...)"
-          rows="4"
-          class="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
-        ></textarea>
-      </div>
-
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-muted-foreground mb-2">
-          Description (optional)
-        </label>
-        <input
-          type="text"
-          bind:value={description}
-          placeholder="e.g., Coffee payment"
-          class="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
+          rows={4}
+          class="mt-2 resize-none"
         />
       </div>
 
-      <button
+      <div>
+        <Label for="description">Description (optional)</Label>
+        <Input
+          id="description"
+          type="text"
+          bind:value={description}
+          placeholder="e.g., Coffee payment"
+          class="mt-2"
+        />
+      </div>
+
+      <Button
         onclick={handleReceive}
         disabled={isReceiving || !token.trim() || success}
-        class="w-full py-3 bg-primary hover:bg-accent-dark disabled:bg-muted disabled:cursor-not-allowed text-foreground font-medium rounded-lg transition-colors"
+        class="w-full"
       >
         {isReceiving ? 'Receiving...' : success ? 'Received!' : 'Receive Token'}
-      </button>
+      </Button>
 
       {#if error}
-        <div class="mt-4 p-3 bg-red-900/20 border border-red-800 rounded-lg text-red-400 text-sm">
+        <div class="p-3 bg-red-900/20 border border-red-800 rounded-lg text-red-400 text-sm">
           {error}
         </div>
       {/if}
-
-      <button
-        onclick={close}
-        class="mt-4 w-full py-2 text-muted-foreground hover:text-foreground transition-colors"
-      >
-        Close
-      </button>
     </div>
-  </div>
-{/if}
+
+    <Dialog.Footer>
+      <Button variant="ghost" onclick={close} class="w-full">
+        Close
+      </Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>

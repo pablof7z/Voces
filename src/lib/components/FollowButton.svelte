@@ -40,7 +40,7 @@
     class={`px-4 py-2 rounded-full font-medium transition-colors ${
       variant === 'outline' || isFollowing
         ? 'bg-transparent border border text-muted-foreground hover:bg-red-500/10 hover:border-red-500 hover:text-red-500'
-        : 'bg-primary text-foreground hover:bg-orange-700'
+        : 'bg-primary text-foreground hover:bg-primary-700'
     } ${className}`}
   >
     {#if showIcon}

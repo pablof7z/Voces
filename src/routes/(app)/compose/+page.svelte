@@ -1,5 +1,16 @@
 <script lang="ts">
-  import ComposePage from '$lib/pages/ComposePage.svelte';
+  import { goto } from '$app/navigation';
+  import ComposeDialog from '$lib/components/ComposeDialog.svelte';
+
+  let showDialog = $state(true);
+
+  function handleClose() {
+    goto('/');
+  }
+
+  function handlePublished() {
+    goto('/');
+  }
 </script>
 
-<ComposePage />
+<ComposeDialog bind:open={showDialog} onClose={handleClose} onPublished={handlePublished} />

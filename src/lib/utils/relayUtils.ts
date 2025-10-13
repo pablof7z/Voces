@@ -7,9 +7,9 @@ export const AGORAS_SELECTION = 'agoras';
 
 /** Agora relay URLs */
 export const AGORA_RELAYS = [
-  'ws://test.agorawlc.com:3335',
   'wss://ve.agorawlc.com',
-  'wss://ni.agorawlc.com'
+  'wss://ni.agorawlc.com',
+  'wss://zw.agorawlc.com',
 ] as const;
 
 /**
@@ -20,7 +20,7 @@ export const AGORA_RELAYS = [
 export const AGORA_LANGUAGE_MAP: Record<string, 'en' | 'es'> = {
   'wss://ve.agorawlc.com': 'es', // Venezuela - Spanish
   'wss://ni.agorawlc.com': 'es', // Nicaragua - Spanish
-  'ws://test.agorawlc.com:3335': 'en', // Test - English
+  'wss://zw.agorawlc.com': 'en', // Nicaragua - Spanish
 };
 
 /**

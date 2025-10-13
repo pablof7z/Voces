@@ -82,7 +82,7 @@
 <div class="space-y-6">
   <div>
     <h3 class="text-lg font-semibold mb-2">Blossom Media Servers</h3>
-    <p class="text-sm text-muted-foreground dark:text-muted-foreground mb-4">
+    <p class="text-sm text-muted-foreground mb-4">
       Configure your Blossom servers for uploading images and media. The first server is your primary upload destination, and additional servers are used as mirrors for redundancy.
     </p>
   </div>
@@ -120,7 +120,7 @@
               <div class="flex items-center space-x-2">
                 <span class="font-medium">{server}</span>
                 {#if index === 0}
-                  <span class="text-xs bg-orange-100 dark:bg-orange-900/50 text-primary dark:text-orange-300 px-2 py-0.5 rounded">
+                  <span class="text-xs bg-primary-100 dark:bg-primary-900/50 text-primary dark:text-primary-300 px-2 py-0.5 rounded">
                     Primary
                   </span>
                 {/if}
@@ -129,7 +129,7 @@
                 href={server}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-sm text-muted-foreground dark:text-muted-foreground hover:text-primary dark:hover:text-primary flex items-center space-x-1"
+                class="text-sm text-muted-foreground hover:text-primary dark:hover:text-primary flex items-center space-x-1"
               >
                 <span>Visit server</span>
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -165,7 +165,7 @@
           bind:value={newServer}
           placeholder="https://blossom.example.com"
           onkeypress={(e) => e.key === 'Enter' && addServer()}
-          class="flex-1 px-3 py-2 bg-white dark:bg-background border border dark:border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          class="flex-1 px-3 py-2 bg-card border border dark:border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
         />
         <button
           onclick={addServer}
@@ -189,7 +189,7 @@
   {:else}
     <button
       onclick={() => isAddingServer = true}
-      class="flex items-center space-x-2 px-4 py-2 text-primary dark:text-primary hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors"
+      class="flex items-center space-x-2 px-4 py-2 text-primary dark:text-primary hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -201,7 +201,7 @@
   <!-- Suggested servers -->
   <div class="border-t border pt-4">
     <label class="text-sm font-medium block mb-3">Suggested Servers</label>
-    <p class="text-sm text-muted-foreground dark:text-muted-foreground mb-3">
+    <p class="text-sm text-muted-foreground mb-3">
       Popular public Blossom servers you can add to your list
     </p>
     <div class="space-y-2">
@@ -210,14 +210,14 @@
           <span class="text-sm">{server}</span>
           <button
             onclick={() => saveServers([...servers, server])}
-            class="text-sm text-primary dark:text-primary hover:text-accent-dark dark:hover:text-orange-300"
+            class="text-sm text-primary dark:text-primary hover:text-accent-dark dark:hover:text-primary-300"
           >
             Add
           </button>
         </div>
       {/each}
       {#if DEFAULT_SERVERS.every(s => servers.includes(s))}
-        <p class="text-sm text-muted-foreground dark:text-muted-foreground">
+        <p class="text-sm text-muted-foreground">
           All suggested servers have been added
         </p>
       {/if}

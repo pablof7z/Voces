@@ -32,10 +32,10 @@
 
 <div class="space-y-4">
   <div>
-    <label class="block text-sm font-medium text-neutral-900 dark:text-foreground mb-2">
+    <label class="block text-sm font-medium text-foreground mb-2">
       Select Trustees
     </label>
-    <p class="text-xs text-muted-foreground dark:text-muted-foreground mb-3">
+    <p class="text-xs text-muted-foreground mb-3">
       Choose trusted contacts who will receive encrypted pieces of your key
     </p>
   </div>
@@ -46,7 +46,7 @@
       {#each trustees as trustee}
         <div class="flex items-center gap-3 p-3 bg-neutral-100 dark:bg-card border border rounded-lg">
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-neutral-900 dark:text-foreground truncate">
+            <p class="text-sm font-medium text-foreground truncate">
               {trustee.pubkey.slice(0, 8)}...{trustee.pubkey.slice(-4)}
             </p>
           </div>
@@ -64,7 +64,7 @@
   {/if}
 
   <div class="flex items-center justify-between text-sm mb-2">
-    <span class="text-muted-foreground dark:text-muted-foreground">
+    <span class="text-muted-foreground">
       Selected {trustees.length} of {maxTrustees}
     </span>
   </div>
@@ -76,12 +76,12 @@
         type="text"
         bind:value={searchValue}
         placeholder="Search your follows..."
-        class="w-full px-3 py-2 bg-white dark:bg-card border border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+        class="w-full px-3 py-2 bg-card border border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
     </div>
 
     {#if filteredFollows.length === 0}
-      <div class="text-center py-8 text-muted-foreground dark:text-muted-foreground text-sm border border rounded-lg">
+      <div class="text-center py-8 text-muted-foreground text-sm border border rounded-lg">
         {#if followsList.length === 0}
           No follows found. Follow some people first.
         {:else}
@@ -96,7 +96,7 @@
             class="w-full flex items-center gap-3 p-3 hover:bg-neutral-100 dark:hover:bg-card transition-colors border-b border last:border-b-0"
           >
             <div class="flex-1 min-w-0 text-left">
-              <p class="text-sm font-medium text-neutral-900 dark:text-foreground truncate">
+              <p class="text-sm font-medium text-foreground truncate">
                 {pubkey.slice(0, 8)}...{pubkey.slice(-4)}
               </p>
             </div>

@@ -197,16 +197,16 @@
       <button
         onclick={() => activeTab = 'view'}
         class="flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'view'
-          ? 'bg-white dark:bg-muted text-neutral-900 dark:text-foreground shadow-sm'
-          : 'text-muted-foreground dark:text-muted-foreground hover:text-neutral-900 dark:hover:text-foreground'}"
+          ? 'bg-white dark:bg-muted text-foreground shadow-sm'
+          : 'text-muted-foreground hover:text-neutral-900 dark:hover:text-foreground'}"
       >
         View Key
       </button>
       <button
         onclick={() => activeTab = 'backup'}
         class="flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'backup'
-          ? 'bg-white dark:bg-muted text-neutral-900 dark:text-foreground shadow-sm'
-          : 'text-muted-foreground dark:text-muted-foreground hover:text-neutral-900 dark:hover:text-foreground'}"
+          ? 'bg-white dark:bg-muted text-foreground shadow-sm'
+          : 'text-muted-foreground hover:text-neutral-900 dark:hover:text-foreground'}"
       >
         Create Backup
       </button>
@@ -235,10 +235,10 @@
         <!-- Private Key Display Section -->
         <div class="space-y-4">
           <div>
-            <h3 class="text-sm font-medium text-neutral-900 dark:text-foreground mb-1">
+            <h3 class="text-sm font-medium text-foreground mb-1">
               Your Private Key (nsec)
             </h3>
-            <p class="text-xs text-muted-foreground dark:text-muted-foreground">
+            <p class="text-xs text-muted-foreground">
               You are logged in with a private key signer. Save this key somewhere safe.
             </p>
           </div>
@@ -248,11 +248,11 @@
             <div class="relative">
               <div class="bg-neutral-100 dark:bg-card border border rounded-lg p-4">
                 {#if showNsec}
-                  <code class="text-xs text-neutral-900 dark:text-foreground break-all font-mono">
+                  <code class="text-xs text-foreground break-all font-mono">
                     {nsec}
                   </code>
                 {:else}
-                  <div class="text-xs text-muted-foreground dark:text-muted-foreground font-mono">
+                  <div class="text-xs text-muted-foreground font-mono">
                     {'•'.repeat(63)}
                   </div>
                 {/if}
@@ -263,7 +263,7 @@
             <div class="flex gap-2">
               <button
                 onclick={toggleShowNsec}
-                class="flex-1 px-4 py-2 bg-neutral-200 dark:bg-muted text-neutral-700 dark:text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                class="flex-1 px-4 py-2 bg-neutral-200 dark:bg-muted text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted transition-colors text-sm font-medium flex items-center justify-center gap-2"
               >
                 {#if showNsec}
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -282,7 +282,7 @@
               <button
                 onclick={copyToClipboard}
                 disabled={!showNsec}
-                class="flex-1 px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="flex-1 px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {#if copySuccess}
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -298,7 +298,7 @@
               </button>
             </div>
 
-            <p class="text-xs text-muted-foreground dark:text-muted-foreground text-center">
+            <p class="text-xs text-muted-foreground text-center">
               Make sure nobody is watching your screen before revealing your key
             </p>
           </div>
@@ -306,10 +306,10 @@
 
         <!-- Best Practices -->
         <div class="bg-neutral-50 dark:bg-card border border rounded-lg p-4">
-          <h4 class="text-sm font-medium text-neutral-900 dark:text-foreground mb-2">
+          <h4 class="text-sm font-medium text-foreground mb-2">
             Security Best Practices
           </h4>
-          <ul class="space-y-2 text-xs text-muted-foreground dark:text-muted-foreground">
+          <ul class="space-y-2 text-xs text-muted-foreground">
             <li class="flex items-start gap-2">
               <svg class="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -363,12 +363,12 @@
               </div>
             {/if}
 
-            <h3 class="text-lg font-semibold text-neutral-900 dark:text-foreground mb-2">
+            <h3 class="text-lg font-semibold text-foreground mb-2">
               {progress.message}
             </h3>
 
             {#if progress.status !== 'complete' && progress.status !== 'error'}
-              <p class="text-sm text-muted-foreground dark:text-muted-foreground">
+              <p class="text-sm text-muted-foreground">
                 Step {progress.currentStep} of {progress.totalSteps}
               </p>
             {/if}
@@ -382,7 +382,7 @@
             {#if progress.status === 'complete' || progress.status === 'error'}
               <button
                 onclick={resetProgress}
-                class="mt-6 px-4 py-2 bg-neutral-200 dark:bg-muted text-neutral-700 dark:text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted transition-colors"
+                class="mt-6 px-4 py-2 bg-neutral-200 dark:bg-muted text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted transition-colors"
               >
                 Close
               </button>
@@ -423,7 +423,7 @@
           {#if canProceed}
             <button
               onclick={handleCreateBackup}
-              class="w-full px-4 py-3 bg-primary text-foreground rounded-lg hover:bg-orange-700 transition-colors font-medium flex items-center justify-center gap-2"
+              class="w-full px-4 py-3 bg-primary text-foreground rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center justify-center gap-2"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -442,10 +442,10 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     </div>
-    <h3 class="text-sm font-medium text-neutral-900 dark:text-foreground mb-2">
+    <h3 class="text-sm font-medium text-foreground mb-2">
       Not Using Private Key Signer
     </h3>
-    <p class="text-xs text-muted-foreground dark:text-muted-foreground max-w-sm mx-auto">
+    <p class="text-xs text-muted-foreground max-w-sm mx-auto">
       You are not logged in with a private key signer. This section is only available for users who logged in with an nsec.
     </p>
   </div>

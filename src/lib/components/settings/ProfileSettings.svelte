@@ -209,7 +209,7 @@
 
   <!-- Banner -->
   <div class="space-y-2">
-    <label class="block text-sm font-medium text-neutral-900 dark:text-foreground">
+    <label class="block text-sm font-medium text-foreground">
       Banner Image
     </label>
     <input
@@ -223,7 +223,7 @@
       type="button"
       onclick={() => bannerInput?.click()}
       disabled={bannerUpload.status === 'uploading'}
-      class="w-full h-48 rounded-xl overflow-hidden relative group bg-gradient-to-br from-orange-500 to-red-500 hover:opacity-90 transition-opacity"
+      class="w-full h-48 rounded-xl overflow-hidden relative group bg-gradient-to-br from-primary-500 to-primary-600 hover:opacity-90 transition-opacity"
       style={formData.banner ? `background-image: url(${formData.banner}); background-size: cover; background-position: center;` : ''}
     >
       <div class="absolute inset-0 bg-background/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
@@ -242,7 +242,7 @@
 
   <!-- Profile Picture -->
   <div class="space-y-2">
-    <label class="block text-sm font-medium text-neutral-900 dark:text-foreground">
+    <label class="block text-sm font-medium text-foreground">
       Profile Picture
     </label>
     <input
@@ -257,7 +257,7 @@
         type="button"
         onclick={() => pictureInput?.click()}
         disabled={pictureUpload.status === 'uploading'}
-        class="w-24 h-24 rounded-full overflow-hidden relative group bg-gradient-to-br from-orange-500 to-red-500 hover:ring-4 hover:ring-orange-500/20 transition-all flex items-center justify-center"
+        class="w-24 h-24 rounded-full overflow-hidden relative group bg-gradient-to-br from-primary-500 to-primary-600 hover:ring-4 hover:ring-orange-500/20 transition-all flex items-center justify-center"
       >
         {#if formData.picture}
           <img src={formData.picture} alt="Profile" class="w-full h-full object-cover" />
@@ -283,7 +283,7 @@
           type="url"
           bind:value={formData.picture}
           placeholder="Or paste image URL"
-          class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+          class="w-full px-4 py-2 rounded-lg border border bg-card text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
           disabled={pictureUpload.status === 'uploading'}
         />
       </div>
@@ -292,7 +292,7 @@
 
   <!-- Name -->
   <div class="space-y-2">
-    <label for="name" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
+    <label for="name" class="block text-sm font-medium text-foreground">
       Name
     </label>
     <input
@@ -300,13 +300,13 @@
       type="text"
       bind:value={formData.name}
       placeholder="Satoshi Nakamoto"
-      class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-2 rounded-lg border border bg-card text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     />
   </div>
 
   <!-- Display Name -->
   <div class="space-y-2">
-    <label for="displayName" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
+    <label for="displayName" class="block text-sm font-medium text-foreground">
       Display Name
       <span class="text-muted-foreground text-xs font-normal">(optional)</span>
     </label>
@@ -315,13 +315,13 @@
       type="text"
       bind:value={formData.displayName}
       placeholder="satoshi"
-      class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-2 rounded-lg border border bg-card text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     />
   </div>
 
   <!-- About -->
   <div class="space-y-2">
-    <label for="about-textarea" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
+    <label for="about-textarea" class="block text-sm font-medium text-foreground">
       About
     </label>
     <textarea
@@ -329,13 +329,13 @@
       bind:value={formData.about}
       placeholder="Tell the world about yourself..."
       rows="5"
-      class="w-full px-4 py-3 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 resize-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-3 rounded-lg border border bg-card text-foreground placeholder-neutral-500 resize-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     ></textarea>
   </div>
 
   <!-- NIP-05 -->
   <div class="space-y-2">
-    <label for="nip05" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
+    <label for="nip05" class="block text-sm font-medium text-foreground">
       NIP-05 Verification
       <span class="text-muted-foreground text-xs font-normal">(optional)</span>
     </label>
@@ -344,13 +344,13 @@
       type="text"
       bind:value={formData.nip05}
       placeholder="name@domain.com"
-      class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-2 rounded-lg border border bg-card text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     />
   </div>
 
   <!-- Lightning Address -->
   <div class="space-y-2">
-    <label for="lud16" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
+    <label for="lud16" class="block text-sm font-medium text-foreground">
       Lightning Address
       <span class="text-muted-foreground text-xs font-normal">(optional)</span>
     </label>
@@ -359,13 +359,13 @@
       type="text"
       bind:value={formData.lud16}
       placeholder="name@getalby.com"
-      class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-2 rounded-lg border border bg-card text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     />
   </div>
 
   <!-- Website -->
   <div class="space-y-2">
-    <label for="website" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
+    <label for="website" class="block text-sm font-medium text-foreground">
       Website
       <span class="text-muted-foreground text-xs font-normal">(optional)</span>
     </label>
@@ -374,13 +374,13 @@
       type="url"
       bind:value={formData.website}
       placeholder="https://example.com"
-      class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-2 rounded-lg border border bg-card text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     />
   </div>
 
   <!-- Hashtags -->
   <div class="space-y-2">
-    <label for="hashtags" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
+    <label for="hashtags" class="block text-sm font-medium text-foreground">
       Interest Hashtags
       <span class="text-muted-foreground text-xs font-normal">(optional)</span>
     </label>
@@ -389,9 +389,9 @@
       type="text"
       bind:value={formData.hashtags}
       placeholder="bitcoin, nostr, freedom (comma-separated)"
-      class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-2 rounded-lg border border bg-card text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     />
-    <p class="text-xs text-muted-foreground dark:text-muted-foreground">
+    <p class="text-xs text-muted-foreground">
       Add hashtags that describe your interests. Separate multiple tags with commas.
     </p>
   </div>

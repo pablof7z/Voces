@@ -2,12 +2,17 @@
   import { NDKEvent } from '@nostr-dev-kit/ndk';
   import { ndk } from '$lib/ndk.svelte';
   import { toast } from '$lib/stores/toast.svelte';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
 
   interface Props {
+    open: boolean;
     onClose: () => void;
   }
 
-  let { onClose }: Props = $props();
+  let { open = $bindable(false), onClose }: Props = $props();
 
   const currencies = [
     { code: 'USD', symbol: '$', name: 'US Dollar' },
@@ -161,6 +166,7 @@
       await event.publish();
 
       toast.success('Order created successfully');
+      open = false;
       onClose();
     } catch (error) {
       console.error('Failed to create order:', error);
@@ -174,71 +180,53 @@
   const pricePerBtc = $derived(parseFloat(fiatAmount) / btcAmount);
 </script>
 
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-background/50 p-4">
-  <div class="bg-white dark:bg-background rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-    <div class="sticky top-0 bg-white dark:bg-background border-b border p-6">
-      <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-bold text-neutral-900 dark:text-foreground">
-          Create P2P Order
-        </h2>
-        <button
-          onclick={onClose}
-          class="p-2 hover:bg-neutral-100 dark:hover:bg-card rounded-lg transition-colors"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-    </div>
+<Dialog.Root {open} onOpenChange={(newOpen) => {
+    open = newOpen;
+    if (!newOpen) onClose();
+  }}>
+  <Dialog.Content class="max-w-lg max-h-[90vh] overflow-y-auto">
+    <Dialog.Header>
+      <Dialog.Title>Create P2P Order</Dialog.Title>
+    </Dialog.Header>
 
-    <div class="p-6 space-y-6">
+    <div class="space-y-6">
       <!-- Order Type -->
       <div>
-        <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
-          Order Type
-        </label>
+        <Label class="block mb-2">Order Type</Label>
         <div class="grid grid-cols-2 gap-3">
-          <button
+          <Button
+            variant={orderType === 'buy' ? 'default' : 'outline'}
             onclick={() => orderType = 'buy'}
-            class={`px-4 py-3 rounded-lg border-2 transition-colors ${
-              orderType === 'buy'
-                ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                : 'border'
-            }`}
+            class={orderType === 'buy' ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/40' : ''}
           >
             I want to buy Bitcoin
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={orderType === 'sell' ? 'default' : 'outline'}
             onclick={() => orderType = 'sell'}
-            class={`px-4 py-3 rounded-lg border-2 transition-colors ${
-              orderType === 'sell'
-                ? 'border-red-500 bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                : 'border'
-            }`}
+            class={orderType === 'sell' ? 'border-red-500 bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40' : ''}
           >
             I want to sell Bitcoin
-          </button>
+          </Button>
         </div>
       </div>
 
       <!-- Bitcoin Amount -->
       <div>
-        <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
-          Bitcoin Amount (sats)
-        </label>
-        <div class="relative">
+        <Label for="sats-amount">Bitcoin Amount (sats)</Label>
+        <div class="relative mt-2">
           <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/>
           </svg>
-          <input
+          <Input
+            id="sats-amount"
             type="number"
             bind:value={satsAmount}
-            class="w-full pl-10 pr-3 py-3 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
+            class="pl-10"
             placeholder="100000"
           />
         </div>
-        <p class="mt-1 text-xs text-muted-foreground dark:text-muted-foreground">
+        <p class="mt-1 text-xs text-muted-foreground">
           = {btcAmount.toFixed(8)} BTC
         </p>
       </div>
@@ -246,26 +234,24 @@
       <!-- Fiat Amount & Currency -->
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
-            Fiat Amount
-          </label>
-          <input
+          <Label for="fiat-amount">Fiat Amount</Label>
+          <Input
+            id="fiat-amount"
             type="number"
             bind:value={fiatAmount}
-            class="w-full px-3 py-3 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
             placeholder="50"
+            class="mt-2"
           />
-          <p class="mt-1 text-xs text-muted-foreground dark:text-muted-foreground">
+          <p class="mt-1 text-xs text-muted-foreground">
             ≈ ${pricePerBtc.toFixed(2)}/BTC
           </p>
         </div>
         <div>
-          <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
-            Currency
-          </label>
+          <Label for="currency">Currency</Label>
           <select
+            id="currency"
             bind:value={currency}
-            class="w-full px-3 py-3 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
+            class="mt-2 w-full px-3 py-2 border border-input rounded-md bg-background text-foreground"
           >
             {#each currencies as curr}
               <option value={curr.code}>
@@ -278,31 +264,24 @@
 
       <!-- Payment Method -->
       <div>
-        <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
-          Payment Method
-        </label>
+        <Label class="block mb-2">Payment Method</Label>
         <div class="grid grid-cols-2 gap-3">
           {#each paymentMethods as method}
-            <button
+            <Button
+              variant={paymentMethod === method.id ? 'default' : 'outline'}
               onclick={() => paymentMethod = method.id}
-              class={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-colors ${
-                paymentMethod === method.id
-                  ? 'border-primary bg-orange-50 dark:bg-orange-900/30'
-                  : 'border'
-              }`}
+              class="justify-start h-auto py-2 {paymentMethod === method.id ? 'border-primary' : ''}"
             >
-              <span class="text-lg">{method.icon}</span>
+              <span class="text-lg mr-2">{method.icon}</span>
               <span class="text-sm">{method.name}</span>
-            </button>
+            </Button>
           {/each}
         </div>
 
         {#if paymentMethod === 'custom'}
           <div class="mt-3">
-            <input
-              type="text"
+            <Input
               bind:value={customPaymentMethod}
-              class="w-full px-3 py-2 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
               placeholder="Enter payment method (e.g., Bank Transfer, PayPal, etc.)"
               autofocus
             />
@@ -313,35 +292,35 @@
       <!-- Location for F2F -->
       {#if showLocationPicker}
         <div>
-          <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
-            <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <Label for="location" class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
             Location (Required for F2F)
-          </label>
-          <div class="space-y-2">
+          </Label>
+          <div class="space-y-2 mt-2">
             <div class="flex gap-2">
-              <input
-                type="text"
+              <Input
+                id="location"
                 bind:value={location}
-                class="flex-1 px-3 py-2 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
                 placeholder="City, neighborhood, or area"
+                class="flex-1"
               />
-              <button
-                type="button"
+              <Button
+                variant="outline"
+                size="icon"
                 onclick={handleLocationRequest}
-                class="px-3 py-2 border border rounded-lg hover:bg-neutral-50 dark:hover:bg-card transition-colors"
                 title="Use current location"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
-              </button>
+              </Button>
             </div>
             {#if geohash}
-              <p class="text-xs text-muted-foreground dark:text-muted-foreground">
+              <p class="text-xs text-muted-foreground">
                 Geohash: {geohash} (approximate location)
               </p>
             {/if}
@@ -351,28 +330,26 @@
 
       <!-- Premium -->
       <div>
-        <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
-          Premium (%)
-        </label>
-        <input
+        <Label for="premium">Premium (%)</Label>
+        <Input
+          id="premium"
           type="number"
           bind:value={premium}
-          class="w-full px-3 py-3 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
           placeholder="0"
+          class="mt-2"
         />
-        <p class="mt-1 text-xs text-muted-foreground dark:text-muted-foreground">
+        <p class="mt-1 text-xs text-muted-foreground">
           Positive for above market, negative for below
         </p>
       </div>
 
       <!-- Expiration -->
       <div>
-        <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
-          Expiration (hours)
-        </label>
+        <Label for="expiration">Expiration (hours)</Label>
         <select
+          id="expiration"
           bind:value={expirationHours}
-          class="w-full px-3 py-3 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
+          class="mt-2 w-full px-3 py-2 border border-input rounded-md bg-background text-foreground"
         >
           <option value="1">1 hour</option>
           <option value="6">6 hours</option>
@@ -382,23 +359,18 @@
           <option value="72">72 hours</option>
         </select>
       </div>
-
-      <!-- Action Buttons -->
-      <div class="flex gap-3">
-        <button
-          onclick={onClose}
-          class="flex-1 px-4 py-3 border border rounded-lg hover:bg-neutral-50 dark:hover:bg-card transition-colors"
-        >
-          Cancel
-        </button>
-        <button
-          onclick={handleCreate}
-          disabled={creating || !satsAmount || !fiatAmount}
-          class="flex-1 px-4 py-3 bg-primary text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          {creating ? 'Creating...' : 'Create Order'}
-        </button>
-      </div>
     </div>
-  </div>
-</div>
+
+    <Dialog.Footer class="mt-6">
+      <Button variant="outline" onclick={() => { open = false; onClose(); }}>
+        Cancel
+      </Button>
+      <Button
+        onclick={handleCreate}
+        disabled={creating || !satsAmount || !fiatAmount}
+      >
+        {creating ? 'Creating...' : 'Create Order'}
+      </Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>

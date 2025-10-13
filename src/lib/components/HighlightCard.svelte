@@ -3,16 +3,15 @@
   import { ndk } from '$lib/ndk.svelte';
   import { Avatar } from '@nostr-dev-kit/svelte';
   import TimeAgo from './TimeAgo.svelte';
-  import { EventContent } from '@nostr-dev-kit/svelte';
+  import EventActions from './EventActions.svelte';
 
   interface Props {
     event: NDKEvent;
-    variant?: 'default' | 'compact';
+    variant?: 'default' | 'compact' | 'feed';
   }
 
   let { event, variant = 'default' }: Props = $props();
 
-  const author = ndk.$fetchUser(() => event.pubkey);
   const authorProfile = ndk.$fetchProfile(() => event.pubkey);
   const authorName = $derived(authorProfile?.name || authorProfile?.displayName || 'Anonymous');
 
@@ -73,13 +72,91 @@
   });
 
   const publishedAt = $derived(event.created_at);
+
+  function navigateToProfile() {
+    window.location.href = `/p/${event.author.npub}`;
+  }
+
+  function navigateToSource() {
+    if (sourceInfo?.type === 'web' && sourceInfo.url) {
+      window.open(sourceInfo.url, '_blank', 'noopener,noreferrer');
+    }
+  }
 </script>
 
-{#if variant === 'compact'}
+{#if variant === 'feed'}
+  <article class="p-3 sm:p-4 hover:bg-card/30 transition-colors border-b border-border">
+    <!-- Author header -->
+    <div class="flex items-center gap-2 sm:gap-3 mb-3">
+      <button
+        type="button"
+        onclick={(e) => { e.stopPropagation(); navigateToProfile(); }}
+        class="flex-shrink-0"
+      >
+        <Avatar {ndk} pubkey={event.pubkey} class="w-9 h-9 sm:w-12 sm:h-12 rounded-full hover:opacity-80 transition-opacity" />
+      </button>
+      <div class="flex items-center gap-2 flex-1 min-w-0">
+        <div class="flex items-center gap-2 min-w-0 flex-shrink">
+          <span class="text-base font-semibold text-foreground truncate min-w-0">{authorName}</span>
+          <span class="text-muted-foreground text-sm truncate min-w-0">@{authorProfile?.name || event.pubkey.slice(0, 8)}</span>
+        </div>
+        <span class="text-muted-foreground text-sm flex-shrink-0">·</span>
+        {#if publishedAt}
+          <TimeAgo timestamp={publishedAt} class="text-muted-foreground text-sm flex-shrink-0" />
+        {/if}
+      </div>
+    </div>
+
+    <!-- Book page style highlight -->
+    <div
+      onclick={sourceInfo?.type === 'web' ? navigateToSource : undefined}
+      class="relative aspect-square rounded-lg overflow-hidden bg-[#f9f7f4] shadow-lg mb-2 {sourceInfo?.type === 'web' ? 'cursor-pointer' : ''}"
+    >
+      <!-- Paper texture overlay -->
+      <div class="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')]" />
+
+      <!-- Content -->
+      <div class="relative h-full flex flex-col items-center justify-center p-8 sm:p-12">
+        <!-- Yellow highlight bar (like a highlighter mark) -->
+        <div class="absolute left-0 right-0 top-[35%] bottom-[35%] bg-yellow-300/20" />
+
+        <!-- Highlighted text -->
+        <div class="relative z-10">
+          <p class="text-neutral-900 text-2xl sm:text-3xl md:text-4xl font-serif leading-relaxed text-center">
+            {highlightContent}
+          </p>
+        </div>
+      </div>
+
+      <!-- Source badge (small, bottom right corner) -->
+      {#if sourceInfo}
+        <div class="absolute bottom-3 right-3 flex items-center gap-1.5 px-2 py-1 bg-white/80 backdrop-blur-sm rounded text-xs text-neutral-600">
+          {#if sourceInfo.type === 'web'}
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+          {:else if sourceInfo.type === 'article'}
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          {:else}
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+            </svg>
+          {/if}
+          <span class="max-w-[100px] truncate">{sourceInfo.displayText}</span>
+        </div>
+      {/if}
+    </div>
+
+    <!-- Actions -->
+    <EventActions {event} />
+  </article>
+{:else if variant === 'compact'}
   <div class="block p-4 hover:bg-card/30 transition-colors rounded-lg group">
     <div class="relative">
       <!-- Highlight marker line on the left -->
-      <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-yellow-400 to-orange-500 rounded-full" />
+      <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-yellow-400 to-primary rounded-full" />
 
       <div class="pl-4">
         <!-- Highlighted text -->
@@ -117,84 +194,71 @@
     </div>
   </div>
 {:else}
-  <div class="block p-6 hover:bg-card/30 transition-colors border-b border-border last:border-b-0 group">
+  <article class="p-3 sm:p-4 hover:bg-card/30 transition-colors border-b border-border">
     <!-- Author header -->
-    <div class="flex items-start gap-3 mb-4">
-      <Avatar {ndk} pubkey={event.pubkey} class="w-10 h-10 rounded-full flex-shrink-0" />
-      <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-2 flex-wrap">
-          <span class="font-semibold text-foreground">{authorName}</span>
-          <span class="text-muted-foreground text-sm">highlighted</span>
-          {#if publishedAt}
-            <span class="text-muted-foreground">·</span>
-            <TimeAgo timestamp={publishedAt} class="text-muted-foreground text-sm" />
-          {/if}
+    <div class="flex items-center gap-2 sm:gap-3 mb-3">
+      <button
+        type="button"
+        onclick={(e) => { e.stopPropagation(); navigateToProfile(); }}
+        class="flex-shrink-0"
+      >
+        <Avatar {ndk} pubkey={event.pubkey} class="w-9 h-9 sm:w-12 sm:h-12 rounded-full hover:opacity-80 transition-opacity" />
+      </button>
+      <div class="flex items-center gap-2 flex-1 min-w-0">
+        <div class="flex items-center gap-2 min-w-0 flex-shrink">
+          <span class="text-base font-semibold text-foreground truncate min-w-0">{authorName}</span>
+          <span class="text-muted-foreground text-sm truncate min-w-0">@{authorProfile?.name || event.pubkey.slice(0, 8)}</span>
         </div>
-      </div>
-    </div>
-
-    <!-- Main highlight content -->
-    <div class="relative mb-4">
-      <!-- Highlighter effect background -->
-      <div class="absolute -inset-3 bg-gradient-to-r from-yellow-400/5 via-yellow-400/10 to-yellow-400/5 rounded-xl" />
-      <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-yellow-400 via-orange-500 to-yellow-600 rounded-full shadow-lg shadow-yellow-500/20" />
-
-      <div class="relative pl-6">
-        <p class="text-neutral-50 text-lg sm:text-xl leading-relaxed font-serif italic">
-          <span class="text-yellow-400/40 text-2xl mr-1">"</span>{highlightContent}<span class="text-yellow-400/40 text-2xl ml-1">"</span>
-        </p>
-      </div>
-    </div>
-
-    <!-- Context if available -->
-    {#if context}
-      <div class="mb-4 pl-6 border-l-2 border-border">
-        <p class="text-muted-foreground text-sm leading-relaxed">
-          ...{context}...
-        </p>
-      </div>
-    {/if}
-
-    <!-- Source reference -->
-    {#if sourceInfo}
-      <div class="flex items-center gap-2 text-sm text-muted-foreground pl-6">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-        </svg>
-        <span>From:</span>
-        {#if sourceInfo.type === 'web' && sourceInfo.url}
-          <a
-            href={sourceInfo.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="hover:text-primary transition-colors flex items-center gap-1"
-          >
-            <span>{sourceInfo.displayText}</span>
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
-        {:else}
-          <span>{sourceInfo.displayText}</span>
+        <span class="text-muted-foreground text-sm flex-shrink-0">·</span>
+        {#if publishedAt}
+          <TimeAgo timestamp={publishedAt} class="text-muted-foreground text-sm flex-shrink-0" />
         {/if}
       </div>
-    {/if}
-
-    <!-- Actions bar -->
-    <div class="flex items-center gap-6 mt-4 pl-6 text-muted-foreground text-sm">
-      <button class="flex items-center gap-1.5 hover:text-primary transition-colors group-hover:opacity-100 opacity-60">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-        <span>Comment</span>
-      </button>
-
-      <button class="flex items-center gap-1.5 hover:text-primary transition-colors group-hover:opacity-100 opacity-60">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-        </svg>
-        <span>Share</span>
-      </button>
     </div>
-  </div>
+
+    <!-- Book page style highlight -->
+    <div
+      onclick={sourceInfo?.type === 'web' ? navigateToSource : undefined}
+      class="relative aspect-square rounded-lg overflow-hidden bg-[#f9f7f4] shadow-lg mb-2 {sourceInfo?.type === 'web' ? 'cursor-pointer' : ''}"
+    >
+      <!-- Paper texture overlay -->
+      <div class="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')]" />
+
+      <!-- Content -->
+      <div class="relative h-full flex flex-col items-center justify-center p-8 sm:p-12">
+        <!-- Yellow highlight bar (like a highlighter mark) -->
+        <div class="absolute left-0 right-0 top-[35%] bottom-[35%] bg-yellow-300/20" />
+
+        <!-- Highlighted text -->
+        <div class="relative z-10">
+          <p class="text-neutral-900 text-2xl sm:text-3xl md:text-4xl font-serif leading-relaxed text-center">
+            {highlightContent}
+          </p>
+        </div>
+      </div>
+
+      <!-- Source badge (small, bottom right corner) -->
+      {#if sourceInfo}
+        <div class="absolute bottom-3 right-3 flex items-center gap-1.5 px-2 py-1 bg-white/80 backdrop-blur-sm rounded text-xs text-neutral-600">
+          {#if sourceInfo.type === 'web'}
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+          {:else if sourceInfo.type === 'article'}
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          {:else}
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+            </svg>
+          {/if}
+          <span class="max-w-[100px] truncate">{sourceInfo.displayText}</span>
+        </div>
+      {/if}
+    </div>
+
+    <!-- Actions -->
+    <EventActions {event} />
+  </article>
 {/if}

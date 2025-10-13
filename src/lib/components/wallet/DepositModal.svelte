@@ -2,6 +2,10 @@
   import { ndk } from '$lib/ndk.svelte';
   import type { NDKCashuDeposit } from '@nostr-dev-kit/ndk-wallet';
   import QRCode from './QRCode.svelte';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
 
   let { isOpen = $bindable(false) } = $props();
 
@@ -58,69 +62,75 @@
   }
 </script>
 
-{#if isOpen}
-  <div class="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onclick={close}>
-    <div class="bg-background border border-border rounded-xl max-w-md w-full p-6" onclick={(e) => e.stopPropagation()}>
-      {#if !invoice}
-        <h2 class="text-2xl font-bold text-foreground mb-4">Deposit Funds</h2>
+<Dialog.Root open={isOpen} onOpenChange={(newOpen) => {
+    isOpen = newOpen;
+    if (!newOpen) close();
+  }}>
+  <Dialog.Content class="max-w-md">
+    {#if !invoice}
+      <Dialog.Header>
+        <Dialog.Title>Deposit Funds</Dialog.Title>
+      </Dialog.Header>
 
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-muted-foreground mb-2">
-            Amount (sats)
-          </label>
-          <input
+      <div class="space-y-4">
+        <div>
+          <Label for="amount">Amount (sats)</Label>
+          <Input
+            id="amount"
             type="number"
             bind:value={amount}
             min="1"
             step="100"
-            class="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500"
+            class="mt-2"
           />
         </div>
 
-        <button
+        <Button
           onclick={handleDeposit}
           disabled={isLoading || amount < 1}
-          class="w-full py-3 bg-primary hover:bg-accent-dark disabled:bg-muted disabled:cursor-not-allowed text-foreground font-medium rounded-lg transition-colors"
+          class="w-full"
         >
           {isLoading ? 'Creating Invoice...' : 'Create Invoice'}
-        </button>
-      {:else}
-        <h2 class="text-2xl font-bold text-foreground mb-4">Pay Invoice</h2>
+        </Button>
+      </div>
+    {:else}
+      <Dialog.Header>
+        <Dialog.Title>Pay Invoice</Dialog.Title>
+      </Dialog.Header>
 
+      <div class="space-y-4">
         {#if invoice}
-          <div class="mb-4 flex justify-center">
+          <div class="flex justify-center">
             <QRCode value={invoice} size={256} />
           </div>
         {/if}
 
-        <div class="mb-4">
-          <div class="bg-card border border-border rounded-lg p-3 break-all text-sm text-muted-foreground">
-            {invoice}
-          </div>
+        <div class="bg-card border border-border rounded-lg p-3 break-all text-sm text-muted-foreground">
+          {invoice}
         </div>
 
-        <button
+        <Button
           onclick={() => copyToClipboard(invoice || '')}
-          class="w-full py-3 bg-muted hover:bg-muted text-foreground font-medium rounded-lg transition-colors mb-3"
+          variant="outline"
+          class="w-full"
         >
           Copy Invoice
-        </button>
+        </Button>
 
         <p class="text-center text-muted-foreground text-sm">Waiting for payment...</p>
-      {/if}
+      </div>
+    {/if}
 
-      {#if error}
-        <div class="mt-4 p-3 bg-red-900/20 border border-red-800 rounded-lg text-red-400 text-sm">
-          {error}
-        </div>
-      {/if}
+    {#if error}
+      <div class="mt-4 p-3 bg-red-900/20 border border-red-800 rounded-lg text-red-400 text-sm">
+        {error}
+      </div>
+    {/if}
 
-      <button
-        onclick={close}
-        class="mt-4 w-full py-2 text-muted-foreground hover:text-foreground transition-colors"
-      >
+    <Dialog.Footer>
+      <Button variant="ghost" onclick={close} class="w-full">
         Close
-      </button>
-    </div>
-  </div>
-{/if}
+      </Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>

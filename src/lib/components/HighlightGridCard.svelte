@@ -61,14 +61,14 @@
   });
 </script>
 
-<div class="group relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-yellow-400/10 via-orange-500/10 to-yellow-600/10 hover:from-yellow-400/20 hover:via-orange-500/20 hover:to-yellow-600/20 transition-all duration-300 cursor-pointer">
+<div class="group relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-yellow-400/10 via-primary/10 to-yellow-600/10 hover:from-yellow-400/20 hover:via-primary/20 hover:to-yellow-600/20 transition-all duration-300 cursor-pointer">
   <!-- Background pattern -->
   <div class="absolute inset-0 opacity-5">
     <div class="absolute inset-0" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.1) 10px, rgba(255, 255, 255, 0.1) 20px);" />
   </div>
 
   <!-- Highlight marker on the left -->
-  <div class="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-yellow-400 via-orange-500 to-yellow-600" />
+  <div class="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-yellow-400 via-primary to-yellow-600" />
 
   <!-- Content container -->
   <div class="relative h-full p-5 flex flex-col">
