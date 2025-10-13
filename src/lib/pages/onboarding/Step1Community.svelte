@@ -78,7 +78,7 @@
         onerror={() => mainImageError = true}
       />
     {:else}
-      <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-blue-600" />
+      <div class="absolute inset-0 bg-gradient-to-br from-orange-600 to-red-600" />
     {/if}
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
     <div class="absolute bottom-12 left-12 right-12 text-foreground">

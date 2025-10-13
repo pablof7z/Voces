@@ -14,7 +14,7 @@
     onclick={() => onFilterChange('conversations')}
     class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
       selectedFilter === 'conversations'
-        ? 'text-primary border-b-2 border-orange-500'
+        ? 'text-primary border-b-2 border-primary'
         : 'text-muted-foreground hover:text-muted-foreground'
     }`}
     aria-label="Conversations"
@@ -29,7 +29,7 @@
     onclick={() => onFilterChange('images')}
     class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
       selectedFilter === 'images'
-        ? 'text-primary border-b-2 border-orange-500'
+        ? 'text-primary border-b-2 border-primary'
         : 'text-muted-foreground hover:text-muted-foreground'
     }`}
     aria-label="Images"
@@ -44,7 +44,7 @@
     onclick={() => onFilterChange('videos')}
     class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
       selectedFilter === 'videos'
-        ? 'text-primary border-b-2 border-orange-500'
+        ? 'text-primary border-b-2 border-primary'
         : 'text-muted-foreground hover:text-muted-foreground'
     }`}
     aria-label="Videos"
@@ -59,7 +59,7 @@
     onclick={() => onFilterChange('articles')}
     class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
       selectedFilter === 'articles'
-        ? 'text-primary border-b-2 border-orange-500'
+        ? 'text-primary border-b-2 border-primary'
         : 'text-muted-foreground hover:text-muted-foreground'
     }`}
     aria-label="Articles"

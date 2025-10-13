@@ -19,7 +19,7 @@
     <h3 class="text-lg font-semibold text-foreground">Nutzap Monitor</h3>
     <button
       onclick={() => showDetails = !showDetails}
-      class="text-sm text-primary hover:text-orange-400"
+      class="text-sm text-primary hover:text-primary"
     >
       {showDetails ? 'Hide Details' : 'Show Details'}
     </button>

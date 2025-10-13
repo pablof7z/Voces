@@ -167,7 +167,7 @@
       {#if ndk.$currentUser}
         <button
           onclick={() => createPackModal.open()}
-          class="px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-foreground rounded-lg transition-colors font-medium text-sm flex items-center gap-2 flex-shrink-0"
+          class="px-4 py-2.5 bg-primary hover:bg-accent-dark text-foreground rounded-lg transition-colors font-medium text-sm flex items-center gap-2 flex-shrink-0"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -189,7 +189,7 @@
           type="search"
           placeholder="Search follow packs..."
           bind:value={searchQuery}
-          class="w-full pl-10 pr-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500"
+          class="w-full pl-10 pr-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
         />
       </div>
 

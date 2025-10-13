@@ -120,7 +120,7 @@
               <div class="flex items-center space-x-2">
                 <span class="font-medium">{server}</span>
                 {#if index === 0}
-                  <span class="text-xs bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 px-2 py-0.5 rounded">
+                  <span class="text-xs bg-orange-100 dark:bg-orange-900/50 text-primary dark:text-orange-300 px-2 py-0.5 rounded">
                     Primary
                   </span>
                 {/if}
@@ -169,7 +169,7 @@
         />
         <button
           onclick={addServer}
-          class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-foreground rounded-lg transition-colors"
+          class="px-4 py-2 bg-primary hover:bg-accent-dark text-foreground rounded-lg transition-colors"
         >
           Add
         </button>
@@ -210,7 +210,7 @@
           <span class="text-sm">{server}</span>
           <button
             onclick={() => saveServers([...servers, server])}
-            class="text-sm text-primary dark:text-primary hover:text-orange-700 dark:hover:text-orange-300"
+            class="text-sm text-primary dark:text-primary hover:text-accent-dark dark:hover:text-orange-300"
           >
             Add
           </button>

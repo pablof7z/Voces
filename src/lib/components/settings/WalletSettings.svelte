@@ -335,7 +335,7 @@
               <button
                 onclick={handleAddMint}
                 disabled={!newMintUrl.trim()}
-                class="px-4 py-2 bg-orange-600 text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                class="px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Add Mint
               </button>
@@ -356,7 +356,7 @@
         <div class="flex gap-2">
           <button
             onclick={() => isAddingMint = true}
-            class="flex-1 border-2 border-dashed border rounded-lg p-4 hover:border-orange-500 dark:hover:border-orange-600 transition-colors group"
+            class="flex-1 border-2 border-dashed border rounded-lg p-4 hover:border-primary dark:hover:border-orange-600 transition-colors group"
           >
             <div class="flex items-center justify-center gap-2 text-muted-foreground group-hover:text-primary dark:group-hover:text-primary">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -367,7 +367,7 @@
           </button>
           <button
             onclick={() => isBrowsingMints = true}
-            class="flex-1 border-2 border-dashed border rounded-lg p-4 hover:border-orange-500 dark:hover:border-orange-600 transition-colors group"
+            class="flex-1 border-2 border-dashed border rounded-lg p-4 hover:border-primary dark:hover:border-orange-600 transition-colors group"
           >
             <div class="flex items-center justify-center gap-2 text-muted-foreground group-hover:text-primary dark:group-hover:text-primary">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -520,7 +520,7 @@
           <button
             onclick={saveChanges}
             disabled={isSaving}
-            class="px-6 py-2 bg-orange-600 text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2"
+            class="px-6 py-2 bg-primary text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2"
           >
             {#if isSaving}
               <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">

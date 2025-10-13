@@ -83,7 +83,7 @@
     <h3 class="text-lg font-semibold text-foreground">Cashu Mints</h3>
     <button
       onclick={() => isAdding = !isAdding}
-      class="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-foreground text-sm font-medium rounded-lg transition-colors"
+      class="px-3 py-1.5 bg-primary hover:bg-accent-dark text-foreground text-sm font-medium rounded-lg transition-colors"
     >
       {isAdding ? 'Cancel' : 'Add Mint'}
     </button>
@@ -102,7 +102,7 @@
       />
       <button
         onclick={addMint}
-        class="w-full py-2 bg-orange-600 hover:bg-orange-700 text-foreground font-medium rounded-lg transition-colors"
+        class="w-full py-2 bg-primary hover:bg-accent-dark text-foreground font-medium rounded-lg transition-colors"
       >
         Add Mint
       </button>

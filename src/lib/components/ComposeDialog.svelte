@@ -159,7 +159,7 @@
         <button
           onclick={publishNote}
           disabled={!content.trim() || isPublishing || selectedRelayUrls.length === 0}
-          class="px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-muted disabled:cursor-not-allowed text-foreground rounded-full transition-colors font-semibold text-sm"
+          class="px-4 py-2 bg-primary hover:bg-accent-dark disabled:bg-muted disabled:cursor-not-allowed text-foreground rounded-full transition-colors font-semibold text-sm"
         >
           {isPublishing ? 'Publishing...' : 'Post'}
         </button>
@@ -291,7 +291,7 @@
                     <!-- Switch toggle -->
                     <button
                       onclick={() => isProtected = !isProtected}
-                      class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors {isProtected ? 'bg-orange-600' : 'bg-muted'}"
+                      class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors {isProtected ? 'bg-primary' : 'bg-muted'}"
                       role="switch"
                       aria-checked={isProtected}
                     >
@@ -345,7 +345,7 @@
                     <!-- "Only" button - appears on hover -->
                     <button
                       onclick={(e) => { e.stopPropagation(); selectOnlyRelay(relay.url); }}
-                      class="absolute right-2 px-2 py-1 text-xs bg-orange-600 hover:bg-orange-700 text-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                      class="absolute right-2 px-2 py-1 text-xs bg-primary hover:bg-accent-dark text-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity"
                       title="Publish only to this relay"
                     >
                       Only

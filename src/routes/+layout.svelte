@@ -11,6 +11,7 @@
   import RelayAuthModal from '$lib/components/RelayAuthModal.svelte';
   import PWAInstallPrompt from '$lib/components/PWAInstallPrompt.svelte';
   import Hashtag from '$lib/components/Hashtag.svelte';
+  import EmbeddedNote from '$lib/components/EmbeddedNote.svelte';
   import '../app.css';
   import type { Snippet } from 'svelte';
 
@@ -50,9 +51,10 @@
       window.open(url, '_blank');
     };
 
-    // Set up custom hashtag component
+    // Set up custom components
     setEventContentComponents({
-      hashtag: Hashtag
+      hashtag: Hashtag,
+      embeddedEvent: EmbeddedNote
     });
   }
 
@@ -100,7 +102,7 @@
           </p>
           <button
             onclick={() => window.location.reload()}
-            class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
+            class="px-4 py-2 bg-primary hover:bg-accent-dark text-foreground rounded-lg transition-colors"
           >
             Reload Page
           </button>
@@ -111,7 +113,7 @@
 {:else}
   <div class="flex items-center justify-center min-h-screen bg-white dark:bg-neutral-950">
     <div class="text-center">
-      <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-orange-600 border-r-transparent"></div>
+      <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
       <p class="mt-4 text-gray-600 dark:text-gray-400">Initializing...</p>
     </div>
   </div>

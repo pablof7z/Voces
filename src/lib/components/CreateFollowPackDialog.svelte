@@ -219,7 +219,7 @@
         <button
           onclick={publishFollowPack}
           disabled={!title.trim() || selectedPubkeys.size === 0 || isPublishing}
-          class="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 disabled:bg-muted disabled:cursor-not-allowed text-foreground rounded-lg transition-colors font-semibold text-sm"
+          class="px-5 py-2.5 bg-primary hover:bg-accent-dark disabled:bg-muted disabled:cursor-not-allowed text-foreground rounded-lg transition-colors font-semibold text-sm"
         >
           {isPublishing ? (editingPack ? 'Updating...' : 'Creating...') : (editingPack ? 'Update Pack' : 'Create Pack')}
         </button>
@@ -231,7 +231,7 @@
           onclick={() => activeTab = 'details'}
           class={`flex-1 px-6 py-3 font-medium transition-colors ${
             activeTab === 'details'
-              ? 'text-primary border-b-2 border-orange-500'
+              ? 'text-primary border-b-2 border-primary'
               : 'text-muted-foreground hover:text-muted-foreground'
           }`}
         >
@@ -241,7 +241,7 @@
           onclick={() => activeTab = 'members'}
           class={`flex-1 px-6 py-3 font-medium transition-colors ${
             activeTab === 'members'
-              ? 'text-primary border-b-2 border-orange-500'
+              ? 'text-primary border-b-2 border-primary'
               : 'text-muted-foreground hover:text-muted-foreground'
           }`}
         >
@@ -262,7 +262,7 @@
                 type="url"
                 bind:value={imageUrl}
                 placeholder="https://example.com/image.jpg"
-                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors"
+                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
               />
               {#if imageUrl.trim()}
                 <div class="mt-3 rounded-lg overflow-hidden border border-border">
@@ -285,7 +285,7 @@
                 type="text"
                 bind:value={title}
                 placeholder="e.g., Bitcoin Developers"
-                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors"
+                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
                 maxlength="100"
               />
             </div>
@@ -298,7 +298,7 @@
               <textarea
                 bind:value={description}
                 placeholder="Describe what this follow pack is about..."
-                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors resize-none"
+                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors resize-none"
                 rows="4"
                 maxlength="500"
               ></textarea>
@@ -322,7 +322,7 @@
                   type="text"
                   bind:value={memberSearchQuery}
                   placeholder="Search follows or enter npub/NIP-05..."
-                  class="w-full pl-10 pr-20 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors"
+                  class="w-full pl-10 pr-20 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
                   onkeydown={(e) => {
                     if (e.key === 'Enter' && memberSearchQuery.trim()) {
                       addByNpubOrNip05();
@@ -332,7 +332,7 @@
                 {#if memberSearchQuery.trim() && (memberSearchQuery.includes('npub1') || memberSearchQuery.includes('@'))}
                   <button
                     onclick={addByNpubOrNip05}
-                    class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-foreground rounded text-sm font-medium transition-colors"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-primary hover:bg-accent-dark text-foreground rounded text-sm font-medium transition-colors"
                   >
                     Add
                   </button>
@@ -360,7 +360,7 @@
                       onclick={() => toggleMember(pubkey)}
                       class={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${
                         isSelected
-                          ? 'bg-orange-600/20 border border-orange-500/50'
+                          ? 'bg-primary/20 border border-primary/50'
                           : 'bg-card border border-border hover:border-border'
                       }`}
                     >
@@ -375,7 +375,7 @@
                       </div>
                       <div class={`w-5 h-5 rounded border-2 flex items-center justify-center ${
                         isSelected
-                          ? 'bg-orange-500 border-orange-500'
+                          ? 'bg-primary border-primary'
                           : 'border'
                       }`}>
                         {#if isSelected}

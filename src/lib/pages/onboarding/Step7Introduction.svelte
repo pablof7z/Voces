@@ -125,7 +125,7 @@
                 </div>
                 <button
                   onclick={() => mentionInviter = !mentionInviter}
-                  class="text-xs px-2 py-1 rounded hover:bg-orange-100 dark:hover:bg-orange-900/20 transition-colors text-primary dark:text-orange-400 font-medium"
+                  class="text-xs px-2 py-1 rounded hover:bg-orange-100 dark:hover:bg-orange-900/20 transition-colors text-primary dark:text-primary font-medium"
                 >
                   {mentionInviter ? 'Remove' : 'Add back'}
                 </button>

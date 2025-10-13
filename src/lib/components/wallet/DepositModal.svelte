@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
   import type { NDKCashuDeposit } from '@nostr-dev-kit/ndk-wallet';
+  import QRCode from './QRCode.svelte';
 
   let { isOpen = $bindable(false) } = $props();
 
@@ -9,24 +10,6 @@
   let deposit = $state<NDKCashuDeposit | undefined>();
   let isLoading = $state(false);
   let error = $state<string | null>(null);
-  let qrCodeDataUrl = $state<string | null>(null);
-
-  async function generateQRCode(text: string): Promise<string> {
-    try {
-      const QRCode = await import('qrcode');
-      return await QRCode.toDataURL(text, {
-        width: 300,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#FFFFFF'
-        }
-      });
-    } catch (err) {
-      console.error('QR code generation failed:', err);
-      return '';
-    }
-  }
 
   async function handleDeposit() {
     isLoading = true;
@@ -43,7 +26,6 @@
         console.log('Deposit successful!');
         invoice = null;
         deposit = undefined;
-        qrCodeDataUrl = null;
         close();
       });
 
@@ -54,10 +36,6 @@
 
       const invoiceStr = await deposit.start();
       invoice = invoiceStr;
-
-      if (invoiceStr) {
-        qrCodeDataUrl = await generateQRCode(invoiceStr);
-      }
     } catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {
@@ -70,7 +48,6 @@
     invoice = null;
     deposit = undefined;
     error = null;
-    qrCodeDataUrl = null;
     amount = 1000;
   }
 
@@ -103,16 +80,16 @@
         <button
           onclick={handleDeposit}
           disabled={isLoading || amount < 1}
-          class="w-full py-3 bg-orange-600 hover:bg-orange-700 disabled:bg-muted disabled:cursor-not-allowed text-foreground font-medium rounded-lg transition-colors"
+          class="w-full py-3 bg-primary hover:bg-accent-dark disabled:bg-muted disabled:cursor-not-allowed text-foreground font-medium rounded-lg transition-colors"
         >
           {isLoading ? 'Creating Invoice...' : 'Create Invoice'}
         </button>
       {:else}
         <h2 class="text-2xl font-bold text-foreground mb-4">Pay Invoice</h2>
 
-        {#if qrCodeDataUrl}
+        {#if invoice}
           <div class="mb-4 flex justify-center">
-            <img src={qrCodeDataUrl} alt="Invoice QR Code" class="w-64 h-64" />
+            <QRCode value={invoice} size={256} />
           </div>
         {/if}
 

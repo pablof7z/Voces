@@ -173,7 +173,7 @@
               <button
                 onclick={handleFollowAll}
                 disabled={isFollowingAll}
-                class="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-500/90 disabled:bg-muted text-foreground font-medium rounded-lg transition-colors whitespace-nowrap"
+                class="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 disabled:bg-muted text-foreground font-medium rounded-lg transition-colors whitespace-nowrap"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -241,7 +241,7 @@
         >
           Feed
           {#if activeTab === 'feed'}
-            <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"></div>
+            <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></div>
           {/if}
         </button>
         <button
@@ -250,7 +250,7 @@
         >
           Members ({pubkeys.length})
           {#if activeTab === 'members'}
-            <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"></div>
+            <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></div>
           {/if}
         </button>
       </div>
@@ -303,7 +303,7 @@
     {/if}
   {:else if isLoading}
     <div class="text-center py-12">
-      <div class="inline-block w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+      <div class="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
       <p class="text-muted-foreground">Loading follow pack...</p>
     </div>
   {:else}

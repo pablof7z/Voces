@@ -105,7 +105,7 @@
               <button
                 onclick={() => settings.toggleRelay(relay.url)}
                 class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 mt-0.5 md:mt-0 {relay.enabled
-                  ? 'bg-orange-600 border-orange-600'
+                  ? 'bg-primary border-orange-600'
                   : 'bg-white dark:bg-background border dark:border'}"
               >
                 {#if relay.enabled}
@@ -175,7 +175,7 @@
             <button
               onclick={handleAddRelay}
               disabled={!newRelay.url}
-              class="px-4 py-2 bg-orange-600 text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Add Relay
             </button>
@@ -194,7 +194,7 @@
     {:else}
       <button
         onclick={() => isAdding = true}
-        class="w-full border-2 border-dashed border rounded-lg p-4 hover:border-orange-500 dark:hover:border-orange-600 transition-colors group"
+        class="w-full border-2 border-dashed border rounded-lg p-4 hover:border-primary dark:hover:border-orange-600 transition-colors group"
       >
         <div class="flex items-center justify-center gap-2 text-muted-foreground group-hover:text-primary dark:group-hover:text-primary">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

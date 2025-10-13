@@ -374,7 +374,7 @@ Looking forward to connecting with you on the open social web!`;
 
 					<!-- Personalization Options -->
 					{#if isPersonalized}
-						<div class="space-y-4 border-l-4 border-orange-500 pl-4">
+						<div class="space-y-4 border-l-4 border-primary pl-4">
 							<div>
 								<label
 									for="recipient-name"
@@ -422,7 +422,7 @@ Looking forward to connecting with you on the open social web!`;
 					<button
 						onclick={generateInvite}
 						disabled={isGenerating || !welcomeMessage.trim() || selectedRelayUrls.length === 0}
-						class="w-full py-3 px-4 bg-orange-600 hover:bg-orange-700 disabled:bg-neutral-400 text-foreground font-semibold rounded-xl transition-colors disabled:cursor-not-allowed flex items-center justify-center"
+						class="w-full py-3 px-4 bg-primary hover:bg-accent-dark disabled:bg-neutral-400 text-foreground font-semibold rounded-xl transition-colors disabled:cursor-not-allowed flex items-center justify-center"
 					>
 						{#if isGenerating}
 							<div
@@ -464,7 +464,7 @@ Looking forward to connecting with you on the open social web!`;
 							/>
 							<button
 								onclick={copyToClipboard}
-								class="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-foreground rounded-lg transition-colors flex items-center space-x-1 text-sm"
+								class="px-3 py-1.5 bg-primary hover:bg-accent-dark text-foreground rounded-lg transition-colors flex items-center space-x-1 text-sm"
 							>
 								{#if isCopied}
 									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -490,7 +490,7 @@ Looking forward to connecting with you on the open social web!`;
 						</button>
 						<button
 							onclick={handleClose}
-							class="flex-1 py-2.5 px-4 bg-orange-600 hover:bg-orange-700 text-foreground font-medium rounded-xl transition-colors"
+							class="flex-1 py-2.5 px-4 bg-primary hover:bg-accent-dark text-foreground font-medium rounded-xl transition-colors"
 						>
 							Done
 						</button>

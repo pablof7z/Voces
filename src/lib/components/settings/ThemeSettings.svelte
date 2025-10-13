@@ -49,7 +49,7 @@
       <button
         onclick={() => handleLanguageChange('en')}
         class="px-4 py-3 rounded-lg border transition-all {settings.language === 'en'
-          ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-500 text-orange-700 dark:text-primary'
+          ? 'bg-orange-50 dark:bg-orange-950/30 border-primary text-primary dark:text-primary'
           : 'bg-white dark:bg-background border text-neutral-700 dark:text-muted-foreground hover:bg-neutral-50 dark:hover:bg-card'}"
       >
         <div class="flex items-center justify-center gap-2">
@@ -60,7 +60,7 @@
       <button
         onclick={() => handleLanguageChange('es')}
         class="px-4 py-3 rounded-lg border transition-all {settings.language === 'es'
-          ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-500 text-orange-700 dark:text-primary'
+          ? 'bg-orange-50 dark:bg-orange-950/30 border-primary text-primary dark:text-primary'
           : 'bg-white dark:bg-background border text-neutral-700 dark:text-muted-foreground hover:bg-neutral-50 dark:hover:bg-card'}"
       >
         <div class="flex items-center justify-center gap-2">
@@ -88,7 +88,7 @@
       <button
         onclick={() => handleThemeChange('light')}
         class="px-4 py-3 rounded-lg border transition-all {settings.theme === 'light'
-          ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-500 text-orange-700 dark:text-primary'
+          ? 'bg-orange-50 dark:bg-orange-950/30 border-primary text-primary dark:text-primary'
           : 'bg-white dark:bg-background border text-neutral-700 dark:text-muted-foreground hover:bg-neutral-50 dark:hover:bg-card'}"
       >
         <div class="flex flex-col items-center gap-2">
@@ -99,7 +99,7 @@
       <button
         onclick={() => handleThemeChange('dark')}
         class="px-4 py-3 rounded-lg border transition-all {settings.theme === 'dark'
-          ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-500 text-orange-700 dark:text-primary'
+          ? 'bg-orange-50 dark:bg-orange-950/30 border-primary text-primary dark:text-primary'
           : 'bg-white dark:bg-background border text-neutral-700 dark:text-muted-foreground hover:bg-neutral-50 dark:hover:bg-card'}"
       >
         <div class="flex flex-col items-center gap-2">
@@ -110,7 +110,7 @@
       <button
         onclick={() => handleThemeChange('system')}
         class="px-4 py-3 rounded-lg border transition-all {settings.theme === 'system'
-          ? 'bg-orange-50 dark:bg-orange-950/30 border-orange-500 text-orange-700 dark:text-primary'
+          ? 'bg-orange-50 dark:bg-orange-950/30 border-primary text-primary dark:text-primary'
           : 'bg-white dark:bg-background border text-neutral-700 dark:text-muted-foreground hover:bg-neutral-50 dark:hover:bg-card'}"
       >
         <div class="flex flex-col items-center gap-2">

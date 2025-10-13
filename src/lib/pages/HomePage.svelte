@@ -314,7 +314,7 @@
               onclick={() => hashtagFilter.toggleHashtag(hashtag)}
               class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all {
                 hashtagFilter.isSelected(hashtag)
-                  ? 'bg-orange-500 text-foreground border-2 border-orange-400'
+                  ? 'bg-primary text-foreground border-2 border-orange-400'
                   : 'bg-muted text-muted-foreground border-2 border-border hover:border'
               }"
             >
@@ -471,7 +471,7 @@
         <div class="flex justify-center py-2 lg:relative lg:static fixed bottom-20 left-0 right-0 z-[500] lg:z-auto pointer-events-none">
           <button
             onclick={() => notesFeed.loadPendingEvents()}
-            class="flex items-center gap-2 px-4 py-2 bg-neutral-900/95 hover:bg-muted border border-orange-500/50 lg:border-border rounded-full transition-all shadow-lg backdrop-blur-sm pointer-events-auto"
+            class="flex items-center gap-2 px-4 py-2 bg-neutral-900/95 hover:bg-muted border border-primary/50 lg:border-border rounded-full transition-all shadow-lg backdrop-blur-sm pointer-events-auto"
           >
             <!-- Avatars -->
             <div class="flex -space-x-2">

@@ -287,7 +287,7 @@
               onclick={() => paymentMethod = method.id}
               class={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-colors ${
                 paymentMethod === method.id
-                  ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/30'
+                  ? 'border-primary bg-orange-50 dark:bg-orange-900/30'
                   : 'border'
               }`}
             >
@@ -394,7 +394,7 @@
         <button
           onclick={handleCreate}
           disabled={creating || !satsAmount || !fiatAmount}
-          class="flex-1 px-4 py-3 bg-orange-600 text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="flex-1 px-4 py-3 bg-primary text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {creating ? 'Creating...' : 'Create Order'}
         </button>

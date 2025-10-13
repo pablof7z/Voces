@@ -402,7 +402,7 @@
       type="button"
       onclick={handleSubmit}
       disabled={isSubmitting || pictureUpload.status === 'uploading' || bannerUpload.status === 'uploading'}
-      class="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-foreground font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+      class="px-6 py-3 bg-primary hover:bg-accent-dark text-foreground font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
     >
       {#if isSubmitting}
         <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

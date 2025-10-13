@@ -440,7 +440,7 @@
         onclick={() => activeTab = 'notes'}
         class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'notes'
-            ? 'text-primary border-b-2 border-orange-500'
+            ? 'text-primary border-b-2 border-primary'
             : 'text-muted-foreground hover:text-muted-foreground'
         }`}
         aria-label="Notes"
@@ -454,7 +454,7 @@
         onclick={() => activeTab = 'replies'}
         class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'replies'
-            ? 'text-primary border-b-2 border-orange-500'
+            ? 'text-primary border-b-2 border-primary'
             : 'text-muted-foreground hover:text-muted-foreground'
         }`}
         aria-label="Replies"
@@ -468,7 +468,7 @@
         onclick={() => activeTab = 'media'}
         class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'media'
-            ? 'text-primary border-b-2 border-orange-500'
+            ? 'text-primary border-b-2 border-primary'
             : 'text-muted-foreground hover:text-muted-foreground'
         }`}
         aria-label="Media"
@@ -482,7 +482,7 @@
         onclick={() => activeTab = 'articles'}
         class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'articles'
-            ? 'text-primary border-b-2 border-orange-500'
+            ? 'text-primary border-b-2 border-primary'
             : 'text-muted-foreground hover:text-muted-foreground'
         }`}
         aria-label="Articles"
@@ -496,7 +496,7 @@
         onclick={() => activeTab = 'highlights'}
         class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'highlights'
-            ? 'text-primary border-b-2 border-orange-500'
+            ? 'text-primary border-b-2 border-primary'
             : 'text-muted-foreground hover:text-muted-foreground'
         }`}
         aria-label="Highlights"
@@ -510,7 +510,7 @@
         onclick={() => activeTab = 'packs'}
         class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'packs'
-            ? 'text-primary border-b-2 border-orange-500'
+            ? 'text-primary border-b-2 border-primary'
             : 'text-muted-foreground hover:text-muted-foreground'
         }`}
         aria-label="Follow Packs"
@@ -601,7 +601,7 @@
             onclick={() => packFilter = 'all'}
             class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               packFilter === 'all'
-                ? 'bg-orange-600 text-foreground'
+                ? 'bg-primary text-foreground'
                 : 'bg-background text-muted-foreground hover:bg-card'
             }`}
           >
@@ -611,7 +611,7 @@
             onclick={() => packFilter = 'created'}
             class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               packFilter === 'created'
-                ? 'bg-orange-600 text-foreground'
+                ? 'bg-primary text-foreground'
                 : 'bg-background text-muted-foreground hover:bg-card'
             }`}
           >
@@ -621,7 +621,7 @@
             onclick={() => packFilter = 'appears'}
             class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               packFilter === 'appears'
-                ? 'bg-orange-600 text-foreground'
+                ? 'bg-primary text-foreground'
                 : 'bg-background text-muted-foreground hover:bg-card'
             }`}
           >

@@ -170,7 +170,7 @@
       <div class="p-6 border-t border-border">
         <button
           onclick={closeIOSInstructions}
-          class="w-full bg-orange-500 hover:bg-orange-600 text-foreground font-semibold py-3 px-4 rounded-xl transition-colors"
+          class="w-full bg-primary hover:bg-accent-dark text-foreground font-semibold py-3 px-4 rounded-xl transition-colors"
         >
           Got it!
         </button>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Avatar } from '@nostr-dev-kit/svelte';
   import { ndk } from '$lib/ndk.svelte';
+  import QRCode from './wallet/QRCode.svelte';
 
   interface Props {
     isOpen: boolean;
@@ -17,7 +18,6 @@
   let copiedNpub = $state(false);
 
   const profileUrl = `https://njump.me/${npub}`;
-  const qrCodeUrl = $derived(`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(profileUrl)}`);
   const shareMessage = $derived(`Find me on Nostr: ${profileUrl}`);
 
   async function copyToClipboard(text: string, type: 'url' | 'npub') {
@@ -87,8 +87,8 @@
           </div>
         </div>
 
-        <div class="flex justify-center mb-6 p-4 bg-muted rounded-xl">
-          <img src={qrCodeUrl} alt="QR Code" class="rounded-lg" width="200" height="200" />
+        <div class="flex justify-center mb-6">
+          <QRCode value={profileUrl} size={200} />
         </div>
 
         <div class="space-y-3 mb-6">
@@ -172,7 +172,7 @@
           {#if typeof navigator !== 'undefined' && navigator.share}
             <button
               onclick={handleNativeShare}
-              class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-600 hover:bg-orange-700 text-foreground rounded-lg transition-colors mt-3"
+              class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-accent-dark text-foreground rounded-lg transition-colors mt-3"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />

@@ -208,7 +208,7 @@
         <button
           onclick={publishListing}
           disabled={!title.trim() || !content.trim() || isPublishing}
-          class="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 disabled:bg-muted disabled:cursor-not-allowed text-foreground rounded-lg transition-colors font-semibold text-sm"
+          class="px-5 py-2.5 bg-primary hover:bg-accent-dark disabled:bg-muted disabled:cursor-not-allowed text-foreground rounded-lg transition-colors font-semibold text-sm"
         >
           {isPublishing ? 'Publishing...' : 'Publish Listing'}
         </button>
@@ -226,7 +226,7 @@
               type="text"
               bind:value={title}
               placeholder="What are you listing?"
-              class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors"
+              class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
               maxlength="200"
             />
           </div>
@@ -239,7 +239,7 @@
               type="text"
               bind:value={summary}
               placeholder="Brief description"
-              class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors"
+              class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
               maxlength="200"
             />
           </div>
@@ -251,7 +251,7 @@
             <textarea
               bind:value={content}
               placeholder="Detailed description (Markdown supported)"
-              class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors resize-none"
+              class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors resize-none"
               rows="6"
             ></textarea>
           </div>
@@ -264,7 +264,7 @@
               type="text"
               bind:value={location}
               placeholder="City, State or Country"
-              class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors"
+              class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
             />
           </div>
         </div>
@@ -281,7 +281,7 @@
                 type="text"
                 bind:value={priceAmount}
                 placeholder="0.00"
-                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors"
+                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
               />
             </div>
 
@@ -291,7 +291,7 @@
               </label>
               <select
                 bind:value={priceCurrency}
-                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-orange-500 transition-colors"
+                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary transition-colors"
               >
                 {#each CURRENCIES as currency}
                   <option value={currency}>{currency}</option>
@@ -305,7 +305,7 @@
               </label>
               <select
                 bind:value={priceFrequency}
-                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-orange-500 transition-colors"
+                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary transition-colors"
               >
                 <option value={undefined}>One time</option>
                 <option value="hour">Per hour</option>
@@ -325,7 +325,7 @@
             <div class="flex gap-2">
               <select
                 bind:value={newCategory}
-                class="flex-1 px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-orange-500 transition-colors"
+                class="flex-1 px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary transition-colors"
               >
                 <option value="">Select a category</option>
                 {#each COMMON_CATEGORIES as cat}
@@ -336,7 +336,7 @@
                 type="text"
                 bind:value={newCategory}
                 placeholder="Or type custom"
-                class="flex-1 px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors"
+                class="flex-1 px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
                 onkeydown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
@@ -347,7 +347,7 @@
               <button
                 type="button"
                 onclick={addCategory}
-                class="px-4 py-3 bg-orange-600 hover:bg-orange-700 text-foreground rounded-lg transition-colors"
+                class="px-4 py-3 bg-primary hover:bg-accent-dark text-foreground rounded-lg transition-colors"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -363,7 +363,7 @@
                     <button
                       type="button"
                       onclick={() => removeCategory(category)}
-                      class="hover:text-orange-400"
+                      class="hover:text-primary"
                     >
                       <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -385,7 +385,7 @@
                 type="url"
                 bind:value={newImageUrl}
                 placeholder="Image URL"
-                class="flex-1 px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors"
+                class="flex-1 px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
                 onkeydown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
@@ -396,7 +396,7 @@
               <button
                 type="button"
                 onclick={addImage}
-                class="px-4 py-3 bg-orange-600 hover:bg-orange-700 text-foreground rounded-lg transition-colors"
+                class="px-4 py-3 bg-primary hover:bg-accent-dark text-foreground rounded-lg transition-colors"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />

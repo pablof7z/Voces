@@ -99,7 +99,7 @@
       <button
         onclick={handleSend}
         disabled={isSending || amount < 1 || success}
-        class="w-full py-3 bg-orange-600 hover:bg-orange-700 disabled:bg-muted disabled:cursor-not-allowed text-foreground font-medium rounded-lg transition-colors"
+        class="w-full py-3 bg-primary hover:bg-accent-dark disabled:bg-muted disabled:cursor-not-allowed text-foreground font-medium rounded-lg transition-colors"
       >
         {isSending ? 'Sending...' : success ? 'Sent!' : `Send ${amount} sats`}
       </button>

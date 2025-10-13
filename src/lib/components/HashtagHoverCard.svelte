@@ -130,7 +130,7 @@
                 class="px-4 py-2 rounded-full text-sm font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 {
                   isFollowing
                     ? 'bg-muted text-foreground hover:bg-muted border border'
-                    : 'bg-orange-500 text-foreground hover:bg-orange-600'
+                    : 'bg-primary text-foreground hover:bg-primary'
                 }"
               >
                 {#if isTogglingFollow}

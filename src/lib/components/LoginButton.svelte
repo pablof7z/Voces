@@ -6,7 +6,7 @@
     class?: string;
   }
 
-  const { class: className = "px-4 py-2 bg-purple-600 hover:bg-purple-700 text-foreground rounded-lg transition-colors font-semibold" }: Props = $props();
+  const { class: className = "px-4 py-2 bg-primary hover:bg-accent-dark text-foreground rounded-lg transition-colors font-semibold" }: Props = $props();
 
   const currentUser = ndk.$currentUser;
   const profile = ndk.$fetchProfile(() => currentUser?.pubkey);
@@ -25,7 +25,7 @@
     {#if profile?.image}
       <img src={profile.image} alt={displayName} class="w-6 h-6 rounded-full object-cover" />
     {:else}
-      <div class="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center">
+      <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
         <span class="text-xs font-bold">{displayName.charAt(0).toUpperCase()}</span>
       </div>
     {/if}

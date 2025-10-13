@@ -113,7 +113,7 @@
 
         {#if loading}
           <div class="text-center py-12">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             <p class="mt-4 text-sm text-muted-foreground dark:text-muted-foreground">Loading follow packs...</p>
           </div>
         {:else if followPacks.length === 0}
@@ -164,7 +164,7 @@
 
                 <!-- Selection checkmark -->
                 {#if isSelected}
-                  <div class="absolute top-1/2 right-4 -translate-y-1/2 bg-orange-500 text-foreground rounded-full p-1.5 z-10">
+                  <div class="absolute top-1/2 right-4 -translate-y-1/2 bg-primary text-foreground rounded-full p-1.5 z-10">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                     </svg>

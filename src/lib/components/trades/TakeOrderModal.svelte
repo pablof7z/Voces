@@ -169,7 +169,7 @@
           <button
             onclick={handleTakeOrder}
             disabled={!accepted}
-            class="flex-1 px-4 py-3 bg-orange-600 text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="flex-1 px-4 py-3 bg-primary text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Take Order
           </button>

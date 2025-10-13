@@ -183,7 +183,7 @@
   <div class="flex items-center gap-2">
     <button
       onclick={() => showTakeModal = true}
-      class="flex-1 flex items-center justify-center gap-1 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-orange-600 text-foreground rounded-lg hover:bg-orange-700 transition-colors text-sm md:text-base"
+      class="flex-1 flex items-center justify-center gap-1 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-primary text-foreground rounded-lg hover:bg-orange-700 transition-colors text-sm md:text-base"
     >
       <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>

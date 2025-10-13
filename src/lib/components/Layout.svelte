@@ -247,7 +247,7 @@
               goto('/compose');
             }
           }}
-          class="w-full flex items-center justify-center {sidebarCollapsed ? 'p-3' : 'gap-2 px-6 py-3'} bg-orange-500 hover:bg-orange-500/90 text-foreground font-semibold rounded-full transition-colors mt-4"
+          class="w-full flex items-center justify-center {sidebarCollapsed ? 'p-3' : 'gap-2 px-6 py-3'} bg-primary hover:bg-primary/90 text-foreground font-semibold rounded-full transition-colors mt-4"
           title={sidebarCollapsed ? (path === '/marketplace' ? $t('classifieds.createListing') : path === '/trades' ? 'Create Trade' : path.startsWith('/packs') ? 'Create Pack' : $t('navigation.compose')) : undefined}
         >
           {#if path === '/marketplace'}

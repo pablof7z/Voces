@@ -104,8 +104,8 @@
       label: 'Appearance',
       description: 'Customize theme and language',
       iconPath: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01',
-      iconColor: 'text-purple-400',
-      iconBg: 'bg-purple-400/10',
+      iconColor: 'text-primary',
+      iconBg: 'bg-orange-400/10',
       component: ThemeSettings,
       available: true,
     },
@@ -132,7 +132,7 @@
   let currentSection = $derived(sections.find(s => s.id === activeSection));
 </script>
 
-<div class="w-full min-h-screen bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-950 dark:to-black pb-20 md:pb-0">
+<div class="w-full min-h-screen bg-background pb-20 md:pb-0">
   <div class="max-w-lg mx-auto">
     {#if activeSection && currentSection}
       <!-- Detail View -->

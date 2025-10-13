@@ -87,7 +87,7 @@
       <p class="text-sm text-red-500">❌ {error}</p>
       <button
         onclick={loadCacheStats}
-        class="px-4 py-2 bg-primary/10 border border-orange-500/30 rounded-lg text-sm text-primary hover:bg-primary/20 transition-all"
+        class="px-4 py-2 bg-primary/10 border border-primary/30 rounded-lg text-sm text-primary hover:bg-primary/20 transition-all"
       >
         Retry
       </button>

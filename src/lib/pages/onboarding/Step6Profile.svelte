@@ -197,7 +197,7 @@
                   value={nip05Username}
                   oninput={(e) => handleUsernameInput(e.currentTarget.value)}
                   placeholder="username"
-                  class="text-sm text-neutral-900 dark:text-foreground bg-transparent border-b-2 border hover:border focus:border-orange-500 dark:focus:border-orange-500 outline-none transition-colors flex-1 min-w-0"
+                  class="text-sm text-neutral-900 dark:text-foreground bg-transparent border-b-2 border hover:border focus:border-primary dark:focus:border-primary outline-none transition-colors flex-1 min-w-0"
                 />
                 <span class="text-sm text-muted-foreground dark:text-muted-foreground">@{nip05Domain}</span>
               </div>

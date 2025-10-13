@@ -90,7 +90,7 @@
     {:else if settings.selectedRelay && selectedRelayInfo?.info?.icon}
       <img src={selectedRelayInfo.info.icon} alt="" class="w-6 h-6 rounded flex-shrink-0" />
     {:else if settings.selectedRelay}
-      <div class="w-6 h-6 rounded bg-orange-500 flex items-center justify-center flex-shrink-0">
+      <div class="w-6 h-6 rounded bg-primary flex items-center justify-center flex-shrink-0">
         <svg class="w-4 h-4 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
         </svg>

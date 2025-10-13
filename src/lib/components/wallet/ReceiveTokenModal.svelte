@@ -79,7 +79,7 @@
       <button
         onclick={handleReceive}
         disabled={isReceiving || !token.trim() || success}
-        class="w-full py-3 bg-orange-600 hover:bg-orange-700 disabled:bg-muted disabled:cursor-not-allowed text-foreground font-medium rounded-lg transition-colors"
+        class="w-full py-3 bg-primary hover:bg-accent-dark disabled:bg-muted disabled:cursor-not-allowed text-foreground font-medium rounded-lg transition-colors"
       >
         {isReceiving ? 'Receiving...' : success ? 'Received!' : 'Receive Token'}
       </button>

@@ -64,22 +64,22 @@
     tabindex="-1"
   >
     <div
-      class="relative w-full max-w-md mx-4 bg-gradient-to-br from-neutral-900 to-black border-2 border-purple-600/30 rounded-3xl shadow-2xl shadow-purple-900/50 overflow-hidden"
+      class="relative w-full max-w-md mx-4 bg-gradient-to-br from-neutral-900 to-black border-2 border-orange-600/30 rounded-3xl shadow-2xl shadow-orange-900/50 overflow-hidden"
       onclick={(e) => e.stopPropagation()}
       role="dialog"
       aria-modal="true"
     >
       <!-- Header with glow effect -->
-      <div class="relative px-6 py-6 border-b border-purple-600/20 bg-gradient-to-r from-purple-900/20 to-pink-900/20">
-        <div class="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-pink-600/10 blur-xl"></div>
+      <div class="relative px-6 py-6 border-b border-orange-600/20 bg-gradient-to-r from-orange-900/20 to-red-900/20">
+        <div class="absolute inset-0 bg-gradient-to-r from-orange-600/10 to-red-600/10 blur-xl"></div>
         <div class="relative flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-600/50">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-600 to-red-600 flex items-center justify-center shadow-lg shadow-orange-600/50">
               <span class="text-2xl">⚡</span>
             </div>
             <div>
               <h2 class="text-xl font-bold text-foreground">Zap Amount</h2>
-              <p class="text-sm text-purple-300">Choose your zap amount</p>
+              <p class="text-sm text-orange-300">Choose your zap amount</p>
             </div>
           </div>
           <button
@@ -102,7 +102,7 @@
             <button
               onclick={() => handleAmountSelect(amount.value)}
               class="group relative overflow-hidden rounded-2xl p-4 transition-all duration-200 {selectedAmount === amount.value && !isCustom
-                ? 'bg-gradient-to-br from-purple-600 to-pink-600 shadow-lg shadow-purple-600/50 scale-105'
+                ? 'bg-gradient-to-br from-orange-600 to-red-600 shadow-lg shadow-orange-600/50 scale-105'
                 : 'bg-gradient-to-br from-neutral-800 to-neutral-900 hover:from-neutral-700 hover:to-neutral-800 hover:scale-105'}"
               type="button"
             >
@@ -117,7 +117,7 @@
 
         <!-- Custom Amount Input -->
         <div class="space-y-2">
-          <label for="custom-amount" class="text-sm font-semibold text-purple-300">
+          <label for="custom-amount" class="text-sm font-semibold text-orange-300">
             Custom Amount
           </label>
           <div class="relative">
@@ -127,7 +127,7 @@
               bind:value={customAmount}
               oninput={handleCustomInput}
               placeholder="Enter custom amount..."
-              class="w-full px-4 py-4 bg-gradient-to-br from-neutral-800 to-neutral-900 border-2 {isCustom ? 'border-purple-600' : 'border-border'} rounded-2xl text-foreground placeholder-neutral-500 focus:outline-none focus:border-purple-600 transition-colors text-lg font-semibold"
+              class="w-full px-4 py-4 bg-gradient-to-br from-neutral-800 to-neutral-900 border-2 {isCustom ? 'border-orange-600' : 'border-border'} rounded-2xl text-foreground placeholder-neutral-500 focus:outline-none focus:border-orange-600 transition-colors text-lg font-semibold"
             />
             <div class="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold">
               sats
@@ -137,10 +137,10 @@
 
         <!-- Selected Amount Display -->
         {#if selectedAmount > 0}
-          <div class="p-4 rounded-2xl bg-gradient-to-br from-purple-900/30 to-pink-900/30 border border-purple-600/30">
+          <div class="p-4 rounded-2xl bg-gradient-to-br from-orange-900/30 to-red-900/30 border border-orange-600/30">
             <div class="flex items-center justify-between">
-              <span class="text-sm text-purple-300">Selected Amount:</span>
-              <span class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <span class="text-sm text-orange-300">Selected Amount:</span>
+              <span class="text-2xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
                 {selectedAmount.toLocaleString()} sats
               </span>
             </div>
@@ -159,7 +159,7 @@
           <button
             onclick={handleZap}
             disabled={selectedAmount <= 0}
-            class="flex-1 px-6 py-4 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:from-neutral-700 disabled:to-neutral-800 disabled:cursor-not-allowed text-foreground font-bold shadow-lg shadow-purple-600/50 hover:shadow-purple-600/70 transition-all disabled:shadow-none flex items-center justify-center gap-2"
+            class="flex-1 px-6 py-4 rounded-2xl bg-gradient-to-br from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 disabled:from-neutral-700 disabled:to-neutral-800 disabled:cursor-not-allowed text-foreground font-bold shadow-lg shadow-orange-600/50 hover:shadow-orange-600/70 transition-all disabled:shadow-none flex items-center justify-center gap-2"
             type="button"
           >
             <span class="text-xl">⚡</span>
