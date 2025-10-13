@@ -7,9 +7,21 @@ export const AGORAS_SELECTION = 'agoras';
 
 /** Agora relay URLs */
 export const AGORA_RELAYS = [
+  'ws://test.agorawlc.com:3335',
   'wss://ve.agorawlc.com',
   'wss://ni.agorawlc.com'
 ] as const;
+
+/**
+ * Maps agora relay URLs to their preferred language
+ * When a user accepts an invitation from these agoras, the app will automatically
+ * set the language to the mapped value
+ */
+export const AGORA_LANGUAGE_MAP: Record<string, 'en' | 'es'> = {
+  'wss://ve.agorawlc.com': 'es', // Venezuela - Spanish
+  'wss://ni.agorawlc.com': 'es', // Nicaragua - Spanish
+  'ws://test.agorawlc.com:3335': 'en', // Test - English
+};
 
 /**
  * Checks if a relay URL is an Agora relay
@@ -47,4 +59,14 @@ export function getRelaysToUse(
     return [selectedRelay];
   }
   return enabledRelays;
+}
+
+/**
+ * Gets the preferred language for a given agora relay
+ * @param relayUrl - The relay URL to check
+ * @returns The preferred language code, or null if no mapping exists
+ */
+export function getAgoraLanguage(relayUrl: string | null | undefined): 'en' | 'es' | null {
+  if (!relayUrl) return null;
+  return AGORA_LANGUAGE_MAP[relayUrl] ?? null;
 }

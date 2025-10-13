@@ -81,7 +81,7 @@
       <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-blue-600" />
     {/if}
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-    <div class="absolute bottom-12 left-12 right-12 text-white">
+    <div class="absolute bottom-12 left-12 right-12 text-foreground">
       <h1 class="text-5xl font-bold mb-4">
         Your Voice Matters
       </h1>
@@ -97,14 +97,14 @@
     <div class="max-w-xl w-full">
       <div class="mb-12 lg:hidden">
         <h1 class="text-4xl font-bold mb-3">Your Voice Matters</h1>
-        <p class="text-neutral-600 dark:text-neutral-400">
+        <p class="text-muted-foreground dark:text-muted-foreground">
           Choose your community to connect with local voices
         </p>
       </div>
 
       <div class="lg:mb-8">
         <h2 class="text-2xl font-semibold mb-3">Choose Your Community</h2>
-        <p class="text-neutral-600 dark:text-neutral-400 text-sm">
+        <p class="text-muted-foreground dark:text-muted-foreground text-sm">
           Select where you want to connect and contribute
         </p>
       </div>
@@ -118,7 +118,7 @@
               relative overflow-hidden rounded-lg border-2 transition-all
               ${isSelected
                 ? 'border-black dark:border-white shadow-lg scale-[1.02]'
-                : 'border-neutral-200 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-600'
+                : 'border hover:border dark:hover:border'
               }
             `}
           >
@@ -137,11 +137,11 @@
               <div class={`absolute inset-0 bg-gradient-to-br ${community.fallbackColor}`} style="display: none;" />
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div class="absolute bottom-3 left-3 right-3">
-                <div class="flex items-center gap-2 text-white">
+                <div class="flex items-center gap-2 text-foreground">
                   <span class="text-2xl">{community.flag}</span>
                   <span class="font-semibold">{community.name}</span>
                 </div>
-                <div class="text-xs text-white/80 mt-1">
+                <div class="text-xs text-foreground/80 mt-1">
                   {community.leaders.length} community leaders
                 </div>
               </div>
@@ -156,8 +156,8 @@
         class={`
           w-full py-4 px-6 rounded-lg font-medium transition-all
           ${selectedCommunity
-            ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200'
-            : 'bg-neutral-100 dark:bg-black text-neutral-400 cursor-not-allowed'
+            ? 'bg-background dark:bg-white text-foreground dark:text-black hover:bg-muted dark:hover:bg-neutral-200'
+            : 'bg-neutral-100 dark:bg-background text-muted-foreground cursor-not-allowed'
           }
         `}
       >

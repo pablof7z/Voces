@@ -30,6 +30,18 @@ export function generateDTag(): string {
 }
 
 /**
+ * Generate a random invite code (24 alphanumeric characters)
+ */
+export function generateInviteCode(): string {
+	const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+	let result = '';
+	for (let i = 0; i < 24; i++) {
+		result += chars.charAt(Math.floor(Math.random() * chars.length));
+	}
+	return result;
+}
+
+/**
  * Convert a string key to a CryptoKey for AES-GCM
  */
 async function stringKeyToCryptoKey(keyString: string): Promise<CryptoKey> {

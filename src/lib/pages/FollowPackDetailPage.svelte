@@ -127,17 +127,17 @@
   <!-- Back button -->
   <button
     onclick={handleBack}
-    class="inline-flex items-center gap-2 text-neutral-400 hover:text-white mb-6 transition-colors"
+    class="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
   >
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
     </svg>
     Back to Follow Packs
   </button>
-
+{packId}
   {#if pack}
     <!-- Pack Header -->
-    <div class="bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden mb-6">
+    <div class="bg-card border border-border rounded-xl overflow-hidden mb-6">
       {#if pack.image}
         <div class="h-48 w-full">
           <img
@@ -151,10 +151,10 @@
       <div class="p-6">
         <div class="flex items-start justify-between mb-4">
           <div>
-            <h1 class="text-2xl font-bold text-white mb-2">
+            <h1 class="text-2xl font-bold text-foreground mb-2">
               {pack.title}
             </h1>
-            <p class="text-neutral-400">
+            <p class="text-muted-foreground">
               {pack.description || 'A curated list of accounts to follow'}
             </p>
           </div>
@@ -162,7 +162,7 @@
             {#if isMyPack}
               <button
                 onclick={handleEdit}
-                class="flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white font-medium rounded-lg transition-colors whitespace-nowrap"
+                class="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-muted text-foreground font-medium rounded-lg transition-colors whitespace-nowrap"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -173,7 +173,7 @@
               <button
                 onclick={handleFollowAll}
                 disabled={isFollowingAll}
-                class="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-500/90 disabled:bg-neutral-700 text-white font-medium rounded-lg transition-colors whitespace-nowrap"
+                class="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-500/90 disabled:bg-muted text-foreground font-medium rounded-lg transition-colors whitespace-nowrap"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -183,7 +183,7 @@
             {/if}
             <button
               onclick={handleFavorite}
-              class="p-2.5 rounded-lg transition-colors {isFavorite ? 'bg-red-500/10 text-red-500' : 'bg-neutral-800 text-neutral-400 hover:text-white'}"
+              class="p-2.5 rounded-lg transition-colors {isFavorite ? 'bg-red-500/10 text-red-500' : 'bg-muted text-muted-foreground hover:text-foreground'}"
             >
               <svg class="w-5 h-5 {isFavorite ? 'fill-current' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -194,14 +194,14 @@
 
         <!-- Stats -->
         <div class="flex items-center gap-6 mb-6 text-sm">
-          <div class="flex items-center gap-2 text-neutral-400">
+          <div class="flex items-center gap-2 text-muted-foreground">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
             <span>{pubkeys.length} members</span>
           </div>
           {#if pack.created_at}
-            <div class="flex items-center gap-2 text-neutral-400">
+            <div class="flex items-center gap-2 text-muted-foreground">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
@@ -220,10 +220,10 @@
             <Avatar {ndk} pubkey={pack.pubkey} class="w-10 h-10 rounded-full cursor-pointer hover:opacity-80 transition-opacity" />
           </button>
           <div>
-            <p class="text-sm text-neutral-500">Created by</p>
+            <p class="text-sm text-muted-foreground">Created by</p>
             <button
               onclick={() => goto(`/p/${pack.pubkey}`)}
-              class="font-medium text-white hover:text-orange-500 transition-colors"
+              class="font-medium text-foreground hover:text-primary transition-colors"
             >
               {packCreatorProfile?.name || 'Anonymous'}
             </button>
@@ -233,11 +233,11 @@
     </div>
 
     <!-- Tabs -->
-    <div class="border-b border-neutral-800 mb-6">
+    <div class="border-b border-border mb-6">
       <div class="flex gap-6">
         <button
           onclick={() => activeTab = 'feed'}
-          class="pb-3 px-1 font-medium transition-colors relative {activeTab === 'feed' ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'}"
+          class="pb-3 px-1 font-medium transition-colors relative {activeTab === 'feed' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}"
         >
           Feed
           {#if activeTab === 'feed'}
@@ -246,7 +246,7 @@
         </button>
         <button
           onclick={() => activeTab = 'members'}
-          class="pb-3 px-1 font-medium transition-colors relative {activeTab === 'members' ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'}"
+          class="pb-3 px-1 font-medium transition-colors relative {activeTab === 'members' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}"
         >
           Members ({pubkeys.length})
           {#if activeTab === 'members'}
@@ -258,13 +258,13 @@
 
     <!-- Content -->
     {#if activeTab === 'feed'}
-      <div class="divide-y divide-neutral-800/50 border-y border-neutral-800/50">
+      <div class="divide-y divide-neutral-800/50 border-y border-border">
         {#if feedEvents.length === 0 && !feedEosed}
-          <div class="p-8 text-center text-neutral-400">
+          <div class="p-8 text-center text-muted-foreground">
             Loading notes from pack members...
           </div>
         {:else if feedEvents.length === 0}
-          <div class="p-8 text-center text-neutral-400">
+          <div class="p-8 text-center text-muted-foreground">
             No notes found from pack members
           </div>
         {:else}
@@ -279,20 +279,20 @@
           {@const memberProfile = ndk.$fetchProfile(() => pubkey)}
           <button
             onclick={() => goto(`/p/${pubkey}`)}
-            class="flex items-center gap-3 p-4 bg-neutral-900 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors text-left"
+            class="flex items-center gap-3 p-4 bg-card border border-border rounded-lg hover:border-border transition-colors text-left"
           >
             <Avatar {ndk} {pubkey} class="w-12 h-12 rounded-full" />
             <div class="flex-1 min-w-0">
-              <p class="font-medium text-white truncate">
+              <p class="font-medium text-foreground truncate">
                 {memberProfile?.name || 'Anonymous'}
               </p>
               {#if memberProfile?.nip05}
-                <p class="text-sm text-neutral-500 truncate">
+                <p class="text-sm text-muted-foreground truncate">
                   {memberProfile?.nip05}
                 </p>
               {/if}
               {#if memberProfile?.about}
-                <p class="text-sm text-neutral-400 line-clamp-1 mt-1">
+                <p class="text-sm text-muted-foreground line-clamp-1 mt-1">
                   {memberProfile?.about}
                 </p>
               {/if}
@@ -304,14 +304,14 @@
   {:else if isLoading}
     <div class="text-center py-12">
       <div class="inline-block w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-      <p class="text-neutral-400">Loading follow pack...</p>
+      <p class="text-muted-foreground">Loading follow pack...</p>
     </div>
   {:else}
     <div class="text-center py-12">
-      <p class="text-neutral-400">Follow pack not found</p>
+      <p class="text-muted-foreground">Follow pack not found</p>
       <button
         onclick={handleBack}
-        class="text-orange-500 hover:text-orange-500/90 mt-4 inline-block transition-colors"
+        class="text-primary hover:text-primary/90 mt-4 inline-block transition-colors"
       >
         Browse all packs
       </button>

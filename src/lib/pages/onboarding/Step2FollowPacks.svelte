@@ -85,15 +85,15 @@
     <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/70" />
     <div class="absolute bottom-0 left-0 right-0 p-12">
       <div class="mb-8">
-        <p class="text-3xl text-white/90 italic leading-relaxed">
+        <p class="text-3xl text-foreground/90 italic leading-relaxed">
           "We're not just surviving—we're building the future our community deserves. One voice at a time."
         </p>
       </div>
       <div class="flex items-center gap-4">
-        <div class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white font-semibold">
+        <div class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-foreground font-semibold">
           MR
         </div>
-        <div class="text-white">
+        <div class="text-foreground">
           <div class="font-semibold">María Rodríguez</div>
           <div class="text-sm opacity-75">Community Organizer · Caracas</div>
         </div>
@@ -106,7 +106,7 @@
     <div class="max-w-xl w-full">
       <div class="mb-6 lg:mb-8">
         <h1 class="text-2xl lg:text-3xl font-bold mb-2 lg:mb-3">Build Your Network</h1>
-        <p class="text-sm lg:text-base text-neutral-600 dark:text-neutral-400">
+        <p class="text-sm lg:text-base text-muted-foreground dark:text-muted-foreground">
           Follow curated packs from the {communityInfo.name} community
         </p>
       </div>
@@ -114,10 +114,10 @@
         {#if loading}
           <div class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-            <p class="mt-4 text-sm text-neutral-600 dark:text-neutral-400">Loading follow packs...</p>
+            <p class="mt-4 text-sm text-muted-foreground dark:text-muted-foreground">Loading follow packs...</p>
           </div>
         {:else if followPacks.length === 0}
-          <div class="text-center py-8 text-neutral-500 dark:text-neutral-400">
+          <div class="text-center py-8 text-muted-foreground dark:text-muted-foreground">
             No follow packs available for this community yet
           </div>
         {:else}
@@ -128,7 +128,7 @@
                 onclick={() => handlePackClick(pack)}
                 class={`
                   relative w-full cursor-pointer rounded-xl transition-all text-left
-                  flex gap-3 sm:gap-4 p-3 sm:p-4 bg-white dark:bg-black hover:bg-neutral-50 dark:hover:bg-neutral-900 border border-neutral-200 dark:border-neutral-800
+                  flex gap-3 sm:gap-4 p-3 sm:p-4 bg-white dark:bg-background hover:bg-neutral-50 dark:hover:bg-card border border dark:border
                   ${isSelected ? 'ring-2 ring-orange-500 bg-orange-50 dark:bg-orange-950/20' : ''}
                 `}
               >
@@ -147,16 +147,16 @@
 
                 <!-- Content -->
                 <div class="flex-1 min-w-0">
-                  <h4 class="font-semibold text-sm sm:text-base text-neutral-900 dark:text-neutral-100 truncate">
+                  <h4 class="font-semibold text-sm sm:text-base text-neutral-900 dark:text-foreground truncate">
                     {pack.title}
                   </h4>
                   {#if pack.description}
-                    <p class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 line-clamp-1 sm:truncate">
+                    <p class="text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground line-clamp-1 sm:truncate">
                       {pack.description}
                     </p>
                   {/if}
                   <div class="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-2">
-                    <span class="text-[10px] sm:text-xs text-neutral-500 dark:text-neutral-400">
+                    <span class="text-[10px] sm:text-xs text-muted-foreground dark:text-muted-foreground">
                       {pack.pubkeys?.length || 0} members
                     </span>
                   </div>
@@ -164,7 +164,7 @@
 
                 <!-- Selection checkmark -->
                 {#if isSelected}
-                  <div class="absolute top-1/2 right-4 -translate-y-1/2 bg-orange-500 text-white rounded-full p-1.5 z-10">
+                  <div class="absolute top-1/2 right-4 -translate-y-1/2 bg-orange-500 text-foreground rounded-full p-1.5 z-10">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                     </svg>
@@ -181,8 +181,8 @@
         class={`
           w-full py-3 lg:py-4 px-6 rounded-lg font-medium transition-all text-sm lg:text-base
           ${selectedPacks.length > 0 && !loading
-            ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200'
-            : 'bg-neutral-100 dark:bg-black text-neutral-400 cursor-not-allowed'
+            ? 'bg-background dark:bg-white text-foreground dark:text-black hover:bg-muted dark:hover:bg-neutral-200'
+            : 'bg-neutral-100 dark:bg-background text-muted-foreground cursor-not-allowed'
           }
         `}
       >

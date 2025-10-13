@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
   import { NDKKind, NDKEvent } from '@nostr-dev-kit/ndk';
+  import { t } from 'svelte-i18n';
 
   interface Props {
     pubkey: string;
@@ -38,8 +39,8 @@
     onclick={handleToggleFollow}
     class={`px-4 py-2 rounded-full font-medium transition-colors ${
       variant === 'outline' || isFollowing
-        ? 'bg-transparent border border-neutral-600 text-neutral-300 hover:bg-red-500/10 hover:border-red-500 hover:text-red-500'
-        : 'bg-orange-600 text-white hover:bg-orange-700'
+        ? 'bg-transparent border border text-muted-foreground hover:bg-red-500/10 hover:border-red-500 hover:text-red-500'
+        : 'bg-orange-600 text-foreground hover:bg-orange-700'
     } ${className}`}
   >
     {#if showIcon}
@@ -53,6 +54,6 @@
         </svg>
       {/if}
     {/if}
-    {isFollowing ? 'Unfollow' : 'Follow'}
+    {isFollowing ? $t('profile.unfollow') : $t('profile.follow')}
   </button>
 {/if}

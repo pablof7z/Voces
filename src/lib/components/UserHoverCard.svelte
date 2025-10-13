@@ -50,9 +50,9 @@
   >
     <div class="relative pointer-events-auto">
       <!-- Main card -->
-      <div class="relative w-80 bg-neutral-900 border border-neutral-700 rounded-xl shadow-2xl overflow-hidden">
+      <div class="relative w-80 bg-card border border-border rounded-xl shadow-2xl overflow-hidden">
         <!-- Banner section -->
-        <div class="relative h-20 bg-neutral-800">
+        <div class="relative h-20 bg-muted">
           {#if profile?.banner}
             <img
               src={profile.banner}
@@ -72,13 +72,13 @@
             <Avatar
               {ndk}
               {pubkey}
-              class="w-20 h-20 rounded-full border-4 border-neutral-900 shadow-xl"
+              class="w-20 h-20 rounded-full border-4 border-foreground shadow-xl"
             />
           </div>
 
           <!-- Name and username -->
           <div class="mb-3">
-            <h3 class="text-base font-semibold text-white flex items-center gap-1.5 mb-0.5">
+            <h3 class="text-base font-semibold text-foreground flex items-center gap-1.5 mb-0.5">
               <span class="truncate">
                 {profile?.displayName || profile?.name || 'Anonymous'}
               </span>
@@ -88,7 +88,7 @@
                 </svg>
               {/if}
             </h3>
-            <p class="text-sm text-neutral-500 truncate">
+            <p class="text-sm text-muted-foreground truncate">
               {#if profile?.nip05}
                 {profile.nip05}
               {:else}
@@ -100,24 +100,24 @@
           <!-- Bio -->
           {#if profile?.about}
             <div class="mb-4">
-              <div class="text-sm text-neutral-400 line-clamp-3 leading-relaxed">
+              <div class="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
                 <EventContent
                   content={profile.about}
-                  class="text-neutral-400"
+                  class="text-muted-foreground"
                 />
               </div>
             </div>
           {/if}
 
           <!-- Stats -->
-          <div class="flex items-center gap-4 mb-4 text-sm border-t border-neutral-800 pt-3">
+          <div class="flex items-center gap-4 mb-4 text-sm border-t border-border pt-3">
             <div class="flex items-center gap-1.5">
-              <span class="font-medium text-white">{noteCount}</span>
-              <span class="text-neutral-500">notes</span>
+              <span class="font-medium text-foreground">{noteCount}</span>
+              <span class="text-muted-foreground">notes</span>
             </div>
             <div class="flex items-center gap-1.5">
-              <span class="font-medium text-white">{followingCount}</span>
-              <span class="text-neutral-500">following</span>
+              <span class="font-medium text-foreground">{followingCount}</span>
+              <span class="text-muted-foreground">following</span>
             </div>
           </div>
 

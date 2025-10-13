@@ -2,10 +2,12 @@
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { ndk } from '$lib/ndk.svelte';
+  import { layoutMode } from '$lib/stores/layoutMode.svelte';
   import { fetchArticleByNaddr } from '$lib/utils/fetchArticle';
   import ArticleHeader from '$lib/components/ArticleHeader.svelte';
   import ArticleContent from '$lib/components/ArticleContent.svelte';
   import CommentSection from '$lib/components/CommentSection.svelte';
+  import TextHighlightToolbar from '$lib/components/TextHighlightToolbar.svelte';
   import type { NDKArticle } from '@nostr-dev-kit/ndk';
   import { NDKKind, NDKList, NDKEvent } from '@nostr-dev-kit/ndk';
   import { nip19 } from 'nostr-tools';
@@ -19,6 +21,11 @@
   let showShareMenu = $state(false);
   let copied = $state(false);
   let userError = $state<string | null>(null);
+  let highlights = $state<NDKEvent[]>([]);
+  let showHighlightToolbar = $state(false);
+  let selectedText = $state('');
+  let selectedRange = $state<Range | null>(null);
+  let toolbarPosition = $state({ x: 0, y: 0 });
 
   const naddr = $derived($page.params.naddr);
   const currentUser = ndk.$currentUser;
@@ -70,6 +77,56 @@
     } catch (err) {
       console.error('Failed to check bookmark status:', err);
     }
+  }
+
+  async function fetchHighlights() {
+    if (!article) return;
+
+    try {
+      const articleTag = article.tagId();
+      const highlightEvents = await ndk.fetchEvents({
+        kinds: [9802], // NIP-84 Highlight kind
+        '#a': [articleTag],
+      });
+
+      highlights = Array.from(highlightEvents);
+    } catch (err) {
+      console.error('Failed to fetch highlights:', err);
+    }
+  }
+
+  function handleTextSelected(text: string, range: Range) {
+    selectedText = text;
+    selectedRange = range;
+
+    const rect = range.getBoundingClientRect();
+    toolbarPosition = {
+      x: rect.left + rect.width / 2,
+      y: rect.top + window.scrollY,
+    };
+
+    showHighlightToolbar = true;
+  }
+
+  function handleHighlightCreated() {
+    showHighlightToolbar = false;
+    selectedText = '';
+    selectedRange = null;
+
+    // Clear the text selection
+    window.getSelection()?.removeAllRanges();
+
+    // Refresh highlights
+    fetchHighlights();
+  }
+
+  function handleCancelHighlight() {
+    showHighlightToolbar = false;
+    selectedText = '';
+    selectedRange = null;
+
+    // Clear the text selection
+    window.getSelection()?.removeAllRanges();
   }
 
   async function handleBookmark() {
@@ -144,45 +201,52 @@
   }
 
   $effect(() => {
+    layoutMode.setArticleMode();
+
     if (naddr) {
       loadArticle().then(() => {
         if (article) {
           checkBookmark();
+          fetchHighlights();
         }
       });
     }
+
+    return () => {
+      layoutMode.reset();
+    };
   });
 </script>
 
 {#if isLoading}
-  <div class="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-black">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-900 dark:border-white"></div>
-    <p class="mt-4 text-neutral-600 dark:text-neutral-400">Loading article...</p>
+  <div class="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-background">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-foreground"></div>
+    <p class="mt-4 text-muted-foreground dark:text-muted-foreground">Loading article...</p>
   </div>
 {:else if error || !article}
-  <div class="flex flex-col items-center justify-center min-h-screen px-4 bg-white dark:bg-black">
-    <h1 class="text-2xl font-bold text-neutral-900 dark:text-white mb-2">Article Not Found</h1>
-    <p class="text-neutral-600 dark:text-neutral-400 mb-4">{error || 'The article could not be loaded.'}</p>
+  <div class="flex flex-col items-center justify-center min-h-screen px-4 bg-white dark:bg-background">
+    <h1 class="text-2xl font-bold text-neutral-900 dark:text-foreground mb-2">Article Not Found</h1>
+    <p class="text-muted-foreground dark:text-muted-foreground mb-4">{error || 'The article could not be loaded.'}</p>
     <button
       type="button"
       onclick={() => goto('/')}
-      class="px-4 py-2 bg-neutral-900 dark:bg-white text-white dark:text-black rounded-full hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors text-sm font-medium"
+      class="px-4 py-2 bg-card dark:bg-white text-foreground dark:text-black rounded-full hover:bg-muted dark:hover:bg-neutral-100 transition-colors text-sm font-medium"
     >
       Go Home
     </button>
   </div>
 {:else}
-  <div class="min-h-screen bg-white dark:bg-black">
-    <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-black/95 backdrop-blur-sm">
+  <div class="min-h-screen bg-white dark:bg-background">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-background/95 backdrop-blur-sm">
       <div class="max-w-screen-lg mx-auto px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <button
             type="button"
             onclick={goBack}
-            class="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-full transition-colors"
+            class="p-2 hover:bg-neutral-100 dark:hover:bg-card rounded-full transition-colors"
             aria-label="Go back"
           >
-            <svg class="w-5 h-5 text-neutral-700 dark:text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-neutral-700 dark:text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
@@ -195,7 +259,7 @@
               class={`p-2 rounded-full transition-colors ${
                 isBookmarked
                   ? 'text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
-                  : 'hover:bg-neutral-100 dark:hover:bg-neutral-900 text-neutral-700 dark:text-neutral-300'
+                  : 'hover:bg-neutral-100 dark:hover:bg-card text-neutral-700 dark:text-muted-foreground'
               } ${!currentUser ? 'opacity-50 cursor-not-allowed' : ''}`}
               title={currentUser ? (isBookmarked ? 'Remove bookmark' : 'Add bookmark') : 'Login to bookmark'}
             >
@@ -208,33 +272,33 @@
               <button
                 type="button"
                 onclick={() => showShareMenu = !showShareMenu}
-                class="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-full transition-colors"
+                class="p-2 hover:bg-neutral-100 dark:hover:bg-card rounded-full transition-colors"
               >
-                <svg class="w-5 h-5 text-neutral-700 dark:text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-neutral-700 dark:text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                 </svg>
               </button>
 
               {#if showShareMenu}
-                <div class="absolute right-0 mt-2 w-48 bg-white dark:bg-neutral-900 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-800">
+                <div class="absolute right-0 mt-2 w-48 bg-popover rounded-lg shadow-lg border border-border">
                   <button
                     type="button"
                     onclick={() => handleShare('twitter')}
-                    class="w-full px-4 py-2 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800 flex items-center gap-3"
+                    class="w-full px-4 py-2 text-left hover:bg-neutral-50 dark:hover:bg-muted flex items-center gap-3"
                   >
                     Share on X
                   </button>
                   <button
                     type="button"
                     onclick={() => handleShare('facebook')}
-                    class="w-full px-4 py-2 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800 flex items-center gap-3"
+                    class="w-full px-4 py-2 text-left hover:bg-neutral-50 dark:hover:bg-muted flex items-center gap-3"
                   >
                     Share on Facebook
                   </button>
                   <button
                     type="button"
                     onclick={() => handleShare('linkedin')}
-                    class="w-full px-4 py-2 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800 flex items-center gap-3"
+                    class="w-full px-4 py-2 text-left hover:bg-neutral-50 dark:hover:bg-muted flex items-center gap-3"
                   >
                     Share on LinkedIn
                   </button>
@@ -245,14 +309,14 @@
             <button
               type="button"
               onclick={handleCopyIdentifier}
-              class="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-full transition-colors"
+              class="p-2 hover:bg-neutral-100 dark:hover:bg-card rounded-full transition-colors"
             >
               {#if copied}
                 <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
               {:else}
-                <svg class="w-5 h-5 text-neutral-700 dark:text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-neutral-700 dark:text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
               {/if}
@@ -273,7 +337,7 @@
 
         <div class="absolute inset-0 flex items-end">
           <div class="max-w-screen-lg mx-auto px-6 lg:px-8 pb-8 w-full">
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight tracking-tight font-serif drop-shadow-2xl">
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight tracking-tight font-serif drop-shadow-2xl">
               {article.title || 'Untitled'}
             </h1>
 
@@ -286,15 +350,15 @@
                 <Avatar {ndk} pubkey={article.pubkey} class="w-10 h-10 sm:w-12 sm:h-12 ring-2 ring-white hover:ring-4 transition-all" />
               </button>
 
-              <div class="text-white">
+              <div class="text-foreground">
                 <button
                   type="button"
                   onclick={() => window.location.href = `/p/${nip19.npubEncode(article.pubkey)}`}
-                  class="font-semibold text-base hover:text-white/80 transition-colors block"
+                  class="font-semibold text-base hover:text-foreground/80 transition-colors block"
                 >
                   {authorName}
                 </button>
-                <div class="flex items-center gap-2 text-sm text-white/80">
+                <div class="flex items-center gap-2 text-sm text-foreground/80">
                   {#if publishedAt}
                     <time datetime={new Date(publishedAt * 1000).toISOString()}>
                       {new Date(publishedAt * 1000).toLocaleDateString('en-US', {
@@ -334,13 +398,28 @@
         {#if !heroImage}
           <ArticleHeader {article} />
         {:else}
-          <div class="mt-12 border-t border-neutral-200 dark:border-neutral-800" />
+          <div class="mt-12 border-t border" />
         {/if}
 
         <div class={heroImage ? 'mt-12' : ''}>
-          <ArticleContent content={article.content} emojiTags={article.tags} />
+          <ArticleContent
+            content={article.content}
+            emojiTags={article.tags}
+            {highlights}
+            onTextSelected={handleTextSelected}
+          />
         </div>
       </article>
+
+      {#if showHighlightToolbar && article}
+        <TextHighlightToolbar
+          {article}
+          {selectedText}
+          position={toolbarPosition}
+          onHighlightCreated={handleHighlightCreated}
+          onCancel={handleCancelHighlight}
+        />
+      {/if}
 
       <div class="max-w-screen-md mx-auto px-6 lg:px-8 mt-16">
         <CommentSection {article} onError={(err) => userError = err} />

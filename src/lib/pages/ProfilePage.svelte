@@ -9,11 +9,14 @@
   import ShareProfileModal from '$lib/components/ShareProfileModal.svelte';
   import MediaGrid from '$lib/components/MediaGrid.svelte';
   import ArticleList from '$lib/components/ArticleList.svelte';
+  import HighlightList from '$lib/components/HighlightList.svelte';
   import PackCard from '$lib/components/PackCard.svelte';
   import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
   import CreateFollowPackDialog from '$lib/components/CreateFollowPackDialog.svelte';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
   import { toast } from '$lib/stores/toast.svelte';
+  import { layoutMode } from '$lib/stores/layoutMode.svelte';
+  import { t } from 'svelte-i18n';
 
   const identifier = $derived($page.params.identifier || '');
   const user = ndk.$fetchUser(() => identifier);
@@ -22,7 +25,7 @@
   const currentUser = ndk.$currentUser;
   const isOwnProfile = $derived(currentUser?.pubkey === pubkey);
 
-  let activeTab = $state<'notes' | 'replies' | 'media' | 'articles' | 'packs'>('notes');
+  let activeTab = $state<'notes' | 'replies' | 'media' | 'articles' | 'highlights' | 'packs'>('notes');
   let isShareModalOpen = $state(false);
   let packFilter = $state<'all' | 'created' | 'appears'>('all');
   let isCreatePackDialogOpen = $state(false);
@@ -47,6 +50,14 @@
     ndk,
     () => activeTab === 'articles' && pubkey ? {
       filters: [{ kinds: [NDKKind.Article], authors: [pubkey], limit: 100 }]
+    } : undefined,
+    { initialLimit: 10, pageSize: 10 }
+  );
+
+  const highlightsFeed = createLazyFeed(
+    ndk,
+    () => activeTab === 'highlights' && pubkey ? {
+      filters: [{ kinds: [9802], authors: [pubkey], limit: 100 }]
     } : undefined,
     { initialLimit: 10, pageSize: 10 }
   );
@@ -92,6 +103,7 @@
   const allMediaEvents = $derived.by(() => [...nip68MediaFeed.events, ...textMediaEvents]);
 
   const articles = $derived.by(() => articlesFeed.events.map(e => NDKArticle.from(e)));
+  const highlights = $derived(highlightsFeed.events);
 
   interface Pack {
     id: string;
@@ -150,6 +162,8 @@
       nip68MediaFeed.loadMore();
     } else if (activeTab === 'articles') {
       articlesFeed.loadMore();
+    } else if (activeTab === 'highlights') {
+      highlightsFeed.loadMore();
     } else if (activeTab === 'packs') {
       if (packFilter === 'created') {
         createdPacksFeed.loadMore();
@@ -169,6 +183,8 @@
       return nip68MediaFeed.hasMore;
     } else if (activeTab === 'articles') {
       return articlesFeed.hasMore;
+    } else if (activeTab === 'highlights') {
+      return highlightsFeed.hasMore;
     } else if (activeTab === 'packs') {
       if (packFilter === 'created') {
         return createdPacksFeed.hasMore;
@@ -188,6 +204,8 @@
       return nip68MediaFeed.isLoading;
     } else if (activeTab === 'articles') {
       return articlesFeed.isLoading;
+    } else if (activeTab === 'highlights') {
+      return highlightsFeed.isLoading;
     } else if (activeTab === 'packs') {
       return createdPacksFeed.isLoading || appearsPacksFeed.isLoading;
     }
@@ -260,13 +278,21 @@
       toast.error(`Failed to add to pack: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
+
+  // Set profile layout mode
+  $effect(() => {
+    layoutMode.setProfileMode();
+    return () => {
+      layoutMode.reset();
+    };
+  });
 </script>
 
 <svelte:window onclick={handleClickOutside} />
 
 <div class="w-full">
   <!-- Profile header -->
-  <div class="bg-black border-b border-neutral-800">
+  <div class="bg-background border-b border-border">
     <!-- Cover image -->
     <div class="h-48 sm:h-64 bg-gradient-to-br from-orange-500 to-red-500 relative">
       {#if profile?.banner}
@@ -289,16 +315,16 @@
       <div class="mb-4">
         <div class="flex items-start justify-between gap-4">
           <div class="flex-1">
-            <h1 class="text-xl sm:text-2xl font-bold text-neutral-100">
+            <h1 class="text-xl sm:text-2xl font-bold text-foreground">
               {profile?.name || 'Anonymous'}
             </h1>
             <div class="flex items-center gap-2">
-              <p class="text-neutral-400">
+              <p class="text-muted-foreground">
                 {profile?.nip05 ? `@${profile.nip05.split('@')[0]}` : `${pubkey.slice(0, 12)}...`}
               </p>
               <button
                 onclick={() => isShareModalOpen = true}
-                class="p-1 text-neutral-400 hover:text-neutral-300 transition-colors"
+                class="p-1 text-muted-foreground hover:text-muted-foreground transition-colors"
                 aria-label="Share profile"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -316,7 +342,7 @@
                     e.stopPropagation();
                     isFollowDropdownOpen = !isFollowDropdownOpen;
                   }}
-                  class="p-2 rounded-full border border-neutral-600 text-neutral-300 hover:bg-neutral-800 transition-colors"
+                  class="p-2 rounded-full border border text-muted-foreground hover:bg-muted transition-colors"
                   aria-label="More options"
                 >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -325,29 +351,29 @@
                 </button>
 
                 {#if isFollowDropdownOpen}
-                  <div class="absolute right-0 mt-2 w-64 bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl overflow-hidden z-50">
+                  <div class="absolute right-0 mt-2 w-64 bg-popover border border-border rounded-lg shadow-xl overflow-hidden z-50">
                     <div class="py-1">
                       <button
                         onclick={openCreatePackWithUser}
-                        class="w-full px-4 py-3 text-left text-sm text-neutral-300 hover:bg-neutral-800 transition-colors flex items-center gap-3"
+                        class="w-full px-4 py-3 text-left text-sm text-muted-foreground hover:bg-muted transition-colors flex items-center gap-3"
                       >
-                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
-                        Create new follow pack
+                        {$t('followPacks.createNew')}
                       </button>
 
                       {#if userPacks.length > 0}
-                        <div class="border-t border-neutral-800 mt-1 pt-1">
-                          <div class="px-4 py-2 text-xs text-neutral-500 font-medium">
-                            Add to existing pack
+                        <div class="border-t border-border mt-1 pt-1">
+                          <div class="px-4 py-2 text-xs text-muted-foreground font-medium">
+                            {$t('followPacks.addToExisting')}
                           </div>
                           {#each userPacks as pack (pack.id)}
                             {@const alreadyInPack = pack.pubkeys.includes(pubkey)}
                             <button
                               onclick={() => addToExistingPack(pack.id)}
                               disabled={alreadyInPack}
-                              class="w-full px-4 py-2.5 text-left text-sm text-neutral-300 hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-between gap-2"
+                              class="w-full px-4 py-2.5 text-left text-sm text-muted-foreground hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-between gap-2"
                             >
                               <span class="truncate">{pack.title}</span>
                               {#if alreadyInPack}
@@ -370,20 +396,20 @@
           <div class="mt-3">
             <EventContent
               content={profile.about}
-              class="text-neutral-300"
+              class="text-muted-foreground"
             />
           </div>
         {/if}
       </div>
 
       <!-- Meta info -->
-      <div class="flex flex-wrap gap-4 text-sm text-neutral-400">
+      <div class="flex flex-wrap gap-4 text-sm text-muted-foreground">
         {#if profile?.website}
           <a
             href={profile.website}
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center gap-1 hover:text-orange-500"
+            class="flex items-center gap-1 hover:text-primary"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -396,89 +422,103 @@
       <!-- Stats -->
       <div class="flex gap-6 mt-4">
         <div>
-          <span class="font-semibold text-neutral-100">{notes.length}</span>
-          <span class="text-neutral-400 ml-1">Notes</span>
+          <span class="font-semibold text-foreground">{notes.length}</span>
+          <span class="text-muted-foreground ml-1">{$t('profile.tabs.notes')}</span>
         </div>
         <div>
-          <span class="font-semibold text-neutral-100">{followingCount}</span>
-          <span class="text-neutral-400 ml-1">Following</span>
+          <span class="font-semibold text-foreground">{followingCount}</span>
+          <span class="text-muted-foreground ml-1">{$t('profile.following')}</span>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Tabs -->
-  <div class="sticky top-0 z-30 bg-black/80 backdrop-blur-sm border-b border-neutral-800">
+  <div class="sticky top-0 z-30 bg-background/80 backdrop-blur-sm border-b border-border">
     <div class="flex justify-around lg:justify-start px-2 lg:px-4 overflow-x-auto">
       <button
         onclick={() => activeTab = 'notes'}
         class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'notes'
-            ? 'text-orange-500 border-b-2 border-orange-500'
-            : 'text-neutral-400 hover:text-neutral-300'
+            ? 'text-primary border-b-2 border-orange-500'
+            : 'text-muted-foreground hover:text-muted-foreground'
         }`}
         aria-label="Notes"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
         </svg>
-        <span class="hidden lg:inline">Notes</span>
+        <span class="hidden lg:inline">{$t('profile.tabs.notes')}</span>
       </button>
       <button
         onclick={() => activeTab = 'replies'}
         class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'replies'
-            ? 'text-orange-500 border-b-2 border-orange-500'
-            : 'text-neutral-400 hover:text-neutral-300'
+            ? 'text-primary border-b-2 border-orange-500'
+            : 'text-muted-foreground hover:text-muted-foreground'
         }`}
         aria-label="Replies"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
         </svg>
-        <span class="hidden lg:inline">Replies</span>
+        <span class="hidden lg:inline">{$t('profile.tabs.replies')}</span>
       </button>
       <button
         onclick={() => activeTab = 'media'}
         class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'media'
-            ? 'text-orange-500 border-b-2 border-orange-500'
-            : 'text-neutral-400 hover:text-neutral-300'
+            ? 'text-primary border-b-2 border-orange-500'
+            : 'text-muted-foreground hover:text-muted-foreground'
         }`}
         aria-label="Media"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
-        <span class="hidden lg:inline">Media</span>
+        <span class="hidden lg:inline">{$t('profile.tabs.media')}</span>
       </button>
       <button
         onclick={() => activeTab = 'articles'}
         class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'articles'
-            ? 'text-orange-500 border-b-2 border-orange-500'
-            : 'text-neutral-400 hover:text-neutral-300'
+            ? 'text-primary border-b-2 border-orange-500'
+            : 'text-muted-foreground hover:text-muted-foreground'
         }`}
         aria-label="Articles"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
-        <span class="hidden lg:inline">Articles</span>
+        <span class="hidden lg:inline">{$t('profile.tabs.articles')}</span>
+      </button>
+      <button
+        onclick={() => activeTab = 'highlights'}
+        class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
+          activeTab === 'highlights'
+            ? 'text-primary border-b-2 border-orange-500'
+            : 'text-muted-foreground hover:text-muted-foreground'
+        }`}
+        aria-label="Highlights"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+        </svg>
+        <span class="hidden lg:inline">{$t('profile.tabs.highlights')}</span>
       </button>
       <button
         onclick={() => activeTab = 'packs'}
         class={`flex items-center justify-center lg:justify-start gap-1.5 px-3 lg:px-4 py-3 font-medium whitespace-nowrap ${
           activeTab === 'packs'
-            ? 'text-orange-500 border-b-2 border-orange-500'
-            : 'text-neutral-400 hover:text-neutral-300'
+            ? 'text-primary border-b-2 border-orange-500'
+            : 'text-muted-foreground hover:text-muted-foreground'
         }`}
         aria-label="Follow Packs"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
         </svg>
-        <span class="hidden lg:inline">Follow Packs</span>
+        <span class="hidden lg:inline">{$t('profile.tabs.followPacks')}</span>
       </button>
     </div>
   </div>
@@ -487,7 +527,7 @@
   <div>
     {#if activeTab === 'notes'}
       {#if notes.length === 0}
-        <div class="text-center py-8 text-neutral-400">No notes yet</div>
+        <div class="text-center py-8 text-muted-foreground">{$t('profile.emptyStates.noNotes')}</div>
       {:else}
         <div class="divide-y divide-neutral-800/50">
           {#each notes as note (note.id)}
@@ -504,7 +544,7 @@
 
     {#if activeTab === 'replies'}
       {#if replies.length === 0}
-        <div class="text-center py-8 text-neutral-400">No replies yet</div>
+        <div class="text-center py-8 text-muted-foreground">{$t('profile.emptyStates.noReplies')}</div>
       {:else}
         <div class="divide-y divide-neutral-800/50">
           {#each replies as reply (reply.id)}
@@ -533,8 +573,19 @@
     {#if activeTab === 'articles'}
       <ArticleList
         {articles}
-        isLoading={!articlesFeed.eosed}
-        emptyMessage={isOwnProfile ? "You haven't published any articles yet" : "No articles published yet"}
+        emptyMessage={isOwnProfile ? $t('profile.emptyStates.noArticlesOwn') : $t('profile.emptyStates.noArticlesUser')}
+      />
+      <LoadMoreTrigger
+        onIntersect={handleLoadMore}
+        {hasMore}
+        {isLoading}
+      />
+    {/if}
+
+    {#if activeTab === 'highlights'}
+      <HighlightList
+        {highlights}
+        emptyMessage={isOwnProfile ? $t('profile.emptyStates.noHighlightsOwn') : $t('profile.emptyStates.noHighlightsUser')}
       />
       <LoadMoreTrigger
         onIntersect={handleLoadMore}
@@ -550,31 +601,31 @@
             onclick={() => packFilter = 'all'}
             class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               packFilter === 'all'
-                ? 'bg-orange-600 text-white'
-                : 'bg-black text-neutral-300 hover:bg-neutral-900'
+                ? 'bg-orange-600 text-foreground'
+                : 'bg-background text-muted-foreground hover:bg-card'
             }`}
           >
-            All
+            {$t('profile.tabs.all')}
           </button>
           <button
             onclick={() => packFilter = 'created'}
             class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               packFilter === 'created'
-                ? 'bg-orange-600 text-white'
-                : 'bg-black text-neutral-300 hover:bg-neutral-900'
+                ? 'bg-orange-600 text-foreground'
+                : 'bg-background text-muted-foreground hover:bg-card'
             }`}
           >
-            {isOwnProfile ? 'by you' : `by @${profile?.name || profile?.displayName || pubkey.slice(0, 8)}`}
+            {isOwnProfile ? $t('profile.tabs.byYou') : $t('profile.tabs.byUser', { username: profile?.name || profile?.displayName || pubkey.slice(0, 8) })}
           </button>
           <button
             onclick={() => packFilter = 'appears'}
             class={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               packFilter === 'appears'
-                ? 'bg-orange-600 text-white'
-                : 'bg-black text-neutral-300 hover:bg-neutral-900'
+                ? 'bg-orange-600 text-foreground'
+                : 'bg-background text-muted-foreground hover:bg-card'
             }`}
           >
-            {isOwnProfile ? 'with you' : `with @${profile?.name || profile?.displayName || pubkey.slice(0, 8)}`}
+            {isOwnProfile ? $t('profile.tabs.withYou') : $t('profile.tabs.withUser', { username: profile?.name || profile?.displayName || pubkey.slice(0, 8) })}
           </button>
         </div>
 
@@ -585,16 +636,16 @@
             {/each}
           </div>
         {:else}
-          <div class="text-center py-8 text-neutral-400">
+          <div class="text-center py-8 text-muted-foreground">
             {packFilter === 'created'
               ? (isOwnProfile
-                  ? "You haven't created any follow packs yet"
-                  : `@${profile?.name || 'user'} hasn't created any follow packs yet`)
+                  ? $t('profile.emptyStates.noPacksCreatedOwn')
+                  : $t('profile.emptyStates.noPacksCreatedUser', { username: profile?.name || 'user' }))
               : packFilter === 'appears'
               ? (isOwnProfile
-                  ? "You don't appear on any follow packs yet"
-                  : `@${profile?.name || 'user'} doesn't appear on any follow packs yet`)
-              : "No follow packs found"}
+                  ? $t('profile.emptyStates.noPacksAppearsOwn')
+                  : $t('profile.emptyStates.noPacksAppearsUser', { username: profile?.name || 'user' }))
+              : $t('profile.emptyStates.noPacksFound')}
           </div>
         {/if}
       </div>

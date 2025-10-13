@@ -8,6 +8,7 @@
   import CreateFollowPackDialog from '$lib/components/CreateFollowPackDialog.svelte';
   import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
+  import { getPackUrl } from '$lib/utils/packUrl';
 
   let searchQuery = $state('');
 
@@ -138,7 +139,9 @@
   });
 
   function handlePackClick(pack: Pack) {
-    goto(`/packs/${pack.encode()}`);
+    const author = ndk.getUser({ pubkey: pack.pubkey });
+    const url = getPackUrl(pack, author);
+    goto(url);
   }
 
   function restartSubscription() {
@@ -151,20 +154,20 @@
   <div class="mb-8">
     <div class="flex items-start justify-between gap-4">
       <div>
-        <h1 class="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-          <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <h1 class="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
+          <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
           </svg>
           Follow Packs
         </h1>
-        <p class="text-neutral-400">
+        <p class="text-muted-foreground">
           Discover curated lists of accounts to follow
         </p>
       </div>
       {#if ndk.$currentUser}
         <button
           onclick={() => createPackModal.open()}
-          class="px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors font-medium text-sm flex items-center gap-2 flex-shrink-0"
+          class="px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-foreground rounded-lg transition-colors font-medium text-sm flex items-center gap-2 flex-shrink-0"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -179,14 +182,14 @@
   <div class="mb-6">
     <div class="flex gap-3 flex-col sm:flex-row">
       <div class="relative flex-1">
-        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
         <input
           type="search"
           placeholder="Search follow packs..."
           bind:value={searchQuery}
-          class="w-full pl-10 pr-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white placeholder:text-neutral-500 focus:outline-none focus:border-orange-500"
+          class="w-full pl-10 pr-4 py-3 bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500"
         />
       </div>
 
@@ -195,43 +198,43 @@
         <div class="relative flex-shrink-0 filter-dropdown">
           <button
             onclick={() => isFilterDropdownOpen = !isFilterDropdownOpen}
-            class="px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white hover:border-neutral-700 transition-colors flex items-center gap-2 min-w-[160px] justify-between"
+            class="px-4 py-3 bg-card border border-border rounded-lg text-foreground hover:border-border transition-colors flex items-center gap-2 min-w-[160px] justify-between"
           >
             <div class="flex items-center gap-2">
-              <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
               <span class="text-sm font-medium">{filterLabels[activeFilter]}</span>
             </div>
-            <svg class="w-4 h-4 text-neutral-400 transition-transform {isFilterDropdownOpen ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-muted-foreground transition-transform {isFilterDropdownOpen ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
 
           {#if isFilterDropdownOpen}
-            <div class="absolute right-0 mt-2 w-48 bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl z-10">
+            <div class="absolute right-0 mt-2 w-48 bg-popover border border-border rounded-lg shadow-xl z-10">
               <div class="py-1">
                 <button
                   onclick={() => selectFilter('all')}
-                  class="w-full px-4 py-2.5 text-left text-sm hover:bg-neutral-800 transition-colors {activeFilter === 'all' ? 'text-orange-500 font-medium' : 'text-neutral-300'}"
+                  class="w-full px-4 py-2.5 text-left text-sm hover:bg-muted transition-colors {activeFilter === 'all' ? 'text-primary font-medium' : 'text-muted-foreground'}"
                 >
                   All Packs
                 </button>
                 <button
                   onclick={() => selectFilter('mine')}
-                  class="w-full px-4 py-2.5 text-left text-sm hover:bg-neutral-800 transition-colors {activeFilter === 'mine' ? 'text-orange-500 font-medium' : 'text-neutral-300'}"
+                  class="w-full px-4 py-2.5 text-left text-sm hover:bg-muted transition-colors {activeFilter === 'mine' ? 'text-primary font-medium' : 'text-muted-foreground'}"
                 >
                   My Packs
                 </button>
                 <button
                   onclick={() => selectFilter('follows')}
-                  class="w-full px-4 py-2.5 text-left text-sm hover:bg-neutral-800 transition-colors {activeFilter === 'follows' ? 'text-orange-500 font-medium' : 'text-neutral-300'}"
+                  class="w-full px-4 py-2.5 text-left text-sm hover:bg-muted transition-colors {activeFilter === 'follows' ? 'text-primary font-medium' : 'text-muted-foreground'}"
                 >
                   From Follows
                 </button>
                 <button
                   onclick={() => selectFilter('include-me')}
-                  class="w-full px-4 py-2.5 text-left text-sm hover:bg-neutral-800 transition-colors {activeFilter === 'include-me' ? 'text-orange-500 font-medium' : 'text-neutral-300'}"
+                  class="w-full px-4 py-2.5 text-left text-sm hover:bg-muted transition-colors {activeFilter === 'include-me' ? 'text-primary font-medium' : 'text-muted-foreground'}"
                 >
                   Include Me
                 </button>
@@ -245,7 +248,7 @@
 
   <!-- All Packs Grid -->
   <div>
-    <h2 class="text-xl font-semibold text-white mb-4">
+    <h2 class="text-xl font-semibold text-foreground mb-4">
       Popular Packs
     </h2>
     {#if visiblePacks.length > 0}
@@ -256,7 +259,7 @@
             tabindex="0"
             onclick={() => handlePackClick(pack)}
             onkeydown={(e) => e.key === 'Enter' && handlePackClick(pack)}
-            class="block bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden hover:border-neutral-700 transition-colors group cursor-pointer"
+            class="block bg-card border border-border rounded-xl overflow-hidden hover:border-border transition-colors group cursor-pointer"
           >
             {#if pack.image}
               <div class="h-32 w-full">
@@ -270,16 +273,16 @@
 
             <div class="p-5">
               <div class="mb-4">
-                <h3 class="font-semibold text-white group-hover:text-orange-500 transition-colors">
+                <h3 class="font-semibold text-foreground group-hover:text-primary transition-colors">
                   {pack.title}
                 </h3>
-                <p class="text-sm text-neutral-500 mt-1">
+                <p class="text-sm text-muted-foreground mt-1">
                   {pack.pubkeys.length} members
                 </p>
               </div>
 
               {#if pack.description}
-                <p class="text-sm text-neutral-400 mb-4 line-clamp-2">
+                <p class="text-sm text-muted-foreground mb-4 line-clamp-2">
                   {pack.description}
                 </p>
               {/if}
@@ -296,8 +299,8 @@
                   </button>
                 {/each}
                 {#if pack.pubkeys.length > 4}
-                  <div class="w-8 h-8 rounded-full bg-neutral-800 ring-2 ring-neutral-900 flex items-center justify-center">
-                    <span class="text-xs text-neutral-400">
+                  <div class="w-8 h-8 rounded-full bg-muted ring-2 ring-neutral-900 flex items-center justify-center">
+                    <span class="text-xs text-muted-foreground">
                       +{pack.pubkeys.length - 4}
                     </span>
                   </div>
@@ -315,10 +318,10 @@
       />
     {:else}
       <div class="text-center py-12">
-        <svg class="w-16 h-16 text-neutral-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-16 h-16 text-muted-foreground mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
         </svg>
-        <p class="text-neutral-400">
+        <p class="text-muted-foreground">
           No follow packs found
         </p>
       </div>

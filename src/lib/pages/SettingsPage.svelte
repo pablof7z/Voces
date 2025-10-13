@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { t } from 'svelte-i18n';
   import RelaySettings from '$lib/components/settings/RelaySettings.svelte';
   import ThemeSettings from '$lib/components/settings/ThemeSettings.svelte';
   import BlossomSettings from '$lib/components/settings/BlossomSettings.svelte';
@@ -33,8 +34,8 @@
       label: 'Profile',
       description: 'Edit your profile information and picture',
       iconPath: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
-      iconColor: 'text-orange-500',
-      iconBg: 'bg-orange-500/10',
+      iconColor: 'text-primary',
+      iconBg: 'bg-primary/10',
       component: ProfileSettings,
       available: true,
     },
@@ -53,8 +54,8 @@
       label: 'Hashtag Interests',
       description: 'Follow hashtags and filter your feed',
       iconPath: 'M7 20l4-16m2 16l4-16M6 9h14M4 15h14',
-      iconColor: 'text-orange-500',
-      iconBg: 'bg-orange-500/10',
+      iconColor: 'text-primary',
+      iconBg: 'bg-primary/10',
       component: HashtagSettings,
       available: true,
     },
@@ -63,8 +64,8 @@
       label: 'Media Servers',
       description: 'Configure Blossom media upload servers',
       iconPath: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
-      iconColor: 'text-orange-500',
-      iconBg: 'bg-orange-500/10',
+      iconColor: 'text-primary',
+      iconBg: 'bg-primary/10',
       component: BlossomSettings,
       available: true,
     },
@@ -83,8 +84,8 @@
       label: 'Wallet',
       description: 'Manage Cashu mints and wallet relays',
       iconPath: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
-      iconColor: 'text-orange-500',
-      iconBg: 'bg-orange-500/10',
+      iconColor: 'text-primary',
+      iconBg: 'bg-primary/10',
       component: WalletSettings,
       available: true,
     },
@@ -135,17 +136,17 @@
   <div class="max-w-lg mx-auto">
     {#if activeSection && currentSection}
       <!-- Detail View -->
-      <div class="px-6 pt-6 pb-4 border-b border-neutral-200 dark:border-neutral-800">
+      <div class="px-6 pt-6 pb-4 border-b">
         <div class="flex items-center gap-3">
           <button
             onclick={() => activeSection = null}
-            class="p-2 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/30 rounded-lg transition-all"
+            class="p-2 hover:bg-neutral-200/50 dark:hover:bg-muted/30 rounded-lg transition-all"
           >
-            <svg class="w-5 h-5 text-neutral-700 dark:text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-neutral-700 dark:text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h1 class="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+          <h1 class="text-xl font-semibold text-neutral-900 dark:text-foreground">
             {currentSection.label}
           </h1>
         </div>
@@ -157,8 +158,8 @@
     {:else}
       <!-- List View -->
       <div class="px-6 pt-6 pb-4">
-        <h1 class="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
-          Settings
+        <h1 class="text-xl font-semibold text-neutral-900 dark:text-foreground">
+          {$t('settings.title')}
         </h1>
       </div>
 
@@ -171,44 +172,44 @@
           >
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-white/20">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                 </svg>
               </div>
               <div class="text-left">
-                <div class="text-sm font-semibold text-white">
-                  Create Invite
+                <div class="text-sm font-semibold text-foreground">
+                  {$t('settings.invite.create')}
                 </div>
-                <div class="text-xs text-white/80">
-                  Invite someone to join Agora
+                <div class="text-xs text-foreground/80">
+                  {$t('settings.invite.createDescription')}
                 </div>
               </div>
             </div>
-            <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-foreground/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           </button>
 
           <a
             href="/invites"
-            class="w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-xl p-4 flex items-center justify-between transition-all"
+            class="w-full bg-neutral-100 dark:bg-card border hover:bg-neutral-200 dark:hover:bg-muted rounded-xl p-4 flex items-center justify-between transition-all"
           >
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-orange-500/10">
-                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-primary/10">
+                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
               <div class="text-left">
-                <div class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                  My Invites
+                <div class="text-sm font-medium text-neutral-900 dark:text-foreground">
+                  {$t('settings.invite.myInvites')}
                 </div>
-                <div class="text-xs text-neutral-500 dark:text-neutral-600">
-                  View and manage sent invites
+                <div class="text-xs text-muted-foreground dark:text-muted-foreground">
+                  {$t('settings.invite.myInvitesDescription')}
                 </div>
               </div>
             </div>
-            <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           </a>
@@ -219,8 +220,8 @@
             <button
               onclick={() => section.available && (activeSection = section.id)}
               disabled={!section.available}
-              class="w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 flex items-center justify-between transition-all {section.available
-                ? 'hover:bg-neutral-200 dark:hover:bg-neutral-800 cursor-pointer'
+              class="w-full bg-neutral-100 dark:bg-card border rounded-xl p-4 flex items-center justify-between transition-all {section.available
+                ? 'hover:bg-neutral-200 dark:hover:bg-muted cursor-pointer'
                 : 'opacity-50 cursor-not-allowed'}"
             >
               <div class="flex items-center gap-3">
@@ -230,21 +231,21 @@
                   </svg>
                 </div>
                 <div class="text-left">
-                  <div class="text-sm font-medium text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+                  <div class="text-sm font-medium text-neutral-900 dark:text-foreground flex items-center gap-2">
                     {section.label}
                     {#if !section.available}
-                      <span class="text-xs bg-neutral-200 dark:bg-neutral-800 px-1.5 py-0.5 rounded">
-                        Soon
+                      <span class="text-xs bg-neutral-200 dark:bg-muted px-1.5 py-0.5 rounded">
+                        {$t('common.soon')}
                       </span>
                     {/if}
                   </div>
-                  <div class="text-xs text-neutral-500 dark:text-neutral-600">
+                  <div class="text-xs text-muted-foreground dark:text-muted-foreground">
                     {section.description}
                   </div>
                 </div>
               </div>
               {#if section.available}
-                <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
               {/if}

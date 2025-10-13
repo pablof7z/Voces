@@ -1,10 +1,11 @@
 import { NDKKind } from '@nostr-dev-kit/ndk';
+import { AGORA_RELAYS } from '$lib/utils/relayUtils';
 
 // Community to relay mapping
 // Maps community IDs to their dedicated relay URLs for fetching follow packs
 export const COMMUNITY_RELAYS: Record<string, string[]> = {
-  venezuela: ['wss://ve.agorawlc.com'],
-  nicaragua: ['wss://ni.agorawlc.com'],
+  venezuela: [AGORA_RELAYS[1]], // ve.agorawlc.com
+  nicaragua: [AGORA_RELAYS[2]], // ni.agorawlc.com
   // Other communities can be added here as they get their own relays
 };
 

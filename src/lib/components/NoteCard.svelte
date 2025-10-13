@@ -91,9 +91,9 @@
   );
 
   const bgClass = $derived(
-    variant === 'thread-main' ? 'bg-neutral-900/50' :
-    variant === 'default' ? 'hover:bg-neutral-900/30' :
-    'hover:bg-neutral-900/30'
+    variant === 'thread-main' ? 'bg-card/50' :
+    variant === 'default' ? 'hover:bg-card/30' :
+    'hover:bg-card/30'
   );
 
   const clickable = $derived(variant === 'default' || (onNavigate !== undefined));
@@ -282,14 +282,14 @@
 </script>
 
 <article
-  class="p-3 sm:p-4 {bgClass} transition-colors {clickable ? 'cursor-pointer' : ''} border-b border-neutral-800 relative min-w-0"
+  class="p-3 sm:p-4 {bgClass} transition-colors {clickable ? 'cursor-pointer' : ''} border-b border-border relative min-w-0"
   onclick={clickable ? navigateToEvent : undefined}
   role={clickable ? 'button' : undefined}
   tabindex={clickable ? 0 : undefined}
 >
   {#if showThreadLine}
-    <div class="absolute left-[29px] -top-px h-[73px] w-0.5 bg-neutral-700"></div>
-    <div class="absolute left-[29px] top-[73px] bottom-0 w-0.5 bg-neutral-700"></div>
+    <div class="absolute left-[29px] -top-px h-[73px] w-0.5 bg-muted"></div>
+    <div class="absolute left-[29px] top-[73px] bottom-0 w-0.5 bg-muted"></div>
   {/if}
 
   <!-- Header Row: Avatar + Name/Handle/Time -->
@@ -307,63 +307,63 @@
 
     <div class="flex items-center gap-2 flex-1 min-w-0">
       <div class="flex items-center gap-2 min-w-0 flex-shrink">
-        <span class="{nameSize} text-white truncate min-w-0">
+        <span class="{nameSize} text-foreground truncate min-w-0">
           {profile?.displayName || profile?.name || `${event.pubkey.slice(0, 8)}...`}
         </span>
         {#if variant === 'default' || variant === 'thread-reply'}
-          <span class="text-neutral-500 text-sm truncate min-w-0">
+          <span class="text-muted-foreground text-sm truncate min-w-0">
             @{profile?.name || event.pubkey.slice(0, 8)}
           </span>
         {/if}
       </div>
-      <span class="text-neutral-500 text-sm flex-shrink-0">·</span>
+      <span class="text-muted-foreground text-sm flex-shrink-0">·</span>
       {#if event.created_at}
-        <TimeAgo timestamp={event.created_at} class="text-neutral-500 text-sm flex-shrink-0" />
+        <TimeAgo timestamp={event.created_at} class="text-muted-foreground text-sm flex-shrink-0" />
       {/if}
     </div>
 
     <div class="relative flex-shrink-0">
       <button
         onclick={(e) => { e.stopPropagation(); showOptionsMenu = !showOptionsMenu; }}
-        class="p-1 hover:bg-neutral-800 rounded-full transition-colors"
+        class="p-1 hover:bg-muted rounded-full transition-colors"
         type="button"
         aria-label="More options"
       >
-        <svg class="w-5 h-5 text-neutral-500" fill="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 text-muted-foreground" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
         </svg>
       </button>
 
       {#if showOptionsMenu}
         <div
-          class="absolute right-0 mt-1 w-72 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg z-10 max-h-96 overflow-y-auto"
+          class="absolute right-0 mt-1 w-72 bg-popover border border-border rounded-lg shadow-lg z-10 max-h-96 overflow-y-auto"
           onclick={(e) => e.stopPropagation()}
         >
           <button
             onclick={copyAuthorNprofile}
-            class="w-full px-4 py-2 text-left text-sm text-neutral-200 hover:bg-neutral-700 transition-colors first:rounded-t-lg"
+            class="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-muted transition-colors first:rounded-t-lg"
             type="button"
           >
             Copy author (nprofile)
           </button>
           <button
             onclick={copyEventId}
-            class="w-full px-4 py-2 text-left text-sm text-neutral-200 hover:bg-neutral-700 transition-colors"
+            class="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-muted transition-colors"
             type="button"
           >
             Copy ID (nevent)
           </button>
           <button
             onclick={copyRawEvent}
-            class="w-full px-4 py-2 text-left text-sm text-neutral-200 hover:bg-neutral-700 transition-colors"
+            class="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-muted transition-colors"
             type="button"
           >
             Copy raw event
           </button>
 
           {#if event.onRelays && event.onRelays.size > 0}
-            <div class="border-t border-neutral-700 mt-1 pt-1">
-              <div class="px-4 py-2 text-xs text-neutral-500 font-medium">
+            <div class="border-t border-border mt-1 pt-1">
+              <div class="px-4 py-2 text-xs text-muted-foreground font-medium">
                 Seen on {event.onRelays.size} relay{event.onRelays.size === 1 ? '' : 's'}
               </div>
               <div class="px-2 pb-2 space-y-1">
@@ -384,13 +384,13 @@
   {/if}
 
   <!-- Content -->
-  <div class="text-neutral-200 whitespace-pre-wrap break-words {textSize} mb-2 overflow-hidden">
+  <div class="text-foreground whitespace-pre-wrap break-words {textSize} mb-2 overflow-hidden">
     <EventContent {ndk} event={event} />
   </div>
 
   <!-- Actions -->
   {#if showActions}
-    <div class="flex items-center gap-3 sm:gap-6 {variant === 'thread-main' ? 'border-t border-neutral-700 pt-3' : ''} text-neutral-500">
+    <div class="flex items-center gap-3 sm:gap-6 {variant === 'thread-main' ? 'border-t border-border pt-3' : ''} text-muted-foreground">
       <button
         onclick={(e) => { e.stopPropagation(); showReplyDialog = true; }}
         class="flex items-center gap-2 hover:text-purple-400 transition-colors group"

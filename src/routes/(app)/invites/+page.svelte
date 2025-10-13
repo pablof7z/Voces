@@ -2,6 +2,7 @@
 	import { ndk } from '$lib/ndk.svelte';
 	import NDK, { NDKEvent, type NDKFilter } from '@nostr-dev-kit/ndk';
 	import { formatTimeAgo } from '$lib/utils/formatTime';
+	import { AGORA_RELAYS } from '$lib/utils/relayUtils';
 
 	let invites = $state<NDKEvent[]>([]);
 	let copiedId = $state<string | null>(null);
@@ -25,7 +26,7 @@
 			};
 
 			const events = await (ndk as NDK).fetchEvents(filter, {
-				relayUrls: ["wss://ve.agorawlc.com", "wss://ni.agorawlc.com"],
+				relayUrls: [...AGORA_RELAYS],
 			});
 			invites = Array.from(events).sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
 		} catch (error) {

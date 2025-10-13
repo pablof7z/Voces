@@ -41,7 +41,7 @@
 
 <button
   onclick={() => goto('/marketplace')}
-  class="flex items-center gap-2 px-4 py-2 text-neutral-400 hover:text-white transition-colors mb-6"
+  class="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-foreground transition-colors mb-6"
 >
   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -55,7 +55,7 @@
   </div>
 {:else if !listing}
   <div class="text-center py-12">
-    <p class="text-neutral-400">Listing not found</p>
+    <p class="text-muted-foreground">Listing not found</p>
   </div>
 {:else}
   {@const price = getListingPrice(listing)}
@@ -73,11 +73,11 @@
 
   <div class="mb-6">
     <div class="flex items-start justify-between mb-4">
-      <h1 class="text-2xl font-bold text-white">
+      <h1 class="text-2xl font-bold text-foreground">
         {listing.tagValue('title') || 'Untitled'}
       </h1>
       {#if price}
-        <div class="text-lg px-4 py-2 bg-orange-500/20 text-orange-500 rounded-lg font-semibold">
+        <div class="text-lg px-4 py-2 bg-primary/20 text-primary rounded-lg font-semibold">
           {price.amount} {price.currency}
           {#if price.frequency && price.frequency !== 'once'}
             <span class="text-sm">/{price.frequency}</span>
@@ -92,7 +92,7 @@
       </div>
     {/if}
 
-    <div class="flex flex-wrap gap-4 text-sm text-neutral-400 mb-6">
+    <div class="flex flex-wrap gap-4 text-sm text-muted-foreground mb-6">
       {#if listing.tagValue('location')}
         <div class="flex items-center gap-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,7 +113,7 @@
     {#if categories.length > 0}
       <div class="flex flex-wrap gap-2 mb-6">
         {#each categories as category}
-          <span class="inline-flex items-center gap-1 px-3 py-1 bg-orange-900/20 text-orange-500 rounded-full text-sm">
+          <span class="inline-flex items-center gap-1 px-3 py-1 bg-orange-900/20 text-primary rounded-full text-sm">
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
             </svg>
@@ -124,8 +124,8 @@
     {/if}
 
     <div class="prose prose-invert max-w-none">
-      <h3 class="text-lg font-semibold mb-2 text-white">Description</h3>
-      <div class="whitespace-pre-wrap text-neutral-300">{listing.content}</div>
+      <h3 class="text-lg font-semibold mb-2 text-foreground">Description</h3>
+      <div class="whitespace-pre-wrap text-muted-foreground">{listing.content}</div>
     </div>
   </div>
 {/if}

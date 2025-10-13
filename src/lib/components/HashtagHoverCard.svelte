@@ -103,13 +103,13 @@
       onmouseleave={onMouseLeave}
     >
       <!-- Main card -->
-      <div class="relative w-80 bg-neutral-900 border border-neutral-700 rounded-xl shadow-2xl overflow-hidden">
+      <div class="relative w-80 bg-card border border-border rounded-xl shadow-2xl overflow-hidden">
         <!-- Gradient header -->
         <div class="relative h-20 bg-gradient-to-br from-orange-900 via-neutral-800 to-neutral-900">
           <div class="absolute inset-0 bg-gradient-to-b from-transparent to-neutral-900 opacity-60"></div>
           <!-- Hashtag overlay -->
           <div class="absolute inset-0 flex items-center justify-center">
-            <div class="text-3xl font-bold text-white/20 select-none">
+            <div class="text-3xl font-bold text-foreground/20 select-none">
               #{hashtag}
             </div>
           </div>
@@ -119,8 +119,8 @@
         <div class="relative px-5 pb-5 -mt-8">
           <!-- Hashtag title and Follow button -->
           <div class="flex items-center justify-between mb-4 gap-3">
-            <h3 class="text-2xl font-bold text-white">
-              <span class="text-orange-500">#</span>{hashtag}
+            <h3 class="text-2xl font-bold text-foreground">
+              <span class="text-primary">#</span>{hashtag}
             </h3>
 
             {#if currentUser}
@@ -129,8 +129,8 @@
                 disabled={isTogglingFollow}
                 class="px-4 py-2 rounded-full text-sm font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 {
                   isFollowing
-                    ? 'bg-neutral-800 text-white hover:bg-neutral-700 border border-neutral-600'
-                    : 'bg-orange-500 text-white hover:bg-orange-600'
+                    ? 'bg-muted text-foreground hover:bg-muted border border'
+                    : 'bg-orange-500 text-foreground hover:bg-orange-600'
                 }"
               >
                 {#if isTogglingFollow}
@@ -148,16 +148,16 @@
           </div>
 
           <!-- Stats -->
-          <div class="flex items-center gap-4 mb-4 text-sm border-b border-neutral-800 pb-4">
+          <div class="flex items-center gap-4 mb-4 text-sm border-b border-border pb-4">
             <div class="flex items-center gap-1.5">
-              <span class="font-medium text-white">{noteCount}</span>
-              <span class="text-neutral-500">{noteCount === 1 ? 'note' : 'notes'}</span>
+              <span class="font-medium text-foreground">{noteCount}</span>
+              <span class="text-muted-foreground">{noteCount === 1 ? 'note' : 'notes'}</span>
             </div>
             <div class="flex items-center gap-1.5">
-              <span class="font-medium text-white">{authorCount}</span>
-              <span class="text-neutral-500">{authorCount === 1 ? 'person' : 'people'}</span>
+              <span class="font-medium text-foreground">{authorCount}</span>
+              <span class="text-muted-foreground">{authorCount === 1 ? 'person' : 'people'}</span>
             </div>
-            <div class="flex items-center gap-1.5 text-neutral-500">
+            <div class="flex items-center gap-1.5 text-muted-foreground">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -168,11 +168,11 @@
           <!-- Recent note from following -->
           {#if recentNoteFromFollowing}
             <div class="space-y-2">
-              <div class="text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              <div class="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Recent note
               </div>
 
-              <div class="bg-neutral-800/50 rounded-lg p-3 border border-neutral-800">
+              <div class="bg-muted/50 rounded-lg p-3 border border-border">
                 <!-- Author info -->
                 <div class="flex items-center gap-2 mb-2">
                   <Avatar
@@ -181,27 +181,27 @@
                     class="w-6 h-6 rounded-full"
                   />
                   <div class="flex-1 min-w-0">
-                    <div class="text-xs font-medium text-white truncate">
+                    <div class="text-xs font-medium text-foreground truncate">
                       {recentNoteAuthorProfile?.displayName || recentNoteAuthorProfile?.name || 'Anonymous'}
                     </div>
                   </div>
-                  <div class="text-xs text-neutral-500">
+                  <div class="text-xs text-muted-foreground">
                     {formatTimestamp(recentNoteFromFollowing.created_at ?? 0)}
                   </div>
                 </div>
 
                 <!-- Note content -->
-                <div class="text-sm text-neutral-300 line-clamp-3 leading-relaxed">
+                <div class="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
                   <EventContent
                     {ndk}
                     content={recentNoteFromFollowing.content}
-                    class="text-neutral-300"
+                    class="text-muted-foreground"
                   />
                 </div>
               </div>
             </div>
           {:else if hashtagSubscription.events.length === 0}
-            <div class="text-center py-6 text-neutral-500">
+            <div class="text-center py-6 text-muted-foreground">
               <svg class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
               </svg>

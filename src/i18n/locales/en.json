@@ -37,7 +37,7 @@
       "conversations": "Conversations",
       "images": "Images",
       "videos": "Videos",
-      "articles": "Articles"
+      "articles": "Reads"
     }
   },
   "classifieds": {
@@ -68,11 +68,20 @@
     "title": "Follow Packs",
     "description": "Discover curated lists of people to follow",
     "noPacks": "No follow packs available yet",
-    "followers": "followers"
+    "followers": "followers",
+    "createNew": "Create new follow pack",
+    "addToExisting": "Add to existing pack"
   },
   "settings": {
     "title": "Settings",
     "description": "Manage your app preferences and configuration",
+    "invite": {
+      "create": "Create Invite",
+      "createDescription": "Invite someone to join Agora",
+      "myInvites": "My Invites",
+      "myInvitesDescription": "View and manage sent invites",
+      "createInvitation": "Create Invitation"
+    },
     "sections": {
       "relays": {
         "title": "Relays",
@@ -235,7 +244,33 @@
     "posts": "Posts",
     "editProfile": "Edit Profile",
     "follow": "Follow",
-    "unfollow": "Unfollow"
+    "unfollow": "Unfollow",
+    "tabs": {
+      "notes": "Notes",
+      "replies": "Replies",
+      "media": "Media",
+      "articles": "Articles",
+      "highlights": "Highlights",
+      "followPacks": "Follow Packs",
+      "all": "All",
+      "byYou": "by you",
+      "withYou": "with you",
+      "byUser": "by @{username}",
+      "withUser": "with @{username}"
+    },
+    "emptyStates": {
+      "noNotes": "No notes yet",
+      "noReplies": "No replies yet",
+      "noArticlesOwn": "You haven't published any articles yet",
+      "noArticlesUser": "No articles published yet",
+      "noHighlightsOwn": "You haven't saved any highlights yet",
+      "noHighlightsUser": "No highlights saved yet",
+      "noPacksCreatedOwn": "You haven't created any follow packs yet",
+      "noPacksCreatedUser": "@{username} hasn't created any follow packs yet",
+      "noPacksAppearsOwn": "You don't appear on any follow packs yet",
+      "noPacksAppearsUser": "@{username} doesn't appear on any follow packs yet",
+      "noPacksFound": "No follow packs found"
+    }
   },
   "messages": {
     "title": "Messages",

@@ -69,14 +69,21 @@
   }
 
   function getPrivateKey(): string {
-    const nsecValue = localStorage.getItem('nostr_private_key');
-    if (!nsecValue) {
+    if (!isPrivateKeySigner || !ndk.signer) {
       throw new BackupError(
         BackupErrorCode.NO_PRIVATE_KEY,
-        'Private key not found in storage'
+        'No private key signer available'
       );
     }
-    return nsecValue;
+    const signer = ndk.signer as NDKPrivateKeySigner;
+    const privateKey = signer.privateKey;
+    if (!privateKey) {
+      throw new BackupError(
+        BackupErrorCode.NO_PRIVATE_KEY,
+        'Private key not found in signer'
+      );
+    }
+    return privateKey;
   }
 
   async function handleCreateBackup() {
@@ -186,20 +193,20 @@
 {#if isPrivateKeySigner && nsec}
   <div class="space-y-6">
     <!-- Tab Navigation -->
-    <div class="flex gap-2 p-1 bg-neutral-100 dark:bg-neutral-900 rounded-lg">
+    <div class="flex gap-2 p-1 bg-neutral-100 dark:bg-card rounded-lg">
       <button
         onclick={() => activeTab = 'view'}
         class="flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'view'
-          ? 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 shadow-sm'
-          : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100'}"
+          ? 'bg-white dark:bg-muted text-neutral-900 dark:text-foreground shadow-sm'
+          : 'text-muted-foreground dark:text-muted-foreground hover:text-neutral-900 dark:hover:text-foreground'}"
       >
         View Key
       </button>
       <button
         onclick={() => activeTab = 'backup'}
         class="flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors {activeTab === 'backup'
-          ? 'bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 shadow-sm'
-          : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100'}"
+          ? 'bg-white dark:bg-muted text-neutral-900 dark:text-foreground shadow-sm'
+          : 'text-muted-foreground dark:text-muted-foreground hover:text-neutral-900 dark:hover:text-foreground'}"
       >
         Create Backup
       </button>
@@ -228,10 +235,10 @@
         <!-- Private Key Display Section -->
         <div class="space-y-4">
           <div>
-            <h3 class="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">
+            <h3 class="text-sm font-medium text-neutral-900 dark:text-foreground mb-1">
               Your Private Key (nsec)
             </h3>
-            <p class="text-xs text-neutral-600 dark:text-neutral-400">
+            <p class="text-xs text-muted-foreground dark:text-muted-foreground">
               You are logged in with a private key signer. Save this key somewhere safe.
             </p>
           </div>
@@ -239,13 +246,13 @@
           <div class="space-y-3">
             <!-- Key Display -->
             <div class="relative">
-              <div class="bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg p-4">
+              <div class="bg-neutral-100 dark:bg-card border border rounded-lg p-4">
                 {#if showNsec}
-                  <code class="text-xs text-neutral-900 dark:text-neutral-100 break-all font-mono">
+                  <code class="text-xs text-neutral-900 dark:text-foreground break-all font-mono">
                     {nsec}
                   </code>
                 {:else}
-                  <div class="text-xs text-neutral-500 dark:text-neutral-500 font-mono">
+                  <div class="text-xs text-muted-foreground dark:text-muted-foreground font-mono">
                     {'•'.repeat(63)}
                   </div>
                 {/if}
@@ -256,7 +263,7 @@
             <div class="flex gap-2">
               <button
                 onclick={toggleShowNsec}
-                class="flex-1 px-4 py-2 bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                class="flex-1 px-4 py-2 bg-neutral-200 dark:bg-muted text-neutral-700 dark:text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted transition-colors text-sm font-medium flex items-center justify-center gap-2"
               >
                 {#if showNsec}
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -275,7 +282,7 @@
               <button
                 onclick={copyToClipboard}
                 disabled={!showNsec}
-                class="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="flex-1 px-4 py-2 bg-orange-600 text-foreground rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {#if copySuccess}
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -291,38 +298,38 @@
               </button>
             </div>
 
-            <p class="text-xs text-neutral-500 dark:text-neutral-600 text-center">
+            <p class="text-xs text-muted-foreground dark:text-muted-foreground text-center">
               Make sure nobody is watching your screen before revealing your key
             </p>
           </div>
         </div>
 
         <!-- Best Practices -->
-        <div class="bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg p-4">
-          <h4 class="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-2">
+        <div class="bg-neutral-50 dark:bg-card border border rounded-lg p-4">
+          <h4 class="text-sm font-medium text-neutral-900 dark:text-foreground mb-2">
             Security Best Practices
           </h4>
-          <ul class="space-y-2 text-xs text-neutral-600 dark:text-neutral-400">
+          <ul class="space-y-2 text-xs text-muted-foreground dark:text-muted-foreground">
             <li class="flex items-start gap-2">
-              <svg class="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>Write down your nsec on paper and store it in a safe place</span>
             </li>
             <li class="flex items-start gap-2">
-              <svg class="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>Never share your nsec via email, messaging apps, or websites</span>
             </li>
             <li class="flex items-start gap-2">
-              <svg class="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>Consider using a browser extension signer for better security</span>
             </li>
             <li class="flex items-start gap-2">
-              <svg class="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-primary mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>Use the "Create Backup" tab to create encrypted shards with trusted contacts</span>
@@ -356,12 +363,12 @@
               </div>
             {/if}
 
-            <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-2">
+            <h3 class="text-lg font-semibold text-neutral-900 dark:text-foreground mb-2">
               {progress.message}
             </h3>
 
             {#if progress.status !== 'complete' && progress.status !== 'error'}
-              <p class="text-sm text-neutral-600 dark:text-neutral-400">
+              <p class="text-sm text-muted-foreground dark:text-muted-foreground">
                 Step {progress.currentStep} of {progress.totalSteps}
               </p>
             {/if}
@@ -375,7 +382,7 @@
             {#if progress.status === 'complete' || progress.status === 'error'}
               <button
                 onclick={resetProgress}
-                class="mt-6 px-4 py-2 bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                class="mt-6 px-4 py-2 bg-neutral-200 dark:bg-muted text-neutral-700 dark:text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted transition-colors"
               >
                 Close
               </button>
@@ -416,7 +423,7 @@
           {#if canProceed}
             <button
               onclick={handleCreateBackup}
-              class="w-full px-4 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium flex items-center justify-center gap-2"
+              class="w-full px-4 py-3 bg-orange-600 text-foreground rounded-lg hover:bg-orange-700 transition-colors font-medium flex items-center justify-center gap-2"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -430,15 +437,15 @@
   </div>
 {:else}
   <div class="text-center py-8">
-    <div class="w-16 h-16 bg-neutral-100 dark:bg-neutral-900 rounded-full flex items-center justify-center mx-auto mb-4">
-      <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="w-16 h-16 bg-neutral-100 dark:bg-card rounded-full flex items-center justify-center mx-auto mb-4">
+      <svg class="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     </div>
-    <h3 class="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-2">
+    <h3 class="text-sm font-medium text-neutral-900 dark:text-foreground mb-2">
       Not Using Private Key Signer
     </h3>
-    <p class="text-xs text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto">
+    <p class="text-xs text-muted-foreground dark:text-muted-foreground max-w-sm mx-auto">
       You are not logged in with a private key signer. This section is only available for users who logged in with an nsec.
     </p>
   </div>

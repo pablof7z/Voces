@@ -186,31 +186,31 @@
 
 {#if open}
   <div
-    class="fixed inset-0 z-50 flex items-start justify-center bg-black/80 backdrop-blur-sm overflow-y-auto py-8"
+    class="fixed inset-0 z-50 flex items-start justify-center bg-background/80 backdrop-blur-sm overflow-y-auto py-8"
     onclick={handleBackdropClick}
     role="presentation"
   >
     <div
-      class="w-full max-w-3xl mx-4 bg-neutral-900 rounded-2xl border border-neutral-800 shadow-2xl my-auto"
+      class="w-full max-w-3xl mx-4 bg-card rounded-2xl border border-border shadow-2xl my-auto"
       onclick={(e) => e.stopPropagation()}
       role="dialog"
       aria-modal="true"
     >
       <!-- Header -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-border">
         <div class="flex items-center gap-3">
           <button
             onclick={handleClose}
             disabled={isPublishing}
-            class="text-neutral-400 hover:text-white transition-colors disabled:opacity-50"
+            class="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
             aria-label="Close"
           >
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <h2 class="text-xl font-bold text-foreground flex items-center gap-2">
+            <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
             {editingPack ? 'Edit Follow Pack' : 'Create Follow Pack'}
@@ -219,20 +219,20 @@
         <button
           onclick={publishFollowPack}
           disabled={!title.trim() || selectedPubkeys.size === 0 || isPublishing}
-          class="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 disabled:bg-neutral-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-semibold text-sm"
+          class="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 disabled:bg-muted disabled:cursor-not-allowed text-foreground rounded-lg transition-colors font-semibold text-sm"
         >
           {isPublishing ? (editingPack ? 'Updating...' : 'Creating...') : (editingPack ? 'Update Pack' : 'Create Pack')}
         </button>
       </div>
 
       <!-- Tabs -->
-      <div class="flex border-b border-neutral-800">
+      <div class="flex border-b border-border">
         <button
           onclick={() => activeTab = 'details'}
           class={`flex-1 px-6 py-3 font-medium transition-colors ${
             activeTab === 'details'
-              ? 'text-orange-500 border-b-2 border-orange-500'
-              : 'text-neutral-400 hover:text-neutral-300'
+              ? 'text-primary border-b-2 border-orange-500'
+              : 'text-muted-foreground hover:text-muted-foreground'
           }`}
         >
           Details
@@ -241,8 +241,8 @@
           onclick={() => activeTab = 'members'}
           class={`flex-1 px-6 py-3 font-medium transition-colors ${
             activeTab === 'members'
-              ? 'text-orange-500 border-b-2 border-orange-500'
-              : 'text-neutral-400 hover:text-neutral-300'
+              ? 'text-primary border-b-2 border-orange-500'
+              : 'text-muted-foreground hover:text-muted-foreground'
           }`}
         >
           Members ({selectedPubkeys.size})
@@ -255,17 +255,17 @@
           <div class="space-y-5">
             <!-- Image URL -->
             <div>
-              <label class="block text-sm font-medium text-neutral-300 mb-2">
+              <label class="block text-sm font-medium text-muted-foreground mb-2">
                 Cover Image URL (optional)
               </label>
               <input
                 type="url"
                 bind:value={imageUrl}
                 placeholder="https://example.com/image.jpg"
-                class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder:text-neutral-500 focus:outline-none focus:border-orange-500 transition-colors"
+                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors"
               />
               {#if imageUrl.trim()}
-                <div class="mt-3 rounded-lg overflow-hidden border border-neutral-800">
+                <div class="mt-3 rounded-lg overflow-hidden border border-border">
                   <img
                     src={imageUrl}
                     alt="Preview"
@@ -278,31 +278,31 @@
 
             <!-- Title -->
             <div>
-              <label class="block text-sm font-medium text-neutral-300 mb-2">
+              <label class="block text-sm font-medium text-muted-foreground mb-2">
                 Title <span class="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 bind:value={title}
                 placeholder="e.g., Bitcoin Developers"
-                class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder:text-neutral-500 focus:outline-none focus:border-orange-500 transition-colors"
+                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors"
                 maxlength="100"
               />
             </div>
 
             <!-- Description -->
             <div>
-              <label class="block text-sm font-medium text-neutral-300 mb-2">
+              <label class="block text-sm font-medium text-muted-foreground mb-2">
                 Description (optional)
               </label>
               <textarea
                 bind:value={description}
                 placeholder="Describe what this follow pack is about..."
-                class="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder:text-neutral-500 focus:outline-none focus:border-orange-500 transition-colors resize-none"
+                class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors resize-none"
                 rows="4"
                 maxlength="500"
               ></textarea>
-              <p class="text-xs text-neutral-500 mt-1">
+              <p class="text-xs text-muted-foreground mt-1">
                 {description.length}/500 characters
               </p>
             </div>
@@ -311,18 +311,18 @@
           <div class="space-y-4">
             <!-- Combined Search/Add Input -->
             <div>
-              <label class="block text-sm font-medium text-neutral-300 mb-2">
+              <label class="block text-sm font-medium text-muted-foreground mb-2">
                 Add members
               </label>
               <div class="relative">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
                   type="text"
                   bind:value={memberSearchQuery}
                   placeholder="Search follows or enter npub/NIP-05..."
-                  class="w-full pl-10 pr-20 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder:text-neutral-500 focus:outline-none focus:border-orange-500 transition-colors"
+                  class="w-full pl-10 pr-20 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-orange-500 transition-colors"
                   onkeydown={(e) => {
                     if (e.key === 'Enter' && memberSearchQuery.trim()) {
                       addByNpubOrNip05();
@@ -332,13 +332,13 @@
                 {#if memberSearchQuery.trim() && (memberSearchQuery.includes('npub1') || memberSearchQuery.includes('@'))}
                   <button
                     onclick={addByNpubOrNip05}
-                    class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded text-sm font-medium transition-colors"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-foreground rounded text-sm font-medium transition-colors"
                   >
                     Add
                   </button>
                 {/if}
               </div>
-              <p class="text-xs text-neutral-500 mt-1.5">
+              <p class="text-xs text-muted-foreground mt-1.5">
                 Search your follows by name, or paste an npub/NIP-05 to add anyone
               </p>
             </div>
@@ -347,9 +347,9 @@
             <div>
 
               <!-- Members list -->
-              <div class="max-h-96 overflow-y-auto space-y-2 bg-neutral-800/30 rounded-lg p-2 border border-neutral-800">
+              <div class="max-h-96 overflow-y-auto space-y-2 bg-muted/30 rounded-lg p-2 border border-border">
                 {#if filteredFollows.length === 0}
-                  <div class="text-center py-8 text-neutral-400 text-sm">
+                  <div class="text-center py-8 text-muted-foreground text-sm">
                     {memberSearchQuery ? 'No matches found' : 'You don\'t follow anyone yet'}
                   </div>
                 {:else}
@@ -361,25 +361,25 @@
                       class={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${
                         isSelected
                           ? 'bg-orange-600/20 border border-orange-500/50'
-                          : 'bg-neutral-900 border border-neutral-800 hover:border-neutral-700'
+                          : 'bg-card border border-border hover:border-border'
                       }`}
                     >
                       <Avatar {ndk} {pubkey} class="w-10 h-10 flex-shrink-0" />
                       <div class="flex-1 min-w-0 text-left">
-                        <div class="font-medium text-white truncate">
+                        <div class="font-medium text-foreground truncate">
                           {profile?.displayName || profile?.name || `${pubkey.slice(0, 8)}...`}
                         </div>
-                        <div class="text-xs text-neutral-400 truncate">
+                        <div class="text-xs text-muted-foreground truncate">
                           {profile?.nip05 || `${pubkey.slice(0, 16)}...`}
                         </div>
                       </div>
                       <div class={`w-5 h-5 rounded border-2 flex items-center justify-center ${
                         isSelected
                           ? 'bg-orange-500 border-orange-500'
-                          : 'border-neutral-600'
+                          : 'border'
                       }`}>
                         {#if isSelected}
-                          <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg class="w-3 h-3 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                           </svg>
                         {/if}
@@ -392,26 +392,26 @@
 
             <!-- Selected Members Display -->
             {#if selectedPubkeys.size > 0}
-              <div class="bg-neutral-800/50 rounded-lg p-4 border border-neutral-700">
-                <div class="text-sm font-medium text-neutral-300 mb-3">
+              <div class="bg-muted/50 rounded-lg p-4 border border-border">
+                <div class="text-sm font-medium text-muted-foreground mb-3">
                   Selected Members ({selectedPubkeys.size})
                 </div>
                 <div class="space-y-2 max-h-48 overflow-y-auto">
                   {#each Array.from(selectedPubkeys) as pubkey (pubkey)}
                     {@const profile = ndk.$fetchProfile(() => pubkey)}
-                    <div class="flex items-center gap-3 p-2 rounded-lg bg-neutral-900/50">
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-card/50">
                       <Avatar {ndk} {pubkey} class="w-8 h-8 flex-shrink-0" />
                       <div class="flex-1 min-w-0">
-                        <div class="text-sm font-medium text-white truncate">
+                        <div class="text-sm font-medium text-foreground truncate">
                           {profile?.displayName || profile?.name || `${pubkey.slice(0, 8)}...`}
                         </div>
-                        <div class="text-xs text-neutral-400 truncate">
+                        <div class="text-xs text-muted-foreground truncate">
                           {profile?.nip05 || `${pubkey.slice(0, 16)}...`}
                         </div>
                       </div>
                       <button
                         onclick={() => toggleMember(pubkey)}
-                        class="p-1 text-neutral-400 hover:text-red-500 transition-colors"
+                        class="p-1 text-muted-foreground hover:text-red-500 transition-colors"
                         aria-label="Remove member"
                       >
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -428,9 +428,9 @@
       </div>
 
       <!-- Footer hint -->
-      <div class="px-6 py-4 border-t border-neutral-800/50 bg-neutral-900/50">
-        <p class="text-xs text-neutral-500">
-          Press <kbd class="px-1.5 py-0.5 bg-neutral-800 rounded text-neutral-400">Esc</kbd> to cancel
+      <div class="px-6 py-4 border-t border-border bg-card/50">
+        <p class="text-xs text-muted-foreground">
+          Press <kbd class="px-1.5 py-0.5 bg-muted rounded text-muted-foreground">Esc</kbd> to cancel
         </p>
       </div>
     </div>

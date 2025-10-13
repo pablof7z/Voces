@@ -61,17 +61,17 @@
   <!-- Header with refresh button -->
   <div class="flex items-center justify-between">
     <div>
-      <h2 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Cache Statistics</h2>
-      <p class="text-sm text-neutral-500 dark:text-neutral-600 mt-1">
+      <h2 class="text-lg font-semibold text-neutral-900 dark:text-foreground">Cache Statistics</h2>
+      <p class="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
         Local database cache information
       </p>
     </div>
     <button
       onclick={loadCacheStats}
-      class="p-2 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/30 rounded-lg transition-all"
+      class="p-2 hover:bg-neutral-200/50 dark:hover:bg-muted/30 rounded-lg transition-all"
       title="Refresh"
     >
-      <svg class="w-5 h-5 text-neutral-700 dark:text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-5 h-5 text-neutral-700 dark:text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
       </svg>
     </button>
@@ -79,15 +79,15 @@
 
   {#if loading}
     <div class="flex flex-col items-center justify-center py-12 gap-3">
-      <div class="w-10 h-10 border-4 border-neutral-200 dark:border-neutral-800 border-t-orange-500 rounded-full animate-spin"></div>
-      <p class="text-sm text-neutral-500 dark:text-neutral-600">Loading cache statistics...</p>
+      <div class="w-10 h-10 border-4 border border-t-orange-500 rounded-full animate-spin"></div>
+      <p class="text-sm text-muted-foreground dark:text-muted-foreground">Loading cache statistics...</p>
     </div>
   {:else if error}
     <div class="flex flex-col items-center justify-center py-12 gap-3">
       <p class="text-sm text-red-500">❌ {error}</p>
       <button
         onclick={loadCacheStats}
-        class="px-4 py-2 bg-orange-500/10 border border-orange-500/30 rounded-lg text-sm text-orange-500 hover:bg-orange-500/20 transition-all"
+        class="px-4 py-2 bg-primary/10 border border-orange-500/30 rounded-lg text-sm text-primary hover:bg-primary/20 transition-all"
       >
         Retry
       </button>
@@ -96,39 +96,39 @@
     <div class="space-y-6">
       <!-- Overview Section -->
       <div>
-        <h3 class="text-xs font-semibold text-neutral-500 dark:text-neutral-600 uppercase tracking-wider mb-3">
+        <h3 class="text-xs font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider mb-3">
           Cache Overview
         </h3>
         <div class="grid grid-cols-2 gap-3">
-          <div class="bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 text-center">
-            <div class="text-2xl font-bold text-orange-500 mb-1">
+          <div class="bg-neutral-100 dark:bg-card border border rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-primary mb-1">
               {stats.totalEvents.toLocaleString()}
             </div>
-            <div class="text-xs text-neutral-500 dark:text-neutral-600 font-medium">
+            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
               Total Events
             </div>
           </div>
-          <div class="bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 text-center">
-            <div class="text-2xl font-bold text-orange-500 mb-1">
+          <div class="bg-neutral-100 dark:bg-card border border rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-primary mb-1">
               {stats.totalProfiles.toLocaleString()}
             </div>
-            <div class="text-xs text-neutral-500 dark:text-neutral-600 font-medium">
+            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
               Profiles
             </div>
           </div>
-          <div class="bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 text-center">
-            <div class="text-2xl font-bold text-orange-500 mb-1">
+          <div class="bg-neutral-100 dark:bg-card border border rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-primary mb-1">
               {stats.totalEventTags.toLocaleString()}
             </div>
-            <div class="text-xs text-neutral-500 dark:text-neutral-600 font-medium">
+            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
               Event Tags
             </div>
           </div>
-          <div class="bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 text-center">
-            <div class="text-2xl font-bold text-orange-500 mb-1">
+          <div class="bg-neutral-100 dark:bg-card border border rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-primary mb-1">
               {stats.eventRelays.toLocaleString()}
             </div>
-            <div class="text-xs text-neutral-500 dark:text-neutral-600 font-medium">
+            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
               Event-Relay Links
             </div>
           </div>
@@ -137,21 +137,21 @@
 
       <!-- Events by Kind Section -->
       <div>
-        <h3 class="text-xs font-semibold text-neutral-500 dark:text-neutral-600 uppercase tracking-wider mb-3">
+        <h3 class="text-xs font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider mb-3">
           Events by Kind
         </h3>
         <div class="space-y-2">
           {#each Object.entries(stats.eventsByKind).sort((a, b) => b[1] - a[1]) as [kind, count]}
-            <div class="bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg p-3 flex items-center justify-between">
+            <div class="bg-neutral-100 dark:bg-card border border rounded-lg p-3 flex items-center justify-between">
               <div class="flex items-center gap-3">
-                <span class="font-mono text-sm text-orange-500 font-semibold min-w-[3rem]">
+                <span class="font-mono text-sm text-primary font-semibold min-w-[3rem]">
                   {kind}
                 </span>
-                <span class="text-sm text-neutral-700 dark:text-neutral-300">
+                <span class="text-sm text-neutral-700 dark:text-muted-foreground">
                   {getKindName(Number(kind))}
                 </span>
               </div>
-              <div class="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+              <div class="text-sm font-semibold text-neutral-900 dark:text-foreground">
                 {count.toLocaleString()}
               </div>
             </div>
@@ -161,31 +161,31 @@
 
       <!-- Other Tables Section -->
       <div>
-        <h3 class="text-xs font-semibold text-neutral-500 dark:text-neutral-600 uppercase tracking-wider mb-3">
+        <h3 class="text-xs font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider mb-3">
           Other Cache Tables
         </h3>
         <div class="grid grid-cols-3 gap-3">
-          <div class="bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 text-center">
-            <div class="text-2xl font-bold text-orange-500 mb-1">
+          <div class="bg-neutral-100 dark:bg-card border border rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-primary mb-1">
               {stats.totalDecryptedEvents.toLocaleString()}
             </div>
-            <div class="text-xs text-neutral-500 dark:text-neutral-600 font-medium">
+            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
               Decrypted Events
             </div>
           </div>
-          <div class="bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 text-center">
-            <div class="text-2xl font-bold text-orange-500 mb-1">
+          <div class="bg-neutral-100 dark:bg-card border border rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-primary mb-1">
               {stats.totalUnpublishedEvents.toLocaleString()}
             </div>
-            <div class="text-xs text-neutral-500 dark:text-neutral-600 font-medium">
+            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
               Unpublished Events
             </div>
           </div>
-          <div class="bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 text-center">
-            <div class="text-2xl font-bold text-orange-500 mb-1">
+          <div class="bg-neutral-100 dark:bg-card border border rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-primary mb-1">
               {stats.cacheData.toLocaleString()}
             </div>
-            <div class="text-xs text-neutral-500 dark:text-neutral-600 font-medium">
+            <div class="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
               Cache Data
             </div>
           </div>

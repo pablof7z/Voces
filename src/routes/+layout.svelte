@@ -4,6 +4,8 @@
   import { browser } from '$app/environment';
   import { EventContentHandlersProxy, setEventContentComponents } from '@nostr-dev-kit/svelte';
   import { goto } from '$app/navigation';
+  import { locale } from 'svelte-i18n';
+  import { initializeI18n } from '$i18n/config';
   import Toaster from '$lib/components/Toaster.svelte';
   import LoginModal from '$lib/components/LoginModal.svelte';
   import RelayAuthModal from '$lib/components/RelayAuthModal.svelte';
@@ -19,6 +21,16 @@
   const { children }: Props = $props();
 
   let ready = $state(false);
+
+  // Initialize i18n (only in browser)
+  if (browser) {
+    initializeI18n(settings.language);
+
+    // Sync locale changes with settings
+    $effect(() => {
+      locale.set(settings.language);
+    });
+  }
 
   // Set up global EventContent handlers (only in browser)
   if (browser) {
@@ -50,6 +62,9 @@
     if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('dark');
     }
+
+    // Initialize theme color
+    settings.setThemeColor(settings.themeColor);
 
     // Wait for NDK cache to be initialized before mounting the app
     ndkReady.then(() => {
@@ -94,7 +109,7 @@
     {/snippet}
   </svelte:boundary>
 {:else}
-  <div class="flex items-center justify-center min-h-screen bg-white dark:bg-gray-950">
+  <div class="flex items-center justify-center min-h-screen bg-white dark:bg-neutral-950">
     <div class="text-center">
       <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-orange-600 border-r-transparent"></div>
       <p class="mt-4 text-gray-600 dark:text-gray-400">Initializing...</p>

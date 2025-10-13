@@ -103,7 +103,7 @@
   }
 </script>
 
-<div class="min-h-screen bg-neutral-50 dark:bg-black">
+<div class="min-h-screen bg-neutral-50 dark:bg-background">
   <div class="container mx-auto px-4 py-4 max-w-7xl">
     <!-- Header -->
     <div class="mb-6">
@@ -115,14 +115,14 @@
       <div class="flex gap-2 sm:gap-3">
         <div class="flex-1">
           <div class="relative">
-            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
               type="text"
               placeholder="Search listings..."
               bind:value={searchQuery}
-              class="w-full pl-10 h-12 bg-white/80 dark:bg-black/80 backdrop-blur border border-neutral-200 dark:border-neutral-700 rounded-xl text-base focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+              class="w-full pl-10 h-12 bg-white/80 dark:bg-background/80 backdrop-blur border border rounded-xl text-base focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
             />
           </div>
         </div>
@@ -131,13 +131,13 @@
         <div class="relative">
           <select
             bind:value={selectedCategory}
-            class="h-12 px-4 bg-white/80 dark:bg-black/80 backdrop-blur border border-neutral-200 dark:border-neutral-700 rounded-xl text-base focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all appearance-none pr-10"
+            class="h-12 px-4 bg-white/80 dark:bg-background/80 backdrop-blur border border rounded-xl text-base focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all appearance-none pr-10"
           >
             {#each CATEGORIES as category}
               <option value={category.value}>{category.label}</option>
             {/each}
           </select>
-          <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </div>
@@ -150,10 +150,10 @@
       <div>
         {#if selectedCategory}
           <div class="mb-6">
-            <h2 class="text-xl font-semibold text-neutral-900 dark:text-white">
+            <h2 class="text-xl font-semibold text-neutral-900 dark:text-foreground">
               {CATEGORIES.find(c => c.value === selectedCategory)?.label || selectedCategory}
             </h2>
-            <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+            <p class="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
               {listings.length} listings found
             </p>
           </div>
@@ -165,10 +165,10 @@
             {@const price = getListingPrice(listing)}
             <button
               onclick={() => goto(`/marketplace/${listing.encode()}`)}
-              class="bg-white dark:bg-neutral-900/50 rounded-xl border border-neutral-200 dark:border-neutral-800/50 overflow-hidden transition-all hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg text-left"
+              class="bg-white dark:bg-card/50 rounded-xl border border overflow-hidden transition-all hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg text-left"
             >
               {#if getListingImage(listing)}
-                <div class="aspect-video bg-neutral-100 dark:bg-neutral-800 overflow-hidden">
+                <div class="aspect-video bg-neutral-100 dark:bg-muted overflow-hidden">
                   <img
                     src={getListingImage(listing)}
                     alt={listing.tagValue('title') || 'Listing'}
@@ -177,11 +177,11 @@
                 </div>
               {/if}
               <div class="p-4">
-                <h3 class="font-semibold text-neutral-900 dark:text-white truncate">
+                <h3 class="font-semibold text-neutral-900 dark:text-foreground truncate">
                   {listing.tagValue('title') || 'Untitled'}
                 </h3>
                 {#if listing.tagValue('summary')}
-                  <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1 line-clamp-2">
+                  <p class="text-sm text-muted-foreground dark:text-muted-foreground mt-1 line-clamp-2">
                     {listing.tagValue('summary')}
                   </p>
                 {/if}
@@ -193,7 +193,7 @@
               </div>
             </button>
           {:else}
-            <div class="col-span-full text-center py-12 text-neutral-500 dark:text-neutral-400">
+            <div class="col-span-full text-center py-12 text-muted-foreground dark:text-muted-foreground">
               No listings found
             </div>
           {/each}
@@ -203,14 +203,14 @@
       <!-- Category sections view -->
       <div>
         {#if Object.keys(listingsByCategory).length === 0}
-          <div class="text-center py-12 text-neutral-500 dark:text-neutral-400">
+          <div class="text-center py-12 text-muted-foreground dark:text-muted-foreground">
             No marketplace items yet
           </div>
         {:else}
           <!-- Recent listings -->
           {#if listings.length > 0}
             <div class="mb-8">
-              <h2 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+              <h2 class="text-xl font-semibold text-neutral-900 dark:text-foreground mb-4">
                 Recent Listings
               </h2>
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -218,10 +218,10 @@
                   {@const price = getListingPrice(listing)}
                   <button
                     onclick={() => goto(`/marketplace/${listing.encode()}`)}
-                    class="bg-white dark:bg-neutral-900/50 rounded-xl border border-neutral-200 dark:border-neutral-800/50 overflow-hidden transition-all hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg text-left"
+                    class="bg-white dark:bg-card/50 rounded-xl border border overflow-hidden transition-all hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg text-left"
                   >
                     {#if getListingImage(listing)}
-                      <div class="aspect-video bg-neutral-100 dark:bg-neutral-800 overflow-hidden">
+                      <div class="aspect-video bg-neutral-100 dark:bg-muted overflow-hidden">
                         <img
                           src={getListingImage(listing)}
                           alt={listing.tagValue('title') || 'Listing'}
@@ -230,11 +230,11 @@
                       </div>
                     {/if}
                     <div class="p-4">
-                      <h3 class="font-semibold text-neutral-900 dark:text-white truncate">
+                      <h3 class="font-semibold text-neutral-900 dark:text-foreground truncate">
                         {listing.tagValue('title') || 'Untitled'}
                       </h3>
                       {#if listing.tagValue('summary')}
-                        <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1 line-clamp-2">
+                        <p class="text-sm text-muted-foreground dark:text-muted-foreground mt-1 line-clamp-2">
                           {listing.tagValue('summary')}
                         </p>
                       {/if}
@@ -254,7 +254,7 @@
           {#each CATEGORIES.filter(c => c.value && listingsByCategory[c.value]?.length > 0) as category}
             <div class="mb-8">
               <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-semibold text-neutral-900 dark:text-white">
+                <h2 class="text-xl font-semibold text-neutral-900 dark:text-foreground">
                   {category.label}
                 </h2>
                 <button
@@ -269,10 +269,10 @@
                   {@const price = getListingPrice(listing)}
                   <button
                     onclick={() => goto(`/marketplace/${listing.encode()}`)}
-                    class="bg-white dark:bg-neutral-900/50 rounded-xl border border-neutral-200 dark:border-neutral-800/50 overflow-hidden transition-all hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg text-left"
+                    class="bg-white dark:bg-card/50 rounded-xl border border overflow-hidden transition-all hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg text-left"
                   >
                     {#if getListingImage(listing)}
-                      <div class="aspect-video bg-neutral-100 dark:bg-neutral-800 overflow-hidden">
+                      <div class="aspect-video bg-neutral-100 dark:bg-muted overflow-hidden">
                         <img
                           src={getListingImage(listing)}
                           alt={listing.tagValue('title') || 'Listing'}
@@ -281,11 +281,11 @@
                       </div>
                     {/if}
                     <div class="p-4">
-                      <h3 class="font-semibold text-neutral-900 dark:text-white truncate">
+                      <h3 class="font-semibold text-neutral-900 dark:text-foreground truncate">
                         {listing.tagValue('title') || 'Untitled'}
                       </h3>
                       {#if listing.tagValue('summary')}
-                        <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1 line-clamp-2">
+                        <p class="text-sm text-muted-foreground dark:text-muted-foreground mt-1 line-clamp-2">
                           {listing.tagValue('summary')}
                         </p>
                       {/if}

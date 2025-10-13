@@ -39,7 +39,6 @@
       error = '';
       const signer = new NDKPrivateKeySigner(nsecInput.trim());
       await ndk.$sessions.login(signer);
-      localStorage.setItem('nostr_private_key', nsecInput.trim());
       loginModal.close();
       nsecInput = '';
     } catch (err) {
@@ -64,12 +63,12 @@
 
 {#if loginModal.show}
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4"
     onclick={closeModal}
     role="presentation"
   >
     <div
-      class="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 w-full p-6 overflow-hidden {loginModal.state === 'signup' ? 'max-w-lg' : 'max-w-md'}"
+      class="bg-white dark:bg-card rounded-xl border border w-full p-6 overflow-hidden {loginModal.state === 'signup' ? 'max-w-lg' : 'max-w-md'}"
       onclick={(e) => e.stopPropagation()}
       role="dialog"
       aria-modal="true"
@@ -83,8 +82,8 @@
           <!-- Content -->
           <div class="relative pt-20">
             <div class="text-center mb-6">
-              <h2 class="text-3xl font-bold mb-3 text-neutral-900 dark:text-white">Your Voice Matters</h2>
-              <p class="text-neutral-600 dark:text-neutral-400 text-lg">
+              <h2 class="text-3xl font-bold mb-3 text-neutral-900 dark:text-foreground">Your Voice Matters</h2>
+              <p class="text-muted-foreground dark:text-muted-foreground text-lg">
                 Join a global community where every story counts
               </p>
             </div>
@@ -93,13 +92,13 @@
             <div class="space-y-4 mb-8">
               <div class="flex items-start gap-4">
                 <div class="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center flex-shrink-0">
-                  <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-5 h-5 text-primary dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 class="font-semibold mb-1 text-neutral-900 dark:text-white">Own Your Voice</h3>
-                  <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                  <h3 class="font-semibold mb-1 text-neutral-900 dark:text-foreground">Own Your Voice</h3>
+                  <p class="text-sm text-muted-foreground dark:text-muted-foreground">
                     No censorship. No gatekeepers. Your content, your control, forever.
                   </p>
                 </div>
@@ -112,8 +111,8 @@
                   </svg>
                 </div>
                 <div>
-                  <h3 class="font-semibold mb-1 text-neutral-900 dark:text-white">Earn From Your Stories</h3>
-                  <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                  <h3 class="font-semibold mb-1 text-neutral-900 dark:text-foreground">Earn From Your Stories</h3>
+                  <p class="text-sm text-muted-foreground dark:text-muted-foreground">
                     Get paid instantly in Bitcoin for valuable content. No banks, no fees.
                   </p>
                 </div>
@@ -126,8 +125,8 @@
                   </svg>
                 </div>
                 <div>
-                  <h3 class="font-semibold mb-1 text-neutral-900 dark:text-white">Connect With Your Community</h3>
-                  <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                  <h3 class="font-semibold mb-1 text-neutral-900 dark:text-foreground">Connect With Your Community</h3>
+                  <p class="text-sm text-muted-foreground dark:text-muted-foreground">
                     Trade, share, and build with people who understand your journey.
                   </p>
                 </div>
@@ -138,7 +137,7 @@
             <div class="space-y-3">
               <button
                 onclick={handleStartOnboarding}
-                class="w-full py-6 text-lg font-semibold bg-gradient-to-r from-orange-600 to-red-700 hover:from-orange-700 hover:to-red-800 text-white rounded-lg transition-all flex items-center justify-center gap-2"
+                class="w-full py-6 text-lg font-semibold bg-gradient-to-r from-orange-600 to-red-700 hover:from-orange-700 hover:to-red-800 text-foreground rounded-lg transition-all flex items-center justify-center gap-2"
               >
                 Start Your Journey
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,15 +147,15 @@
 
               <button
                 onclick={() => loginModal.setState('login')}
-                class="w-full text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors py-2"
+                class="w-full text-sm text-muted-foreground dark:text-muted-foreground hover:text-neutral-900 dark:hover:text-foreground transition-colors py-2"
               >
                 Already have a Nostr account? <span class="font-semibold underline">Sign in here</span>
               </button>
             </div>
 
             <!-- Trust Signals -->
-            <div class="mt-6 pt-6 border-t border-neutral-200 dark:border-neutral-800">
-              <p class="text-xs text-center text-neutral-500">
+            <div class="mt-6 pt-6 border-t border">
+              <p class="text-xs text-center text-muted-foreground">
                 Built on Nostr protocol • No personal data required • Leave anytime with your content
               </p>
             </div>
@@ -167,10 +166,10 @@
         <div>
           <div class="flex items-center justify-between mb-6">
             <div>
-              <h2 class="text-2xl font-bold text-neutral-900 dark:text-white">Welcome Back</h2>
-              <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-1">Sign in with your existing Nostr account</p>
+              <h2 class="text-2xl font-bold text-neutral-900 dark:text-foreground">Welcome Back</h2>
+              <p class="text-sm text-muted-foreground dark:text-muted-foreground mt-1">Sign in with your existing Nostr account</p>
             </div>
-            <button onclick={closeModal} class="text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">
+            <button onclick={closeModal} class="text-muted-foreground hover:text-neutral-900 dark:hover:text-foreground transition-colors">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -191,14 +190,14 @@
                   loginWithNip07();
                 }}
                 disabled={isLoggingIn}
-                class="w-full p-4 bg-neutral-800 hover:bg-neutral-700 text-white border border-neutral-600 rounded-lg transition-colors text-left flex items-center gap-3 disabled:opacity-50"
+                class="w-full p-4 bg-muted hover:bg-muted text-foreground border border rounded-lg transition-colors text-left flex items-center gap-3 disabled:opacity-50"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
                 <div class="flex-1">
                   <div class="font-semibold">Browser Extension (NIP-07)</div>
-                  <div class="text-sm text-neutral-400">Use Alby, nos2x, or similar</div>
+                  <div class="text-sm text-muted-foreground">Use Alby, nos2x, or similar</div>
                 </div>
                 {#if isLoggingIn && loginMethod === 'nip07'}
                   <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -210,23 +209,23 @@
               <button
                 onclick={() => loginMethod = 'nsec'}
                 disabled={isLoggingIn}
-                class="w-full p-4 bg-neutral-800 hover:bg-neutral-700 text-white border border-neutral-600 rounded-lg transition-colors text-left flex items-center gap-3 disabled:opacity-50"
+                class="w-full p-4 bg-muted hover:bg-muted text-foreground border border rounded-lg transition-colors text-left flex items-center gap-3 disabled:opacity-50"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                 </svg>
                 <div class="flex-1">
                   <div class="font-semibold">Private Key</div>
-                  <div class="text-sm text-neutral-400">Login with your nsec or hex key</div>
+                  <div class="text-sm text-muted-foreground">Login with your nsec or hex key</div>
                 </div>
               </button>
 
               <div class="relative my-6">
                 <div class="absolute inset-0 flex items-center">
-                  <span class="w-full border-t border-neutral-700"></span>
+                  <span class="w-full border-t border-border"></span>
                 </div>
                 <div class="relative flex justify-center text-xs uppercase">
-                  <span class="bg-white dark:bg-neutral-900 px-2 text-neutral-400">
+                  <span class="bg-white dark:bg-card px-2 text-muted-foreground">
                     Don't have an account?
                   </span>
                 </div>
@@ -234,7 +233,7 @@
 
               <button
                 onclick={() => loginModal.setState('signup')}
-                class="w-full text-center text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors py-2"
+                class="w-full text-center text-sm text-muted-foreground dark:text-muted-foreground hover:text-neutral-900 dark:hover:text-foreground transition-colors py-2"
               >
                 <span class="font-semibold underline">Create a new account</span>
               </button>
@@ -259,21 +258,21 @@
                       loginWithNsec();
                     }
                   }}
-                  class="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:border-purple-500 disabled:opacity-50"
+                  class="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground placeholder-neutral-500 focus:outline-none focus:border-purple-500 disabled:opacity-50"
                 />
 
                 <div class="flex gap-2">
                   <button
                     onclick={() => loginMethod = null}
                     disabled={isLoggingIn}
-                    class="flex-1 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                    class="flex-1 px-4 py-2 bg-muted hover:bg-muted text-foreground rounded-lg transition-colors disabled:opacity-50"
                   >
                     Back
                   </button>
                   <button
                     onclick={loginWithNsec}
                     disabled={isLoggingIn || !nsecInput.trim()}
-                    class="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-neutral-700 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-semibold flex items-center justify-center gap-2"
+                    class="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-muted disabled:cursor-not-allowed text-foreground rounded-lg transition-colors font-semibold flex items-center justify-center gap-2"
                   >
                     {#if isLoggingIn}
                       <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">

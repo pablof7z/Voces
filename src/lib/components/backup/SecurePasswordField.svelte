@@ -29,7 +29,7 @@
 </script>
 
 <div>
-  <label class="block text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-2">
+  <label class="block text-sm font-medium text-neutral-900 dark:text-foreground mb-2">
     {label}
   </label>
   <div class="relative">
@@ -39,12 +39,12 @@
       oninput={(e) => onChange(e.currentTarget.value)}
       onblur={onBlur}
       {placeholder}
-      class="w-full px-3 py-2 pr-10 bg-white dark:bg-neutral-950 border rounded-lg text-sm focus:outline-none focus:ring-2 {hasErrors ? 'border-red-500 focus:ring-red-500' : 'border-neutral-200 dark:border-neutral-800 focus:ring-orange-500'}"
+      class="w-full px-3 py-2 pr-10 bg-white dark:bg-card border rounded-lg text-sm focus:outline-none focus:ring-2 {hasErrors ? 'border-red-500 focus:ring-red-500' : 'border focus:ring-orange-500'}"
     />
     <button
       type="button"
       onclick={() => showPassword = !showPassword}
-      class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
+      class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-neutral-700 dark:hover:text-muted-foreground"
     >
       {#if showPassword}
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

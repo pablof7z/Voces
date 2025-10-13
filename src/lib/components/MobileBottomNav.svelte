@@ -28,12 +28,12 @@
   }
 </script>
 
-<nav class="block lg:hidden fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-neutral-800/50 z-[1000]">
+<nav class="block lg:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-xl border-t border-border z-[1000]">
   <div class="flex justify-around items-center px-2 py-3 safe-bottom">
     <!-- Home / Relay Icon -->
     <a
       href="/"
-      class="flex items-center justify-center p-3 rounded-lg transition-colors {isActive('/') ? 'text-orange-500' : 'text-neutral-400'}"
+      class="flex items-center justify-center p-3 rounded-lg transition-colors {isActive('/') ? 'text-primary' : 'text-muted-foreground'}"
       aria-label="Home"
     >
       {#if isAgorasSelection(settings.selectedRelay)}
@@ -79,7 +79,7 @@
     <!-- Messages -->
     <a
       href="/messages"
-      class="flex items-center justify-center p-3 rounded-lg transition-colors {isActive('/messages') ? 'text-orange-500' : 'text-neutral-400'}"
+      class="flex items-center justify-center p-3 rounded-lg transition-colors {isActive('/messages') ? 'text-primary' : 'text-muted-foreground'}"
       aria-label="Messages"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,7 +90,7 @@
     <!-- Settings -->
     <a
       href="/settings"
-      class="flex items-center justify-center p-3 rounded-lg transition-colors {isActive('/settings') ? 'text-orange-500' : 'text-neutral-400'}"
+      class="flex items-center justify-center p-3 rounded-lg transition-colors {isActive('/settings') ? 'text-primary' : 'text-muted-foreground'}"
       aria-label="Settings"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,7 +102,7 @@
     <!-- Wallet -->
     <a
       href="/wallet"
-      class="flex items-center justify-center p-3 rounded-lg transition-colors {isActive('/wallet') ? 'text-orange-500' : 'text-neutral-400'}"
+      class="flex items-center justify-center p-3 rounded-lg transition-colors {isActive('/wallet') ? 'text-primary' : 'text-muted-foreground'}"
       aria-label="Wallet"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,7 +113,7 @@
     <!-- Profile -->
     <button
       onclick={handleProfileClick}
-      class="flex items-center justify-center p-3 rounded-lg transition-colors {currentPath.startsWith('/p/') ? 'text-orange-500' : 'text-neutral-400'}"
+      class="flex items-center justify-center p-3 rounded-lg transition-colors {currentPath.startsWith('/p/') ? 'text-primary' : 'text-muted-foreground'}"
       aria-label="Profile"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -2,9 +2,12 @@
   import { ndk, hashtagInterests } from '$lib/ndk.svelte';
   import { settings } from '$lib/stores/settings.svelte';
   import { hashtagFilter } from '$lib/stores/hashtagFilter.svelte';
+  import { layoutMode } from '$lib/stores/layoutMode.svelte';
   import { NDKKind, type NDKEvent, NDKArticle, NDKSubscriptionCacheUsage } from '@nostr-dev-kit/ndk';
   import NoteCard from '$lib/components/NoteCard.svelte';
   import ArticlePreviewCard from '$lib/components/ArticlePreviewCard.svelte';
+  import FeaturedArticleCard from '$lib/components/FeaturedArticleCard.svelte';
+  import HighlightGridCard from '$lib/components/HighlightGridCard.svelte';
   import MediaGrid from '$lib/components/MediaGrid.svelte';
   import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
@@ -161,6 +164,34 @@
     pageSize: 10
   });
 
+  const highlightsFeed = createLazyFeed(ndk, () => {
+    const filter: any = {
+      kinds: [9802],
+      limit: 100
+    };
+
+    // Add hashtag filters if any are selected
+    if (hashtagFilter.hasFilters) {
+      filter['#t'] = hashtagFilter.selectedHashtags;
+    }
+
+    // When in Following mode or Follow Pack mode, filter by authors
+    const isFollowingOrPackMode = !settings.selectedRelay || isFollowPackSelection(settings.selectedRelay);
+    if (isFollowingOrPackMode && authorsArray.length > 0) {
+      filter.authors = authorsArray;
+    }
+    return {
+      filters: [filter],
+      cacheUsage: relaysToUse.length > 0 ? NDKSubscriptionCacheUsage.ONLY_RELAY : NDKSubscriptionCacheUsage.PARALLEL,
+      subId: 'home-highlights',
+      exclusiveRelay: relaysToUse.length > 0,
+      relayUrls: relaysToUse.length > 0 ? relaysToUse : undefined
+    };
+  }, {
+    initialLimit: 10,
+    pageSize: 10
+  });
+
   const articles = $derived.by(() => articlesFeed.events.map(e => NDKArticle.from(e)));
 
   const filteredArticles = $derived.by(() =>
@@ -168,6 +199,19 @@
       .filter(article => article.title && article.content)
       .sort((a, b) => (b.published_at ?? b.created_at ?? 0) - (a.published_at ?? a.created_at ?? 0))
   );
+
+  // Featured articles (first 10 with images preferred)
+  const featuredArticles = $derived.by(() => {
+    const articlesWithImages = filteredArticles.filter(a => a.image);
+    const articlesWithoutImages = filteredArticles.filter(a => !a.image);
+    return [...articlesWithImages, ...articlesWithoutImages].slice(0, 10);
+  });
+
+  // Highlights for grid (first 10)
+  const gridHighlights = $derived.by(() => highlightsFeed.events.slice(0, 10));
+
+  // Regular article feed (skip first 10 featured articles)
+  const regularArticles = $derived.by(() => filteredArticles.slice(10));
 
   function hasMediaUrl(content: string, type: 'image' | 'video'): boolean {
     const regex = type === 'image'
@@ -241,11 +285,20 @@
     };
   });
 
+  // Set layout mode based on selected filter
+  $effect(() => {
+    if (selectedFilter === 'articles') {
+      layoutMode.setReadsMode();
+    } else {
+      layoutMode.reset();
+    }
+  });
+
 </script>
 
 <div class="max-w-full mx-auto">
   <!-- Header -->
-  <div class="sticky top-0 z-10 bg-black/90 backdrop-blur-xl border-b border-neutral-800/50">
+  <div class="sticky top-0 z-10 bg-background/90 backdrop-blur-xl border-b border-border">
     <div class="px-4 py-4">
       <div class="flex items-center gap-2">
         <!-- Relay/Following selector icon (always visible) -->
@@ -261,8 +314,8 @@
               onclick={() => hashtagFilter.toggleHashtag(hashtag)}
               class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all {
                 hashtagFilter.isSelected(hashtag)
-                  ? 'bg-orange-500 text-white border-2 border-orange-400'
-                  : 'bg-neutral-800 text-neutral-300 border-2 border-neutral-700 hover:border-neutral-600'
+                  ? 'bg-orange-500 text-foreground border-2 border-orange-400'
+                  : 'bg-muted text-muted-foreground border-2 border-border hover:border'
               }"
             >
               <span class="text-xs">#</span>
@@ -315,7 +368,7 @@
             </g>
           </svg>
         {:else if headerTitle}
-          <h1 class="text-xl font-bold text-white">{headerTitle.text}</h1>
+          <h1 class="text-xl font-bold text-foreground">{headerTitle.text}</h1>
         {/if}
         </div>
       </div>
@@ -328,19 +381,70 @@
   <!-- Feed -->
   <div class="divide-y divide-neutral-800/50">
     {#if selectedFilter === 'articles'}
-      {#if filteredArticles.length === 0 && articlesFeed.eosed}
-        <div class="p-8 text-center text-neutral-400">
-          No articles found
-        </div>
-      {:else if filteredArticles.length === 0}
-        <div class="p-8 text-center text-neutral-400">
-          Loading articles...
-        </div>
-      {:else}
-        {#each filteredArticles as article (article.id)}
-          <ArticlePreviewCard {article} />
-        {/each}
-      {/if}
+      <div class="pb-6">
+        {#if filteredArticles.length === 0 && articlesFeed.eosed}
+          <div class="p-8 text-center text-muted-foreground">
+            No articles found
+          </div>
+        {:else if filteredArticles.length === 0}
+          <div class="p-8 text-center text-muted-foreground">
+            Loading articles...
+          </div>
+        {:else}
+          <!-- Featured Articles Section -->
+          {#if featuredArticles.length > 0}
+            <div class="px-4 py-6 border-b border-border">
+              <h2 class="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                Featured
+              </h2>
+              <div class="overflow-x-auto scrollbar-hide -mx-4 px-4">
+                <div class="flex gap-4 pb-2">
+                  {#each featuredArticles as article (article.id)}
+                    <FeaturedArticleCard {article} />
+                  {/each}
+                </div>
+              </div>
+            </div>
+          {/if}
+
+          <!-- Highlights Grid Section -->
+          {#if gridHighlights.length > 0}
+            <div class="px-4 py-6 border-b border-border">
+              <h2 class="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                Recent Highlights
+              </h2>
+              <div class="grid grid-cols-2 gap-4">
+                {#each gridHighlights as highlight (highlight.id)}
+                  <HighlightGridCard event={highlight} />
+                {/each}
+              </div>
+            </div>
+          {/if}
+
+          <!-- Regular Articles Feed -->
+          {#if regularArticles.length > 0}
+            <div class="px-4 py-6">
+              <h2 class="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                Latest Articles
+              </h2>
+              <div class="divide-y divide-neutral-800/50 -mx-4">
+                {#each regularArticles as article (article.id)}
+                  <ArticlePreviewCard {article} />
+                {/each}
+              </div>
+            </div>
+          {/if}
+        {/if}
+      </div>
 
       <LoadMoreTrigger
         onIntersect={handleLoadMore}
@@ -350,11 +454,11 @@
     {:else if selectedFilter === 'images' || selectedFilter === 'videos'}
       <div class="p-4">
         {#if mediaEvents.length === 0 && mediaFeed.eosed}
-          <div class="p-8 text-center text-neutral-400">
+          <div class="p-8 text-center text-muted-foreground">
             No {selectedFilter} found
           </div>
         {:else if mediaEvents.length === 0}
-          <div class="p-8 text-center text-neutral-400">
+          <div class="p-8 text-center text-muted-foreground">
             Loading {selectedFilter}...
           </div>
         {:else}
@@ -367,16 +471,16 @@
         <div class="flex justify-center py-2 lg:relative lg:static fixed bottom-20 left-0 right-0 z-[500] lg:z-auto pointer-events-none">
           <button
             onclick={() => notesFeed.loadPendingEvents()}
-            class="flex items-center gap-2 px-4 py-2 bg-neutral-900/95 hover:bg-neutral-800 border border-orange-500/50 lg:border-neutral-700 rounded-full transition-all shadow-lg backdrop-blur-sm pointer-events-auto"
+            class="flex items-center gap-2 px-4 py-2 bg-neutral-900/95 hover:bg-muted border border-orange-500/50 lg:border-border rounded-full transition-all shadow-lg backdrop-blur-sm pointer-events-auto"
           >
             <!-- Avatars -->
             <div class="flex -space-x-2">
               {#each pendingAuthors.slice(0, 3) as pubkey (pubkey)}
-                <Avatar {ndk} {pubkey} class="w-6 h-6 rounded-full border-2 border-neutral-900" />
+                <Avatar {ndk} {pubkey} class="w-6 h-6 rounded-full border-2 border-foreground" />
               {/each}
             </div>
             <!-- Text -->
-            <span class="text-sm text-orange-500 lg:text-neutral-200 font-medium">
+            <span class="text-sm text-primary lg:text-foreground font-medium">
               {notesFeed.pendingCount} new {notesFeed.pendingCount === 1 ? 'note' : 'notes'}
             </span>
           </button>
@@ -384,7 +488,7 @@
       {/if}
 
       {#if events.length === 0}
-        <div class="p-8 text-center text-neutral-400">
+        <div class="p-8 text-center text-muted-foreground">
           No notes found
         </div>
       {:else}

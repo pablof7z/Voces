@@ -4,7 +4,7 @@
 
 <button
   onclick={() => goto('/compose')}
-  class="block lg:hidden fixed bottom-24 right-4 w-14 h-14 bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all z-[500] flex items-center justify-center active:scale-95"
+  class="block lg:hidden fixed bottom-24 right-4 w-14 h-14 bg-orange-500 hover:bg-orange-600 text-foreground rounded-full shadow-lg hover:shadow-xl transition-all z-[500] flex items-center justify-center active:scale-95"
   aria-label="Compose"
 >
   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

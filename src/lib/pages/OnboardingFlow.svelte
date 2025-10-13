@@ -8,6 +8,8 @@
   import { followPackUsers } from '$lib/utils/followPacks';
   import { settings } from '$lib/stores/settings.svelte';
   import { untrack } from 'svelte';
+  import { getAgoraLanguage } from '$lib/utils/relayUtils';
+  import { locale } from 'svelte-i18n';
   import Step1Community from './onboarding/Step1Community.svelte';
   import Step2FollowPacks from './onboarding/Step2FollowPacks.svelte';
   import Step3Features from './onboarding/Step3Features.svelte';
@@ -28,6 +30,7 @@
     location: '',
     banner: 0,
     picture: undefined as string | undefined,
+    nip05: '',
   });
   let publicKey = $state<string | null>(null);
   let inviteData = $state<any>(null);
@@ -50,6 +53,16 @@
         // Pre-fill profile data if available
         if (inviteData.recipientName) {
           profileData.name = inviteData.recipientName;
+        }
+
+        // Set language based on agora relay
+        if (inviteData.inviteRelay) {
+          const agoraLanguage = getAgoraLanguage(inviteData.inviteRelay);
+          if (agoraLanguage) {
+            console.log(`Setting language to ${agoraLanguage} based on agora relay ${inviteData.inviteRelay}`);
+            settings.setLanguage(agoraLanguage);
+            locale.set(agoraLanguage);
+          }
         }
 
         // Skip community selection and follow packs, start at features
@@ -78,35 +91,34 @@
   });
 
   // Publish invite confirmation when session is ready
-  $effect(() => {
-    if (!ndk.$currentUser || hasPublishedInviteConfirmation) return;
-    if (!inviteData?.inviteEventId || !inviteData?.inviter || !inviteData?.inviteRelay) return;
+  async function publishInviteConfirmation() {
+    if (!inviteData?.inviteEventId || !inviteData?.inviter || !inviteData?.inviteRelay || !inviteData?.inviteCode) {
+      return;
+    }
 
-    // Mark as publishing immediately to prevent duplicate runs
-    hasPublishedInviteConfirmation = true;
+    try {
+      const confirmationEvent = new NDKEvent(ndk);
+      confirmationEvent.kind = 514;
+      confirmationEvent.content = '';
+      confirmationEvent.tags = [
+        ['e', inviteData.inviteEventId],
+        ['p', inviteData.inviter],
+        ['code', inviteData.inviteCode],
+      ];
+      confirmationEvent.isProtected = true;
 
-    (async () => {
-      try {
-        const confirmationEvent = new NDKEvent(ndk);
-        confirmationEvent.kind = 514;
-        confirmationEvent.content = '';
-        confirmationEvent.tags = [
-          ['e', inviteData.inviteEventId],
-          ['p', inviteData.inviter],
-        ];
-        confirmationEvent.isProtected = true;
+      await confirmationEvent.sign();
 
-        await confirmationEvent.sign();
+      // Publish ONLY to the invite relay
+      const relay = ndk.pool.getRelay(inviteData.inviteRelay, true);
+      if (relay) {
+        const relaySet = new NDKRelaySet(new Set([relay]), ndk);
+        console.log('Publishing kind:514 invite confirmation to', inviteData.inviteRelay);
+        await confirmationEvent.publish(relaySet);
+        console.log('Successfully published kind:514 invite confirmation');
 
-        // Publish ONLY to the invite relay
-        const relay = ndk.pool.getRelay(inviteData.inviteRelay, true);
-        if (relay) {
-          const relaySet = new NDKRelaySet(new Set([relay]), ndk);
-          console.log('Publishing kind:514 invite confirmation to', inviteData.inviteRelay);
-          await confirmationEvent.publish(relaySet);
-          console.log('Successfully published kind:514 invite confirmation');
-
-          // Set the invite relay as the selected relay in settings
+        // Set the invite relay as the selected relay in settings
+        untrack(() => {
           settings.setSelectedRelay(inviteData.inviteRelay);
 
           // Also ensure the relay is in the user's relay list
@@ -119,38 +131,49 @@
               enabled: true
             });
           }
+        });
 
-          // Automatically follow everyone the inviter is following
-          try {
-            console.log('Fetching inviter contacts...');
-            const inviterContactEvent = await ndk.fetchEvent({
-              kinds: [3],
-              authors: [inviteData.inviter]
-            });
+        // Automatically follow everyone the inviter is following
+        try {
+          console.log('Fetching inviter contacts...');
+          const inviterContactEvent = await ndk.fetchEvent({
+            kinds: [3],
+            authors: [inviteData.inviter]
+          });
 
-            if (inviterContactEvent) {
-              const pTags = inviterContactEvent.tags.filter(tag => tag[0] === 'p');
-              console.log(`Found ${pTags.length} contacts from inviter`);
+          if (inviterContactEvent) {
+            const pTags = inviterContactEvent.tags.filter(tag => tag[0] === 'p');
+            console.log(`Found ${pTags.length} contacts from inviter`);
 
-              // Create our contact list with the inviter's contacts
-              const contactListEvent = new NDKEvent(ndk);
-              contactListEvent.kind = 3;
-              contactListEvent.content = '';
-              contactListEvent.tags = pTags; // Copy all p-tags
+            // Create our contact list with the inviter's contacts
+            const contactListEvent = new NDKEvent(ndk);
+            contactListEvent.kind = 3;
+            contactListEvent.content = '';
+            contactListEvent.tags = pTags; // Copy all p-tags
 
-              await contactListEvent.publish();
-              console.log('Published kind:3 contact list with inviter\'s follows');
-            }
-          } catch (err) {
-            console.error('Error copying inviter contacts:', err);
+            await contactListEvent.publish();
+            console.log('Published kind:3 contact list with inviter\'s follows');
           }
+        } catch (err) {
+          console.error('Error copying inviter contacts:', err);
         }
-      } catch (err) {
-        console.error('Error publishing invite confirmation:', err);
-        // Reset flag on error so user can retry
-        hasPublishedInviteConfirmation = false;
       }
-    })();
+    } catch (err) {
+      console.error('Error publishing invite confirmation:', err);
+      throw err;
+    }
+  }
+
+  // Trigger invite confirmation publishing when user is ready
+  $effect(() => {
+    if (!ndk.$currentUser || hasPublishedInviteConfirmation || !inviteData) return;
+
+    hasPublishedInviteConfirmation = true;
+
+    publishInviteConfirmation().catch((err) => {
+      console.error('Failed to publish invite confirmation:', err);
+      hasPublishedInviteConfirmation = false;
+    });
   });
 
   function goToStep(step: number) {
@@ -191,7 +214,8 @@
           name: profileData.name,
           about: profileData.bio,
           ...(profileData.location && { location: profileData.location }),
-          ...(profileData.picture && { picture: profileData.picture })
+          ...(profileData.picture && { picture: profileData.picture }),
+          ...(profileData.nip05 && { nip05: profileData.nip05 })
         });
         await profileEvent.publish();
         console.log('Published kind:0 profile metadata');
@@ -207,12 +231,12 @@
   }
 </script>
 
-<div class="min-h-screen bg-white dark:bg-black">
+<div class="min-h-screen bg-white dark:bg-background">
   <!-- Progress Bar -->
-  <div class="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-black">
-    <div class="h-1 bg-neutral-200 dark:bg-neutral-800">
+  <div class="fixed top-0 left-0 right-0 z-40 bg-white dark:bg-background">
+    <div class="h-1 bg-neutral-200 dark:bg-muted">
       <div
-        class="h-full bg-black dark:bg-white transition-all duration-300 ease-out"
+        class="h-full bg-background dark:bg-white transition-all duration-300 ease-out"
         style={`width: ${progressPercentage}%`}
       />
     </div>
@@ -222,7 +246,7 @@
   {#if currentStep > (inviteData ? 3 : 1)}
     <button
       onclick={goBack}
-      class="fixed top-6 left-6 z-50 w-9 h-9 bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-full flex items-center justify-center hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+      class="fixed top-6 left-6 z-50 w-9 h-9 bg-white dark:bg-background border border rounded-full flex items-center justify-center hover:bg-neutral-50 dark:hover:bg-card transition-colors"
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M19 12H5M12 19l-7-7 7-7"/>
@@ -260,6 +284,7 @@
         {profileData}
         onUpdateProfile={(d) => profileData = d}
         onNext={handleStep4Next}
+        inviteRelay={inviteData?.inviteRelay}
       />
     {/if}
 

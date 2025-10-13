@@ -3,7 +3,10 @@
 	import { goto } from '$app/navigation';
 	import { ndk } from '$lib/ndk.svelte';
 	import { decryptInvitePayload } from '$lib/utils/inviteEncryption';
+	import { AGORA_RELAYS, getAgoraLanguage } from '$lib/utils/relayUtils';
 	import { Avatar } from '@nostr-dev-kit/svelte';
+	import { settings } from '$lib/stores/settings.svelte';
+	import { locale } from 'svelte-i18n';
 
 	const code = $derived($page.params.code);
 
@@ -19,6 +22,7 @@
 		inviter?: string;
 		inviteEventId?: string;
 		inviteRelay?: string;
+		inviteCode?: string;
 	} | null>(null);
 	let isLoading = $state(true);
 	let error = $state<string | null>(null);
@@ -30,7 +34,7 @@
 					throw new Error('Invalid invite code');
 				}
 
-				// Parse code: first 12 chars = d-tag, rest (if any) = encryption key
+				// Parse code: dTag (12 chars) + encryptionKey (24 chars, optional)
 				const dTag = code.slice(0, 12);
 				const encryptionKey = code.length > 12 ? code.slice(12) : null;
 
@@ -43,10 +47,7 @@
 				};
 
 				const events = await ndk.fetchEvents(filter, {
-					relayUrls: [
-						"wss://ve.agorawlc.com",
-						"wss://ni.agorawlc.com",
-					],
+					relayUrls: [...AGORA_RELAYS],
 				});
 
 				if (events.size === 0) {
@@ -55,6 +56,43 @@
 
 				const inviteEvent = Array.from(events)[0];
 				console.log('Found invite event:', inviteEvent.id);
+
+				// Extract all code tags from the 513 event
+				const codeTags = inviteEvent.tags.filter(tag => tag[0] === 'code');
+				const validCodes = codeTags.map(tag => tag[1]);
+
+				if (validCodes.length === 0) {
+					throw new Error('Invite has no codes');
+				}
+
+				// Query for existing 514 events to find used codes
+				const redemptionFilter = {
+					kinds: [514],
+					'#e': [inviteEvent.id]
+				};
+
+				const redemptions = await ndk.fetchEvents(redemptionFilter, {
+					relayUrls: [...AGORA_RELAYS],
+				});
+
+				// Extract used codes from 514 events
+				const usedCodes = new Set<string>();
+				for (const redemption of redemptions) {
+					const codeTag = redemption.tags.find(tag => tag[0] === 'code');
+					if (codeTag && codeTag[1]) {
+						usedCodes.add(codeTag[1]);
+					}
+				}
+
+				// Find available codes
+				const availableCodes = validCodes.filter(c => !usedCodes.has(c));
+				if (availableCodes.length === 0) {
+					throw new Error('This invite has reached its maximum uses. Please request a new invite.');
+				}
+
+				// Use the first available code
+				const inviteCode = availableCodes[0];
+				console.log(`Invite has ${availableCodes.length} of ${validCodes.length} codes available, using code: ${inviteCode}`);
 
 				// Get the relay where the event was found
 				const relayUrl = inviteEvent.relay?.url || Array.from(inviteEvent.onRelays)[0]?.url;
@@ -73,9 +111,20 @@
 				inviteData = {
 					...payload,
 					inviteEventId: inviteEvent.id,
-					inviteRelay: relayUrl
+					inviteRelay: relayUrl,
+					inviteCode: inviteCode
 				};
 				console.log('Invite data loaded:', inviteData);
+
+				// Set language based on agora relay
+				if (relayUrl) {
+					const agoraLanguage = getAgoraLanguage(relayUrl);
+					if (agoraLanguage) {
+						console.log(`Setting language to ${agoraLanguage} based on agora relay ${relayUrl}`);
+						settings.setLanguage(agoraLanguage);
+						locale.set(agoraLanguage);
+					}
+				}
 			} catch (err) {
 				console.error('Failed to load invite:', err);
 				error = err instanceof Error ? err.message : 'Failed to load invite';
@@ -95,7 +144,8 @@
 			cashuToken: inviteData?.cashuToken,
 			inviter: inviteData?.inviter,
 			inviteEventId: inviteData?.inviteEventId,
-			inviteRelay: inviteData?.inviteRelay
+			inviteRelay: inviteData?.inviteRelay,
+			inviteCode: inviteData?.inviteCode
 		};
 		goto('/onboarding', {
 			state: {
@@ -151,8 +201,8 @@
 				{#if inviteData?.inviter}
 					<div class="flex flex-col items-center mb-8 -mt-20">
 						<div class="relative mb-4">
-							<div class="w-24 h-24 rounded-full ring-4 ring-white dark:ring-neutral-900 overflow-hidden bg-neutral-200 dark:bg-neutral-800">
-								<Avatar {ndk} pubkey={inviteData.inviter} class="w-full h-full" />
+							<div class="w-24 h-24 rounded-full ring-4 ring-white dark:ring-neutral-900 overflow-hidden bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center">
+								<Avatar {ndk} pubkey={inviteData.inviter} class="w-full h-full object-cover [&>*]:w-full [&>*]:h-full [&>*]:object-cover" />
 							</div>
 						</div>
 						<div class="text-center">

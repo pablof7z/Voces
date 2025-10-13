@@ -16,7 +16,7 @@
 </script>
 
 {#if variant === 'compact'}
-  <div class="flex items-center gap-1.5 px-2 py-1 bg-neutral-800/50 rounded text-xs text-neutral-300 group relative">
+  <div class="flex items-center gap-1.5 px-2 py-1 bg-muted/50 rounded text-xs text-muted-foreground group relative">
     {#if relayIcon}
       <img src={relayIcon} alt={relayName} class="w-3 h-3 rounded" />
     {:else}
@@ -27,15 +27,15 @@
     <span class="truncate max-w-[120px]">{relayName}</span>
 
     {#if relayDescription}
-      <div class="invisible group-hover:visible absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-lg shadow-xl z-50 w-64 text-xs">
-        <div class="font-semibold text-white mb-1">{relayName}</div>
-        <div class="text-neutral-400">{relayDescription}</div>
-        <div class="text-neutral-500 mt-1 break-all">{relay.url}</div>
+      <div class="invisible group-hover:visible absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-card border border-border rounded-lg shadow-xl z-50 w-64 text-xs">
+        <div class="font-semibold text-foreground mb-1">{relayName}</div>
+        <div class="text-muted-foreground">{relayDescription}</div>
+        <div class="text-muted-foreground mt-1 break-all">{relay.url}</div>
       </div>
     {/if}
   </div>
 {:else}
-  <div class="flex items-center gap-2 px-3 py-2 bg-neutral-800/50 rounded-lg text-sm text-neutral-300 hover:bg-neutral-800 transition-colors">
+  <div class="flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg text-sm text-muted-foreground hover:bg-muted transition-colors">
     {#if relayIcon}
       <img src={relayIcon} alt={relayName} class="w-5 h-5 rounded flex-shrink-0" />
     {:else}
@@ -44,9 +44,9 @@
       </svg>
     {/if}
     <div class="flex-1 min-w-0">
-      <div class="font-medium text-white truncate">{relayName}</div>
+      <div class="font-medium text-foreground truncate">{relayName}</div>
       {#if relayDescription}
-        <div class="text-xs text-neutral-400 truncate">{relayDescription}</div>
+        <div class="text-xs text-muted-foreground truncate">{relayDescription}</div>
       {/if}
     </div>
   </div>

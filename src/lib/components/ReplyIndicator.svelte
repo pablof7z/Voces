@@ -71,17 +71,17 @@
 </script>
 
 {#if replyToEvent && replyToProfile}
-  <div class="flex items-center gap-1 mb-2 text-sm text-neutral-500">
+  <div class="flex items-center gap-1 mb-2 text-sm text-muted-foreground">
     <span>Replying to</span>
     <a
       href="/p/{replyToNpub}"
-      class="font-medium hover:underline text-neutral-400"
+      class="font-medium hover:underline text-muted-foreground"
     >
       @{replyToDisplayName}
     </a>
   </div>
 {:else if replyToTag && !replyToEvent}
-  <div class="flex items-center gap-1 mb-2 text-sm text-neutral-500">
+  <div class="flex items-center gap-1 mb-2 text-sm text-muted-foreground">
     <span>Replying to event</span>
   </div>
 {:else}

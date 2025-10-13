@@ -1,8 +1,9 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
-  import { NDKEvent } from '@nostr-dev-kit/ndk';
+  import { NDKEvent, NDKRelaySet } from '@nostr-dev-kit/ndk';
   import { NDKBlossom } from '@nostr-dev-kit/blossom';
   import { useBlossomUpload } from '@nostr-dev-kit/svelte';
+    import { AGORA_RELAYS } from '$lib/utils/relayUtils';
 
   let user = $derived(ndk.$currentUser);
   let profile = ndk.$fetchProfile(() => user?.pubkey);
@@ -167,6 +168,8 @@
       }
 
       await event.publishReplaceable();
+      const profileRelaySet = NDKRelaySet.fromRelayUrls([ 'wss://purplapag.es', ...AGORA_RELAYS ], ndk)
+      event.publishReplaceable(profileRelaySet);
 
       isSaved = true;
       setTimeout(() => isSaved = false, 3000);
@@ -206,7 +209,7 @@
 
   <!-- Banner -->
   <div class="space-y-2">
-    <label class="block text-sm font-medium text-neutral-900 dark:text-neutral-100">
+    <label class="block text-sm font-medium text-neutral-900 dark:text-foreground">
       Banner Image
     </label>
     <input
@@ -223,15 +226,15 @@
       class="w-full h-48 rounded-xl overflow-hidden relative group bg-gradient-to-br from-orange-500 to-red-500 hover:opacity-90 transition-opacity"
       style={formData.banner ? `background-image: url(${formData.banner}); background-size: cover; background-position: center;` : ''}
     >
-      <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+      <div class="absolute inset-0 bg-background/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
         {#if bannerUpload.status === 'uploading'}
           <div class="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-          <span class="text-white text-sm font-medium">{bannerUpload.progress?.percentage}%</span>
+          <span class="text-foreground text-sm font-medium">{bannerUpload.progress?.percentage}%</span>
         {:else}
-          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-10 h-10 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          <span class="text-white text-sm font-medium">Click to upload banner</span>
+          <span class="text-foreground text-sm font-medium">Click to upload banner</span>
         {/if}
       </div>
     </button>
@@ -239,7 +242,7 @@
 
   <!-- Profile Picture -->
   <div class="space-y-2">
-    <label class="block text-sm font-medium text-neutral-900 dark:text-neutral-100">
+    <label class="block text-sm font-medium text-neutral-900 dark:text-foreground">
       Profile Picture
     </label>
     <input
@@ -259,16 +262,16 @@
         {#if formData.picture}
           <img src={formData.picture} alt="Profile" class="w-full h-full object-cover" />
         {:else}
-          <span class="text-white text-2xl font-bold">{getInitials(formData.name)}</span>
+          <span class="text-foreground text-2xl font-bold">{getInitials(formData.name)}</span>
         {/if}
-        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+        <div class="absolute inset-0 bg-background/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
           {#if pictureUpload.status === 'uploading'}
             <div class="flex flex-col items-center gap-1">
               <div class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              <span class="text-white text-xs">{pictureUpload.progress?.percentage}%</span>
+              <span class="text-foreground text-xs">{pictureUpload.progress?.percentage}%</span>
             </div>
           {:else}
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-8 h-8 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
@@ -280,7 +283,7 @@
           type="url"
           bind:value={formData.picture}
           placeholder="Or paste image URL"
-          class="w-full px-4 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+          class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
           disabled={pictureUpload.status === 'uploading'}
         />
       </div>
@@ -289,7 +292,7 @@
 
   <!-- Name -->
   <div class="space-y-2">
-    <label for="name" class="block text-sm font-medium text-neutral-900 dark:text-neutral-100">
+    <label for="name" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
       Name
     </label>
     <input
@@ -297,28 +300,28 @@
       type="text"
       bind:value={formData.name}
       placeholder="Satoshi Nakamoto"
-      class="w-full px-4 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     />
   </div>
 
   <!-- Display Name -->
   <div class="space-y-2">
-    <label for="displayName" class="block text-sm font-medium text-neutral-900 dark:text-neutral-100">
+    <label for="displayName" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
       Display Name
-      <span class="text-neutral-500 text-xs font-normal">(optional)</span>
+      <span class="text-muted-foreground text-xs font-normal">(optional)</span>
     </label>
     <input
       id="displayName"
       type="text"
       bind:value={formData.displayName}
       placeholder="satoshi"
-      class="w-full px-4 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     />
   </div>
 
   <!-- About -->
   <div class="space-y-2">
-    <label for="about-textarea" class="block text-sm font-medium text-neutral-900 dark:text-neutral-100">
+    <label for="about-textarea" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
       About
     </label>
     <textarea
@@ -326,69 +329,69 @@
       bind:value={formData.about}
       placeholder="Tell the world about yourself..."
       rows="5"
-      class="w-full px-4 py-3 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 resize-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-3 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 resize-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     ></textarea>
   </div>
 
   <!-- NIP-05 -->
   <div class="space-y-2">
-    <label for="nip05" class="block text-sm font-medium text-neutral-900 dark:text-neutral-100">
+    <label for="nip05" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
       NIP-05 Verification
-      <span class="text-neutral-500 text-xs font-normal">(optional)</span>
+      <span class="text-muted-foreground text-xs font-normal">(optional)</span>
     </label>
     <input
       id="nip05"
       type="text"
       bind:value={formData.nip05}
       placeholder="name@domain.com"
-      class="w-full px-4 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     />
   </div>
 
   <!-- Lightning Address -->
   <div class="space-y-2">
-    <label for="lud16" class="block text-sm font-medium text-neutral-900 dark:text-neutral-100">
+    <label for="lud16" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
       Lightning Address
-      <span class="text-neutral-500 text-xs font-normal">(optional)</span>
+      <span class="text-muted-foreground text-xs font-normal">(optional)</span>
     </label>
     <input
       id="lud16"
       type="text"
       bind:value={formData.lud16}
       placeholder="name@getalby.com"
-      class="w-full px-4 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     />
   </div>
 
   <!-- Website -->
   <div class="space-y-2">
-    <label for="website" class="block text-sm font-medium text-neutral-900 dark:text-neutral-100">
+    <label for="website" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
       Website
-      <span class="text-neutral-500 text-xs font-normal">(optional)</span>
+      <span class="text-muted-foreground text-xs font-normal">(optional)</span>
     </label>
     <input
       id="website"
       type="url"
       bind:value={formData.website}
       placeholder="https://example.com"
-      class="w-full px-4 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     />
   </div>
 
   <!-- Hashtags -->
   <div class="space-y-2">
-    <label for="hashtags" class="block text-sm font-medium text-neutral-900 dark:text-neutral-100">
+    <label for="hashtags" class="block text-sm font-medium text-neutral-900 dark:text-foreground">
       Interest Hashtags
-      <span class="text-neutral-500 text-xs font-normal">(optional)</span>
+      <span class="text-muted-foreground text-xs font-normal">(optional)</span>
     </label>
     <input
       id="hashtags"
       type="text"
       bind:value={formData.hashtags}
       placeholder="bitcoin, nostr, freedom (comma-separated)"
-      class="w-full px-4 py-2 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+      class="w-full px-4 py-2 rounded-lg border border bg-white dark:bg-card text-neutral-900 dark:text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
     />
-    <p class="text-xs text-neutral-500 dark:text-neutral-600">
+    <p class="text-xs text-muted-foreground dark:text-muted-foreground">
       Add hashtags that describe your interests. Separate multiple tags with commas.
     </p>
   </div>
@@ -399,7 +402,7 @@
       type="button"
       onclick={handleSubmit}
       disabled={isSubmitting || pictureUpload.status === 'uploading' || bannerUpload.status === 'uploading'}
-      class="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+      class="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-foreground font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
     >
       {#if isSubmitting}
         <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

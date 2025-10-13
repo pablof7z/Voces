@@ -37,7 +37,7 @@
       "conversations": "Conversaciones",
       "images": "Imágenes",
       "videos": "Videos",
-      "articles": "Artículos"
+      "articles": "Lecturas"
     }
   },
   "classifieds": {
@@ -68,11 +68,20 @@
     "title": "Paquetes de Seguimiento",
     "description": "Descubre listas curadas de personas para seguir",
     "noPacks": "No hay paquetes de seguimiento disponibles aún",
-    "followers": "seguidores"
+    "followers": "seguidores",
+    "createNew": "Crear nuevo paquete de seguimiento",
+    "addToExisting": "Agregar a paquete existente"
   },
   "settings": {
     "title": "Configuración",
     "description": "Gestiona las preferencias y configuración de la aplicación",
+    "invite": {
+      "create": "Crear Invitación",
+      "createDescription": "Invita a alguien a unirse a Agora",
+      "myInvites": "Mis Invitaciones",
+      "myInvitesDescription": "Ver y gestionar invitaciones enviadas",
+      "createInvitation": "Crear Invitación"
+    },
     "sections": {
       "relays": {
         "title": "Relés",
@@ -235,7 +244,33 @@
     "posts": "Publicaciones",
     "editProfile": "Editar Perfil",
     "follow": "Seguir",
-    "unfollow": "Dejar de seguir"
+    "unfollow": "Dejar de seguir",
+    "tabs": {
+      "notes": "Notas",
+      "replies": "Respuestas",
+      "media": "Medios",
+      "articles": "Artículos",
+      "highlights": "Destacados",
+      "followPacks": "Paquetes de Seguimiento",
+      "all": "Todos",
+      "byYou": "por ti",
+      "withYou": "contigo",
+      "byUser": "por @{username}",
+      "withUser": "con @{username}"
+    },
+    "emptyStates": {
+      "noNotes": "No hay notas todavía",
+      "noReplies": "No hay respuestas todavía",
+      "noArticlesOwn": "No has publicado ningún artículo todavía",
+      "noArticlesUser": "No hay artículos publicados todavía",
+      "noHighlightsOwn": "No has guardado ningún destacado todavía",
+      "noHighlightsUser": "No hay destacados guardados todavía",
+      "noPacksCreatedOwn": "No has creado ningún paquete de seguimiento todavía",
+      "noPacksCreatedUser": "@{username} no ha creado ningún paquete de seguimiento todavía",
+      "noPacksAppearsOwn": "No apareces en ningún paquete de seguimiento todavía",
+      "noPacksAppearsUser": "@{username} no aparece en ningún paquete de seguimiento todavía",
+      "noPacksFound": "No se encontraron paquetes de seguimiento"
+    }
   },
   "messages": {
     "title": "Mensajes",

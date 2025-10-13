@@ -80,17 +80,17 @@
   const currencySymbol = $derived({ USD: '$', EUR: '€', GBP: '£', BRL: 'R$' }[order.currency as 'USD' | 'EUR' | 'GBP' | 'BRL'] || order.currency);
 </script>
 
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-  <div class="bg-white dark:bg-black rounded-2xl max-w-md w-full">
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-background/50 p-4">
+  <div class="bg-white dark:bg-background rounded-2xl max-w-md w-full">
     {#if step === 'confirm'}
-      <div class="p-6 border-b border-neutral-200 dark:border-neutral-800">
+      <div class="p-6 border-b border">
         <div class="flex items-center justify-between">
-          <h2 class="text-xl font-bold text-neutral-900 dark:text-white">
+          <h2 class="text-xl font-bold text-neutral-900 dark:text-foreground">
             Confirm Trade
           </h2>
           <button
             onclick={onClose}
-            class="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg transition-colors"
+            class="p-2 hover:bg-neutral-100 dark:hover:bg-card rounded-lg transition-colors"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -101,26 +101,26 @@
 
       <div class="p-6 space-y-4">
         <!-- Trade Summary -->
-        <div class="bg-neutral-50 dark:bg-black rounded-lg p-4 space-y-3">
+        <div class="bg-neutral-50 dark:bg-background rounded-lg p-4 space-y-3">
           <div class="flex items-center justify-between">
-            <span class="text-sm text-neutral-500 dark:text-neutral-400">You will {order.type === 'buy' ? 'sell' : 'buy'}</span>
+            <span class="text-sm text-muted-foreground dark:text-muted-foreground">You will {order.type === 'buy' ? 'sell' : 'buy'}</span>
             <div class="flex items-center gap-1">
-              <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/>
               </svg>
               <span class="font-mono font-semibold">{(order.satsAmount / 100000000).toFixed(8)} BTC</span>
             </div>
           </div>
           <div class="flex items-center justify-between">
-            <span class="text-sm text-neutral-500 dark:text-neutral-400">For</span>
+            <span class="text-sm text-muted-foreground dark:text-muted-foreground">For</span>
             <span class="font-semibold">{currencySymbol}{order.fiatAmount.toFixed(2)}</span>
           </div>
           <div class="flex items-center justify-between">
-            <span class="text-sm text-neutral-500 dark:text-neutral-400">Via</span>
+            <span class="text-sm text-muted-foreground dark:text-muted-foreground">Via</span>
             <span class="font-medium">{order.paymentMethod}</span>
           </div>
           <div class="flex items-center justify-between">
-            <span class="text-sm text-neutral-500 dark:text-neutral-400">Trading with</span>
+            <span class="text-sm text-muted-foreground dark:text-muted-foreground">Trading with</span>
             <div class="flex items-center gap-2">
               <span class="font-medium">{profile?.name || 'Anonymous'}</span>
               {#if order.rating}
@@ -151,9 +151,9 @@
           <input
             type="checkbox"
             bind:checked={accepted}
-            class="mt-1 w-4 h-4 text-orange-600 border-neutral-300 rounded focus:ring-orange-500"
+            class="mt-1 w-4 h-4 text-primary border rounded focus:ring-orange-500"
           />
-          <span class="text-sm text-neutral-700 dark:text-neutral-300">
+          <span class="text-sm text-neutral-700 dark:text-muted-foreground">
             I understand the risks and agree to proceed with this P2P trade
           </span>
         </label>
@@ -162,14 +162,14 @@
         <div class="flex gap-3">
           <button
             onclick={onClose}
-            class="flex-1 px-4 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+            class="flex-1 px-4 py-3 border border rounded-lg hover:bg-neutral-50 dark:hover:bg-card transition-colors"
           >
             Cancel
           </button>
           <button
             onclick={handleTakeOrder}
             disabled={!accepted}
-            class="flex-1 px-4 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="flex-1 px-4 py-3 bg-orange-600 text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Take Order
           </button>
@@ -180,8 +180,8 @@
     {#if step === 'processing'}
       <div class="p-12 text-center">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
-        <p class="text-neutral-900 dark:text-white font-medium">Processing Trade...</p>
-        <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-2">
+        <p class="text-neutral-900 dark:text-foreground font-medium">Processing Trade...</p>
+        <p class="text-sm text-muted-foreground dark:text-muted-foreground mt-2">
           Connecting with trader
         </p>
       </div>
@@ -194,8 +194,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
           </svg>
         </div>
-        <p class="text-neutral-900 dark:text-white font-medium">Trade Initiated!</p>
-        <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-2">
+        <p class="text-neutral-900 dark:text-foreground font-medium">Trade Initiated!</p>
+        <p class="text-sm text-muted-foreground dark:text-muted-foreground mt-2">
           Check your messages for next steps
         </p>
       </div>

@@ -16,23 +16,23 @@
   <div class="max-w-2xl w-full text-center">
     <div class="text-7xl mb-6">🎉</div>
     <h1 class="text-4xl font-bold mb-4">Welcome to Agora, {profileData.name || 'Friend'}!</h1>
-    <p class="text-xl text-neutral-600 dark:text-neutral-400 mb-12">
+    <p class="text-xl text-muted-foreground dark:text-muted-foreground mb-12">
       Your voice matters. Your community is here.
     </p>
 
     <!-- Stats -->
     <div class="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-12">
-      <div class="bg-neutral-50 dark:bg-neutral-900 rounded-xl p-6">
+      <div class="bg-neutral-50 dark:bg-card rounded-xl p-6">
         <div class="text-3xl font-bold mb-1">{followCount}</div>
-        <div class="text-sm text-neutral-500">People Following</div>
+        <div class="text-sm text-muted-foreground">People Following</div>
       </div>
-      <div class="bg-neutral-50 dark:bg-neutral-900 rounded-xl p-6">
+      <div class="bg-neutral-50 dark:bg-card rounded-xl p-6">
         <div class="text-3xl font-bold mb-1">{selectedPacks.length}</div>
-        <div class="text-sm text-neutral-500">Follow Packs</div>
+        <div class="text-sm text-muted-foreground">Follow Packs</div>
       </div>
-      <div class="bg-neutral-50 dark:bg-neutral-900 rounded-xl p-6">
+      <div class="bg-neutral-50 dark:bg-card rounded-xl p-6">
         <div class="text-3xl font-bold mb-1">1</div>
-        <div class="text-sm text-neutral-500">Post Published</div>
+        <div class="text-sm text-muted-foreground">Post Published</div>
       </div>
     </div>
 
@@ -61,7 +61,7 @@
 
     <button
       onclick={onComplete}
-      class="bg-black dark:bg-white text-white dark:text-black px-12 py-4 rounded-lg font-medium text-lg hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
+      class="bg-background dark:bg-white text-foreground dark:text-black px-12 py-4 rounded-lg font-medium text-lg hover:bg-muted dark:hover:bg-neutral-200 transition-colors"
     >
       Enter Agora →
     </button>

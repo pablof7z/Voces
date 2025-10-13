@@ -9,10 +9,13 @@
 
   function handleAddRelay() {
     if (newRelay.url && !settings.relays.some(r => r.url === newRelay.url)) {
+      const url = newRelay.url.startsWith('wss://') || newRelay.url.startsWith('ws://')
+        ? newRelay.url
+        : `wss://${newRelay.url}`;
       settings.addRelay({
         ...newRelay,
         enabled: true,
-        url: newRelay.url.startsWith('wss://') ? newRelay.url : `wss://${newRelay.url}`,
+        url,
       });
       newRelay = { url: '', read: true, write: true };
       isAdding = false;
@@ -44,46 +47,46 @@
 
 <div class="space-y-6">
   <div>
-    <h2 class="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-2">
+    <h2 class="text-xl font-semibold text-neutral-900 dark:text-foreground mb-2">
       Relay Configuration
     </h2>
-    <p class="text-sm text-neutral-600 dark:text-neutral-400">
+    <p class="text-sm text-muted-foreground dark:text-muted-foreground">
       Configure which Nostr relays your app connects to for reading and publishing events.
     </p>
   </div>
 
   <!-- Stats -->
   <div class="grid grid-cols-3 gap-2 md:gap-4">
-    <div class="bg-neutral-50 dark:bg-black rounded-lg p-3 md:p-4">
+    <div class="bg-neutral-50 dark:bg-background rounded-lg p-3 md:p-4">
       <div class="flex items-center gap-1 md:gap-2 text-green-600 dark:text-green-400 mb-1">
         <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
         </svg>
         <span class="text-xs md:text-sm font-medium">Active</span>
       </div>
-      <div class="text-xl md:text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+      <div class="text-xl md:text-2xl font-bold text-neutral-900 dark:text-foreground">
         {relays.filter(r => r.enabled).length}
       </div>
     </div>
-    <div class="bg-neutral-50 dark:bg-black rounded-lg p-3 md:p-4">
+    <div class="bg-neutral-50 dark:bg-background rounded-lg p-3 md:p-4">
       <div class="flex items-center gap-1 md:gap-2 text-blue-600 dark:text-blue-400 mb-1">
         <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
         </svg>
         <span class="text-xs md:text-sm font-medium">Read</span>
       </div>
-      <div class="text-xl md:text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+      <div class="text-xl md:text-2xl font-bold text-neutral-900 dark:text-foreground">
         {relays.filter(r => r.enabled && r.read).length}
       </div>
     </div>
-    <div class="bg-neutral-50 dark:bg-black rounded-lg p-3 md:p-4">
-      <div class="flex items-center gap-1 md:gap-2 text-orange-600 dark:text-orange-500 mb-1">
+    <div class="bg-neutral-50 dark:bg-background rounded-lg p-3 md:p-4">
+      <div class="flex items-center gap-1 md:gap-2 text-primary dark:text-primary mb-1">
         <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
         </svg>
         <span class="text-xs md:text-sm font-medium">Write</span>
       </div>
-      <div class="text-xl md:text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+      <div class="text-xl md:text-2xl font-bold text-neutral-900 dark:text-foreground">
         {relays.filter(r => r.enabled && r.write).length}
       </div>
     </div>
@@ -94,8 +97,8 @@
     {#each relays as relay (relay.url)}
       {@const status = getRelayStatus(relay.url)}
       <div class="border rounded-lg p-4 transition-all {relay.enabled
-        ? 'bg-white dark:bg-black border-neutral-200 dark:border-neutral-700'
-        : 'bg-neutral-50 dark:bg-black border-neutral-200 dark:border-neutral-800 opacity-60'}">
+        ? 'bg-white dark:bg-background border'
+        : 'bg-neutral-50 dark:bg-background border opacity-60'}">
         <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
           <div class="flex-1">
             <div class="flex items-start md:items-center gap-3">
@@ -103,10 +106,10 @@
                 onclick={() => settings.toggleRelay(relay.url)}
                 class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 mt-0.5 md:mt-0 {relay.enabled
                   ? 'bg-orange-600 border-orange-600'
-                  : 'bg-white dark:bg-black border-neutral-300 dark:border-neutral-600'}"
+                  : 'bg-white dark:bg-background border dark:border'}"
               >
                 {#if relay.enabled}
-                  <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-3 h-3 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
                 {/if}
@@ -118,10 +121,10 @@
             <button
               onclick={() => testRelayConnection(relay.url)}
               disabled={testingRelay === relay.url}
-              class="p-1.5 md:p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg transition-colors disabled:opacity-50"
+              class="p-1.5 md:p-2 hover:bg-neutral-100 dark:hover:bg-card rounded-lg transition-colors disabled:opacity-50"
               title="Test connection"
             >
-              <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </button>
@@ -130,7 +133,7 @@
               class="p-1.5 md:p-2 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors group"
               title="Remove relay"
             >
-              <svg class="w-4 h-4 text-neutral-500 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-muted-foreground group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
@@ -147,7 +150,7 @@
             type="text"
             bind:value={newRelay.url}
             placeholder="wss://relay.example.com"
-            class="w-full px-3 py-2 bg-white dark:bg-black border border-neutral-300 dark:border-neutral-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            class="w-full px-3 py-2 bg-white dark:bg-background border border dark:border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             autofocus
           />
           <div class="flex items-center gap-4">
@@ -155,24 +158,24 @@
               <input
                 type="checkbox"
                 bind:checked={newRelay.read}
-                class="w-4 h-4 text-orange-600 rounded focus:ring-orange-500"
+                class="w-4 h-4 text-primary rounded focus:ring-orange-500"
               />
-              <span class="text-sm text-neutral-600 dark:text-neutral-400">Read</span>
+              <span class="text-sm text-muted-foreground dark:text-muted-foreground">Read</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 bind:checked={newRelay.write}
-                class="w-4 h-4 text-orange-600 rounded focus:ring-orange-500"
+                class="w-4 h-4 text-primary rounded focus:ring-orange-500"
               />
-              <span class="text-sm text-neutral-600 dark:text-neutral-400">Write</span>
+              <span class="text-sm text-muted-foreground dark:text-muted-foreground">Write</span>
             </label>
           </div>
           <div class="flex gap-2">
             <button
               onclick={handleAddRelay}
               disabled={!newRelay.url}
-              class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="px-4 py-2 bg-orange-600 text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Add Relay
             </button>
@@ -181,7 +184,7 @@
                 isAdding = false;
                 newRelay = { url: '', read: true, write: true };
               }}
-              class="px-4 py-2 bg-neutral-200 dark:bg-black text-neutral-700 dark:text-neutral-300 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-900 transition-colors"
+              class="px-4 py-2 bg-neutral-200 dark:bg-background text-neutral-700 dark:text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-card transition-colors"
             >
               Cancel
             </button>
@@ -191,9 +194,9 @@
     {:else}
       <button
         onclick={() => isAdding = true}
-        class="w-full border-2 border-dashed border-neutral-300 dark:border-neutral-700 rounded-lg p-4 hover:border-orange-500 dark:hover:border-orange-600 transition-colors group"
+        class="w-full border-2 border-dashed border rounded-lg p-4 hover:border-orange-500 dark:hover:border-orange-600 transition-colors group"
       >
-        <div class="flex items-center justify-center gap-2 text-neutral-500 group-hover:text-orange-600 dark:group-hover:text-orange-500">
+        <div class="flex items-center justify-center gap-2 text-muted-foreground group-hover:text-primary dark:group-hover:text-primary">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>

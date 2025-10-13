@@ -33,10 +33,10 @@
 
 <div class="space-y-6">
   <div>
-    <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
+    <h3 class="text-lg font-semibold text-neutral-900 dark:text-foreground mb-4">
       Default Zap Amount
     </h3>
-    <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+    <p class="text-sm text-muted-foreground dark:text-muted-foreground mb-4">
       Choose the default amount for quick zaps. Long-press the zap button to choose a custom amount.
     </p>
 
@@ -45,8 +45,8 @@
         <button
           onclick={() => settings.updateZap({ defaultAmount: amount })}
           class="relative overflow-hidden rounded-xl p-4 transition-all duration-200 {settings.zap.defaultAmount === amount
-            ? 'bg-gradient-to-br from-purple-600 to-pink-600 dark:from-purple-600 dark:to-pink-600 text-white shadow-lg shadow-purple-600/30 dark:shadow-purple-600/50 scale-105'
-            : 'bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-900 dark:text-neutral-100 hover:scale-105'}"
+            ? 'bg-gradient-to-br from-purple-600 to-pink-600 dark:from-purple-600 dark:to-pink-600 text-foreground shadow-lg shadow-purple-600/30 dark:shadow-purple-600/50 scale-105'
+            : 'bg-neutral-100 dark:bg-muted hover:bg-neutral-200 dark:hover:bg-muted text-neutral-900 dark:text-foreground hover:scale-105'}"
           type="button"
         >
           <div class="flex flex-col items-center gap-2">
@@ -66,19 +66,19 @@
             bind:value={customAmount}
             onkeydown={handleCustomKeydown}
             placeholder="Enter custom amount..."
-            class="flex-1 px-4 py-3 bg-neutral-100 dark:bg-neutral-800 border-2 border-purple-600 dark:border-purple-500 rounded-xl text-neutral-900 dark:text-white placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none font-semibold"
+            class="flex-1 px-4 py-3 bg-neutral-100 dark:bg-muted border-2 border-purple-600 dark:border-purple-500 rounded-xl text-neutral-900 dark:text-foreground placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none font-semibold"
             autofocus
           />
           <button
             onclick={handleCustomAmount}
-            class="px-6 py-3 bg-gradient-to-br from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold rounded-xl transition-all"
+            class="px-6 py-3 bg-gradient-to-br from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-foreground font-semibold rounded-xl transition-all"
             type="button"
           >
             Set
           </button>
           <button
             onclick={() => { customAmount = ''; isEditingCustom = false; }}
-            class="px-6 py-3 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-900 dark:text-neutral-100 font-semibold rounded-xl transition-all"
+            class="px-6 py-3 bg-neutral-100 dark:bg-muted hover:bg-neutral-200 dark:hover:bg-muted text-neutral-900 dark:text-foreground font-semibold rounded-xl transition-all"
             type="button"
           >
             Cancel
@@ -87,7 +87,7 @@
       {:else}
         <button
           onclick={() => isEditingCustom = true}
-          class="w-full px-4 py-3 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 border-2 border-dashed border-neutral-300 dark:border-neutral-600 rounded-xl text-neutral-700 dark:text-neutral-300 font-semibold transition-all flex items-center justify-center gap-2"
+          class="w-full px-4 py-3 bg-neutral-100 dark:bg-muted hover:bg-neutral-200 dark:hover:bg-muted border-2 border-dashed border dark:border rounded-xl text-neutral-700 dark:text-muted-foreground font-semibold transition-all flex items-center justify-center gap-2"
           type="button"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,7 +99,7 @@
     </div>
   </div>
 
-  <div class="p-4 bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl">
+  <div class="p-4 bg-neutral-100 dark:bg-card border border rounded-xl">
     <div class="flex items-start gap-3">
       <div class="mt-0.5">
         <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,10 +107,10 @@
         </svg>
       </div>
       <div class="flex-1">
-        <h4 class="text-sm font-semibold text-neutral-900 dark:text-neutral-100 mb-1">
+        <h4 class="text-sm font-semibold text-neutral-900 dark:text-foreground mb-1">
           How to Zap
         </h4>
-        <ul class="text-sm text-neutral-600 dark:text-neutral-400 space-y-1">
+        <ul class="text-sm text-muted-foreground dark:text-muted-foreground space-y-1">
           <li><strong>Tap:</strong> Send default zap amount ({settings.zap.defaultAmount} sats)</li>
           <li><strong>Long-press:</strong> Choose custom amount from modal</li>
         </ul>

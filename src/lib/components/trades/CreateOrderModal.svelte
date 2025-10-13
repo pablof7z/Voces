@@ -174,16 +174,16 @@
   const pricePerBtc = $derived(parseFloat(fiatAmount) / btcAmount);
 </script>
 
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-  <div class="bg-white dark:bg-black rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-    <div class="sticky top-0 bg-white dark:bg-black border-b border-neutral-200 dark:border-neutral-800 p-6">
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-background/50 p-4">
+  <div class="bg-white dark:bg-background rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+    <div class="sticky top-0 bg-white dark:bg-background border-b border p-6">
       <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-bold text-neutral-900 dark:text-white">
+        <h2 class="text-2xl font-bold text-neutral-900 dark:text-foreground">
           Create P2P Order
         </h2>
         <button
           onclick={onClose}
-          class="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg transition-colors"
+          class="p-2 hover:bg-neutral-100 dark:hover:bg-card rounded-lg transition-colors"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -195,7 +195,7 @@
     <div class="p-6 space-y-6">
       <!-- Order Type -->
       <div>
-        <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+        <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
           Order Type
         </label>
         <div class="grid grid-cols-2 gap-3">
@@ -204,7 +204,7 @@
             class={`px-4 py-3 rounded-lg border-2 transition-colors ${
               orderType === 'buy'
                 ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                : 'border-neutral-300 dark:border-neutral-700'
+                : 'border'
             }`}
           >
             I want to buy Bitcoin
@@ -214,7 +214,7 @@
             class={`px-4 py-3 rounded-lg border-2 transition-colors ${
               orderType === 'sell'
                 ? 'border-red-500 bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                : 'border-neutral-300 dark:border-neutral-700'
+                : 'border'
             }`}
           >
             I want to sell Bitcoin
@@ -224,21 +224,21 @@
 
       <!-- Bitcoin Amount -->
       <div>
-        <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+        <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
           Bitcoin Amount (sats)
         </label>
         <div class="relative">
-          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/>
           </svg>
           <input
             type="number"
             bind:value={satsAmount}
-            class="w-full pl-10 pr-3 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
+            class="w-full pl-10 pr-3 py-3 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
             placeholder="100000"
           />
         </div>
-        <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+        <p class="mt-1 text-xs text-muted-foreground dark:text-muted-foreground">
           = {btcAmount.toFixed(8)} BTC
         </p>
       </div>
@@ -246,26 +246,26 @@
       <!-- Fiat Amount & Currency -->
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+          <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
             Fiat Amount
           </label>
           <input
             type="number"
             bind:value={fiatAmount}
-            class="w-full px-3 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
+            class="w-full px-3 py-3 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
             placeholder="50"
           />
-          <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+          <p class="mt-1 text-xs text-muted-foreground dark:text-muted-foreground">
             ≈ ${pricePerBtc.toFixed(2)}/BTC
           </p>
         </div>
         <div>
-          <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+          <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
             Currency
           </label>
           <select
             bind:value={currency}
-            class="w-full px-3 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
+            class="w-full px-3 py-3 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
           >
             {#each currencies as curr}
               <option value={curr.code}>
@@ -278,7 +278,7 @@
 
       <!-- Payment Method -->
       <div>
-        <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+        <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
           Payment Method
         </label>
         <div class="grid grid-cols-2 gap-3">
@@ -288,7 +288,7 @@
               class={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-colors ${
                 paymentMethod === method.id
                   ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/30'
-                  : 'border-neutral-300 dark:border-neutral-700'
+                  : 'border'
               }`}
             >
               <span class="text-lg">{method.icon}</span>
@@ -302,7 +302,7 @@
             <input
               type="text"
               bind:value={customPaymentMethod}
-              class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
+              class="w-full px-3 py-2 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
               placeholder="Enter payment method (e.g., Bank Transfer, PayPal, etc.)"
               autofocus
             />
@@ -313,7 +313,7 @@
       <!-- Location for F2F -->
       {#if showLocationPicker}
         <div>
-          <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+          <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
             <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -325,13 +325,13 @@
               <input
                 type="text"
                 bind:value={location}
-                class="flex-1 px-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
+                class="flex-1 px-3 py-2 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
                 placeholder="City, neighborhood, or area"
               />
               <button
                 type="button"
                 onclick={handleLocationRequest}
-                class="px-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+                class="px-3 py-2 border border rounded-lg hover:bg-neutral-50 dark:hover:bg-card transition-colors"
                 title="Use current location"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -341,7 +341,7 @@
               </button>
             </div>
             {#if geohash}
-              <p class="text-xs text-neutral-500 dark:text-neutral-400">
+              <p class="text-xs text-muted-foreground dark:text-muted-foreground">
                 Geohash: {geohash} (approximate location)
               </p>
             {/if}
@@ -351,28 +351,28 @@
 
       <!-- Premium -->
       <div>
-        <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+        <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
           Premium (%)
         </label>
         <input
           type="number"
           bind:value={premium}
-          class="w-full px-3 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
+          class="w-full px-3 py-3 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
           placeholder="0"
         />
-        <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+        <p class="mt-1 text-xs text-muted-foreground dark:text-muted-foreground">
           Positive for above market, negative for below
         </p>
       </div>
 
       <!-- Expiration -->
       <div>
-        <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+        <label class="block text-sm font-medium text-neutral-700 dark:text-muted-foreground mb-2">
           Expiration (hours)
         </label>
         <select
           bind:value={expirationHours}
-          class="w-full px-3 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-black text-neutral-900 dark:text-white"
+          class="w-full px-3 py-3 border border rounded-lg bg-white dark:bg-background text-neutral-900 dark:text-foreground"
         >
           <option value="1">1 hour</option>
           <option value="6">6 hours</option>
@@ -387,14 +387,14 @@
       <div class="flex gap-3">
         <button
           onclick={onClose}
-          class="flex-1 px-4 py-3 border border-neutral-300 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+          class="flex-1 px-4 py-3 border border rounded-lg hover:bg-neutral-50 dark:hover:bg-card transition-colors"
         >
           Cancel
         </button>
         <button
           onclick={handleCreate}
           disabled={creating || !satsAmount || !fiatAmount}
-          class="flex-1 px-4 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="flex-1 px-4 py-3 bg-orange-600 text-foreground rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {creating ? 'Creating...' : 'Create Order'}
         </button>

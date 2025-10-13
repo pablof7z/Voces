@@ -91,6 +91,7 @@ export function createAuthPolicyWithConfirmation({ ndk }: { ndk?: NDK } = {}): N
     // Auto-authenticate to agorawlc.com relays without prompting
     const isAgorawlcRelay = relay.url.includes('agorawlc.com');
     if (isAgorawlcRelay) {
+      return true;
       debug(`Auto-authenticating to agorawlc.com relay: ${relay.url}`);
 
       // Create and sign auth event
@@ -101,22 +102,39 @@ export function createAuthPolicyWithConfirmation({ ndk }: { ndk?: NDK } = {}): N
         ['challenge', challenge]
       ];
 
-      const signer = ndk?.signer;
+      // Try to get signer from ndk or activeUser
+      const signer = ndk?.signer || ndk?.activeUser?.signer;
       if (signer) {
-        await event.sign(signer);
-        return event;
+        try {
+          await event.sign(signer);
+          debug(`Successfully signed auth event for ${relay.url}`);
+          return event;
+        } catch (e) {
+          debug('Failed to sign auth event:', e);
+          return false;
+        }
       } else {
-        // Wait for signer to be ready
-        return new Promise((resolve, reject) => {
-          ndk?.once('signer:ready', async (signer) => {
+        debug(`No signer available for auto-auth to ${relay.url}, waiting for signer...`);
+        // Wait for signer to be ready with a timeout
+        return new Promise((resolve) => {
+          const timeout = setTimeout(() => {
+            debug(`Signer timeout for ${relay.url}, authentication failed`);
+            resolve(false);
+          }, 5000); // 5 second timeout
+
+          const handleSignerReady = async (readySigner: any) => {
+            clearTimeout(timeout);
             try {
-              await event.sign(signer);
+              await event.sign(readySigner);
+              debug(`Successfully signed auth event for ${relay.url} after waiting`);
               resolve(event);
             } catch (e) {
-              debug('Failed to sign auth event:', e);
-              reject(e);
+              debug('Failed to sign auth event after waiting:', e);
+              resolve(false);
             }
-          });
+          };
+
+          ndk?.once('signer:ready', handleSignerReady);
         });
       }
     }
@@ -140,23 +158,36 @@ export function createAuthPolicyWithConfirmation({ ndk }: { ndk?: NDK } = {}): N
         ['challenge', challenge]
       ];
 
-      // Sign the event
-      const signer = ndk?.signer;
+      // Sign the event - try to get signer from ndk or activeUser
+      const signer = ndk?.signer || ndk?.activeUser?.signer;
       if (signer) {
-        await event.sign(signer);
-        return event;
+        try {
+          await event.sign(signer);
+          return event;
+        } catch (e) {
+          debug('Failed to sign auth event:', e);
+          return false;
+        }
       } else {
-        // Wait for signer to be ready
-        return new Promise((resolve, reject) => {
-          ndk?.once('signer:ready', async (signer) => {
+        // Wait for signer to be ready with timeout
+        return new Promise((resolve) => {
+          const timeout = setTimeout(() => {
+            debug(`Signer timeout for ${relay.url}, authentication failed`);
+            resolve(false);
+          }, 5000);
+
+          const handleSignerReady = async (readySigner: any) => {
+            clearTimeout(timeout);
             try {
-              await event.sign(signer);
+              await event.sign(readySigner);
               resolve(event);
             } catch (e) {
-              debug('Failed to sign auth event:', e);
-              reject(e);
+              debug('Failed to sign auth event after waiting:', e);
+              resolve(false);
             }
-          });
+          };
+
+          ndk?.once('signer:ready', handleSignerReady);
         });
       }
     }
@@ -180,22 +211,36 @@ export function createAuthPolicyWithConfirmation({ ndk }: { ndk?: NDK } = {}): N
       ['challenge', challenge]
     ];
 
-    const signer = ndk?.signer;
+    // Try to get signer from ndk or activeUser
+    const signer = ndk?.signer || ndk?.activeUser?.signer;
     if (signer) {
-      await event.sign(signer);
-      return event;
+      try {
+        await event.sign(signer);
+        return event;
+      } catch (e) {
+        debug('Failed to sign auth event:', e);
+        return false;
+      }
     } else {
-      // Wait for signer to be ready
-      return new Promise((resolve, reject) => {
-        ndk?.once('signer:ready', async (signer) => {
+      // Wait for signer to be ready with timeout
+      return new Promise((resolve) => {
+        const timeout = setTimeout(() => {
+          debug(`Signer timeout for ${relay.url}, authentication failed`);
+          resolve(false);
+        }, 5000);
+
+        const handleSignerReady = async (readySigner: any) => {
+          clearTimeout(timeout);
           try {
-            await event.sign(signer);
+            await event.sign(readySigner);
             resolve(event);
           } catch (e) {
-            debug('Failed to sign auth event:', e);
-            reject(e);
+            debug('Failed to sign auth event after waiting:', e);
+            resolve(false);
           }
-        });
+        };
+
+        ndk?.once('signer:ready', handleSignerReady);
       });
     }
   };

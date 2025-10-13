@@ -1,3 +1,5 @@
+import { AGORA_RELAYS } from '$lib/utils/relayUtils';
+
 export interface Relay {
   url: string;
   read: boolean;
@@ -9,6 +11,7 @@ interface AppSettings {
   relays: Relay[];
   selectedRelay: string | null;
   theme: 'light' | 'dark' | 'system';
+  themeColor: 'red' | 'cyan' | 'yellow' | 'lime';
   language: 'en' | 'es';
   notifications: {
     enabled: boolean;
@@ -26,8 +29,7 @@ interface AppSettings {
 }
 
 const DEFAULT_RELAYS: Relay[] = [
-  { url: 'wss://ve.agorawlc.com', read: true, write: true, enabled: true },
-  { url: 'wss://ni.agorawlc.com', read: true, write: true, enabled: true },
+  ...AGORA_RELAYS.map(url => ({ url, read: true, write: true, enabled: true })),
   { url: 'wss://relay.damus.io', read: true, write: true, enabled: true },
   { url: 'wss://nos.lol', read: true, write: true, enabled: true },
   { url: 'wss://relay.primal.net', read: true, write: true, enabled: true },
@@ -37,6 +39,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   relays: DEFAULT_RELAYS,
   selectedRelay: 'agoras',
   theme: 'system',
+  themeColor: 'red',
   language: 'en',
   notifications: {
     enabled: true,
@@ -60,6 +63,13 @@ function loadSettings(): AppSettings {
     const stored = localStorage.getItem('voces-settings');
     if (stored) {
       const parsed = JSON.parse(stored);
+      // Clean up malformed relay URLs (wss://ws:// or wss://wss://)
+      if (parsed.relays) {
+        parsed.relays = parsed.relays.map((r: Relay) => ({
+          ...r,
+          url: r.url.replace(/^wss:\/\/ws:\/\//, 'ws://').replace(/^wss:\/\/wss:\/\//, 'wss://')
+        }));
+      }
       return { ...DEFAULT_SETTINGS, ...parsed };
     }
   } catch (e) {
@@ -92,6 +102,10 @@ class SettingsStore {
 
   get theme() {
     return this.state.theme;
+  }
+
+  get themeColor() {
+    return this.state.themeColor;
   }
 
   get language() {
@@ -154,6 +168,28 @@ class SettingsStore {
       } else {
         document.documentElement.classList.remove('dark');
       }
+    }
+  }
+
+  setThemeColor(color: 'red' | 'cyan' | 'yellow' | 'lime') {
+    this.state.themeColor = color;
+    saveSettings(this.state);
+
+    if (typeof window !== 'undefined') {
+      const colorMapHSL = {
+        red: '342 87% 48%',
+        cyan: '189 100% 41%',
+        yellow: '52 100% 50%',
+        lime: '74 85% 40%'
+      };
+      const colorMapDarkHSL = {
+        red: '342 87% 42%',
+        cyan: '189 100% 35%',
+        yellow: '52 100% 44%',
+        lime: '74 85% 34%'
+      };
+      document.documentElement.style.setProperty('--theme-color-hsl', colorMapHSL[color]);
+      document.documentElement.style.setProperty('--theme-color-dark-hsl', colorMapDarkHSL[color]);
     }
   }
 

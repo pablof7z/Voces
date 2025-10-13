@@ -40,7 +40,7 @@
     {:else}
       <button
         onclick={onIntersect}
-        class="px-4 py-2 text-neutral-400 hover:text-neutral-300 transition-colors"
+        class="px-4 py-2 text-muted-foreground hover:text-muted-foreground transition-colors"
       >
         Load more
       </button>

@@ -6,7 +6,7 @@
     class?: string;
   }
 
-  const { class: className = "px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-semibold" }: Props = $props();
+  const { class: className = "px-4 py-2 bg-purple-600 hover:bg-purple-700 text-foreground rounded-lg transition-colors font-semibold" }: Props = $props();
 
   const currentUser = ndk.$currentUser;
   const profile = ndk.$fetchProfile(() => currentUser?.pubkey);
@@ -14,14 +14,13 @@
 
   function logout() {
     ndk.$sessions.logout();
-    localStorage.removeItem('nostr_private_key');
   }
 </script>
 
 {#if currentUser}
   <button
     onclick={logout}
-    class="flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg transition-colors"
+    class="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-muted text-foreground rounded-lg transition-colors"
   >
     {#if profile?.image}
       <img src={profile.image} alt={displayName} class="w-6 h-6 rounded-full object-cover" />

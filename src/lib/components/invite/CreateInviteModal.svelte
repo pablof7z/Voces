@@ -4,9 +4,12 @@
 	import { settings } from '$lib/stores/settings.svelte';
 	import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
 	import { clickOutside } from '$lib/utils/clickOutside';
+	import { portal } from '$lib/utils/portal.svelte';
+	import { isAgoraRelay } from '$lib/utils/relayUtils';
 	import {
 		generateDTag,
 		generateEncryptionKey,
+		generateInviteCode,
 		encryptInvitePayload
 	} from '$lib/utils/inviteEncryption';
 
@@ -27,21 +30,22 @@ Looking forward to connecting with you on the open social web!`;
 	let isPersonalized = $state(false);
 	let recipientName = $state('');
 	let cashuAmount = $state('');
+	let maxUses = $state(10);
 	let inviteLink = $state('');
 	let isGenerating = $state(false);
 	let isCopied = $state(false);
 	let selectedRelayUrls = $state<string[]>([]);
 	let isRelayDropdownOpen = $state(false);
 
-	// Get enabled write relays
-	const writeRelays = $derived(settings.relays.filter(r => r.enabled && r.write));
+	// Get enabled Agora write relays
+	const agoraRelays = $derived(settings.relays.filter(r => r.enabled && r.write && isAgoraRelay(r.url)));
 
-	// Initialize with selected relay if one is set
+	// Initialize with selected relay if one is set and it's an Agora relay
 	$effect(() => {
-		if (isOpen && settings.selectedRelay && selectedRelayUrls.length === 0) {
-			// Only preselect if the selected relay is also a write relay
-			const isWriteRelay = writeRelays.some(r => r.url === settings.selectedRelay);
-			if (isWriteRelay) {
+		if (isOpen && settings.selectedRelay && selectedRelayUrls.length === 0 && isAgoraRelay(settings.selectedRelay)) {
+			// Only preselect if the selected relay is also an Agora write relay
+			const isAgoraWriteRelay = agoraRelays.some(r => r.url === settings.selectedRelay);
+			if (isAgoraWriteRelay) {
 				selectedRelayUrls = [settings.selectedRelay];
 			}
 		}
@@ -67,12 +71,12 @@ Looking forward to connecting with you on the open social web!`;
 	});
 
 	const selectedRelayName = $derived.by(() => {
-		if (selectedRelayUrls.length === 0) return 'Select relay...';
+		if (selectedRelayUrls.length === 0) return 'Select Agora...';
 		if (selectedRelayUrls.length === 1) {
 			const relayInfo = useRelayInfoCached(selectedRelayUrls[0]);
 			return relayInfo.info?.name || selectedRelayUrls[0].replace('wss://', '').replace('ws://', '');
 		}
-		return `${selectedRelayUrls.length} relays selected`;
+		return `${selectedRelayUrls.length} Agoras selected`;
 	});
 
 	async function generateInvite() {
@@ -82,7 +86,7 @@ Looking forward to connecting with you on the open social web!`;
 		}
 
 		if (selectedRelayUrls.length === 0) {
-			alert('Please select at least one relay to publish the invite to.');
+			alert('Please select at least one Agora to publish the invite to.');
 			return;
 		}
 
@@ -92,6 +96,12 @@ Looking forward to connecting with you on the open social web!`;
 			// Generate d-tag and encryption key
 			const dTag = generateDTag();
 			const encryptionKey = isPersonalized ? generateEncryptionKey() : '';
+
+			// Generate invite codes (one for each max use)
+			const inviteCodes: string[] = [];
+			for (let i = 0; i < maxUses; i++) {
+				inviteCodes.push(generateInviteCode());
+			}
 
 			// Create payload
 			const payload = {
@@ -112,7 +122,8 @@ Looking forward to connecting with you on the open social web!`;
 			inviteEvent.kind = 513;
 			inviteEvent.content = content;
 			inviteEvent.tags = [
-				['d', dTag]
+				['d', dTag],
+				...inviteCodes.map(code => ['code', code])
 			];
 			inviteEvent.isProtected = true;
 
@@ -121,9 +132,9 @@ Looking forward to connecting with you on the open social web!`;
 			// Mark as protected before publishing
 			inviteEvent.isProtected = true;
 
-			console.log('Publishing invite event to selected relays...', inviteEvent.id, selectedRelayUrls);
+			console.log('Publishing invite event to selected Agoras...', inviteEvent.id, selectedRelayUrls);
 
-			// Publish to specific relays only
+			// Publish to specific Agora relays only
 			const relays = new Set<NDKRelay>();
 			for (const url of selectedRelayUrls) {
 				const relay = ndk.pool.getRelay(url, true);
@@ -136,6 +147,7 @@ Looking forward to connecting with you on the open social web!`;
 			await inviteEvent.publish(relaySet);
 
 			// Generate invite link: /i/{dTag}{encryptionKey}
+			// dTag = 12 chars, encryptionKey = 24 chars (optional)
 			const code = isPersonalized ? `${dTag}${encryptionKey}` : dTag;
 			const link = `${window.location.origin}/i/${code}`;
 			inviteLink = link;
@@ -164,6 +176,7 @@ Looking forward to connecting with you on the open social web!`;
 		isPersonalized = false;
 		recipientName = '';
 		cashuAmount = '';
+		maxUses = 10;
 		inviteLink = '';
 		selectedRelayUrls = [];
 		isRelayDropdownOpen = false;
@@ -183,23 +196,30 @@ Looking forward to connecting with you on the open social web!`;
 
 {#if isOpen}
 	<div
-		class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4"
+		use:portal
+		class="fixed inset-0 z-[10000] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4"
 		onclick={handleBackdropClick}
 		role="presentation"
 	>
-		<div class="bg-white dark:bg-black rounded-2xl shadow-xl w-full max-w-lg relative p-8">
+		<div
+			class="bg-card rounded-2xl border border-border shadow-2xl w-full max-w-lg relative"
+			onclick={(e) => e.stopPropagation()}
+			role="dialog"
+			aria-modal="true"
+		>
+			<div class="p-8">
 			<button
 				onclick={handleClose}
-				class="absolute top-4 right-4 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg transition-colors"
+				class="absolute top-4 right-4 p-2 hover:bg-muted rounded-lg transition-colors"
 			>
-				<svg class="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<svg class="w-5 h-5 text-muted-foreground hover:text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
 				</svg>
 			</button>
 
 			<div class="mb-6">
-				<h2 class="text-2xl font-bold text-neutral-900 dark:text-white mb-1">Create an Invite</h2>
-				<p class="text-sm text-neutral-600 dark:text-neutral-400">
+				<h2 class="text-2xl font-bold text-foreground mb-1">Create an Invite</h2>
+				<p class="text-sm text-muted-foreground">
 					Invite someone to join Agora with a personal message
 				</p>
 			</div>
@@ -210,7 +230,7 @@ Looking forward to connecting with you on the open social web!`;
 					<div>
 						<label
 							for="welcome-message"
-							class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
+							class="block text-sm font-medium text-muted-foreground mb-2"
 						>
 							Welcome Message
 						</label>
@@ -218,48 +238,40 @@ Looking forward to connecting with you on the open social web!`;
 							id="welcome-message"
 							bind:value={welcomeMessage}
 							rows="6"
-							class="w-full px-4 py-3 border border-neutral-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+							class="w-full px-4 py-3 border border-border rounded-xl bg-muted text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
 							placeholder="Write a welcome message..."
 						></textarea>
 					</div>
 
-					<!-- Relay Selection -->
+					<!-- Agora Selection -->
 					<div class="relative">
-						<label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-							Publish to Relay
+						<label class="block text-sm font-medium text-muted-foreground mb-2">
+							Invite to Agora
 						</label>
 						<button
 							type="button"
 							onclick={() => isRelayDropdownOpen = !isRelayDropdownOpen}
-							class="w-full px-4 py-2.5 text-left rounded-lg bg-neutral-800/50 text-neutral-300 hover:bg-neutral-800 transition-colors flex items-center gap-3 group"
+							class="w-full px-4 py-2.5 text-left rounded-lg bg-muted/50 text-muted-foreground hover:bg-muted transition-colors flex items-center gap-3 group"
 						>
 							{#if selectedRelayUrls.length === 0}
-								<div class="w-6 h-6 rounded bg-neutral-700 flex items-center justify-center flex-shrink-0">
-									<svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-									</svg>
-								</div>
-								<span class="text-sm text-neutral-500 flex-1">Select relay...</span>
+								<img src="/logo-icon.svg" alt="Agora" class="w-6 h-6 flex-shrink-0" />
+								<span class="text-sm text-muted-foreground flex-1">Select Agora...</span>
 							{:else if selectedRelayUrls.length === 1 && selectedRelayInfo}
 								{#if selectedRelayInfo.info.info?.icon}
 									<img src={selectedRelayInfo.info.info.icon} alt="" class="w-6 h-6 rounded flex-shrink-0" />
 								{:else}
-									<div class="w-6 h-6 rounded bg-neutral-700 flex items-center justify-center flex-shrink-0">
-										<svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<div class="w-6 h-6 rounded bg-muted flex items-center justify-center flex-shrink-0">
+										<svg class="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
 										</svg>
 									</div>
 								{/if}
-								<span class="text-sm text-neutral-300 flex-1">{selectedRelayName}</span>
+								<span class="text-sm text-muted-foreground flex-1">{selectedRelayName}</span>
 							{:else}
-								<div class="w-6 h-6 rounded bg-neutral-700 flex items-center justify-center flex-shrink-0">
-									<svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-									</svg>
-								</div>
-								<span class="text-sm text-neutral-300 flex-1">{selectedRelayUrls.length} relays selected</span>
+								<img src="/logo-icon.svg" alt="Agora" class="w-6 h-6 flex-shrink-0" />
+								<span class="text-sm text-muted-foreground flex-1">{selectedRelayUrls.length} Agoras selected</span>
 							{/if}
-							<svg class="w-4 h-4 text-neutral-500 transition-transform flex-shrink-0 {isRelayDropdownOpen ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg class="w-4 h-4 text-muted-foreground transition-transform flex-shrink-0 {isRelayDropdownOpen ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 							</svg>
 						</button>
@@ -267,37 +279,49 @@ Looking forward to connecting with you on the open social web!`;
 						{#if isRelayDropdownOpen}
 							<div
 								use:clickOutside={handleRelayDropdownClickOutside}
-								class="absolute z-10 mt-1 w-full bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl shadow-lg max-h-64 overflow-y-auto"
+								class="absolute z-10 mt-1 w-full bg-popover border border-border rounded-xl shadow-lg max-h-64 overflow-y-auto"
 							>
-								{#if writeRelays.length === 0}
-									<p class="text-sm text-neutral-500 text-center py-4">No write relays configured</p>
+								{#if agoraRelays.length === 0}
+									<p class="text-sm text-muted-foreground text-center py-4">No Agora relays configured</p>
 								{:else}
-									{#each writeRelays as relay (relay.url)}
+									{#each agoraRelays as relay (relay.url)}
 										{@const relayInfo = useRelayInfoCached(relay.url)}
 										<button
 											type="button"
 											onclick={() => {
 												toggleRelay(relay.url);
 											}}
-											class="w-full flex items-center gap-3 p-3 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer transition-colors text-left"
+											class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-muted cursor-pointer transition-colors text-left"
 										>
 											<input
 												type="checkbox"
 												checked={selectedRelayUrls.includes(relay.url)}
-												class="w-4 h-4 text-orange-600 border-neutral-300 rounded focus:ring-orange-500 pointer-events-none"
+												class="w-4 h-4 text-primary border rounded focus:ring-orange-500 pointer-events-none"
 											/>
 											{#if relayInfo.info?.icon}
 												<img src={relayInfo.info.icon} alt="" class="w-5 h-5 rounded flex-shrink-0" />
 											{:else}
-												<div class="w-5 h-5 rounded bg-neutral-300 dark:bg-neutral-700 flex items-center justify-center flex-shrink-0">
-													<svg class="w-3 h-3 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<div class="w-5 h-5 rounded bg-muted flex items-center justify-center flex-shrink-0">
+													<svg class="w-3 h-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
 													</svg>
 												</div>
 											{/if}
-											<span class="text-sm text-neutral-700 dark:text-neutral-300 flex-1 truncate">
-												{relayInfo.info?.name || relay.url.replace('wss://', '').replace('ws://', '')}
-											</span>
+											<div class="flex-1 min-w-0">
+												<div class="flex items-center gap-1.5">
+													<div class="text-sm font-medium text-foreground truncate">
+														{relayInfo.info?.name || relay.url.replace('wss://', '').replace('ws://', '')}
+													</div>
+													<span class="flex-shrink-0 px-1.5 py-0.5 text-[10px] font-semibold bg-primary/20 text-primary rounded uppercase tracking-wide">
+														Agora
+													</span>
+												</div>
+												{#if relayInfo.info?.description}
+													<div class="text-xs text-muted-foreground truncate">
+														{relayInfo.info.description}
+													</div>
+												{/if}
+											</div>
 										</button>
 									{/each}
 								{/if}
@@ -305,10 +329,31 @@ Looking forward to connecting with you on the open social web!`;
 						{/if}
 
 						{#if selectedRelayUrls.length > 1}
-							<p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-								{selectedRelayUrls.length} relays selected
+							<p class="mt-1 text-xs text-muted-foreground">
+								{selectedRelayUrls.length} Agoras selected
 							</p>
 						{/if}
+					</div>
+
+					<!-- Max Uses -->
+					<div>
+						<label
+							for="max-uses"
+							class="block text-sm font-medium text-muted-foreground mb-2"
+						>
+							Maximum Uses
+						</label>
+						<input
+							id="max-uses"
+							type="number"
+							bind:value={maxUses}
+							min="1"
+							max="500"
+							class="w-full px-4 py-2 border border-border rounded-xl bg-muted text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+						/>
+						<p class="mt-1 text-xs text-muted-foreground">
+							How many people can use this invite (1-500)
+						</p>
 					</div>
 
 					<!-- Personalization Toggle -->
@@ -317,11 +362,11 @@ Looking forward to connecting with you on the open social web!`;
 							type="checkbox"
 							id="personalize"
 							bind:checked={isPersonalized}
-							class="w-5 h-5 text-orange-600 border-neutral-300 rounded focus:ring-orange-500"
+							class="w-5 h-5 text-primary border rounded focus:ring-orange-500"
 						/>
 						<label
 							for="personalize"
-							class="text-sm font-medium text-neutral-700 dark:text-neutral-300 cursor-pointer"
+							class="text-sm font-medium text-muted-foreground cursor-pointer"
 						>
 							Personalize this invite
 						</label>
@@ -333,7 +378,7 @@ Looking forward to connecting with you on the open social web!`;
 							<div>
 								<label
 									for="recipient-name"
-									class="flex items-center text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
+									class="flex items-center text-sm font-medium text-muted-foreground mb-2"
 								>
 									<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -344,7 +389,7 @@ Looking forward to connecting with you on the open social web!`;
 									id="recipient-name"
 									type="text"
 									bind:value={recipientName}
-									class="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+									class="w-full px-4 py-2 border border-border rounded-xl bg-muted text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
 									placeholder="John Doe"
 								/>
 							</div>
@@ -352,7 +397,7 @@ Looking forward to connecting with you on the open social web!`;
 							<div>
 								<label
 									for="cashu-amount"
-									class="flex items-center text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
+									class="flex items-center text-sm font-medium text-muted-foreground mb-2"
 								>
 									<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -363,10 +408,10 @@ Looking forward to connecting with you on the open social web!`;
 									id="cashu-amount"
 									type="number"
 									bind:value={cashuAmount}
-									class="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+									class="w-full px-4 py-2 border border-border rounded-xl bg-muted text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent"
 									placeholder="Amount in sats (optional)"
 								/>
-								<p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+								<p class="mt-1 text-xs text-muted-foreground">
 									Add sats to help them get started on Nostr
 								</p>
 							</div>
@@ -377,7 +422,7 @@ Looking forward to connecting with you on the open social web!`;
 					<button
 						onclick={generateInvite}
 						disabled={isGenerating || !welcomeMessage.trim() || selectedRelayUrls.length === 0}
-						class="w-full py-3 px-4 bg-orange-600 hover:bg-orange-700 disabled:bg-neutral-400 text-white font-semibold rounded-xl transition-colors disabled:cursor-not-allowed flex items-center justify-center"
+						class="w-full py-3 px-4 bg-orange-600 hover:bg-orange-700 disabled:bg-neutral-400 text-foreground font-semibold rounded-xl transition-colors disabled:cursor-not-allowed flex items-center justify-center"
 					>
 						{#if isGenerating}
 							<div
@@ -393,33 +438,33 @@ Looking forward to connecting with you on the open social web!`;
 				<div class="space-y-6">
 					<div class="text-center py-8">
 						<div
-							class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+							class="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
 						>
-							<svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
 							</svg>
 						</div>
-						<h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
+						<h3 class="text-lg font-semibold text-foreground mb-2">
 							Invite Created!
 						</h3>
-						<p class="text-sm text-neutral-600 dark:text-neutral-400">
+						<p class="text-sm text-muted-foreground">
 							{isPersonalized && recipientName
 								? `Your personalized invite for ${recipientName} is ready`
 								: 'Your invite link is ready to share'}
 						</p>
 					</div>
 
-					<div class="bg-neutral-100 dark:bg-neutral-900 rounded-xl p-4">
+					<div class="bg-muted rounded-xl p-4">
 						<div class="flex items-center space-x-2">
 							<input
 								type="text"
 								value={inviteLink}
 								readonly
-								class="flex-1 bg-transparent text-sm text-neutral-700 dark:text-neutral-300 outline-none truncate"
+								class="flex-1 bg-transparent text-sm text-muted-foreground outline-none truncate"
 							/>
 							<button
 								onclick={copyToClipboard}
-								class="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors flex items-center space-x-1 text-sm"
+								class="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-foreground rounded-lg transition-colors flex items-center space-x-1 text-sm"
 							>
 								{#if isCopied}
 									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -439,19 +484,20 @@ Looking forward to connecting with you on the open social web!`;
 					<div class="flex space-x-3">
 						<button
 							onclick={() => (inviteLink = '')}
-							class="flex-1 py-2.5 px-4 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 font-medium rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+							class="flex-1 py-2.5 px-4 border border-border text-muted-foreground font-medium rounded-xl hover:bg-muted transition-colors"
 						>
 							Create Another
 						</button>
 						<button
 							onclick={handleClose}
-							class="flex-1 py-2.5 px-4 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-xl transition-colors"
+							class="flex-1 py-2.5 px-4 bg-orange-600 hover:bg-orange-700 text-foreground font-medium rounded-xl transition-colors"
 						>
 							Done
 						</button>
 					</div>
 				</div>
 			{/if}
+			</div>
 		</div>
 	</div>
 {/if}
