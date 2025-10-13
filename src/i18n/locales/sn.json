@@ -1,0 +1,305 @@
+{
+  "navigation": {
+    "feed": "Pahina Yekutanga",
+    "compose": "Nyora",
+    "notifications": "Zviziviso",
+    "messages": "Mharidzo",
+    "classifieds": "Zvokutengesera",
+    "marketplace": "Musika",
+    "trades": "Kutengeserana kwe P2P",
+    "followPacks": "Mapaketi Ekutevera",
+    "profile": "Mbiri",
+    "wallet": "Chikwama",
+    "money": "Mari",
+    "settings": "Zvirongwa",
+    "logout": "Buda"
+  },
+  "auth": {
+    "login": "Pinda neNostr",
+    "logout": "Buda",
+    "loginSuccess": "Wapinda zvinobudirira",
+    "loginError": "Kutadza kupinda",
+    "connecting": "Kubatanidza..."
+  },
+  "feed": {
+    "title": "Pahina Yekutanga",
+    "compose": {
+      "placeholder": "Uri kufungei?",
+      "publish": "Bura",
+      "publishing": "Kuburitsa...",
+      "publishSuccess": "Chinyorwa chaburitswa!",
+      "publishError": "Kutadza kuburitsa chinyorwa"
+    },
+    "loading": "Kutakura zvinyorwa...",
+    "empty": "Hapana zvinyorwa zvekutaridza",
+    "error": "Kukanganisa pakutakura zvinyorwa",
+    "mediaTypes": {
+      "conversations": "Hurukuro",
+      "images": "Mifananidzo",
+      "videos": "Mavhidhiyo",
+      "articles": "Zvokuverenga"
+    }
+  },
+  "classifieds": {
+    "title": "Zvokutengesera",
+    "description": "Tenga, tengesa, uye chinjana nenharaunda yeNostr",
+    "noListings": "Hapasati pane zvokutengesera. Iva wekutanga kugadzira!",
+    "createListing": "Gadzira Chokutengesera",
+    "filters": {
+      "all": "Zvese",
+      "selling": "Kutengesa",
+      "buying": "Kutenga",
+      "services": "Masevhisi"
+    }
+  },
+  "trades": {
+    "title": "Kutengeserana",
+    "description": "Kutengeserana kwe P2P kwakachengeteka nekudzivirirwa kwe escrow",
+    "noTrades": "Hapasati pane kutengeserana. Tarisa zvokutengesera kuti utange kutengeserana!",
+    "browseClassifieds": "Tarisa Zvokutengesera",
+    "statuses": {
+      "pending": "Mirira",
+      "active": "Shanda",
+      "completed": "Yapedzwa",
+      "disputed": "Inopikiswa"
+    }
+  },
+  "followPacks": {
+    "title": "Mapaketi Ekutevera",
+    "description": "Wana mazita akarongeka evanhu vekutevera",
+    "noPacks": "Hapana mapaketi ekutevera aripo parizvino",
+    "followers": "vateveri",
+    "createNew": "Gadzira paketi rekutevera idzva",
+    "addToExisting": "Wedzera kune paketi iripo"
+  },
+  "settings": {
+    "title": "Zvirongwa",
+    "description": "Gadzirisa zvaunofarira uye magadzirirwo eapp",
+    "invite": {
+      "create": "Gadzira Kokero",
+      "createDescription": "Koka mumwe munhu kuti ajoinhe Agora",
+      "myInvites": "Kokero Dzangu",
+      "myInvitesDescription": "Tarisa uye gadzirisa kokero dzatumirwa",
+      "createInvitation": "Gadzira Kokero"
+    },
+    "sections": {
+      "relays": {
+        "title": "Relays",
+        "description": "Gadzirisa kubatana kweNostr relay",
+        "addRelay": "Wedzera Relay",
+        "relayUrl": "Relay URL",
+        "urlPlaceholder": "wss://relay.example.com",
+        "permissions": "Mvumo",
+        "read": "Verenga",
+        "write": "Nyora",
+        "enabled": "Yagoneswa",
+        "remove": "Bvisa",
+        "confirmRemove": "Une chokwadi here kuti unoda kubvisa iyi relay?",
+        "invalidUrl": "Relay URL haina kunaka",
+        "relayExists": "Iyi relay iripo",
+        "connected": "Yakabatana",
+        "disconnected": "Yakabviswa",
+        "connecting": "Kubatanidza..."
+      },
+      "appearance": {
+        "title": "Chitarisiko",
+        "description": "Gadzirisa dingindira reapp nekuratidza",
+        "language": "Mutauro",
+        "languageDescription": "Sarudza mutauro waunofarira",
+        "theme": "Dingindira",
+        "themeDescription": "Sarudza dingindira raunofarira",
+        "themes": {
+          "light": "Chiedza",
+          "dark": "Rima",
+          "system": "Sisitemu"
+        }
+      },
+      "notifications": {
+        "title": "Zviziviso",
+        "description": "Dzidzora zvaunofarira zvezviziviso"
+      },
+      "privacy": {
+        "title": "Kuvanzika",
+        "description": "Gadzirisa zvirongwa zvekuvanzika nekuchengeteka"
+      },
+      "profile": {
+        "title": "Mbiri",
+        "description": "Gadzirisa ruzivo rwembiri yako"
+      },
+      "blossom": {
+        "title": "Maseva eMidhiya",
+        "description": "Gadzirisa maseva ekukwidza midhiya eBlossom"
+      },
+      "followpacks": {
+        "title": "Mapaketi Ekutevera",
+        "description": "Wana uye gadzirisa mapaketi ekutevera"
+      },
+      "backup": {
+        "title": "Backup Key",
+        "description": "Chengetedza kiyi yako neshamwari dzaunovimba nadzo"
+      },
+      "wot": {
+        "title": "Web of Trust",
+        "description": "Seyera spam uchishandisa network yako yemagariro",
+        "info": {
+          "title": "Chii chinonzi Web of Trust?",
+          "description": "Seyera zvirimo zvichienderana nekubatana kwako kwemagariro. Ratidza zvinyorwa zvevanhu vaunotevera chete, kana vanhu vanoteverwa nevaya vaunotevera."
+        },
+        "enable": "Gonesa Web of Trust",
+        "enableDescription": "Seyera zvinyorwa zvichienderana nezvikoro zvekuvimba",
+        "trustLevel": "Huwandu hwekuvimba",
+        "levels": {
+          "strict": "Yakananga",
+          "moderate": "Yakawedzerwa",
+          "relaxed": "Zvese"
+        },
+        "currentLevel": {
+          "direct": "Ratidza vanhu vaunotevera zvakananga chete",
+          "extended": "Ratidza vanhu vaunotevera + zvavanotevera",
+          "all": "Ratidza munhu wese (WoT yakaremara)"
+        },
+        "stats": {
+          "total": "Huwandu",
+          "direct": "Yakananga",
+          "extended": "Yakawedzerwa"
+        },
+        "lastUpdate": "Yakagadziridzwa kwekupedzisira",
+        "recalculate": "Verenga Network",
+        "calculating": "Kuverenga..."
+      }
+    },
+    "comingSoon": "Ichakurumidza kuuya..."
+  },
+  "backup": {
+    "security": {
+      "warning": {
+        "title": "Chiziviso Chakakosha Chekuchengetedzeka",
+        "description": "Ichi chinhu chinopatsanura kiyi yako yakavanzika kuita zvidimbu zvakavharidzirwa. Ukarasikirwa nepasiwedhi yako, HAUKWANE kudzorera kiyi yako. Inyore pasi woichengeta zvakachengeteka."
+      }
+    },
+    "quorum": {
+      "totalShards": {
+        "label": "Vanhu vangani vaunoda kuvimba navo?",
+        "description": "Kiyi yako ichapatsanurwa kuita zvidimbu zvakati wandei. Munhu mumwe nemumwe anovimbwa naye anowana chidimbu chimwe.",
+        "pieces": "vanhu"
+      },
+      "threshold": {
+        "label": "Zvidimbu zvakati wandei zvinodiwa kuti udzorere?",
+        "description": "Unofanira kuunganidza zvidimbu izvi kuti udzore kiyi yako.",
+        "pieces": "zvidimbu"
+      },
+      "explanation": {
+        "title": "Izvi zvinorevei?",
+        "description": "Uri kugadzira zvidimbu {{totalShards}}. Kuti udzore kiyi yako, uchada chero {{threshold}} chezvidimbu izvozvo. Saka kana dzimwe shamwari dzikarasikirwa nechidimbu chadzo, unogona kuramba uchidzorera chero bedzi shamwari {{threshold}} dzichinacho."
+      }
+    },
+    "trustees": {
+      "label": "Ndivanaani vaunovimba navo?",
+      "description": "Wedzera vanhu vaunovimba navo kuti vabate zvidimbu zvekopi yako. Munhu mumwe nemumwe achawana chidimbu chimwe chakavharidzirwa.",
+      "placeholder": "Pinda npub kana kiyi yeruzhinji...",
+      "selected": "{{count}} ye {{max}} vavimbwa navo vasarudzwa"
+    },
+    "passphrase": {
+      "label": "Gadzira pasiwedhi yakasimba",
+      "placeholder": "Pinda pasiwedhi yakasimba...",
+      "confirmLabel": "Simbisa pasiwedhi yako",
+      "confirmPlaceholder": "Pinda pasiwedhi imwechete zvakare...",
+      "strong": "Pasiwedhi yakasimba",
+      "mismatch": "Mapasiwedhi haaenderane",
+      "match": "Mapasiwedhi anoenderana",
+      "warning": {
+        "title": "Usambokanganwa Iyi Pasiwedhi",
+        "description": "Zvidimbu zvako zvekopi zvakavharidzirwa neiyi pasiwedhi. Ukazvikanganwa, kopi yako haina basa. Hapana kudzorera pasiwedhi. Inyore pasi woichengeta yakachengeteka."
+      }
+    },
+    "create": {
+      "button": "Gadzira Kopi Yakachengeteka"
+    },
+    "progress": {
+      "creatingShards": "Kugadzira zvidimbu zvekopi zvakavharidzirwa...",
+      "publishing": "Kutumira zvidimbu zvekopi kushamwari dzako dzaunovimba nadzo...",
+      "publishingShard": "Kutumira chidimbu {{index}} che {{total}}...",
+      "publishingMetadata": "Kuchengetedza ruzivo rwekopi...",
+      "complete": "Kopi yagadzirwa zvinobudirira!",
+      "step": "Nhanho {{current}} ye {{total}}"
+    },
+    "errors": {
+      "noUser": "Ndapota pinda kuti ugadzire kopi",
+      "noPrivateKey": "Kiyi yakavanzika haina kuwanikwa. Ndapota pinda nekiyi yakavanzika.",
+      "failed": "Kugadzirwa kwekopi kwakundikana. Ndapota edza zvakare."
+    }
+  },
+  "wallet": {
+    "title": "Chikwama",
+    "balance": "Marii",
+    "send": "Tumira",
+    "receive": "Gamuchira",
+    "transactions": "Zvekutengeserana",
+    "noTransactions": "Hapasati pane zvokutengeserana",
+    "satsAvailable": "sats iripo"
+  },
+  "profile": {
+    "following": "Ndinotevera",
+    "followers": "Vateveri",
+    "posts": "Zvinyorwa",
+    "editProfile": "Gadzirisa Mbiri",
+    "follow": "Tevera",
+    "unfollow": "Usatevera",
+    "tabs": {
+      "notes": "Zvinyorwa",
+      "replies": "Mhinduro",
+      "media": "Midhiya",
+      "articles": "Zvinyorwa",
+      "highlights": "Zvakakosha",
+      "followPacks": "Mapaketi Ekutevera",
+      "all": "Zvese",
+      "byYou": "newe",
+      "withYou": "newe",
+      "byUser": "na @{username}",
+      "withUser": "na @{username}"
+    },
+    "emptyStates": {
+      "noNotes": "Hapasati pane zvinyorwa",
+      "noReplies": "Hapasati pane mhinduro",
+      "noArticlesOwn": "Hapana zvinyorwa zvawakatoburitsa",
+      "noArticlesUser": "Hapasati pane zvinyorwa zvakaburitswa",
+      "noHighlightsOwn": "Hapasati pane zvakakosha zvawakachengeta",
+      "noHighlightsUser": "Hapasati pane zvakakosha zvakachengetwa",
+      "noPacksCreatedOwn": "Hapasati pane mapaketi ekutevera awakagadzira",
+      "noPacksCreatedUser": "@{username} haasati agadzira mapaketi ekutevera",
+      "noPacksAppearsOwn": "Hausati waonekwa pane chero mapaketi ekutevera",
+      "noPacksAppearsUser": "@{username} haasati aonekwa pane chero mapaketi ekutevera",
+      "noPacksFound": "Hapana mapaketi ekutevera akawanikwa"
+    }
+  },
+  "messages": {
+    "title": "Mharidzo",
+    "noConversations": "Hapasati pane hurukuro",
+    "startConversation": "Tanga hurukuro nekutumira munhu mharidzo",
+    "newMessage": "Mharidzo Itsva",
+    "recipientLabel": "Ku:",
+    "recipientPlaceholder": "Pinda npub kana pubkey",
+    "recipientHint": "Pinda Nostr npub (npub1...) kana kiyi yeruzhinji (hex)",
+    "checkingReachability": "Kutarisa kana mushandisi achigona kugamuchira mharidzo...",
+    "notReachable": "Mushandisi haasvikike kune maDM",
+    "notReachableHint": "Uyu mushandisi haana kumisa runyorwa rwavo rweDM relay (NIP-17)"
+  },
+  "common": {
+    "loading": "Kutakura...",
+    "error": "Kukanganisa kwakaitika",
+    "retry": "Edza Zvakare",
+    "cancel": "Kanzura",
+    "save": "Sevha",
+    "delete": "Dzima",
+    "edit": "Gadzirisa",
+    "close": "Vhara",
+    "confirm": "Simbisa",
+    "search": "Tsvaga",
+    "more": "Zvakawanda",
+    "less": "Zvishoma",
+    "copy": "Kopa",
+    "copied": "Yakopwa!",
+    "share": "Goverana",
+    "soon": "Munguva pfupi"
+  }
+}
