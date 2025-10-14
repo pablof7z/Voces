@@ -13,6 +13,8 @@
   import PackCard from '$lib/components/PackCard.svelte';
   import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
   import CreateFollowPackDialog from '$lib/components/CreateFollowPackDialog.svelte';
+  import ProfileSettings from '$lib/components/settings/ProfileSettings.svelte';
+  import * as Dialog from '$lib/components/ui/dialog';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
   import { toast } from '$lib/stores/toast.svelte';
   import { layoutMode } from '$lib/stores/layoutMode.svelte';
@@ -30,6 +32,7 @@
   let packFilter = $state<'all' | 'created' | 'appears'>('all');
   let isCreatePackDialogOpen = $state(false);
   let isFollowDropdownOpen = $state(false);
+  let isEditProfileModalOpen = $state(false);
   let dropdownRef: HTMLDivElement;
 
   const allTextEventsFeed = createLazyFeed(
@@ -334,7 +337,19 @@
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <FollowButton {pubkey} />
+            {#if isOwnProfile}
+              <button
+                onclick={() => isEditProfileModalOpen = true}
+                class="px-4 py-2 rounded-full font-medium transition-colors bg-primary text-foreground hover:bg-primary-700"
+              >
+                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                {$t('profile.editProfile')}
+              </button>
+            {:else}
+              <FollowButton {pubkey} />
+            {/if}
             {#if !isOwnProfile && currentUser}
               <div class="relative" bind:this={dropdownRef}>
                 <button
@@ -672,4 +687,19 @@
       // No need to manually restart - NDK will broadcast the event and the subscription will receive it
     }}
   />
+
+  <Dialog.Root bind:open={isEditProfileModalOpen}>
+    <Dialog.Content
+      class="max-w-2xl max-h-[90vh] overflow-y-auto"
+      onClose={() => isEditProfileModalOpen = false}
+    >
+      <Dialog.Header>
+        <Dialog.Title>Edit Profile</Dialog.Title>
+        <Dialog.Description>Update your profile information and settings</Dialog.Description>
+      </Dialog.Header>
+      <div class="py-4">
+        <ProfileSettings />
+      </div>
+    </Dialog.Content>
+  </Dialog.Root>
 </div>

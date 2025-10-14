@@ -8,10 +8,9 @@
   import ZapSettings from '$lib/components/settings/ZapSettings.svelte';
   import WalletSettings from '$lib/components/settings/WalletSettings.svelte';
   import HashtagSettings from '$lib/components/settings/HashtagSettings.svelte';
-  import ProfileSettings from '$lib/components/settings/ProfileSettings.svelte';
   import CreateInviteModal from '$lib/components/invite/CreateInviteModal.svelte';
 
-  type SettingsSection = 'profile' | 'relays' | 'theme' | 'blossom' | 'keys' | 'zap' | 'wallet' | 'hashtags' | 'debug' | null;
+  type SettingsSection = 'relays' | 'theme' | 'blossom' | 'keys' | 'zap' | 'wallet' | 'hashtags' | 'debug' | null;
 
   let showInviteModal = $state(false);
 
@@ -29,16 +28,6 @@
   let activeSection = $state<SettingsSection>(null);
 
   const sections: SectionConfig[] = [
-    {
-      id: 'profile',
-      label: 'Profile',
-      description: 'Edit your profile information and picture',
-      iconPath: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
-      iconColor: 'text-primary',
-      iconBg: 'bg-primary/10',
-      component: ProfileSettings,
-      available: true,
-    },
     {
       id: 'relays',
       label: 'Relays',
