@@ -10,6 +10,7 @@
   import { Avatar } from '@nostr-dev-kit/svelte';
   import NoteCard from '$lib/components/NoteCard.svelte';
   import CreateFollowPackDialog from '$lib/components/CreateFollowPackDialog.svelte';
+  import { getProfileUrl } from '$lib/utils/navigation';
 
   const packId = $derived($page.params.packId);
 
@@ -215,7 +216,7 @@
         <div class="flex items-center gap-3">
           <button
             type="button"
-            onclick={() => goto(`/p/${pack.pubkey}`)}
+            onclick={() => goto(getProfileUrl(pack.pubkey))}
             class="flex-shrink-0"
           >
             <Avatar {ndk} pubkey={pack.pubkey} class="w-10 h-10 rounded-full cursor-pointer hover:opacity-80 transition-opacity" />
@@ -223,7 +224,7 @@
           <div>
             <p class="text-sm text-muted-foreground">Created by</p>
             <button
-              onclick={() => goto(`/p/${pack.pubkey}`)}
+              onclick={() => goto(getProfileUrl(pack.pubkey))}
               class="font-medium text-foreground hover:text-primary transition-colors"
             >
               {packCreatorProfile?.name || 'Anonymous'}
@@ -279,7 +280,7 @@
         {#each pubkeys as pubkey (pubkey)}
           {@const memberProfile = ndk.$fetchProfile(() => pubkey)}
           <button
-            onclick={() => goto(`/p/${pubkey}`)}
+            onclick={() => goto(getProfileUrl(pubkey))}
             class="flex items-center gap-3 p-4 bg-card border border-border rounded-lg hover:border-border transition-colors text-left"
           >
             <Avatar {ndk} {pubkey} class="w-12 h-12 rounded-full" />
@@ -321,7 +322,7 @@
 
   <CreateFollowPackDialog
     bind:open={createPackModal.show}
-    editingPack={createPackModal.editingPack}
+    editingPack={createPackModal.data}
   />
   </div>
 </div>

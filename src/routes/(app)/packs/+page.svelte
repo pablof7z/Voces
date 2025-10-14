@@ -9,6 +9,7 @@
   import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
   import { getPackUrl } from '$lib/utils/packUrl';
+  import { getProfileUrl } from '$lib/utils/navigation';
 
   let searchQuery = $state('');
 
@@ -291,7 +292,7 @@
                 {#each pack.pubkeys.slice(0, 4) as pubkey, index (pubkey)}
                   <button
                     type="button"
-                    onclick={(e) => { e.stopPropagation(); goto(`/p/${pubkey}`); }}
+                    onclick={(e) => { e.stopPropagation(); goto(getProfileUrl(pubkey)); }}
                     class="relative cursor-pointer"
                     style="z-index: {4 - index}"
                   >

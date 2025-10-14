@@ -4,6 +4,7 @@
   import { Avatar } from '@nostr-dev-kit/svelte';
   import { NDKKind, NDKSubscriptionCacheUsage } from '@nostr-dev-kit/ndk';
   import { t } from 'svelte-i18n';
+  import { getProfileUrl } from '$lib/utils/navigation';
 
   // Only show when a specific relay is selected
   const shouldShow = $derived(!!settings.selectedRelay);
@@ -72,11 +73,11 @@
         {@const memberProfile = getMemberProfile(member.pubkey)}
         {@const inviterProfile = getInviterProfile(member.inviterPubkey)}
         <div class="flex items-center gap-3">
-          <a href="/p/{member.pubkey}" class="flex-shrink-0">
+          <a href={getProfileUrl(member.pubkey)} class="flex-shrink-0">
             <Avatar {ndk} pubkey={member.pubkey} class="w-10 h-10 rounded-full" />
           </a>
           <div class="flex-1 min-w-0">
-            <a href="/p/{member.pubkey}" class="block">
+            <a href={getProfileUrl(member.pubkey)} class="block">
               <p class="text-sm font-medium text-card-foreground truncate">
                 {memberProfile?.displayName || memberProfile?.name || 'Anonymous'}
               </p>
@@ -84,7 +85,7 @@
             {#if member.inviterPubkey && inviterProfile}
               <div class="text-xs text-muted-foreground truncate">
                 Invited by
-                <a href="/p/{member.inviterPubkey}" class="text-primary hover:underline">
+                <a href={getProfileUrl(member.inviterPubkey)} class="text-primary hover:underline">
                   {inviterProfile?.displayName || inviterProfile?.name || 'Anonymous'}
                 </a>
               </div>

@@ -11,6 +11,7 @@
   import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
   import MediaTypeFilters from '$lib/components/MediaTypeFilters.svelte';
+  import { getProfileUrl } from '$lib/utils/navigation';
 
   type MediaFilter = 'conversations' | 'images' | 'videos' | 'articles';
   let selectedFilter = $state<MediaFilter>('conversations');
@@ -165,7 +166,7 @@
       {:else}
         {#each topAuthors as { pubkey, count } (pubkey)}
           <a
-            href="/p/{pubkey}"
+            href={getProfileUrl(pubkey)}
             class="flex items-center gap-3 hover:bg-muted/50 rounded-lg p-2 transition-colors"
           >
             <Avatar {ndk} {pubkey} class="w-10 h-10 rounded-full flex-shrink-0" />

@@ -3,6 +3,7 @@
   import { goto } from '$app/navigation';
   import { Avatar } from '@nostr-dev-kit/svelte';
   import { getPackUrl } from '$lib/utils/packUrl';
+  import { getProfileUrl } from '$lib/utils/navigation';
 
   interface Pack {
     id: string;
@@ -69,7 +70,7 @@
       {#each pack.pubkeys.slice(0, 4) as pubkey, index (pubkey)}
         <button
           type="button"
-          onclick={(e) => { e.stopPropagation(); window.location.href = `/p/${pubkey}`; }}
+          onclick={(e) => { e.stopPropagation(); goto(getProfileUrl(pubkey)); }}
           class="relative cursor-pointer"
           style="z-index: {4 - index}"
         >
