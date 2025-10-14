@@ -1,9 +1,11 @@
 import type { NDKUser } from '@nostr-dev-kit/ndk';
 import { nip19 } from 'nostr-tools';
+import { getContentUrl } from './contentUrl';
 
 interface Pack {
   encode: () => string;
   pubkey: string;
+  tagValue?: (tag: string) => string | undefined;
   [key: string]: any;
 }
 
@@ -12,7 +14,12 @@ interface Pack {
  * Falls back to npub/identifier if no NIP-05 is available
  */
 export function getPackUrl(pack: Pack, author?: NDKUser): string {
-  // Decode the pack's naddr to get the identifier
+  // If pack has tagValue method, use generic implementation
+  if (pack.tagValue) {
+    return getContentUrl(pack as any, author, 'packs');
+  }
+
+  // Otherwise, decode the pack's naddr to get the identifier
   try {
     const decoded = nip19.decode(pack.encode());
     if (decoded.type === 'naddr' && decoded.data.identifier) {
@@ -28,7 +35,7 @@ export function getPackUrl(pack: Pack, author?: NDKUser): string {
       const npub = nip19.npubEncode(pack.pubkey);
       return `/${npub}/${identifier}`;
     }
-  } catch (e) {
+  } catch {
     // If decoding fails, fall back to old format
   }
 

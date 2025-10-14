@@ -3,14 +3,14 @@
   import { goto } from '$app/navigation';
   import { t } from 'svelte-i18n';
   import { ndk } from '$lib/ndk.svelte';
-  import { useWallet } from '$lib/utils/useWallet.svelte';
   import { sidebarStore } from '$lib/stores/sidebar.svelte';
   import { layoutMode } from '$lib/stores/layoutMode.svelte';
   import { settings } from '$lib/stores/settings.svelte';
   import { createPackModal } from '$lib/stores/createPackModal.svelte';
   import { createListingModal } from '$lib/stores/createListingModal.svelte';
+  import { createInviteModal } from '$lib/stores/createInviteModal.svelte';
   import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
-  import { AGORA_RELAYS } from '$lib/utils/relayUtils';
+  import { AGORA_RELAYS, isAgoraRelay } from '$lib/utils/relayUtils';
   import { NDKKind, NDKArticle } from '@nostr-dev-kit/ndk';
   import { getArticleUrl } from '$lib/utils/articleUrl';
   import RelaySelector from './RelaySelector.svelte';
@@ -29,7 +29,7 @@
   const { children }: Props = $props();
 
   const currentUser = ndk.$currentUser;
-  const wallet = useWallet(ndk);
+  const wallet = ndk.$wallet;
   let sidebarCollapsed = $state(false);
 
   const path = $derived($page.url.pathname);
@@ -40,7 +40,8 @@
     layoutMode.mode === 'reads' ||
     path.startsWith('/note/') ||
     path.startsWith('/messages/') ||
-    path.startsWith('/packs')
+    path.startsWith('/packs') ||
+    path.startsWith('/agora/invites')
   );
 
   const shouldCollapseSidebar = $derived(layoutMode.mode === 'article');
@@ -92,12 +93,12 @@
       <!-- Header: Logo and Toggle -->
       <div class="mb-6 flex items-center {sidebarCollapsed ? 'justify-center' : 'justify-between'} gap-2">
         <!-- Agora Branding -->
-        <div class="px-2 {sidebarCollapsed ? 'hidden' : 'flex-1'} transition-opacity duration-300">
+        <div class="px-2 {sidebarCollapsed ? 'hidden' : 'flex-1'} transition-opacity duration-300 text-foreground">
         <svg viewBox="0 0 686 250" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
           <style>
             .st0{fill:#F68E1D;}
-            .st1{fill:#FFFFFF;}
-            .st2{fill:#FDFDFD;}
+            .st1{fill:currentColor;}
+            .st2{fill:currentColor;opacity:0.9;}
           </style>
           <path class="st0" d="M109.5,196.1h66.7c17.5,0,31.6-14.2,31.6-31.6V97.8c0-17.5-14.2-31.6-31.6-31.6h-66.7
             c-17.5,0-31.6,14.2-31.6,31.6v66.7C77.9,182,92,196.1,109.5,196.1z"/>
@@ -177,6 +178,20 @@
           {/if}
         </a>
 
+        {#if settings.selectedRelay && isAgoraRelay(settings.selectedRelay)}
+          <a
+            href="/agora/invites"
+            class="flex items-center {sidebarCollapsed ? 'justify-center p-3' : 'gap-3 px-4 py-3'} rounded-lg transition-colors {path.startsWith('/agora/invites') ? 'text-primary bg-primary/10' : 'text-foreground hover:bg-muted'}"
+            title={sidebarCollapsed ? 'Community Invites' : undefined}
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            {#if !sidebarCollapsed}
+              <span class="font-medium">Community Invites</span>
+            {/if}
+          </a>
+        {/if}
 
         <a
           href="/packs"
@@ -243,12 +258,14 @@
               goto('/trades/create');
             } else if (path.startsWith('/packs')) {
               createPackModal.open();
+            } else if (path === '/agora/invites') {
+              createInviteModal.open();
             } else {
               goto('/compose');
             }
           }}
           class="w-full flex items-center justify-center {sidebarCollapsed ? 'p-3' : 'gap-2 px-6 py-3'} bg-primary hover:bg-primary/90 text-foreground font-semibold rounded-full transition-colors mt-4"
-          title={sidebarCollapsed ? (path === '/marketplace' ? $t('classifieds.createListing') : path === '/trades' ? 'Create Trade' : path.startsWith('/packs') ? 'Create Pack' : $t('navigation.compose')) : undefined}
+          title={sidebarCollapsed ? (path === '/marketplace' ? $t('classifieds.createListing') : path === '/trades' ? 'Create Trade' : path.startsWith('/packs') ? 'Create Pack' : path === '/agora/invites' ? 'Create Invite' : $t('navigation.compose')) : undefined}
         >
           {#if path === '/marketplace'}
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -270,6 +287,13 @@
             </svg>
             {#if !sidebarCollapsed}
               <span>Create Pack</span>
+            {/if}
+          {:else if path === '/agora/invites'}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+            {#if !sidebarCollapsed}
+              <span>Create Invite</span>
             {/if}
           {:else}
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -397,8 +421,10 @@
   <!-- Mobile Bottom Navigation -->
   <MobileBottomNav />
 
-  <!-- Mobile Compose FAB (only on home page) -->
+  <!-- Mobile Compose FAB (only on home page and agora invites) -->
   {#if path === '/'}
     <MobileComposeFAB />
+  {:else if path === '/agora/invites'}
+    <MobileComposeFAB onclick={() => createInviteModal.open()} />
   {/if}
 </div>

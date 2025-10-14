@@ -12,15 +12,26 @@ export const AGORA_RELAYS = [
   'wss://zw.agorawlc.com',
 ] as const;
 
+/** Default relays for NIP-60 wallet events */
+export const WALLET_DEFAULT_RELAYS = [
+  'wss://relay.primal.net',
+  'wss://relay.nostr.band',
+] as const;
+
+/**
+ * Supported language codes
+ */
+export type SupportedLanguage = 'en' | 'es' | 'fa' | 'km' | 'sn';
+
 /**
  * Maps agora relay URLs to their preferred language
  * When a user accepts an invitation from these agoras, the app will automatically
  * set the language to the mapped value
  */
-export const AGORA_LANGUAGE_MAP: Record<string, 'en' | 'es'> = {
+export const AGORA_LANGUAGE_MAP: Record<string, SupportedLanguage> = {
   'wss://ve.agorawlc.com': 'es', // Venezuela - Spanish
   'wss://ni.agorawlc.com': 'es', // Nicaragua - Spanish
-  'wss://zw.agorawlc.com': 'en', // Nicaragua - Spanish
+  'wss://zw.agorawlc.com': 'en', // Zimbabwe - English
 };
 
 /**
@@ -66,7 +77,7 @@ export function getRelaysToUse(
  * @param relayUrl - The relay URL to check
  * @returns The preferred language code, or null if no mapping exists
  */
-export function getAgoraLanguage(relayUrl: string | null | undefined): 'en' | 'es' | null {
+export function getAgoraLanguage(relayUrl: string | null | undefined): SupportedLanguage | null {
   if (!relayUrl) return null;
   return AGORA_LANGUAGE_MAP[relayUrl] ?? null;
 }

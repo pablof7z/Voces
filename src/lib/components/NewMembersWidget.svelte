@@ -1,10 +1,8 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
   import { settings } from '$lib/stores/settings.svelte';
-  import { Avatar } from '@nostr-dev-kit/svelte';
-  import { NDKKind, NDKSubscriptionCacheUsage } from '@nostr-dev-kit/ndk';
-  import { t } from 'svelte-i18n';
-  import { getProfileUrl } from '$lib/utils/navigation';
+  import { NDKSubscriptionCacheUsage } from '@nostr-dev-kit/ndk';
+  import NewMemberCard from './agora/NewMemberCard.svelte';
 
   // Only show when a specific relay is selected
   const shouldShow = $derived(!!settings.selectedRelay);
@@ -18,7 +16,7 @@
         kinds: [514],
         limit: 10
       }],
-      relayUrls: [settings.selectedRelay!],
+      relayUrls: [settings.selectedRelay],
       cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY,
       subId: 'new-members-514'
     }));
@@ -34,30 +32,19 @@
     const members = events
       .map(event => {
         // Find the p-tag that contains the inviter's pubkey
-        const inviterTag = event.tags.find(tag => tag[0] === 'p');
-        const inviterPubkey = inviterTag ? inviterTag[1] : null;
+        const inviterPubkey = event.tagValue('p');
 
         return {
-          pubkey: event.pubkey,
+          memberPubkey: event.pubkey,
           inviterPubkey,
-          timestamp: event.created_at || 0
+          joinedAt: event.created_at || 0
         };
       })
-      .sort((a, b) => b.timestamp - a.timestamp)
+      .sort((a, b) => b.joinedAt - a.joinedAt)
       .slice(0, 5); // Show only the 5 most recent
 
     return members;
   });
-
-  // Fetch profiles for each member
-  function getMemberProfile(pubkey: string) {
-    return ndk.$fetchProfile(() => pubkey);
-  }
-
-  function getInviterProfile(pubkey: string | null) {
-    if (!pubkey) return null;
-    return ndk.$fetchProfile(() => pubkey);
-  }
 </script>
 
 {#if shouldShow && newMembers.length > 0}
@@ -69,29 +56,12 @@
       <h2 class="text-lg font-semibold text-card-foreground">New Members</h2>
     </div>
     <div class="space-y-3">
-      {#each newMembers as member (member.pubkey)}
-        {@const memberProfile = getMemberProfile(member.pubkey)}
-        {@const inviterProfile = getInviterProfile(member.inviterPubkey)}
-        <div class="flex items-center gap-3">
-          <a href={getProfileUrl(member.pubkey)} class="flex-shrink-0">
-            <Avatar {ndk} pubkey={member.pubkey} class="w-10 h-10 rounded-full" />
-          </a>
-          <div class="flex-1 min-w-0">
-            <a href={getProfileUrl(member.pubkey)} class="block">
-              <p class="text-sm font-medium text-card-foreground truncate">
-                {memberProfile?.displayName || memberProfile?.name || 'Anonymous'}
-              </p>
-            </a>
-            {#if member.inviterPubkey && inviterProfile}
-              <div class="text-xs text-muted-foreground truncate">
-                Invited by
-                <a href={getProfileUrl(member.inviterPubkey)} class="text-primary hover:underline">
-                  {inviterProfile?.displayName || inviterProfile?.name || 'Anonymous'}
-                </a>
-              </div>
-            {/if}
-          </div>
-        </div>
+      {#each newMembers as member (member.memberPubkey)}
+        <NewMemberCard
+          memberPubkey={member.memberPubkey}
+          inviterPubkey={member.inviterPubkey}
+          joinedAt={member.joinedAt}
+        />
       {/each}
     </div>
   </div>

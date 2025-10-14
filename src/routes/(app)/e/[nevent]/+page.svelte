@@ -6,6 +6,12 @@
   import { toast } from '$lib/stores/toast.svelte';
   import NoteCard from '$lib/components/NoteCard.svelte';
   import HighlightCard from '$lib/components/HighlightCard.svelte';
+  import ContentComposer from '$lib/components/ContentComposer.svelte';
+  import MissingEventCard from '$lib/components/MissingEventCard.svelte';
+
+  type ThreadItem =
+    | { type: 'event'; event: NDKEvent }
+    | { type: 'missing'; eventId: string; relayHint?: string };
 
   // Decode the nevent parameter
   const neventId = $derived($page.params.nevent);
@@ -73,11 +79,11 @@
     };
   });
 
-  // Build the parent chain
-  const parentChain = $derived.by(() => {
+  // Build the parent chain (with missing event tracking)
+  const parentChain = $derived.by((): ThreadItem[] => {
     if (!mainEvent || !threadEvents || threadEvents.events.length === 0) return [];
 
-    const parents: NDKEvent[] = [];
+    const parents: ThreadItem[] = [];
     const eventMap = new Map(threadEvents.events.map(e => [e.id, e]));
 
     let currentEvent = mainEvent;
@@ -91,23 +97,34 @@
       const rootTag = currentEvent.tags.find(tag => tag[0] === 'e' && tag[3] === 'root');
 
       let parentId: string | null = null;
+      let parentTag: string[] | null = null;
 
       if (replyTag) {
         parentId = replyTag[1];
+        parentTag = replyTag;
       } else if (rootTag && rootTag[1] !== currentEvent.id) {
         parentId = rootTag[1];
+        parentTag = rootTag;
       } else {
         // Fallback: check for any 'e' tags (older format)
         const eTags = currentEvent.tags.filter(tag => tag[0] === 'e');
         if (eTags.length > 0) {
           parentId = eTags[eTags.length - 1][1];
+          parentTag = eTags[eTags.length - 1];
         }
       }
 
-      if (parentId && eventMap.has(parentId)) {
-        const parentEvent = eventMap.get(parentId)!;
-        parents.unshift(parentEvent);
-        currentEvent = parentEvent;
+      if (parentId) {
+        if (eventMap.has(parentId)) {
+          const parentEvent = eventMap.get(parentId)!;
+          parents.unshift({ type: 'event', event: parentEvent });
+          currentEvent = parentEvent;
+        } else {
+          // Parent event not found - add a missing placeholder
+          const relayHint = parentTag && parentTag[2] ? parentTag[2] : undefined;
+          parents.unshift({ type: 'missing', eventId: parentId, relayHint });
+          break; // Stop here since we can't continue the chain
+        }
       } else {
         break;
       }
@@ -204,15 +221,28 @@
   {:else}
     <main class="max-w-2xl mx-auto">
       <!-- Parent Notes (Thread Context) -->
-      {#each parentChain as parentNote, index}
-        {#if parentNote.kind === 9802}
-          <HighlightCard event={parentNote} variant="default" />
+      {#each parentChain as item, index}
+        {#if item.type === 'missing'}
+          <MissingEventCard
+            eventId={item.eventId}
+            relayHint={item.relayHint}
+            showThreadLine={index < parentChain.length - 1}
+            onEventFound={(event) => {
+              // Refresh the thread when the missing event is found
+              if (mainEvent) {
+                const nevent = mainEvent.encode();
+                window.location.href = `/e/${nevent}`;
+              }
+            }}
+          />
+        {:else if item.event.kind === 9802}
+          <HighlightCard event={item.event} variant="default" />
         {:else}
           <NoteCard
-            event={parentNote}
+            event={item.event}
             variant="thread-parent"
             showThreadLine={index < parentChain.length - 1}
-            onNavigate={() => handleEventNavigation(parentNote)}
+            onNavigate={() => handleEventNavigation(item.event)}
           />
         {/if}
       {/each}
@@ -235,14 +265,15 @@
         <div class="border-b border-neutral-800 p-4">
           <div class="flex gap-3">
             <Avatar {ndk} pubkey={currentUser.pubkey} class="w-10 h-10 flex-shrink-0" />
-            <div class="flex-1">
-              <textarea
-                bind:value={replyContent}
-                placeholder={`Reply to ${mainProfile?.name || 'this note'}...`}
-                class="w-full min-h-[100px] p-3 bg-background border border-border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
-                disabled={isSubmitting}
-              ></textarea>
-              <div class="flex justify-end mt-2">
+            <div class="flex-1 flex flex-col gap-2">
+              <div class="p-3 bg-background border border-border rounded-lg">
+                <ContentComposer
+                  bind:value={replyContent}
+                  placeholder={`Reply to ${mainProfile?.name || 'this note'}...`}
+                  disabled={isSubmitting}
+                />
+              </div>
+              <div class="flex justify-end">
                 <button
                   onclick={handleReply}
                   disabled={!replyContent.trim() || isSubmitting}
@@ -275,10 +306,6 @@
               />
             {/if}
           {/each}
-        {:else}
-          <div class="p-8 text-center text-neutral-400">
-            No replies yet. Be the first to reply!
-          </div>
         {/if}
       </div>
     </main>

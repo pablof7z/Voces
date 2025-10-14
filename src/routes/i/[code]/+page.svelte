@@ -3,18 +3,33 @@
 	import { goto } from '$app/navigation';
 	import { ndk } from '$lib/ndk.svelte';
 	import { decryptInvitePayload } from '$lib/utils/inviteEncryption';
-	import { AGORA_RELAYS, getAgoraLanguage } from '$lib/utils/relayUtils';
+	import { AGORA_RELAYS } from '$lib/utils/relayUtils';
 	import { Avatar } from '@nostr-dev-kit/svelte';
-	import { settings } from '$lib/stores/settings.svelte';
-	import { locale } from 'svelte-i18n';
+	import type { NDKEvent } from '@nostr-dev-kit/ndk';
+	import { NDKKind, NDKSubscriptionCacheUsage } from '@nostr-dev-kit/ndk';
+	import { onboardingStore } from '$lib/stores/onboarding.svelte';
+	import { t } from 'svelte-i18n';
 
 	const code = $derived($page.params.code);
+	const dTag = $derived(code ? code.slice(0, 12) : null);
+	const encryptionKey = $derived(code && code.length > 12 ? code.slice(12) : null);
 
-	const inviterProfile = $derived.by(() => {
-		if (!inviteData?.inviter) return null;
-		return ndk.$fetchProfile(() => inviteData.inviter);
+	// Subscribe to 513 invite events
+	const inviteSubscription = ndk.$subscribe(() => ({
+		filters: { kinds: [513], '#d': [dTag], limit: 1 },
+		relayUrls: [...AGORA_RELAYS],
+		subId: 'invite',
+		cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY,
+		closeOnEose: true
+	}));
+
+	// Extract the first 513 event (once)
+	let invite513Event = $state<NDKEvent | null>(null);
+	$effect(() => {
+		invite513Event ??= inviteSubscription.events[0];
 	});
 
+	// Parse and decrypt the invite (once)
 	let inviteData = $state<{
 		welcomeMessage?: string;
 		recipientName?: string;
@@ -23,136 +38,124 @@
 		inviteEventId?: string;
 		inviteRelay?: string;
 		inviteCode?: string;
+		validCodes?: string[];
 	} | null>(null);
-	let isLoading = $state(true);
-	let error = $state<string | null>(null);
 
 	$effect(() => {
-		async function loadInvite() {
+		if (!invite513Event || !code || inviteData) return;
+
+		(async () => {
 			try {
-				if (!code) {
-					throw new Error('Invalid invite code');
-				}
-
-				// Parse code: dTag (12 chars) + encryptionKey (24 chars, optional)
-				const dTag = code.slice(0, 12);
-				const encryptionKey = code.length > 12 ? code.slice(12) : null;
-
-				console.log('Loading invite:', { dTag, hasKey: !!encryptionKey });
-
-				// Fetch the invite event (kind 513 with d-tag) from all relays
-				const filter = {
-					kinds: [513],
-					'#d': [dTag]
-				};
-
-				const events = await ndk.fetchEvents(filter, {
-					relayUrls: [...AGORA_RELAYS],
-				});
-
-				if (events.size === 0) {
-					throw new Error('Invite not found');
-				}
-
-				const inviteEvent = Array.from(events)[0];
-				console.log('Found invite event:', inviteEvent.id);
-
 				// Extract all code tags from the 513 event
-				const codeTags = inviteEvent.tags.filter(tag => tag[0] === 'code');
+				const codeTags = invite513Event.tags.filter(tag => tag[0] === 'code');
 				const validCodes = codeTags.map(tag => tag[1]);
 
-				if (validCodes.length === 0) {
-					throw new Error('Invite has no codes');
-				}
-
-				// Query for existing 514 events to find used codes
-				const redemptionFilter = {
-					kinds: [514],
-					'#e': [inviteEvent.id]
-				};
-
-				const redemptions = await ndk.fetchEvents(redemptionFilter, {
-					relayUrls: [...AGORA_RELAYS],
-				});
-
-				// Extract used codes from 514 events
-				const usedCodes = new Set<string>();
-				for (const redemption of redemptions) {
-					const codeTag = redemption.tags.find(tag => tag[0] === 'code');
-					if (codeTag && codeTag[1]) {
-						usedCodes.add(codeTag[1]);
-					}
-				}
-
-				// Find available codes
-				const availableCodes = validCodes.filter(c => !usedCodes.has(c));
-				if (availableCodes.length === 0) {
-					throw new Error('This invite has reached its maximum uses. Please request a new invite.');
-				}
-
-				// Use the first available code
-				const inviteCode = availableCodes[0];
-				console.log(`Invite has ${availableCodes.length} of ${validCodes.length} codes available, using code: ${inviteCode}`);
+				if (validCodes.length === 0) return;
 
 				// Get the relay where the event was found
-				const relayUrl = inviteEvent.relay?.url || Array.from(inviteEvent.onRelays)[0]?.url;
-				console.log('Invite found on relay:', relayUrl);
+				const relayUrl = invite513Event.relay?.url || Array.from(invite513Event.onRelays)[0]?.url;
 
 				// Decrypt or parse content
 				let payload;
 				if (encryptionKey) {
-					const decrypted = await decryptInvitePayload(inviteEvent.content, encryptionKey);
+					const decrypted = await decryptInvitePayload(invite513Event.content, encryptionKey);
 					payload = JSON.parse(decrypted);
 				} else {
-					payload = JSON.parse(inviteEvent.content);
+					payload = JSON.parse(invite513Event.content);
 				}
 
-				// Add invite event metadata to payload
+				// Show invite immediately with first code
 				inviteData = {
 					...payload,
-					inviteEventId: inviteEvent.id,
+					inviteEventId: invite513Event.id,
 					inviteRelay: relayUrl,
-					inviteCode: inviteCode
+					inviteCode: validCodes[0],
+					validCodes
 				};
-				console.log('Invite data loaded:', inviteData);
+			} catch (err) {
+				console.error('Failed to parse invite:', err);
+			}
+		})();
+	});
 
-				// Set language based on agora relay
-				if (relayUrl) {
-					const agoraLanguage = getAgoraLanguage(relayUrl);
-					if (agoraLanguage) {
-						console.log(`Setting language to ${agoraLanguage} based on agora relay ${relayUrl}`);
-						settings.setLanguage(agoraLanguage);
-						locale.set(agoraLanguage);
+	// Fetch 514 redemptions to check available codes (once)
+	let usedCodes = $state<Set<string>>(new Set());
+	let redemptionsFetched = $state(false);
+
+	$effect(() => {
+		if (!invite513Event || !inviteData || redemptionsFetched) return;
+
+		(async () => {
+			redemptionsFetched = true;
+			const relayUrl = inviteData.inviteRelay;
+			if (!relayUrl) return;
+
+			try {
+				const redemptions = await ndk.guardrailOff().fetchEvents(
+					{ kinds: [514 as NDKKind], '#e': [invite513Event.id] },
+					{ relayUrls: [relayUrl], subId: 'invite-redemptions', cacheUsage: NDKSubscriptionCacheUsage.ONLY_RELAY }
+				);
+
+				// Extract used codes
+				const codes = new Set<string>();
+				for (const redemption of redemptions) {
+					const codeTag = redemption.tags.find(tag => tag[0] === 'code');
+					if (codeTag?.[1]) {
+						codes.add(codeTag[1]);
 					}
 				}
-			} catch (err) {
-				console.error('Failed to load invite:', err);
-				error = err instanceof Error ? err.message : 'Failed to load invite';
-			} finally {
-				isLoading = false;
-			}
-		}
+				usedCodes = codes;
 
-		loadInvite();
+				// Update invite with first available code
+				const availableCodes = inviteData.validCodes?.filter(c => !codes.has(c)) || [];
+				if (availableCodes.length > 0) {
+					inviteData.inviteCode = availableCodes[0];
+				}
+			} catch (err) {
+				console.error('Failed to fetch redemptions:', err);
+			}
+		})();
+	});
+
+	// Derived computed states
+	const hasAvailableCodes = $derived.by(() => {
+		if (!inviteData?.validCodes) return false;
+		return inviteData.validCodes.some(c => !usedCodes.has(c));
+	});
+
+	const inviterProfile = $derived.by(() => {
+		const inviter = inviteData?.inviter;
+		if (!inviter) return null;
+		return ndk.$fetchProfile(() => inviter);
+	});
+
+	const isLoading = $derived(!code || !inviteData);
+	const error = $derived.by(() => {
+		if (!code) return $t('onboarding.invite.inviteNotFound');
+		if (inviteSubscription.events.length === 0 && inviteSubscription.eosed) return $t('onboarding.invite.inviteNotFound');
+		// If we have invite data but no available codes after checking
+		if (inviteData && !hasAvailableCodes && redemptionsFetched) {
+			const inviterName = inviteData.inviter ? 'them' : 'the inviter';
+			return $t('onboarding.invite.inviteReachedMax', { values: { inviter: inviterName } });
+		}
+		return null;
 	});
 
 	function handleStartJourney() {
-		// Only pass serializable data
-		const serializableInviteData = {
-			welcomeMessage: inviteData?.welcomeMessage,
-			recipientName: inviteData?.recipientName,
-			cashuToken: inviteData?.cashuToken,
-			inviter: inviteData?.inviter,
-			inviteEventId: inviteData?.inviteEventId,
-			inviteRelay: inviteData?.inviteRelay,
-			inviteCode: inviteData?.inviteCode
-		};
-		goto('/onboarding', {
-			state: {
-				inviteCode: code,
-				inviteData: serializableInviteData
-			}
+		if (!inviteData) return;
+
+		// Store invite data in the onboarding store
+		onboardingStore.setInvite({
+			welcomeMessage: inviteData.welcomeMessage,
+			recipientName: inviteData.recipientName,
+			cashuToken: inviteData.cashuToken,
+			inviter: inviteData.inviter,
+			inviteEventId: inviteData.inviteEventId,
+			inviteRelay: inviteData.inviteRelay,
+			inviteCode: inviteData.inviteCode
 		});
+
+		goto('/onboarding');
 	}
 
 	function handleSignIn() {
@@ -167,7 +170,7 @@
 			<div class="relative bg-card dark:bg-neutral-900 rounded-2xl shadow-xl overflow-hidden p-8">
 				<div class="text-center">
 					<div class="animate-spin rounded-full h-12 w-12 border-4 border-primary-200 border-t-orange-600 mx-auto mb-4"></div>
-					<p class="text-muted-foreground">Loading invite...</p>
+					<p class="text-muted-foreground">{$t('onboarding.invite.loadingInvite')}</p>
 				</div>
 			</div>
 		{:else if error}
@@ -179,13 +182,13 @@
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
 						</svg>
 					</div>
-					<h2 class="text-xl font-bold text-foreground mb-2">Invite Not Found</h2>
+					<h2 class="text-xl font-bold text-foreground mb-2">{$t('onboarding.invite.inviteNotFound')}</h2>
 					<p class="text-muted-foreground mb-6">{error}</p>
 					<button
 						onclick={() => goto('/')}
 						class="px-6 py-2 bg-primary hover:bg-primary-700 text-white font-semibold rounded-xl transition-colors"
 					>
-						Go Home
+						{$t('onboarding.invite.goHome')}
 					</button>
 				</div>
 			</div>
@@ -209,7 +212,7 @@
 							<h2 class="text-xl font-bold text-foreground">
 								{inviterProfile?.displayName || inviterProfile?.name || 'Someone'}
 							</h2>
-							<p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">invited you to join Agora</p>
+							<p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">{$t('onboarding.invite.invitedYou')}</p>
 						</div>
 					</div>
 				{/if}
@@ -226,10 +229,10 @@
 				<!-- Title Section -->
 				<div class="text-center mb-8">
 					<h1 class="text-3xl font-bold mb-3 text-foreground">
-						Your Voice Matters
+						{$t('onboarding.invite.yourVoiceMatters')}
 					</h1>
 					<p class="text-muted-foreground">
-						Join a global community where every story counts
+						{$t('onboarding.invite.joinGlobal')}
 					</p>
 				</div>
 
@@ -243,10 +246,10 @@
 						</div>
 						<div class="flex-1">
 							<h3 class="font-semibold text-lg mb-1 text-foreground">
-								Own Your Voice
+								{$t('onboarding.invite.ownYourVoice.title')}
 							</h3>
 							<p class="text-muted-foreground leading-relaxed">
-								No censorship. No gatekeepers. Your content, your control, forever.
+								{$t('onboarding.invite.ownYourVoice.description')}
 							</p>
 						</div>
 					</div>
@@ -259,10 +262,10 @@
 						</div>
 						<div class="flex-1">
 							<h3 class="font-semibold text-lg mb-1 text-foreground">
-								Earn From Your Stories
+								{$t('onboarding.invite.earnFromStories.title')}
 							</h3>
 							<p class="text-muted-foreground leading-relaxed">
-								Get paid instantly in Bitcoin for valuable content. No banks, no fees.
+								{$t('onboarding.invite.earnFromStories.description')}
 							</p>
 						</div>
 					</div>
@@ -275,10 +278,10 @@
 						</div>
 						<div class="flex-1">
 							<h3 class="font-semibold text-lg mb-1 text-foreground">
-								Connect With Your Community
+								{$t('onboarding.invite.connectCommunity.title')}
 							</h3>
 							<p class="text-muted-foreground leading-relaxed">
-								Trade, share, and build with people who understand your journey.
+								{$t('onboarding.invite.connectCommunity.description')}
 							</p>
 						</div>
 					</div>
@@ -290,7 +293,7 @@
 						onclick={handleStartJourney}
 						class="w-full py-6 text-lg font-semibold bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white shadow-lg transition-all duration-200 hover:shadow-xl rounded-xl flex items-center justify-center gap-2"
 					>
-						Start Your Journey
+						{$t('onboarding.invite.startJourney')}
 						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
 						</svg>
@@ -300,15 +303,15 @@
 						onclick={handleSignIn}
 						class="w-full text-center text-muted-foreground hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors py-2"
 					>
-						Already have a Nostr account?{' '}
-						<span class="font-semibold underline">Sign in here</span>
+						{$t('onboarding.invite.alreadyHaveAccount')}{' '}
+						<span class="font-semibold underline">{$t('onboarding.invite.signInHere')}</span>
 					</button>
 				</div>
 
 				<!-- Trust Signals -->
 				<div class="mt-8 pt-6 border-t border-neutral-200 dark:border-neutral-800">
 					<p class="text-xs text-center text-neutral-500">
-						Built on Nostr protocol • No personal data required • Leave anytime with your content
+						{$t('onboarding.invite.trustSignals')}
 					</p>
 				</div>
 			</div>

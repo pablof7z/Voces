@@ -1,17 +1,3 @@
-class CreateListingModalStore {
-  private _show = $state(false);
+import { createModalStore } from './modalFactory.svelte';
 
-  get show() {
-    return this._show;
-  }
-
-  open() {
-    this._show = true;
-  }
-
-  close() {
-    this._show = false;
-  }
-}
-
-export const createListingModal = new CreateListingModalStore();
+export const createListingModal = createModalStore();

@@ -3,6 +3,8 @@
   import { ndk } from '$lib/ndk.svelte';
   import { Avatar, EventContent } from '@nostr-dev-kit/svelte';
   import { toast } from '$lib/stores/toast.svelte';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
   import ReplyIndicator from './ReplyIndicator.svelte';
   import RelayBadge from './RelayBadge.svelte';
   import UserHoverCard from './UserHoverCard.svelte';
@@ -29,6 +31,7 @@
   const npub = $derived(event.author.npub);
 
   let showOptionsMenu = $state(false);
+  let showRawEventModal = $state(false);
   let showUserHoverCard = $state(false);
   let hoverCardPosition = $state({ x: 0, y: 0 });
   let hoverTimer: ReturnType<typeof setTimeout> | null = null;
@@ -96,6 +99,11 @@
     copyToClipboard(raw, 'raw event');
   }
 
+  function viewRawEvent() {
+    showOptionsMenu = false;
+    showRawEventModal = true;
+  }
+
   function handleAvatarMouseEnter(e: MouseEvent) {
     if (hoverTimer) clearTimeout(hoverTimer);
 
@@ -148,17 +156,14 @@
   }
 
   $effect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (showOptionsMenu) {
-        showOptionsMenu = false;
-      }
+    if (!showOptionsMenu) return;
+
+    const handleClickOutside = () => {
+      showOptionsMenu = false;
     };
 
     document.addEventListener('click', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
+    return () => document.removeEventListener('click', handleClickOutside);
   });
 </script>
 
@@ -183,12 +188,12 @@
       onmouseleave={handleAvatarMouseLeave}
       class="flex-shrink-0"
     >
-      <Avatar {ndk} pubkey={event.pubkey} class="{avatarSize} cursor-pointer hover:opacity-80 transition-opacity" />
+      <Avatar {ndk} pubkey={event.pubkey} class={`${avatarSize} cursor-pointer hover:opacity-80 transition-opacity`} />
     </button>
 
     <div class="flex items-center gap-2 flex-1 min-w-0">
       <div class="flex items-center gap-2 min-w-0 flex-shrink">
-        <span class="{nameSize} text-foreground truncate min-w-0">
+        <span class={`${nameSize} text-foreground truncate min-w-0`}>
           {profile?.displayName || profile?.name || `${event.pubkey.slice(0, 8)}...`}
         </span>
         {#if variant === 'default' || variant === 'thread-reply'}
@@ -241,6 +246,13 @@
           >
             Copy raw event
           </button>
+          <button
+            onclick={viewRawEvent}
+            class="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-muted transition-colors"
+            type="button"
+          >
+            View raw event
+          </button>
 
           {#if event.onRelays && event.onRelays.size > 0}
             <div class="border-t border-border mt-1 pt-1">
@@ -286,3 +298,31 @@
     position={hoverCardPosition}
   />
 </div>
+
+<!-- Raw Event Modal -->
+<Dialog.Root bind:open={showRawEventModal}>
+  <Dialog.Content class="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
+    <Dialog.Header>
+      <Dialog.Title>Raw Event</Dialog.Title>
+      <Dialog.Description>
+        JSON representation of this Nostr event
+      </Dialog.Description>
+    </Dialog.Header>
+
+    <div class="flex-1 overflow-auto bg-muted/50 rounded-lg p-4 font-mono text-sm">
+      <pre class="whitespace-pre-wrap break-words">{event.inspect()}</pre>
+    </div>
+
+    <div class="flex justify-end gap-2 pt-4">
+      <Button
+        variant="outline"
+        onclick={() => copyToClipboard(event.inspect(), 'raw event')}
+      >
+        Copy to Clipboard
+      </Button>
+      <Button onclick={() => showRawEventModal = false}>
+        Close
+      </Button>
+    </div>
+  </Dialog.Content>
+</Dialog.Root>

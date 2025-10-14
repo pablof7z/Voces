@@ -301,5 +301,92 @@
     "copied": "¡Copiado!",
     "share": "Compartir",
     "soon": "Pronto"
+  },
+  "onboarding": {
+    "step3Features": {
+      "title": "Qué Puedes Hacer Aquí",
+      "subtitle": "Tu comunidad, tu mercado, tus noticias — todo en un solo lugar",
+      "marketplace": {
+        "title": "Mercado Local",
+        "description": "Compra y vende con tus vecinos. Sin intermediarios, sin comisiones.",
+        "example": {
+          "title": "Pan y Pasteles Frescos",
+          "description": "Productos horneados diariamente, aceptando sats",
+          "distance": "a 2km"
+        }
+      },
+      "p2p": {
+        "title": "Intercambio P2P",
+        "description": "Intercambia directamente con miembros verificados. Protegido por depósito en garantía.",
+        "escrowProtected": "Protegido por depósito en garantía"
+      },
+      "news": {
+        "title": "Noticias Reales",
+        "description": "Historias auténticas de tu comunidad. Sin censura.",
+        "example": {
+          "title": "Cadena de Suministro Alternativa",
+          "description": "Red directa de granjero a comunidad reduce costos en un 40%..."
+        }
+      },
+      "continue": "Continuar"
+    },
+    "step4Profile": {
+      "title": "Te estás uniendo a estos líderes",
+      "subtitle": "Crea tu perfil para estar junto a voces influyentes en tu comunidad.",
+      "namePlaceholder": "Tu nombre",
+      "locationPlaceholder": "📍 Tu ubicación (opcional)",
+      "bioPlaceholder": "Cuéntale a tu comunidad sobre ti...",
+      "usernamePlaceholder": "nombre de usuario",
+      "usernameLabel": "Elige tu nombre de usuario",
+      "bannerClickToChange": "Haz clic para cambiar",
+      "continue": "Continuar",
+      "availability": {
+        "checking": "Verificando disponibilidad...",
+        "available": "✓ Nombre de usuario disponible",
+        "notAvailable": "Nombre de usuario no disponible"
+      }
+    },
+    "step5Introduction": {
+      "title": "Preséntate a la Comunidad",
+      "subtitle": "Escribe una breve presentación. ¡Las buenas presentaciones suelen recibir zaps!",
+      "writeLabel": "Escribe Tu Presentación",
+      "placeholder": "Cuéntale a la comunidad quién eres, qué haces y qué te trae aquí.",
+      "tipLocation": "Consejo: Menciona que eres de {location}",
+      "characters": "caracteres",
+      "inviterNotify": "Notificará a {name} quien te invitó",
+      "inviterNoNotify": "No notificará a {name}",
+      "inviterRemove": "Eliminar",
+      "inviterAddBack": "Agregar de nuevo",
+      "skipForNow": "Omitir por ahora",
+      "publishing": "Publicando...",
+      "postIntroduction": "Publicar Presentación",
+      "recentIntroductions": "💎 Presentaciones Recientes",
+      "loadingIntroductions": "Cargando presentaciones recientes..."
+    },
+    "invite": {
+      "loadingInvite": "Cargando invitación...",
+      "inviteNotFound": "Invitación No Encontrada",
+      "inviteReachedMax": "Esta invitación ha alcanzado su máximo de usos. Por favor pídele a {inviter} una nueva invitación.",
+      "goHome": "Ir al Inicio",
+      "invitedYou": "te invitó a unirte a Agora",
+      "yourVoiceMatters": "Tu Voz Importa",
+      "joinGlobal": "Únete a una comunidad global donde cada historia cuenta",
+      "ownYourVoice": {
+        "title": "Sé Dueño de Tu Voz",
+        "description": "Sin censura. Sin guardianes. Tu contenido, tu control, para siempre."
+      },
+      "earnFromStories": {
+        "title": "Gana con Tus Historias",
+        "description": "Recibe pagos instantáneos en Bitcoin por contenido valioso. Sin bancos, sin comisiones."
+      },
+      "connectCommunity": {
+        "title": "Conéctate con Tu Comunidad",
+        "description": "Intercambia, comparte y construye con personas que entienden tu trayectoria."
+      },
+      "startJourney": "Comienza Tu Travesía",
+      "alreadyHaveAccount": "¿Ya tienes una cuenta de Nostr?",
+      "signInHere": "Inicia sesión aquí",
+      "trustSignals": "Construido sobre el protocolo Nostr • No se requieren datos personales • Sal en cualquier momento con tu contenido"
+    }
   }
 }

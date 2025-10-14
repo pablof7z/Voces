@@ -66,19 +66,19 @@
 
 <Dialog.Root bind:open={loginModal.show}>
   <Dialog.Content
-    class="{loginModal.state === 'signup' ? 'max-w-lg' : 'max-w-md'}"
+    class={loginModal.state === 'signup' ? 'max-w-lg' : 'max-w-md'}
     onClose={() => loginModal.close()}
   >
       {#if loginModal.state === 'signup'}
         <!-- Signup State - Enticing Welcome Screen -->
         <div class="relative">
           <!-- Hero Banner -->
-          <div class="absolute inset-x-0 -top-6 h-32 bg-primary rounded-t-lg opacity-90"></div>
+          <div class="absolute inset-x-0 -mx-6 -mt-6 h-32 bg-primary rounded-t-lg opacity-90"></div>
 
           <!-- Content -->
-          <div class="relative pt-20">
+          <div class="relative pt-16">
             <Dialog.Header>
-              <Dialog.Title class="text-3xl text-center">Your Voice Matters</Dialog.Title>
+              <Dialog.Title class="text-3xl text-center !font-black font-serif">Your Voice Matters</Dialog.Title>
               <Dialog.Description class="text-center text-lg">
                 Join a global community where every story counts
               </Dialog.Description>
@@ -148,13 +148,6 @@
               >
                 Already have a Nostr account? <span class="font-semibold underline ml-1">Sign in here</span>
               </Button>
-            </div>
-
-            <!-- Trust Signals -->
-            <div class="mt-6 pt-6 border-t border">
-              <p class="text-xs text-center text-muted-foreground">
-                Built on Nostr protocol • No personal data required • Leave anytime with your content
-              </p>
             </div>
           </div>
         </div>

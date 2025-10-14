@@ -148,8 +148,4 @@
       {upload.error?.message || 'Upload failed'}
     </p>
   {/if}
-
-  <p class="text-xs text-muted-foreground mt-2 text-center">
-    Click or drag to upload photo
-  </p>
 </div>

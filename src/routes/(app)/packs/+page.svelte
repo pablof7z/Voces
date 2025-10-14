@@ -144,10 +144,6 @@
     const url = getPackUrl(pack, author);
     goto(url);
   }
-
-  function restartSubscription() {
-    packsFeed.loadMore();
-  }
 </script>
 
 <div class="max-w-6xl mx-auto px-4 py-8">
@@ -331,8 +327,5 @@
 
   <CreateFollowPackDialog
     bind:open={createPackModal.show}
-    onPublished={(packId) => {
-      restartSubscription();
-    }}
   />
 </div>

@@ -50,9 +50,9 @@
     <div class="grid grid-cols-2 gap-3">
       <button
         onclick={() => handleLanguageChange('en')}
-        class="px-4 py-3 rounded-lg border transition-all {settings.language === 'en'
-          ? 'bg-primary-50 dark:bg-primary-950/30 border-primary text-primary dark:text-primary'
-          : 'bg-card border text-muted-foreground hover:bg-accent'}"
+        class="px-4 py-3 rounded-lg transition-all {settings.language === 'en'
+          ? 'bg-primary-50 dark:bg-primary-950/30 text-primary dark:text-primary'
+          : 'bg-card text-muted-foreground hover:bg-accent'}"
       >
         <div class="flex items-center justify-center gap-2">
           <span class="text-lg">🇺🇸</span>
@@ -61,9 +61,9 @@
       </button>
       <button
         onclick={() => handleLanguageChange('es')}
-        class="px-4 py-3 rounded-lg border transition-all {settings.language === 'es'
-          ? 'bg-primary-50 dark:bg-primary-950/30 border-primary text-primary dark:text-primary'
-          : 'bg-card border text-muted-foreground hover:bg-accent'}"
+        class="px-4 py-3 rounded-lg transition-all {settings.language === 'es'
+          ? 'bg-primary-50 dark:bg-primary-950/30 text-primary dark:text-primary'
+          : 'bg-card text-muted-foreground hover:bg-accent'}"
       >
         <div class="flex items-center justify-center gap-2">
           <span class="text-lg">🇪🇸</span>
@@ -72,9 +72,9 @@
       </button>
       <button
         onclick={() => handleLanguageChange('fa')}
-        class="px-4 py-3 rounded-lg border transition-all {settings.language === 'fa'
-          ? 'bg-primary-50 dark:bg-primary-950/30 border-primary text-primary dark:text-primary'
-          : 'bg-card border text-muted-foreground hover:bg-accent'}"
+        class="px-4 py-3 rounded-lg transition-all {settings.language === 'fa'
+          ? 'bg-primary-50 dark:bg-primary-950/30 text-primary dark:text-primary'
+          : 'bg-card text-muted-foreground hover:bg-accent'}"
       >
         <div class="flex items-center justify-center gap-2">
           <span class="text-lg">🇮🇷</span>
@@ -83,9 +83,9 @@
       </button>
       <button
         onclick={() => handleLanguageChange('km')}
-        class="px-4 py-3 rounded-lg border transition-all {settings.language === 'km'
-          ? 'bg-primary-50 dark:bg-primary-950/30 border-primary text-primary dark:text-primary'
-          : 'bg-card border text-muted-foreground hover:bg-accent'}"
+        class="px-4 py-3 rounded-lg transition-all {settings.language === 'km'
+          ? 'bg-primary-50 dark:bg-primary-950/30 text-primary dark:text-primary'
+          : 'bg-card text-muted-foreground hover:bg-accent'}"
       >
         <div class="flex items-center justify-center gap-2">
           <span class="text-lg">🇰🇭</span>
@@ -94,9 +94,9 @@
       </button>
       <button
         onclick={() => handleLanguageChange('sn')}
-        class="px-4 py-3 rounded-lg border transition-all {settings.language === 'sn'
-          ? 'bg-primary-50 dark:bg-primary-950/30 border-primary text-primary dark:text-primary'
-          : 'bg-card border text-muted-foreground hover:bg-accent'}"
+        class="px-4 py-3 rounded-lg transition-all {settings.language === 'sn'
+          ? 'bg-primary-50 dark:bg-primary-950/30 text-primary dark:text-primary'
+          : 'bg-card text-muted-foreground hover:bg-accent'}"
       >
         <div class="flex items-center justify-center gap-2">
           <span class="text-lg">🇿🇼</span>
@@ -122,9 +122,9 @@
     <div class="grid grid-cols-3 gap-3">
       <button
         onclick={() => handleThemeChange('light')}
-        class="px-4 py-3 rounded-lg border transition-all {settings.theme === 'light'
-          ? 'bg-primary-50 dark:bg-primary-950/30 border-primary text-primary dark:text-primary'
-          : 'bg-card border text-muted-foreground hover:bg-accent'}"
+        class="px-4 py-3 rounded-lg transition-all {settings.theme === 'light'
+          ? 'bg-primary-50 dark:bg-primary-950/30 text-primary dark:text-primary'
+          : 'bg-card text-muted-foreground hover:bg-accent'}"
       >
         <div class="flex flex-col items-center gap-2">
           <span class="text-2xl">☀️</span>
@@ -133,9 +133,9 @@
       </button>
       <button
         onclick={() => handleThemeChange('dark')}
-        class="px-4 py-3 rounded-lg border transition-all {settings.theme === 'dark'
-          ? 'bg-primary-50 dark:bg-primary-950/30 border-primary text-primary dark:text-primary'
-          : 'bg-card border text-muted-foreground hover:bg-accent'}"
+        class="px-4 py-3 rounded-lg transition-all {settings.theme === 'dark'
+          ? 'bg-primary-50 dark:bg-primary-950/30 text-primary dark:text-primary'
+          : 'bg-card text-muted-foreground hover:bg-accent'}"
       >
         <div class="flex flex-col items-center gap-2">
           <span class="text-2xl">🌙</span>
@@ -144,9 +144,9 @@
       </button>
       <button
         onclick={() => handleThemeChange('system')}
-        class="px-4 py-3 rounded-lg border transition-all {settings.theme === 'system'
-          ? 'bg-primary-50 dark:bg-primary-950/30 border-primary text-primary dark:text-primary'
-          : 'bg-card border text-muted-foreground hover:bg-accent'}"
+        class="px-4 py-3 rounded-lg transition-all {settings.theme === 'system'
+          ? 'bg-primary-50 dark:bg-primary-950/30 text-primary dark:text-primary'
+          : 'bg-card text-muted-foreground hover:bg-accent'}"
       >
         <div class="flex flex-col items-center gap-2">
           <span class="text-2xl">💻</span>
@@ -173,10 +173,9 @@
       {#each colorOptions as option}
         <button
           onclick={() => handleThemeColorChange(option.id)}
-          class="px-4 py-3 rounded-lg border transition-all {settings.themeColor === option.id
-            ? 'border-2'
-            : 'bg-card border hover:bg-accent'}"
-          style="border-color: {settings.themeColor === option.id ? option.hex : ''}"
+          class="px-4 py-3 rounded-lg transition-all {settings.themeColor === option.id
+            ? 'bg-primary-50 dark:bg-primary-950/30'
+            : 'bg-card hover:bg-accent'}"
         >
           <div class="flex items-center gap-3">
             <div

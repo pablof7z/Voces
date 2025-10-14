@@ -3,6 +3,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [sveltekit()],
+  define: {
+    'global': 'globalThis'
+  },
   optimizeDeps: {
     exclude: ['@nostr-dev-kit/ndk-cache-sqlite-wasm', '@nostr-dev-kit/ndk-svelte5']
   },

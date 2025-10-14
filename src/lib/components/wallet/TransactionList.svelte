@@ -1,12 +1,7 @@
 <script lang="ts">
-  import type { WalletAPI } from '$lib/utils/useWallet.svelte';
+  import { ndk } from '$lib/ndk.svelte';
 
-  interface Props {
-    wallet: WalletAPI;
-  }
-
-  let { wallet }: Props = $props();
-
+  const wallet = ndk.$wallet;
   const transactions = $derived(wallet.transactions || []);
 
   function formatDate(timestamp: number): string {

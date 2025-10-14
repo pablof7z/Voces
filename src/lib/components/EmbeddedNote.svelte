@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { NDKEvent, NDKSvelte } from '@nostr-dev-kit/ndk';
-  import { nip19, type AddressPointer, type EventPointer } from 'nostr-tools';
   import { NDKKind } from '@nostr-dev-kit/ndk';
   import NoteCard from './NoteCard.svelte';
 
@@ -16,82 +15,26 @@
   let loading = $state(true);
   let error = $state<string | null>(null);
 
-  // Fetch event based on bech32
   $effect(() => {
     if (!bech32 || !ndk) return;
 
     loading = true;
     error = null;
 
-    try {
-      const decoded = nip19.decode(bech32);
-
-      if (decoded.type === 'note') {
-        // Simple note ID
-        const eventId = decoded.data as string;
-        ndk.fetchEvent(eventId)
-          .then((event) => {
-            if (event) {
-              fetchedEvent = event;
-            } else {
-              error = 'Event not found';
-            }
-            loading = false;
-          })
-          .catch((err) => {
-            console.error('Failed to fetch event:', err);
-            error = 'Failed to load event';
-            loading = false;
-          });
-      } else if (decoded.type === 'nevent') {
-        // Event pointer with optional relays
-        const pointer = decoded.data as EventPointer;
-        ndk.fetchEvent(pointer.id)
-          .then((event) => {
-            if (event) {
-              fetchedEvent = event;
-            } else {
-              error = 'Event not found';
-            }
-            loading = false;
-          })
-          .catch((err) => {
-            console.error('Failed to fetch event:', err);
-            error = 'Failed to load event';
-            loading = false;
-          });
-      } else if (decoded.type === 'naddr') {
-        // Address pointer for replaceable/parameterized events
-        const pointer = decoded.data as AddressPointer;
-        const filter = {
-          kinds: [pointer.kind as NDKKind],
-          authors: [pointer.pubkey],
-          '#d': [pointer.identifier]
-        };
-
-        ndk.fetchEvent(filter, { closeOnEose: true })
-          .then((event) => {
-            if (event) {
-              fetchedEvent = event;
-            } else {
-              error = 'Event not found';
-            }
-            loading = false;
-          })
-          .catch((err) => {
-            console.error('Failed to fetch event by address:', err);
-            error = 'Failed to load event';
-            loading = false;
-          });
-      } else {
-        error = 'Invalid event reference';
+    ndk.fetchEvent(bech32)
+      .then((event) => {
+        if (event) {
+          fetchedEvent = event;
+        } else {
+          error = 'Event not found';
+        }
         loading = false;
-      }
-    } catch (err) {
-      console.error('Failed to decode bech32:', err);
-      error = 'Invalid bech32 format';
-      loading = false;
-    }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch event:', err);
+        error = 'Failed to load event';
+        loading = false;
+      });
   });
 
   function handleNavigate() {

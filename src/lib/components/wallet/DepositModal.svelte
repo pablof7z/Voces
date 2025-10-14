@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
-  import type { NDKCashuDeposit } from '@nostr-dev-kit/ndk-wallet';
+  import type { NDKCashuDeposit } from '@nostr-dev-kit/wallet';
   import QRCode from './QRCode.svelte';
   import * as Dialog from '$lib/components/ui/dialog';
   import { Button } from '$lib/components/ui/button';
@@ -27,7 +27,6 @@
       }
 
       deposit.on('success', () => {
-        console.log('Deposit successful!');
         invoice = null;
         deposit = undefined;
         close();
@@ -56,9 +55,7 @@
   }
 
   function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text).then(() => {
-      console.log('Copied to clipboard');
-    });
+    navigator.clipboard.writeText(text);
   }
 </script>
 

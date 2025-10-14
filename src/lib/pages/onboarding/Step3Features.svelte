@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { t } from 'svelte-i18n';
+
   interface Props {
     onNext: () => void;
   }
@@ -10,9 +12,9 @@
   <div class="max-w-5xl w-full">
     <!-- Header -->
     <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold mb-3">What You Can Do Here</h2>
+      <h2 class="text-3xl font-bold mb-3">{$t('onboarding.step3Features.title')}</h2>
       <p class="text-lg text-muted-foreground">
-        Your community, your marketplace, your news — all in one place
+        {$t('onboarding.step3Features.subtitle')}
       </p>
     </div>
 
@@ -21,9 +23,9 @@
       <!-- Marketplace -->
       <div class="bg-neutral-50 dark:bg-card rounded-xl p-6 border border">
         <div class="text-5xl mb-4 text-center">🛍️</div>
-        <h3 class="text-xl font-bold mb-2 text-center">Local Marketplace</h3>
+        <h3 class="text-xl font-bold mb-2 text-center">{$t('onboarding.step3Features.marketplace.title')}</h3>
         <p class="text-sm text-muted-foreground mb-4 text-center">
-          Buy and sell with neighbors. No middlemen, no fees.
+          {$t('onboarding.step3Features.marketplace.description')}
         </p>
         <div class="bg-card rounded-lg p-4 text-left border border">
           <div class="flex items-center gap-2 mb-2">
@@ -46,9 +48,9 @@
       <!-- P2P Trading -->
       <div class="bg-neutral-50 dark:bg-card rounded-xl p-6 border border">
         <div class="text-5xl mb-4 text-center">🤝</div>
-        <h3 class="text-xl font-bold mb-2 text-center">P2P Trading</h3>
+        <h3 class="text-xl font-bold mb-2 text-center">{$t('onboarding.step3Features.p2p.title')}</h3>
         <p class="text-sm text-muted-foreground mb-4 text-center">
-          Trade directly with verified members. Escrow protected.
+          {$t('onboarding.step3Features.p2p.description')}
         </p>
         <div class="bg-card rounded-lg p-4 border border">
           <div class="space-y-2">
@@ -75,7 +77,7 @@
             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
-            <span>Escrow protected</span>
+            <span>{$t('onboarding.step3Features.p2p.escrowProtected')}</span>
           </div>
         </div>
       </div>
@@ -83,9 +85,9 @@
       <!-- News -->
       <div class="bg-neutral-50 dark:bg-card rounded-xl p-6 border border">
         <div class="text-5xl mb-4 text-center">📰</div>
-        <h3 class="text-xl font-bold mb-2 text-center">Real News</h3>
+        <h3 class="text-xl font-bold mb-2 text-center">{$t('onboarding.step3Features.news.title')}</h3>
         <p class="text-sm text-muted-foreground mb-4 text-center">
-          Authentic stories from your community. No censorship.
+          {$t('onboarding.step3Features.news.description')}
         </p>
         <div class="bg-card rounded-lg p-4 text-left border border">
           <div class="flex items-center gap-2 mb-2">
@@ -116,7 +118,7 @@
         onclick={onNext}
         class="bg-background dark:bg-white text-foreground dark:text-black px-8 py-3 rounded-lg font-medium hover:bg-muted dark:hover:bg-neutral-200 transition-colors"
       >
-        Continue →
+        {$t('onboarding.step3Features.continue')} →
       </button>
     </div>
   </div>

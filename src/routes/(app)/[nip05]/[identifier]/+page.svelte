@@ -2,8 +2,7 @@
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { ndk } from '$lib/ndk.svelte';
-  import { NDKKind, type NDKEvent } from '@nostr-dev-kit/ndk';
-  import { nip19 } from 'nostr-tools';
+  import { NDKFollowPack, NDKKind, type NDKEvent, NDKClassified } from '@nostr-dev-kit/ndk';
 
   const nip05Identifier = $derived($page.params.nip05);
   const dTagIdentifier = $derived($page.params.identifier);
@@ -27,8 +26,7 @@
     loading = true;
     error = null;
 
-    ndk.fetchEvent({
-      kinds: [NDKKind.Article, 30017, 30018, 30019, 30020, 39089, 39092], // Article, marketplace, and pack kinds
+    ndk.guardrailOff('fetch-events-usage').fetchEvent({
       authors: [pubkey],
       '#d': [dTagIdentifier]
     })
@@ -41,25 +39,24 @@
 
         event = fetchedEvent;
 
-        // Create naddr for the event
-        const naddr = nip19.naddrEncode({
-          kind: fetchedEvent.kind!,
-          pubkey: fetchedEvent.pubkey,
-          identifier: dTagIdentifier,
-          relays: fetchedEvent.relay ? [fetchedEvent.relay.url] : []
-        });
+        const bech32 = fetchedEvent.encode();
 
         // Redirect based on event kind
         if (fetchedEvent.kind === NDKKind.Article) {
-          goto(`/article/${naddr}`, { replaceState: true });
-        } else if ([30017, 30018, 30019, 30020].includes(fetchedEvent.kind || 0)) {
-          goto(`/marketplace/${naddr}`, { replaceState: true });
-        } else if ([39089, 39092].includes(fetchedEvent.kind || 0)) {
-          goto(`/packs/${naddr}`, { replaceState: true });
-        } else {
-          error = `Unsupported event type (kind ${fetchedEvent.kind})`;
-          loading = false;
-        }
+          goto(`/article/${bech32}`, { replaceState: true });
+        } else if (NDKKind.Classified === fetchedEvent.kind) {
+            goto(`/marketplace/${bech32}`, {
+            replaceState: true,
+          });
+        } else if ([NDKFollowPack.kind].includes(fetchedEvent.kind || 0)) {
+									goto(`/packs/${bech32}`, {
+										replaceState: true,
+									});
+								} else {
+                  goto(`/e/${bech32}`, {
+																			replaceState: true,
+																		});
+								}
       })
       .catch(err => {
         console.error('Failed to fetch event:', err);

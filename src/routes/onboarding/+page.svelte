@@ -1,15 +1,9 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
   import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
-  import { NDKPrivateKeySigner, NDKEvent, NDKRelaySet } from '@nostr-dev-kit/ndk';
-  import { getPublicKey } from 'nostr-tools/pure';
-  import { bytesToHex } from '@noble/hashes/utils';
+  import { NDKPrivateKeySigner, NDKEvent } from '@nostr-dev-kit/ndk';
   import { followPackUsers } from '$lib/utils/followPacks';
-  import { settings } from '$lib/stores/settings.svelte';
-  import { untrack } from 'svelte';
-  import { getAgoraLanguage } from '$lib/utils/relayUtils';
-  import { locale } from 'svelte-i18n';
+  import { onboardingStore } from '$lib/stores/onboarding.svelte';
   import Step1Community from '$lib/pages/onboarding/Step1Community.svelte';
   import Step2FollowPacks from '$lib/pages/onboarding/Step2FollowPacks.svelte';
   import Step3Features from '$lib/pages/onboarding/Step3Features.svelte';
@@ -17,183 +11,93 @@
   import Step5Introduction from '$lib/pages/onboarding/Step7Introduction.svelte';
   import Step6Welcome from '$lib/pages/onboarding/Step8Welcome.svelte';
 
-  interface Props {
-    inviteCode?: string;
-  }
-
-  let currentStep = $state(1);
-  let selectedCommunity = $state<string | null>(null);
-  let selectedPacks = $state<string[]>([]);
-  let profileData = $state({
-    name: '',
-    bio: '',
-    location: '',
-    banner: 0,
-    picture: undefined as string | undefined,
-    nip05: '',
-  });
-  let publicKey = $state<string | null>(null);
-  let inviteData = $state<any>(null);
-  let hasPublishedInviteConfirmation = $state(false);
   let hasInitialized = $state(false);
+  let signer = $state<NDKPrivateKeySigner>(NDKPrivateKeySigner.generate());
 
-  // If we have an invite, we skip community selection (step 1) and follow packs (step 2)
-  const totalSteps = $derived(inviteData ? 4 : 6);
+  // Derived values from store
+  const currentStep = $derived(onboardingStore.currentStep);
+  const totalSteps = $derived(onboardingStore.totalSteps);
   const progressPercentage = $derived((currentStep / totalSteps) * 100);
-
-  // Load invite data (runs once on mount)
-  $effect(() => {
-    if (inviteData) return; // Already loaded
-
-    untrack(() => {
-      const pageInviteData = $page.state?.inviteData;
-      if (pageInviteData) {
-        inviteData = pageInviteData;
-
-        // Pre-fill profile data if available
-        if (inviteData.recipientName) {
-          profileData.name = inviteData.recipientName;
-        }
-
-        // Set language based on agora relay
-        if (inviteData.inviteRelay) {
-          const agoraLanguage = getAgoraLanguage(inviteData.inviteRelay);
-          if (agoraLanguage) {
-            console.log(`Setting language to ${agoraLanguage} based on agora relay ${inviteData.inviteRelay}`);
-            settings.setLanguage(agoraLanguage);
-            locale.set(agoraLanguage);
-          }
-        }
-
-        // Skip community selection and follow packs, start at features
-        currentStep = 3;
-
-        console.log('Loaded invite data:', inviteData);
-      }
-    });
-  });
+  const inviteData = $derived(onboardingStore.invite);
+  const hasCompletedInviteSetup = $derived(onboardingStore.hasCompletedInviteSetup);
+  const selectedCommunity = $derived(onboardingStore.selectedCommunity);
+  const selectedPacks = $derived(onboardingStore.selectedPacks);
+  const profileData = $derived(onboardingStore.profileData);
 
   // Generate key and login (runs once)
   $effect(() => {
-    if (hasInitialized) return;
+    console.log('[Onboarding] Login effect triggered:', { hasInitialized, hasSigner: !!signer });
+    if (hasInitialized || !signer) return;
     hasInitialized = true;
 
     (async () => {
-      // Create signer and login
-      const newSigner = NDKPrivateKeySigner.generate();
       try {
-        await ndk.$sessions?.login(newSigner);
-        console.log('Logged in with new keypair');
+        console.log('[Onboarding] Attempting login with signer...');
+        await ndk.$sessions?.login(signer);
+        console.log('[Onboarding] ✓ Logged in with new keypair, pubkey:', signer.pubkey);
       } catch (err) {
-        console.error('Error logging in with new keypair:', err);
+        console.error('[Onboarding] ✗ Error logging in with new keypair:', err);
       }
     })();
   });
 
-  // Publish invite confirmation when session is ready
-  async function publishInviteConfirmation() {
-    if (!inviteData?.inviteEventId || !inviteData?.inviter || !inviteData?.inviteRelay || !inviteData?.inviteCode) {
+  // Publish invite confirmation and copy contacts when user is ready
+  $effect(() => {
+    console.log('[Onboarding] Invite effect triggered:', {
+      hasCurrentUser: !!ndk.$currentUser,
+      hasInviteData: !!inviteData,
+      hasCompletedInviteSetup,
+      inviteData: inviteData ? {
+        inviter: inviteData.inviter,
+        inviteRelay: inviteData.inviteRelay,
+        inviteCode: inviteData.inviteCode,
+        inviteEventId: inviteData.inviteEventId
+      } : null
+    });
+
+    if (hasCompletedInviteSetup) {
+      console.log('[Onboarding] ⊘ Invite setup already completed, skipping');
       return;
     }
 
-    try {
-      const confirmationEvent = new NDKEvent(ndk);
-      confirmationEvent.kind = 514;
-      confirmationEvent.content = '';
-      confirmationEvent.tags = [
-        ['e', inviteData.inviteEventId],
-        ['p', inviteData.inviter],
-        ['code', inviteData.inviteCode],
-      ];
-      confirmationEvent.isProtected = true;
-
-      await confirmationEvent.sign();
-
-      // Publish ONLY to the invite relay
-      const relay = ndk.pool.getRelay(inviteData.inviteRelay, true);
-      if (relay) {
-        const relaySet = new NDKRelaySet(new Set([relay]), ndk);
-        console.log('Publishing kind:514 invite confirmation to', inviteData.inviteRelay);
-        await confirmationEvent.publish(relaySet);
-        console.log('Successfully published kind:514 invite confirmation');
-
-        // Set the invite relay as the selected relay in settings
-        untrack(() => {
-          settings.setSelectedRelay(inviteData.inviteRelay);
-
-          // Also ensure the relay is in the user's relay list
-          const existingRelay = settings.relays.find(r => r.url === inviteData.inviteRelay);
-          if (!existingRelay) {
-            settings.addRelay({
-              url: inviteData.inviteRelay,
-              read: true,
-              write: true,
-              enabled: true
-            });
-          }
-        });
-
-        // Automatically follow everyone the inviter is following
-        try {
-          console.log('Fetching inviter contacts...');
-          const inviterContactEvent = await ndk.fetchEvent({
-            kinds: [3],
-            authors: [inviteData.inviter]
-          });
-
-          if (inviterContactEvent) {
-            const pTags = inviterContactEvent.tags.filter(tag => tag[0] === 'p');
-            console.log(`Found ${pTags.length} contacts from inviter`);
-
-            // Create our contact list with the inviter's contacts
-            const contactListEvent = new NDKEvent(ndk);
-            contactListEvent.kind = 3;
-            contactListEvent.content = '';
-            contactListEvent.tags = pTags; // Copy all p-tags
-
-            await contactListEvent.publish();
-            console.log('Published kind:3 contact list with inviter\'s follows');
-          }
-        } catch (err) {
-          console.error('Error copying inviter contacts:', err);
-        }
-      }
-    } catch (err) {
-      console.error('Error publishing invite confirmation:', err);
-      throw err;
+    if (!ndk.$currentUser) {
+      console.log('[Onboarding] Waiting for currentUser...');
+      return;
     }
-  }
 
-  // Trigger invite confirmation publishing when user is ready
-  $effect(() => {
-    if (!ndk.$currentUser || hasPublishedInviteConfirmation || !inviteData) return;
+    if (!inviteData) {
+      console.log('[Onboarding] No invite data, skipping invite setup');
+      return;
+    }
 
-    hasPublishedInviteConfirmation = true;
+    console.log('[Onboarding] Starting invite setup...');
 
-    publishInviteConfirmation().catch((err) => {
-      console.error('Failed to publish invite confirmation:', err);
-      hasPublishedInviteConfirmation = false;
-    });
+    (async () => {
+      try {
+        await onboardingStore.completeInviteSetup(signer);
+        console.log('[Onboarding] ✓ Invite setup complete');
+      } catch (err) {
+        console.error('[Onboarding] ✗ Failed to complete invite setup:', err);
+      }
+    })();
   });
 
   function goToStep(step: number) {
-    currentStep = step;
+    onboardingStore.setStep(step);
     if (typeof window !== 'undefined') {
       window.scrollTo(0, 0);
     }
   }
 
   function goBack() {
-    // If we have an invite, don't let them go back to step 1 or 2
-    const minStep = inviteData ? 3 : 1;
-    if (currentStep > minStep) {
+    if (currentStep > onboardingStore.minStep) {
       goToStep(currentStep - 1);
     }
   }
 
   async function handleStep2Next() {
     // Publish kind:3 contact list when follow packs are selected
-    if (selectedPacks.length > 0 && publicKey) {
+    if (selectedPacks.length > 0) {
       try {
         await followPackUsers(ndk, selectedPacks);
         console.log(`Published kind:3 with follows from ${selectedPacks.length} packs`);
@@ -205,28 +109,28 @@
   }
 
   async function handleStep4Next() {
-    // Publish kind:0 profile metadata
-    if (publicKey && profileData.name) {
-      try {
-        const profileEvent = new NDKEvent(ndk);
-        profileEvent.kind = 0;
-        profileEvent.content = JSON.stringify({
-          name: profileData.name,
-          about: profileData.bio,
-          ...(profileData.location && { location: profileData.location }),
-          ...(profileData.picture && { picture: profileData.picture }),
-          ...(profileData.nip05 && { nip05: profileData.nip05 })
-        });
-        await profileEvent.publish();
-        console.log('Published kind:0 profile metadata');
-      } catch (err) {
-        console.error('Error publishing profile:', err);
-      }
+    console.log('[Onboarding] handleStep4Next called');
+    try {
+      await onboardingStore.publishProfile();
+      console.log('[Onboarding] ✓ Profile published');
+    } catch (err) {
+      console.error('[Onboarding] ✗ Error publishing profile:', err);
     }
     goToStep(5);
   }
 
   async function completeOnboarding() {
+    // Create wallet for users without invite
+    if (!inviteData) {
+      try {
+        console.log('[Onboarding] Creating default wallet for non-invited user');
+        await onboardingStore.createDefaultWallet();
+      } catch (err) {
+        console.error('[Onboarding] ✗ Failed to create wallet:', err);
+      }
+    }
+
+    onboardingStore.clear();
     goto('/');
   }
 </script>
@@ -259,7 +163,7 @@
     {#if currentStep === 1 && !inviteData}
       <Step1Community
         {selectedCommunity}
-        onSelectCommunity={(c) => selectedCommunity = c}
+        onSelectCommunity={(c) => onboardingStore.setSelectedCommunity(c)}
         onNext={() => goToStep(2)}
       />
     {/if}
@@ -268,7 +172,7 @@
       <Step2FollowPacks
         {selectedCommunity}
         {selectedPacks}
-        onSelectPacks={(p) => selectedPacks = p}
+        onSelectPacks={(p) => onboardingStore.setSelectedPacks(p)}
         onNext={handleStep2Next}
       />
     {/if}
@@ -282,7 +186,7 @@
     {#if currentStep === 4}
       <Step4Profile
         {profileData}
-        onUpdateProfile={(d) => profileData = d}
+        onUpdateProfile={(d) => onboardingStore.setProfileData(d)}
         onNext={handleStep4Next}
         inviteRelay={inviteData?.inviteRelay}
       />
@@ -290,9 +194,9 @@
 
     {#if currentStep === 5}
       <Step5Introduction
-        {publicKey}
         {profileData}
         inviterPubkey={inviteData?.inviter}
+        inviteRelay={inviteData?.inviteRelay}
         onNext={() => goToStep(6)}
         onSkip={() => goToStep(6)}
       />

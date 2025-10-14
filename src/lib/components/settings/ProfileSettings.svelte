@@ -12,10 +12,21 @@
   let isSaved = $state(false);
   let error = $state<string | null>(null);
 
-  // Initialize Blossom for image uploads
-  const blossom = new NDKBlossom(ndk);
-  const pictureUpload = useBlossomUpload(blossom);
-  const bannerUpload = useBlossomUpload(blossom);
+  // Initialize Blossom for image uploads - create reactively after user is available
+  let blossom = $derived.by(() => {
+    if (!user) return null;
+    return new NDKBlossom(ndk);
+  });
+
+  let pictureUpload = $derived.by(() => {
+    if (!blossom) return null;
+    return useBlossomUpload(blossom);
+  });
+
+  let bannerUpload = $derived.by(() => {
+    if (!blossom) return null;
+    return useBlossomUpload(blossom);
+  });
 
   // Form state
   let formData = $state({
@@ -80,21 +91,23 @@
     const file = input.files?.[0];
     if (!file) return;
 
+    if (!pictureUpload) {
+      error = 'Upload not available. Please ensure you are logged in.';
+      return;
+    }
+
     if (!file.type.startsWith('image/')) {
       error = 'Please select an image file';
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      error = 'Image size must be less than 5MB';
-      return;
-    }
-
     error = null;
     try {
-      await pictureUpload.upload(file, {
+      const uploadOptions = {
         fallbackServer: 'https://blossom.primal.net'
-      });
+      };
+      console.log('Calling pictureUpload.upload with options:', uploadOptions);
+      await pictureUpload.upload(file, uploadOptions);
       if (pictureUpload.result?.url) {
         formData.picture = pictureUpload.result.url;
       }
@@ -108,6 +121,11 @@
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
+
+    if (!bannerUpload) {
+      error = 'Upload not available. Please ensure you are logged in.';
+      return;
+    }
 
     if (!file.type.startsWith('image/')) {
       error = 'Please select an image file';
@@ -168,7 +186,7 @@
       }
 
       await event.publishReplaceable();
-      const profileRelaySet = NDKRelaySet.fromRelayUrls([ 'wss://purplapag.es', ...AGORA_RELAYS ], ndk)
+      const profileRelaySet = NDKRelaySet.fromRelayUrls([ 'wss://purplepag.es/', ...AGORA_RELAYS ], ndk)
       event.publishReplaceable(profileRelaySet);
 
       isSaved = true;
@@ -222,12 +240,12 @@
     <button
       type="button"
       onclick={() => bannerInput?.click()}
-      disabled={bannerUpload.status === 'uploading'}
+      disabled={bannerUpload?.status === 'uploading'}
       class="w-full h-48 rounded-xl overflow-hidden relative group bg-gradient-to-br from-primary-500 to-primary-600 hover:opacity-90 transition-opacity"
       style={formData.banner ? `background-image: url(${formData.banner}); background-size: cover; background-position: center;` : ''}
     >
       <div class="absolute inset-0 bg-background/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
-        {#if bannerUpload.status === 'uploading'}
+        {#if bannerUpload?.status === 'uploading'}
           <div class="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           <span class="text-foreground text-sm font-medium">{bannerUpload.progress?.percentage}%</span>
         {:else}
@@ -256,7 +274,7 @@
       <button
         type="button"
         onclick={() => pictureInput?.click()}
-        disabled={pictureUpload.status === 'uploading'}
+        disabled={pictureUpload?.status === 'uploading'}
         class="w-24 h-24 rounded-full overflow-hidden relative group bg-gradient-to-br from-primary-500 to-primary-600 hover:ring-4 hover:ring-orange-500/20 transition-all flex items-center justify-center"
       >
         {#if formData.picture}
@@ -265,7 +283,7 @@
           <span class="text-foreground text-2xl font-bold">{getInitials(formData.name)}</span>
         {/if}
         <div class="absolute inset-0 bg-background/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          {#if pictureUpload.status === 'uploading'}
+          {#if pictureUpload?.status === 'uploading'}
             <div class="flex flex-col items-center gap-1">
               <div class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               <span class="text-foreground text-xs">{pictureUpload.progress?.percentage}%</span>
@@ -284,7 +302,7 @@
           bind:value={formData.picture}
           placeholder="Or paste image URL"
           class="w-full px-4 py-2 rounded-lg border border bg-card text-foreground placeholder-neutral-500 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-          disabled={pictureUpload.status === 'uploading'}
+          disabled={pictureUpload?.status === 'uploading'}
         />
       </div>
     </div>
@@ -401,7 +419,7 @@
     <button
       type="button"
       onclick={handleSubmit}
-      disabled={isSubmitting || pictureUpload.status === 'uploading' || bannerUpload.status === 'uploading'}
+      disabled={isSubmitting || pictureUpload?.status === 'uploading' || bannerUpload?.status === 'uploading'}
       class="px-6 py-3 bg-primary hover:bg-accent-dark text-foreground font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
     >
       {#if isSubmitting}

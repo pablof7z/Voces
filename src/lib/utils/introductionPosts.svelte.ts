@@ -1,13 +1,24 @@
 import type NDK from '@nostr-dev-kit/ndk';
-import { NDKEvent, type NDKFilter } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKRelaySet, type NDKFilter } from '@nostr-dev-kit/ndk';
+import { isAgoraRelay, AGORA_RELAYS } from './relayUtils';
 
 export interface IntroductionPost {
   event: NDKEvent;
   engagementCount: number;
 }
 
-export async function fetchIntroductionPosts(ndk: NDK): Promise<IntroductionPost[]> {
+export async function fetchIntroductionPosts(ndk: NDK, inviteRelay?: string): Promise<IntroductionPost[]> {
   try {
+    // Determine which relays to use
+    let relayUrls: string[];
+    if (inviteRelay && isAgoraRelay(inviteRelay)) {
+      // If invited to an agora, fetch only from that relay
+      relayUrls = [inviteRelay];
+    } else {
+      // Otherwise, fetch from all agora relays
+      relayUrls = [...AGORA_RELAYS];
+    }
+
     // Fetch posts with #introductions hashtag from more than 12 hours ago
     const twelveHoursAgo = Math.floor(Date.now() / 1000) - (12 * 60 * 60);
 
@@ -17,7 +28,7 @@ export async function fetchIntroductionPosts(ndk: NDK): Promise<IntroductionPost
       since: twelveHoursAgo,
     };
 
-    const introEvents = await ndk.fetchEvents(filter);
+    const introEvents = await ndk.fetchEvents(filter, { relayUrls });
 
     if (introEvents.size === 0) {
       return [];
@@ -31,7 +42,7 @@ export async function fetchIntroductionPosts(ndk: NDK): Promise<IntroductionPost
       "#e": eventIds,
     };
 
-    const taggingEvents = await ndk.fetchEvents(tagsFilter);
+    const taggingEvents = await ndk.fetchEvents(tagsFilter, { relayUrls });
 
     // Count how many times each introduction post has been tagged
     const engagementMap = new Map<string, number>();

@@ -302,4 +302,92 @@
     "share": "ចែករំលែក",
     "soon": "ឆាប់ៗនេះ"
   }
+  ,
+  "onboarding": {
+    "step3Features": {
+      "title": "What You Can Do Here",
+      "subtitle": "Your community, your marketplace, your news — all in one place",
+      "marketplace": {
+        "title": "Local Marketplace",
+        "description": "Buy and sell with neighbors. No middlemen, no fees.",
+        "example": {
+          "title": "Fresh Bread & Pastries",
+          "description": "Daily baked goods, accepting sats",
+          "distance": "2km away"
+        }
+      },
+      "p2p": {
+        "title": "P2P Trading",
+        "description": "Trade directly with verified members. Escrow protected.",
+        "escrowProtected": "Escrow protected"
+      },
+      "news": {
+        "title": "Real News",
+        "description": "Authentic stories from your community. No censorship.",
+        "example": {
+          "title": "Alternative Supply Chain",
+          "description": "Direct farmer-to-community network reduces costs by 40%..."
+        }
+      },
+      "continue": "Continue"
+    },
+    "step4Profile": {
+      "title": "You're joining these leaders",
+      "subtitle": "Create your profile to stand alongside influential voices in your community.",
+      "namePlaceholder": "Your name",
+      "locationPlaceholder": "📍 Your location (optional)",
+      "bioPlaceholder": "Tell your community about yourself...",
+      "usernamePlaceholder": "username",
+      "usernameLabel": "Choose your username",
+      "bannerClickToChange": "Click to change",
+      "continue": "Continue",
+      "availability": {
+        "checking": "Checking availability...",
+        "available": "✓ Username is available",
+        "notAvailable": "Username is not available"
+      }
+    },
+    "step5Introduction": {
+      "title": "Introduce Yourself to the Community",
+      "subtitle": "Write a brief introduction. Good introductions often earn zaps!",
+      "writeLabel": "Write Your Introduction",
+      "placeholder": "Tell the community who you are, what you do, and what brings you here.",
+      "tipLocation": "Tip: Mention that you're from {location}",
+      "characters": "characters",
+      "inviterNotify": "Will notify {name} who invited you",
+      "inviterNoNotify": "Won't notify {name}",
+      "inviterRemove": "Remove",
+      "inviterAddBack": "Add back",
+      "skipForNow": "Skip for now",
+      "publishing": "Publishing...",
+      "postIntroduction": "Post Introduction",
+      "recentIntroductions": "💎 Recent Introductions",
+      "loadingIntroductions": "Loading recent introductions..."
+    },
+    "invite": {
+      "loadingInvite": "Loading invite...",
+      "inviteNotFound": "Invite Not Found",
+      "inviteReachedMax": "This invite has reached its maximum uses. Please ask {inviter} for a new invite.",
+      "goHome": "Go Home",
+      "invitedYou": "invited you to join Agora",
+      "yourVoiceMatters": "Your Voice Matters",
+      "joinGlobal": "Join a global community where every story counts",
+      "ownYourVoice": {
+        "title": "Own Your Voice",
+        "description": "No censorship. No gatekeepers. Your content, your control, forever."
+      },
+      "earnFromStories": {
+        "title": "Earn From Your Stories",
+        "description": "Get paid instantly in Bitcoin for valuable content. No banks, no fees."
+      },
+      "connectCommunity": {
+        "title": "Connect With Your Community",
+        "description": "Trade, share, and build with people who understand your journey."
+      },
+      "startJourney": "Start Your Journey",
+      "alreadyHaveAccount": "Already have a Nostr account?",
+      "signInHere": "Sign in here",
+      "trustSignals": "Built on Nostr protocol • No personal data required • Leave anytime with your content"
+    }
+  }
 }

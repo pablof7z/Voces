@@ -1,13 +1,10 @@
 <script lang="ts">
-  import type { WalletAPI } from '$lib/utils/useWallet.svelte';
+  import { ndk } from '$lib/ndk.svelte';
+  import { NDKWalletStatus } from '@nostr-dev-kit/wallet';
 
-  interface Props {
-    wallet: WalletAPI;
-  }
-
-  let { wallet }: Props = $props();
-
+  const wallet = ndk.$wallet;
   const balance = $derived(wallet.balance || 0);
+  const status = $derived(wallet.status === NDKWalletStatus.READY ? 'idle' : wallet.status === NDKWalletStatus.ERROR ? 'error' : 'loading');
 
   function formatBalance(sats: number): string {
     return new Intl.NumberFormat('en-US').format(sats);
@@ -20,12 +17,12 @@
     <span class="unit">sats</span>
   </div>
 
-  {#if wallet.status === 'loading'}
+  {#if status === 'loading'}
     <div class="status-badge loading">
       <div class="spinner"></div>
       <span>Loading wallet...</span>
     </div>
-  {:else if wallet.status === 'error'}
+  {:else if status === 'error'}
     <div class="status-badge error">
       ⚠️ Error loading wallet
     </div>

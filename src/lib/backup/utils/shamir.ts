@@ -1,5 +1,4 @@
-import shakespeare from 'shakespeare';
-const { split, join } = shakespeare;
+import { split, combine } from 'shamirs-secret-sharing-ts';
 import { symmetricEncrypt, symmetricDecrypt } from './passphrase';
 import { BackupError, BackupErrorCode, withBackupErrorHandling } from '../errors';
 
@@ -53,7 +52,9 @@ function splitSecret(
   totalShards: number
 ): string[] {
   try {
-    return split(secret, threshold, totalShards);
+    const secretBuffer = Buffer.from(secret, 'hex');
+    const shardBuffers = split(secretBuffer, { shares: totalShards, threshold });
+    return shardBuffers.map(buffer => buffer.toString('hex'));
   } catch (error) {
     throw BackupError.from(error, BackupErrorCode.SHAMIR_SPLIT_FAILED, 'Failed to split secret into shards');
   }
@@ -107,7 +108,9 @@ async function decryptShard(
 
 function joinShards(shards: string[]): string {
   try {
-    return join(shards);
+    const shardBuffers = shards.map(shard => Buffer.from(shard, 'hex'));
+    const secretBuffer = combine(shardBuffers);
+    return secretBuffer.toString('hex');
   } catch (error) {
     throw BackupError.from(error, BackupErrorCode.SHAMIR_JOIN_FAILED, 'Failed to reconstruct secret from shards');
   }

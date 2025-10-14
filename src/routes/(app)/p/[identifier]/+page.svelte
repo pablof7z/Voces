@@ -2,10 +2,8 @@
   import { page } from '$app/stores';
   import { ndk } from '$lib/ndk.svelte';
   import { NDKKind, NDKArticle, type NDKEvent } from '@nostr-dev-kit/ndk';
-  import { Avatar } from '@nostr-dev-kit/svelte';
-  import { EventContent } from '@nostr-dev-kit/svelte';
   import NoteCard from '$lib/components/NoteCard.svelte';
-  import FollowButton from '$lib/components/FollowButton.svelte';
+  import ProfileHeader from '$lib/components/ProfileHeader.svelte';
   import ShareProfileModal from '$lib/components/ShareProfileModal.svelte';
   import MediaGrid from '$lib/components/MediaGrid.svelte';
   import ArticleList from '$lib/components/ArticleList.svelte';
@@ -16,7 +14,6 @@
   import ProfileSettings from '$lib/components/settings/ProfileSettings.svelte';
   import * as Dialog from '$lib/components/ui/dialog';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
-  import { toast } from '$lib/stores/toast.svelte';
   import { layoutMode } from '$lib/stores/layoutMode.svelte';
   import { t } from 'svelte-i18n';
 
@@ -31,9 +28,7 @@
   let isShareModalOpen = $state(false);
   let packFilter = $state<'all' | 'created' | 'appears'>('all');
   let isCreatePackDialogOpen = $state(false);
-  let isFollowDropdownOpen = $state(false);
   let isEditProfileModalOpen = $state(false);
-  let dropdownRef: HTMLDivElement;
 
   const allTextEventsFeed = createLazyFeed(
     ndk,
@@ -158,6 +153,10 @@
 
   const npub = $derived(user?.npub || '');
 
+  function handleOpenCreatePack() {
+    isCreatePackDialogOpen = true;
+  }
+
   function handleLoadMore() {
     if (activeTab === 'notes' || activeTab === 'replies') {
       allTextEventsFeed.loadMore();
@@ -215,73 +214,6 @@
     return false;
   });
 
-  // Fetch user's created follow packs
-  const userPacksFeed = createLazyFeed(
-    ndk,
-    () => currentUser?.pubkey ? {
-      filters: [{ kinds: [39089, 39092], authors: [currentUser.pubkey], limit: 100 }]
-    } : undefined,
-    { initialLimit: 100, pageSize: 100 }
-  );
-
-  interface UserPack {
-    id: string;
-    title: string;
-    pubkeys: string[];
-  }
-
-  const userPacks = $derived.by((): UserPack[] => {
-    return userPacksFeed.events.map(event => ({
-      id: event.id || '',
-      title: event.tagValue('title') || 'Untitled Pack',
-      pubkeys: event.tags.filter(t => t[0] === 'p').map(t => t[1]),
-    }));
-  });
-
-  function handleClickOutside(event: MouseEvent) {
-    if (dropdownRef && !dropdownRef.contains(event.target as Node)) {
-      isFollowDropdownOpen = false;
-    }
-  }
-
-  function openCreatePackWithUser() {
-    isFollowDropdownOpen = false;
-    isCreatePackDialogOpen = true;
-  }
-
-  async function addToExistingPack(packId: string) {
-    if (!pubkey) return;
-
-    const packEvent = userPacksFeed.events.find(e => e.id === packId);
-    if (!packEvent) return;
-
-    try {
-      const existingPubkeys = packEvent.tags.filter(t => t[0] === 'p').map(t => t[1]);
-      if (existingPubkeys.includes(pubkey)) {
-        return;
-      }
-
-      packEvent.tags.push(['p', pubkey]);
-      await packEvent.sign();
-      await packEvent.publishReplaceable();
-
-      if (packEvent.publishStatus === 'error') {
-        const error = packEvent.publishError;
-        const relayErrors = error?.relayErrors || {};
-        const errorMessages = Object.entries(relayErrors)
-          .map(([relay, err]) => `${relay}: ${err}`)
-          .join('\n');
-        toast.error(`Failed to publish:\n${errorMessages || 'Unknown error'}`);
-        return;
-      }
-
-      isFollowDropdownOpen = false;
-    } catch (error) {
-      console.error('Failed to add to pack:', error);
-      toast.error(`Failed to add to pack: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-  }
-
   // Set profile layout mode
   $effect(() => {
     layoutMode.setProfileMode();
@@ -291,162 +223,18 @@
   });
 </script>
 
-<svelte:window onclick={handleClickOutside} />
-
 <div class="w-full">
   <!-- Profile header -->
-  <div class="bg-background border-b border-border">
-    <!-- Cover image -->
-    <div class="h-48 sm:h-64 bg-gradient-to-br from-primary-500 to-primary-600 relative">
-      {#if profile?.banner}
-        <img
-          src={profile.banner}
-          alt="Banner"
-          class="w-full h-full object-cover"
-        />
-      {/if}
-    </div>
-
-    <!-- Profile info -->
-    <div class="px-4 sm:px-6 pb-4 pt-4">
-      <!-- Avatar -->
-      <div class="relative -mt-24 sm:-mt-28 mb-4">
-        <Avatar {ndk} {pubkey} size="sm" class="w-48 h-48 sm:w-48 sm:h-48 rounded-full border-4 border-black" />
-      </div>
-
-      <!-- Name and bio -->
-      <div class="mb-4">
-        <div class="flex items-start justify-between gap-4">
-          <div class="flex-1">
-            <h1 class="text-xl sm:text-2xl font-bold text-foreground">
-              {profile?.name || 'Anonymous'}
-            </h1>
-            <div class="flex items-center gap-2">
-              <p class="text-muted-foreground">
-                {profile?.nip05 ? `@${profile.nip05.split('@')[0]}` : `${pubkey.slice(0, 12)}...`}
-              </p>
-              <button
-                onclick={() => isShareModalOpen = true}
-                class="p-1 text-muted-foreground hover:text-muted-foreground transition-colors"
-                aria-label="Share profile"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            {#if isOwnProfile}
-              <button
-                onclick={() => isEditProfileModalOpen = true}
-                class="px-4 py-2 rounded-full font-medium transition-colors bg-primary text-foreground hover:bg-primary-700"
-              >
-                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-                {$t('profile.editProfile')}
-              </button>
-            {:else}
-              <FollowButton {pubkey} />
-            {/if}
-            {#if !isOwnProfile && currentUser}
-              <div class="relative" bind:this={dropdownRef}>
-                <button
-                  onclick={(e) => {
-                    e.stopPropagation();
-                    isFollowDropdownOpen = !isFollowDropdownOpen;
-                  }}
-                  class="p-2 rounded-full border border text-muted-foreground hover:bg-muted transition-colors"
-                  aria-label="More options"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-
-                {#if isFollowDropdownOpen}
-                  <div class="absolute right-0 mt-2 w-64 bg-popover border border-border rounded-lg shadow-xl overflow-hidden z-50">
-                    <div class="py-1">
-                      <button
-                        onclick={openCreatePackWithUser}
-                        class="w-full px-4 py-3 text-left text-sm text-muted-foreground hover:bg-muted transition-colors flex items-center gap-3"
-                      >
-                        <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        {$t('followPacks.createNew')}
-                      </button>
-
-                      {#if userPacks.length > 0}
-                        <div class="border-t border-border mt-1 pt-1">
-                          <div class="px-4 py-2 text-xs text-muted-foreground font-medium">
-                            {$t('followPacks.addToExisting')}
-                          </div>
-                          {#each userPacks as pack (pack.id)}
-                            {@const alreadyInPack = pack.pubkeys.includes(pubkey)}
-                            <button
-                              onclick={() => addToExistingPack(pack.id)}
-                              disabled={alreadyInPack}
-                              class="w-full px-4 py-2.5 text-left text-sm text-muted-foreground hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-between gap-2"
-                            >
-                              <span class="truncate">{pack.title}</span>
-                              {#if alreadyInPack}
-                                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                              {/if}
-                            </button>
-                          {/each}
-                        </div>
-                      {/if}
-                    </div>
-                  </div>
-                {/if}
-              </div>
-            {/if}
-          </div>
-        </div>
-        {#if profile?.about}
-          <div class="mt-3">
-            <EventContent
-              content={profile.about}
-              class="text-muted-foreground"
-            />
-          </div>
-        {/if}
-      </div>
-
-      <!-- Meta info -->
-      <div class="flex flex-wrap gap-4 text-sm text-muted-foreground">
-        {#if profile?.website}
-          <a
-            href={profile.website}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center gap-1 hover:text-primary"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-            </svg>
-            <span>{profile.website.replace(/^https?:\/\//, '')}</span>
-          </a>
-        {/if}
-      </div>
-
-      <!-- Stats -->
-      <div class="flex gap-6 mt-4">
-        <div>
-          <span class="font-semibold text-foreground">{notes.length}</span>
-          <span class="text-muted-foreground ml-1">{$t('profile.tabs.notes')}</span>
-        </div>
-        <div>
-          <span class="font-semibold text-foreground">{followingCount}</span>
-          <span class="text-muted-foreground ml-1">{$t('profile.following')}</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  <ProfileHeader
+    {pubkey}
+    {profile}
+    {isOwnProfile}
+    notesCount={notes.length}
+    {followingCount}
+    onEditProfile={() => isEditProfileModalOpen = true}
+    onShareProfile={() => isShareModalOpen = true}
+    onOpenCreatePack={handleOpenCreatePack}
+  />
 
   <!-- Tabs -->
   <div class="sticky top-0 z-30 bg-background/80 backdrop-blur-sm border-b border-border">
@@ -682,10 +470,6 @@
   <CreateFollowPackDialog
     bind:open={isCreatePackDialogOpen}
     initialPubkey={pubkey}
-    onPublished={() => {
-      // The newly published pack will be picked up automatically by the userPacksFeed subscription
-      // No need to manually restart - NDK will broadcast the event and the subscription will receive it
-    }}
   />
 
   <Dialog.Root bind:open={isEditProfileModalOpen}>

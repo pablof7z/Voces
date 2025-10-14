@@ -1,13 +1,14 @@
 import NDKCacheSqliteWasm from "@nostr-dev-kit/cache-sqlite-wasm";
 import { NDKSvelte } from '@nostr-dev-kit/svelte';
 import { LocalStorage } from '@nostr-dev-kit/sessions';
-import { NDKEvent, NDKKind } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKKind, NDKBlossomList, NDKInterestList } from '@nostr-dev-kit/ndk';
 import { browser } from '$app/environment';
 import { createAuthPolicyWithConfirmation } from './relayAuthPolicy.svelte';
 import { createHashtagInterestsStore } from './stores/hashtagInterests.svelte';
 
 const DEFAULT_RELAYS = [
   'wss://relay.primal.net',
+  'wss://relay.nostr.band',
 ];
 
 // Initialize SQLite WASM cache with worker mode (browser only)
@@ -21,10 +22,6 @@ const cacheAdapter = browser ? new NDKCacheSqliteWasm({
 // Initialize signature verification worker (only in browser)
 let sigVerifyWorker: Worker | undefined;
 
-if (browser) {
-  console.log('[NDK] Creating NDK instance with relays:', DEFAULT_RELAYS);
-}
-
 export const ndk = new NDKSvelte({
   explicitRelayUrls: DEFAULT_RELAYS,
   autoConnectUserRelays: true,
@@ -32,6 +29,7 @@ export const ndk = new NDKSvelte({
   signatureVerificationWorker: sigVerifyWorker,
   initialValidationRatio: 1.0,
   lowestValidationRatio: 0.1,
+  aiGuardrails: true,
   session: browser ? {
     storage: new LocalStorage(),
     autoSave: true,
@@ -40,9 +38,7 @@ export const ndk = new NDKSvelte({
       mutes: true,
       wallet: true,
       relayList: true,
-      events: new Map<NDKKind, { from(event: NDKEvent): NDKEvent }>([
-        [10015 as NDKKind, { from: (event: NDKEvent) => event }] // Fetch kind 10015 (Interest List)
-      ])
+      eventConstructors: [NDKBlossomList, NDKInterestList],
     }
   } : undefined
 });
@@ -65,7 +61,6 @@ export const ndkReady = (async () => {
     // Initialize cache
     if (cacheAdapter) {
       await cacheAdapter.initializeAsync(ndk);
-      console.log("✅ SQLite WASM cache initialized");
     }
 
     ndk.connect();

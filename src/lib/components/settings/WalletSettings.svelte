@@ -103,13 +103,6 @@
     }
   }
 
-  function discardChanges() {
-    pendingMints = wallet.mints.map(m => typeof m === 'string' ? m : m.url);
-    pendingRelays = wallet.relays;
-    hasPendingChanges = false;
-    clearMessages();
-  }
-
   function validateMintUrl(url: string): boolean {
     const trimmed = url.trim();
     if (!trimmed) return false;
@@ -228,13 +221,34 @@
 
 <div class="space-y-6">
   <!-- Header -->
-  <div>
-    <h2 class="text-xl font-semibold text-foreground mb-2">
-      Wallet Configuration
-    </h2>
-    <p class="text-sm text-muted-foreground">
-      Manage your Cashu mints and wallet relays for ecash transactions.
-    </p>
+  <div class="flex items-start justify-between gap-4">
+    <div>
+      <h2 class="text-xl font-semibold text-foreground mb-2">
+        Wallet Configuration
+      </h2>
+      <p class="text-sm text-muted-foreground">
+        Manage your Cashu mints and wallet relays for ecash transactions.
+      </p>
+    </div>
+    {#if hasPendingChanges}
+      <button
+        onclick={saveChanges}
+        disabled={isSaving}
+        class="px-6 py-2 bg-primary text-foreground rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2 flex-shrink-0"
+      >
+        {#if isSaving}
+          <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Saving...
+        {:else}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          Save
+        {/if}
+      </button>
+    {/if}
   </div>
 
   <!-- Success/Error Messages -->
@@ -321,63 +335,17 @@
       {/if}
 
       <!-- Add New Mint -->
-      {#if isAddingMint}
-        <div class="border-2 border-dashed border-primary-300 dark:border-primary-700 rounded-lg p-4">
-          <div class="space-y-3">
-            <input
-              type="url"
-              bind:value={newMintUrl}
-              placeholder="https://mint.example.com"
-              class="w-full px-3 py-2 bg-card border border dark:border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-foreground"
-              autofocus
-            />
-            <div class="flex gap-2">
-              <button
-                onclick={handleAddMint}
-                disabled={!newMintUrl.trim()}
-                class="px-4 py-2 bg-primary text-foreground rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                Add Mint
-              </button>
-              <button
-                onclick={() => {
-                  isAddingMint = false;
-                  newMintUrl = '';
-                  error = null;
-                }}
-                class="px-4 py-2 bg-neutral-200 dark:bg-muted text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
+      <button
+        onclick={() => isBrowsingMints = true}
+        class="w-full border-2 border-dashed border rounded-lg p-4 hover:border-primary dark:hover:border-primary transition-colors group"
+      >
+        <div class="flex items-center justify-center gap-2 text-muted-foreground group-hover:text-primary dark:group-hover:text-primary">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          <span class="font-medium">Add Mint</span>
         </div>
-      {:else}
-        <div class="flex gap-2">
-          <button
-            onclick={() => isAddingMint = true}
-            class="flex-1 border-2 border-dashed border rounded-lg p-4 hover:border-primary dark:hover:border-primary transition-colors group"
-          >
-            <div class="flex items-center justify-center gap-2 text-muted-foreground group-hover:text-primary dark:group-hover:text-primary">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-              <span class="font-medium">Add Manually</span>
-            </div>
-          </button>
-          <button
-            onclick={() => isBrowsingMints = true}
-            class="flex-1 border-2 border-dashed border rounded-lg p-4 hover:border-primary dark:hover:border-primary transition-colors group"
-          >
-            <div class="flex items-center justify-center gap-2 text-muted-foreground group-hover:text-primary dark:group-hover:text-primary">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <span class="font-medium">Browse Mints</span>
-            </div>
-          </button>
-        </div>
-      {/if}
+      </button>
     </div>
   </div>
 
@@ -485,59 +453,6 @@
     </div>
   </div>
 
-  <!-- Info Notice -->
-  <div class="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-    <div class="flex gap-3">
-      <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <div class="text-sm text-blue-800 dark:text-blue-300">
-        <p class="font-medium mb-1">About Wallet Configuration</p>
-        <p class="mb-2"><strong>Cashu Mints:</strong> Servers that issue and redeem ecash tokens. You need at least one mint to use the wallet.</p>
-        <p><strong>Wallet Relays:</strong> Nostr relays used to store and sync your wallet state (NIP-60).</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Save/Discard Actions -->
-  {#if hasPendingChanges}
-    <div class="sticky bottom-0 -mx-6 px-6 py-4 bg-card border-t border shadow-lg">
-      <div class="flex items-center justify-between gap-4">
-        <div class="flex items-center gap-2 text-sm">
-          <svg class="w-5 h-5 text-primary animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <span class="text-muted-foreground font-medium">You have unsaved changes</span>
-        </div>
-        <div class="flex gap-3">
-          <button
-            onclick={discardChanges}
-            disabled={isSaving}
-            class="px-4 py-2 bg-neutral-200 dark:bg-muted text-muted-foreground rounded-lg hover:bg-neutral-300 dark:hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-          >
-            Discard Changes
-          </button>
-          <button
-            onclick={saveChanges}
-            disabled={isSaving}
-            class="px-6 py-2 bg-primary text-foreground rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2"
-          >
-            {#if isSaving}
-              <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Saving...
-            {:else}
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              Save Changes
-            {/if}
-          </button>
-        </div>
-      </div>
-    </div>
-  {/if}
 </div>
 
 <!-- Mint Browser Modal -->

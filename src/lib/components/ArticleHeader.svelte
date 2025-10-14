@@ -2,7 +2,7 @@
   import type { NDKArticle } from '@nostr-dev-kit/ndk';
   import { ndk } from '$lib/ndk.svelte';
   import { Avatar } from '@nostr-dev-kit/svelte';
-  import { nip19 } from 'nostr-tools';
+  import { navigateToProfile } from '$lib/utils/navigation';
 
   interface Props {
     article: NDKArticle;
@@ -25,7 +25,6 @@
   const authorName = $derived(authorProfile?.name || authorProfile?.displayName || 'Anonymous');
   const authorBio = $derived(authorProfile?.about);
   const isOwnArticle = $derived(currentUser?.pubkey === article.pubkey);
-  const npub = $derived(nip19.npubEncode(article.pubkey));
 
   const firstParagraph = $derived.by(() => {
     if (!article.content) return '';
@@ -40,8 +39,8 @@
     return normalizedSummary !== normalizedFirstParagraph;
   });
 
-  function navigateToProfile() {
-    window.location.href = `/p/${npub}`;
+  function handleProfileClick() {
+    navigateToProfile(article.pubkey);
   }
 </script>
 
@@ -57,13 +56,13 @@
   {/if}
 
   <div class="flex items-start sm:items-center gap-4 mb-8">
-    <button type="button" onclick={navigateToProfile} class="flex-shrink-0">
+    <button type="button" onclick={handleProfileClick} class="flex-shrink-0">
       <Avatar {ndk} pubkey={article.pubkey} class="w-12 h-12 sm:w-14 sm:h-14 ring-2 ring-white dark:ring-black hover:ring-4 transition-all" />
     </button>
 
     <div class="flex-1">
       <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-        <button type="button" onclick={navigateToProfile} class="group text-left">
+        <button type="button" onclick={handleProfileClick} class="group text-left">
           <div class="font-semibold text-lg text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
             {authorName}
           </div>

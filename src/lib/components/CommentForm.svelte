@@ -3,6 +3,7 @@
   import { ndk } from '$lib/ndk.svelte';
   import { Avatar } from '@nostr-dev-kit/svelte';
   import { nip19 } from 'nostr-tools';
+  import ContentComposer from '$lib/components/ContentComposer.svelte';
 
   interface Props {
     article: NDKArticle;
@@ -62,14 +63,15 @@
       <button type="button" onclick={navigateToProfile} class="flex-shrink-0">
         <Avatar {ndk} pubkey={currentUser.pubkey} class="w-10 h-10 cursor-pointer hover:opacity-80 transition-opacity" />
       </button>
-      <div class="flex-1">
-        <textarea
-          bind:value={replyContent}
-          placeholder="Share your thoughts..."
-          class="w-full p-3 bg-neutral-50 dark:bg-card border border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all min-h-[100px] text-foreground placeholder:text-muted-foreground dark:placeholder:text-muted-foreground"
-          disabled={isSubmitting}
-        ></textarea>
-        <div class="flex justify-end mt-2">
+      <div class="flex-1 flex flex-col gap-2">
+        <div class="p-3 bg-neutral-50 dark:bg-card border border rounded-lg">
+          <ContentComposer
+            bind:value={replyContent}
+            placeholder="Share your thoughts..."
+            disabled={isSubmitting}
+          />
+        </div>
+        <div class="flex justify-end">
           <button
             type="button"
             onclick={handleCommentPublish}

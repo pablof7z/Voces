@@ -1,44 +1,36 @@
+import { createModalStore } from './modalFactory.svelte';
+
 interface RelayAuthRequest {
   relayUrl: string;
   onConfirm: () => void;
   onReject: () => void;
 }
 
-class RelayAuthModalStore {
-  private _show = $state(false);
-  private _request = $state<RelayAuthRequest | null>(null);
+const baseModal = createModalStore<RelayAuthRequest>();
 
+export const relayAuthModal = {
   get show() {
-    return this._show;
-  }
-
+    return baseModal.show;
+  },
   get request() {
-    return this._request;
-  }
-
+    return baseModal.data;
+  },
   open(request: RelayAuthRequest) {
-    this._request = request;
-    this._show = true;
-  }
-
+    baseModal.open(request);
+  },
   confirm() {
-    if (this._request) {
-      this._request.onConfirm();
-      this.close();
+    if (baseModal.data) {
+      baseModal.data.onConfirm();
+      baseModal.close();
     }
-  }
-
+  },
   reject() {
-    if (this._request) {
-      this._request.onReject();
-      this.close();
+    if (baseModal.data) {
+      baseModal.data.onReject();
+      baseModal.close();
     }
-  }
-
+  },
   close() {
-    this._show = false;
-    this._request = null;
+    baseModal.close();
   }
-}
-
-export const relayAuthModal = new RelayAuthModalStore();
+};

@@ -1,9 +1,10 @@
 <script lang="ts">
-  import type { NDKEvent } from '@nostr-dev-kit/ndk';
+  import { type NDKEvent, NDKArticle } from '@nostr-dev-kit/ndk';
   import { ndk } from '$lib/ndk.svelte';
   import { Avatar } from '@nostr-dev-kit/svelte';
   import TimeAgo from './TimeAgo.svelte';
   import EventActions from './EventActions.svelte';
+  import { getArticleUrl } from '$lib/utils/articleUrl';
 
   interface Props {
     event: NDKEvent;
@@ -28,7 +29,36 @@
 
   // Get context tag if available
   const contextTag = $derived(event.tags.find(t => t[0] === 'context'));
-  const context = $derived(contextTag ? contextTag[1] : null);
+
+  // State for referenced article
+  let referencedArticle = $state<NDKArticle | undefined>(undefined);
+
+  // Fetch article if referenced
+  $effect(() => {
+    if (!sourceTag || sourceTag[0] !== 'a') {
+      referencedArticle = undefined;
+      return;
+    }
+
+    const aTagValue = sourceTag[1];
+    // Parse a tag format: "kind:pubkey:d-tag"
+    const parts = aTagValue.split(':');
+    if (parts.length !== 3) {
+      referencedArticle = undefined;
+      return;
+    }
+
+    const [kind, pubkey, dTag] = parts;
+    ndk.fetchEvent({
+      kinds: [parseInt(kind)],
+      authors: [pubkey],
+      '#d': [dTag]
+    }).then((article) => {
+      if (article) {
+        referencedArticle = NDKArticle.from(article);
+      }
+    });
+  });
 
   // Determine the source type and get reference
   const sourceInfo = $derived.by(() => {
@@ -54,10 +84,12 @@
         };
       }
     } else if (type === 'a') {
-      // Nostr article reference
+      // Nostr article reference - extract title from fetched article
+      const article = referencedArticle;
+      const title = article?.tags.find(t => t[0] === 'title')?.[1];
       return {
         type: 'article' as const,
-        displayText: 'Article',
+        displayText: title || 'Article',
         value
       };
     } else if (type === 'e') {
@@ -80,6 +112,9 @@
   function navigateToSource() {
     if (sourceInfo?.type === 'web' && sourceInfo.url) {
       window.open(sourceInfo.url, '_blank', 'noopener,noreferrer');
+    } else if (sourceInfo?.type === 'article' && referencedArticle) {
+      const articleUrl = getArticleUrl(referencedArticle);
+      window.location.href = articleUrl;
     }
   }
 </script>
@@ -109,8 +144,8 @@
 
     <!-- Book page style highlight -->
     <div
-      onclick={sourceInfo?.type === 'web' ? navigateToSource : undefined}
-      class="relative aspect-square rounded-lg overflow-hidden bg-[#f9f7f4] shadow-lg mb-2 {sourceInfo?.type === 'web' ? 'cursor-pointer' : ''}"
+      onclick={(sourceInfo?.type === 'web' || sourceInfo?.type === 'article') ? navigateToSource : undefined}
+      class="relative aspect-square rounded-lg overflow-hidden bg-[#f9f7f4] shadow-lg mb-2 {(sourceInfo?.type === 'web' || sourceInfo?.type === 'article') ? 'cursor-pointer' : ''}"
     >
       <!-- Paper texture overlay -->
       <div class="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')]" />
@@ -130,7 +165,7 @@
 
       <!-- Source badge (small, bottom right corner) -->
       {#if sourceInfo}
-        <div class="absolute bottom-3 right-3 flex items-center gap-1.5 px-2 py-1 bg-white/80 backdrop-blur-sm rounded text-xs text-neutral-600">
+        <div class="absolute bottom-3 right-3 flex items-center gap-2 px-3 py-1.5 bg-white/80 backdrop-blur-sm rounded text-xs text-neutral-600">
           {#if sourceInfo.type === 'web'}
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -144,7 +179,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
             </svg>
           {/if}
-          <span class="max-w-[100px] truncate">{sourceInfo.displayText}</span>
+          <span class="max-w-[200px] truncate">{sourceInfo.displayText}</span>
         </div>
       {/if}
     </div>
@@ -218,8 +253,8 @@
 
     <!-- Book page style highlight -->
     <div
-      onclick={sourceInfo?.type === 'web' ? navigateToSource : undefined}
-      class="relative aspect-square rounded-lg overflow-hidden bg-[#f9f7f4] shadow-lg mb-2 {sourceInfo?.type === 'web' ? 'cursor-pointer' : ''}"
+      onclick={(sourceInfo?.type === 'web' || sourceInfo?.type === 'article') ? navigateToSource : undefined}
+      class="relative aspect-square rounded-lg overflow-hidden bg-[#f9f7f4] shadow-lg mb-2 {(sourceInfo?.type === 'web' || sourceInfo?.type === 'article') ? 'cursor-pointer' : ''}"
     >
       <!-- Paper texture overlay -->
       <div class="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')]" />
@@ -239,7 +274,7 @@
 
       <!-- Source badge (small, bottom right corner) -->
       {#if sourceInfo}
-        <div class="absolute bottom-3 right-3 flex items-center gap-1.5 px-2 py-1 bg-white/80 backdrop-blur-sm rounded text-xs text-neutral-600">
+        <div class="absolute bottom-3 right-3 flex items-center gap-2 px-3 py-1.5 bg-white/80 backdrop-blur-sm rounded text-xs text-neutral-600">
           {#if sourceInfo.type === 'web'}
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -253,7 +288,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
             </svg>
           {/if}
-          <span class="max-w-[100px] truncate">{sourceInfo.displayText}</span>
+          <span class="max-w-[200px] truncate">{sourceInfo.displayText}</span>
         </div>
       {/if}
     </div>

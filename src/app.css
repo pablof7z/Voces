@@ -98,7 +98,7 @@
   /* --color-ring inherits from [data-theme] selector */
 
   /* NDK EventContent variables for mentions and links in dark mode */
-  --accent-color: hsl(22 100% 65%);  /* Brighter primary for dark mode */
+  --accent-color: hsl(22 90% 75%);  /* Much brighter orange for better contrast in dark mode */
   --link-color: hsl(210 100% 70%);   /* Brighter blue for dark mode */
 }
 
@@ -116,7 +116,7 @@
 }
 
 [data-theme="orange"].dark {
-  --accent-color: hsl(22 100% 65%);
+  --accent-color: hsl(22 90% 75%);  /* Better contrast for mentions */
 }
 
 /* Red */
@@ -130,7 +130,7 @@
 }
 
 [data-theme="red"].dark {
-  --accent-color: hsl(342 87% 65%);
+  --accent-color: hsl(342 85% 75%);  /* Better contrast for mentions */
 }
 
 /* Cyan */
@@ -144,7 +144,7 @@
 }
 
 [data-theme="cyan"].dark {
-  --accent-color: hsl(189 100% 60%);
+  --accent-color: hsl(189 90% 70%);  /* Better contrast for mentions */
 }
 
 /* Yellow */
@@ -158,7 +158,7 @@
 }
 
 [data-theme="yellow"].dark {
-  --accent-color: hsl(52 100% 65%);
+  --accent-color: hsl(52 95% 75%);  /* Better contrast for mentions */
 }
 
 /* Lime */
@@ -172,7 +172,7 @@
 }
 
 [data-theme="lime"].dark {
-  --accent-color: hsl(74 85% 55%);
+  --accent-color: hsl(74 80% 70%);  /* Better contrast for mentions */
 }
 
 @layer base {
@@ -277,5 +277,44 @@
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Override NDK EventContent mention styles */
+  /* Light mode */
+  .mention-inline {
+    color: var(--color-primary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .mention-inline:hover {
+    opacity: 0.8;
+  }
+
+  /* Dark mode - much brighter colors for better contrast */
+  .dark .mention-inline {
+    color: hsl(22 90% 75%) !important;
+    font-weight: 500;
+  }
+
+  [data-theme="orange"].dark .mention-inline {
+    color: hsl(22 90% 75%) !important;
+  }
+
+  [data-theme="red"].dark .mention-inline {
+    color: hsl(342 85% 75%) !important;
+  }
+
+  [data-theme="cyan"].dark .mention-inline {
+    color: hsl(189 90% 70%) !important;
+  }
+
+  [data-theme="yellow"].dark .mention-inline {
+    color: hsl(52 95% 75%) !important;
+  }
+
+  [data-theme="lime"].dark .mention-inline {
+    color: hsl(74 80% 70%) !important;
   }
 }

@@ -84,6 +84,4 @@
   <div class="flex items-center gap-1 mb-2 text-sm text-muted-foreground">
     <span>Replying to event</span>
   </div>
-{:else}
-  {replyToEvent?.toString()}
 {/if}

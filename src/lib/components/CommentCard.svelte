@@ -2,7 +2,7 @@
   import type { NDKEvent } from '@nostr-dev-kit/ndk';
   import { Avatar, EventContent } from '@nostr-dev-kit/svelte';
   import { ndk } from '$lib/ndk.svelte';
-  import { nip19 } from 'nostr-tools';
+  import { navigateToProfile } from '$lib/utils/navigation';
   import TimeAgo from './TimeAgo.svelte';
 
   interface Props {
@@ -13,16 +13,15 @@
 
   const profile = ndk.$fetchProfile(() => event.pubkey);
   const displayName = $derived(profile?.name || profile?.displayName || 'Anonymous');
-  const npub = $derived(nip19.npubEncode(event.pubkey));
 
-  function navigateToProfile() {
-    window.location.href = `/p/${npub}`;
+  function handleProfileClick() {
+    navigateToProfile(event.pubkey);
   }
 </script>
 
 <div class="group">
   <div class="flex gap-3">
-    <button type="button" onclick={navigateToProfile} class="flex-shrink-0">
+    <button type="button" onclick={handleProfileClick} class="flex-shrink-0">
       <Avatar {ndk} pubkey={event.pubkey} class="w-10 h-10 cursor-pointer hover:opacity-80 transition-opacity" />
     </button>
     <div class="flex-1 min-w-0">

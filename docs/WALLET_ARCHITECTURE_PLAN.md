@@ -1,12 +1,12 @@
 # Wallet Architecture Plan (REVISED)
-## Leveraging ndk-wallet Through ndk-svelte5 in Agora
+## Leveraging wallet Through ndk-svelte5 in Agora
 
 ---
 
-## Critical Discovery: ndk-wallet Already Has Everything!
+## Critical Discovery: wallet Already Has Everything!
 
-### ndk-wallet Core (What Actually Exists)
-**Location:** `@nostr-dev-kit/ndk-wallet`
+### wallet Core (What Actually Exists)
+**Location:** `@nostr-dev-kit/wallet`
 
 **Complete Implementation:**
 - ✅ `NDKCashuWallet` - Full NIP-60 Cashu wallet
@@ -61,7 +61,7 @@
 ### Philosophy
 **Don't Re-implement. Just Expose.**
 
-ndk-wallet has all the business logic. ndk-svelte5 just needs to make it reactive and convenient.
+wallet has all the business logic. ndk-svelte5 just needs to make it reactive and convenient.
 
 ---
 
@@ -197,14 +197,14 @@ class WalletStore {
       nutzapStates: Array.from((await this.getNutzapMonitorStore().getAllNutzaps()).entries())
     };
     
-    localStorage.setItem('ndk-wallet-state', JSON.stringify(state));
+    localStorage.setItem('wallet-state', JSON.stringify(state));
   }
 
   private loadFromLocalStorage(): void {
     if (typeof window === 'undefined') return;
     
     try {
-      const stored = localStorage.getItem('ndk-wallet-state');
+      const stored = localStorage.getItem('wallet-state');
       if (stored) {
         const data = JSON.parse(stored);
         // Will be applied during initialization
@@ -281,7 +281,7 @@ src/lib/components/wallet/
 ```svelte
 <script lang="ts">
   import { wallet } from '@nostr-dev-kit/ndk-svelte5/stores';
-  import type { NDKCashuDeposit } from '@nostr-dev-kit/ndk-wallet';
+  import type { NDKCashuDeposit } from '@nostr-dev-kit/wallet';
   import QRCode from '@svelte-components/qr-code'; // or your QR component
 
   let amount = $state(1000);
@@ -494,17 +494,17 @@ wallet.clear();
 - Handle nutzap monitoring manually
 
 **REVISED PLAN:**
-- Use ndk-wallet as-is (it's production-ready)
+- Use wallet as-is (it's production-ready)
 - Just add thin wrappers in ndk-svelte5
 - Expose existing methods reactively
 - Build UI components only
 
 **BENEFITS:**
 - ✅ 90% less code to write
-- ✅ Leverage battle-tested ndk-wallet
+- ✅ Leverage battle-tested wallet
 - ✅ Faster implementation (2 weeks vs 4-6 weeks)
 - ✅ Easier maintenance
-- ✅ Benefit from ndk-wallet improvements automatically
+- ✅ Benefit from wallet improvements automatically
 
 ---
 
@@ -518,7 +518,7 @@ wallet.clear();
    - Added `initialize(ndk, user, config?)` method
    - Added `addMint(mint)`, `removeMint(mint)`, `mints` getter
    - Added `getMintBalances()` method
-   - All methods are thin wrappers around ndk-wallet core functionality
+   - All methods are thin wrappers around wallet core functionality
 
 2. ✅ Refactored Agora to use enhanced ndk-svelte5 wallet
    - Removed custom wallet code:

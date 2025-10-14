@@ -46,7 +46,7 @@
   <!-- Backdrop -->
   <div
     use:portal
-    class="fixed inset-0 z-50 bg-foreground/50 backdrop-blur-sm animate-in fade-in-0"
+    class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-in fade-in-0"
     onclick={handleBackdropClick}
     aria-hidden="true"
   ></div>
@@ -54,12 +54,11 @@
   <!-- Dialog content wrapper -->
   <div
     use:portal
-    class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4"
     role="dialog"
     aria-modal="true"
+    onclick={handleBackdropClick}
   >
-    <div class="pointer-events-auto">
-      {@render children()}
-    </div>
+    {@render children()}
   </div>
 {/if}

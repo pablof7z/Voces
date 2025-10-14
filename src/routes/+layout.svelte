@@ -12,6 +12,7 @@
   import PWAInstallPrompt from '$lib/components/PWAInstallPrompt.svelte';
   import Hashtag from '$lib/components/Hashtag.svelte';
   import EmbeddedNote from '$lib/components/EmbeddedNote.svelte';
+  import Mention from '$lib/components/Mention.svelte';
   import { applyThemeColor } from '$lib/theme/colors';
   import '../app.css';
   import type { Snippet } from 'svelte';
@@ -54,6 +55,7 @@
 
     // Set up custom components
     setEventContentComponents({
+      mention: Mention,
       hashtag: Hashtag,
       embeddedEvent: EmbeddedNote
     });

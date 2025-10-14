@@ -1,9 +1,15 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+
+  interface Props {
+    onclick?: () => void;
+  }
+
+  const { onclick }: Props = $props();
 </script>
 
 <button
-  onclick={() => goto('/compose')}
+  onclick={() => onclick ? onclick() : goto('/compose')}
   class="block lg:hidden fixed bottom-24 right-4 w-14 h-14 bg-primary hover:bg-accent-dark text-foreground rounded-full shadow-lg hover:shadow-xl transition-all z-[500] flex items-center justify-center active:scale-95"
   aria-label="Compose"
 >

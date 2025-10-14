@@ -4,7 +4,7 @@
  */
 
 import NDK, { NDKPrivateKeySigner, NDKEvent, NDKUser, NDKNutzap, NDKZapper } from "@nostr-dev-kit/ndk";
-import { NDKCashuWallet, NDKNutzapMonitor } from "@nostr-dev-kit/ndk-wallet";
+import { NDKCashuWallet, NDKNutzapMonitor } from "@nostr-dev-kit/wallet";
 
 export interface WalletConnectionConfig {
   explicitRelayUrls: string[];

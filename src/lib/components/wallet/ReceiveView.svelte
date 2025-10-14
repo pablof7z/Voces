@@ -1,13 +1,9 @@
 <script lang="ts">
-  import type { WalletAPI } from '$lib/utils/useWallet.svelte';
+  import { ndk } from '$lib/ndk.svelte';
   import type { NDKCashuDeposit } from '@nostr-dev-kit/wallet';
   import QRCode from './QRCode.svelte';
 
-  interface Props {
-    wallet: WalletAPI;
-  }
-
-  let { wallet }: Props = $props();
+  const wallet = ndk.$wallet;
 
   let activeTab = $state<'paste' | 'mint'>('mint');
   let tokenInput = $state('');

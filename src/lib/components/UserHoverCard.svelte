@@ -3,6 +3,7 @@
   import { Avatar } from '@nostr-dev-kit/svelte';
   import { EventContent } from '@nostr-dev-kit/svelte';
   import FollowButton from './FollowButton.svelte';
+  import { generateBannerGradient } from '$lib/utils/bannerGradient';
 
   interface Props {
     pubkey: string;
@@ -52,7 +53,7 @@
       <!-- Main card -->
       <div class="relative w-80 bg-card border border-border rounded-xl shadow-2xl overflow-hidden">
         <!-- Banner section -->
-        <div class="relative h-20 bg-muted">
+        <div class="relative h-20" style={`background: ${profile?.banner ? 'transparent' : generateBannerGradient(pubkey)}`}>
           {#if profile?.banner}
             <img
               src={profile.banner}
@@ -60,8 +61,6 @@
               class="w-full h-full object-cover opacity-80"
             />
             <div class="absolute inset-0 bg-gradient-to-b from-transparent to-neutral-900"></div>
-          {:else}
-            <div class="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-900"></div>
           {/if}
         </div>
 

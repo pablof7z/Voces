@@ -1,11 +1,8 @@
 <script lang="ts">
   import { ndk } from '$lib/ndk.svelte';
-  import { useWallet } from '$lib/utils/useWallet.svelte';
   import BalanceCard from './BalanceCard.svelte';
   import SendView from './SendView.svelte';
   import ReceiveView from './ReceiveView.svelte';
-
-  const wallet = useWallet(ndk);
 
   type TabView = 'wallet' | 'send' | 'receive' | 'scan';
   let currentTab = $state<TabView>('wallet');
@@ -36,7 +33,7 @@
   <div class="wallet-content">
     {#if currentTab === 'wallet'}
       <div class="balance-section">
-        <BalanceCard {wallet} />
+        <BalanceCard />
       </div>
 
       <div class="action-buttons">
@@ -59,9 +56,9 @@
         </button>
       </div>
     {:else if currentTab === 'send' || currentTab === 'scan'}
-      <SendView {wallet} />
+      <SendView />
     {:else if currentTab === 'receive'}
-      <ReceiveView {wallet} />
+      <ReceiveView />
     {/if}
   </div>
 </div>

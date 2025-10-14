@@ -1,7 +1,6 @@
 <script lang="ts">
-  import type { NDKEvent } from '@nostr-dev-kit/ndk';
   import { ndk } from '$lib/ndk.svelte';
-  import { NDKEvent as NDKEventClass, NDKRelaySet } from '@nostr-dev-kit/ndk';
+  import { NDKEvent, NDKRelaySet } from '@nostr-dev-kit/ndk';
   import { Avatar } from '@nostr-dev-kit/svelte';
   import { toast } from '$lib/stores/toast.svelte';
   import { settings } from '$lib/stores/settings.svelte';
@@ -50,21 +49,21 @@
     try {
       isPublishing = true;
 
-      let event: NDKEventClass;
+      let event: NDKEvent;
 
       if (replyTo) {
         event = replyTo.reply();
       } else if (quotedEvent) {
-        event = new NDKEventClass(ndk);
+        event = new NDKEvent(ndk);
         event.kind = 1;
-        event.content = content;
         event.tags.push(['q', quotedEvent.id]);
         event.tags.push(['p', quotedEvent.pubkey]);
       } else {
-        event = new NDKEventClass(ndk);
+        event = new NDKEvent(ndk);
         event.kind = 1;
-        event.content = content;
       }
+      
+      event.content = content;
 
       if (!replyTo) {
         event.isProtected = isProtected;

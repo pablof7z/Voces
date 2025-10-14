@@ -1,11 +1,7 @@
 <script lang="ts">
-  import type { WalletAPI } from '$lib/utils/useWallet.svelte';
+  import { ndk } from '$lib/ndk.svelte';
 
-  interface Props {
-    wallet: WalletAPI;
-  }
-
-  let { wallet }: Props = $props();
+  const wallet = ndk.$wallet;
 
   let amount = $state('');
   let memo = $state('');
@@ -30,8 +26,7 @@
 
     try {
       // Use wallet to generate token
-      const result = await wallet.send(amountNum, memo || undefined);
-      token = result.token;
+      token = await wallet.send(amountNum, memo || undefined);
     } catch (e: any) {
       error = e.message || 'Failed to send';
       console.error(e);

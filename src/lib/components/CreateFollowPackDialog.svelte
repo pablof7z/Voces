@@ -8,12 +8,11 @@
   interface Props {
     open?: boolean;
     onClose?: () => void;
-    onPublished?: (packId: string) => void;
     initialPubkey?: string;
     editingPack?: NDKEvent | null;
   }
 
-  let { open = $bindable(false), onClose, onPublished, initialPubkey, editingPack }: Props = $props();
+  let { open = $bindable(false), onClose, initialPubkey, editingPack }: Props = $props();
 
   let activeTab = $state<'details' | 'members'>('details');
   let isPublishing = $state(false);
@@ -129,7 +128,6 @@
       toast.success(editingPack ? 'Follow pack updated' : 'Follow pack created');
       resetForm();
       open = false;
-      onPublished?.(pack.id);
       onClose?.();
     } catch (error) {
       console.error('Failed to publish follow pack:', error);

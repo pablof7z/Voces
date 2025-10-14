@@ -4,7 +4,6 @@
   import { goto } from '$app/navigation';
   import { t } from 'svelte-i18n';
   import { settings } from '$lib/stores/settings.svelte';
-  import CreateInviteModal from '$lib/components/invite/CreateInviteModal.svelte';
 
   interface Props {
     collapsed?: boolean;
@@ -13,7 +12,6 @@
   const { collapsed = false }: Props = $props();
 
   let showDropdown = $state(false);
-  let showInviteModal = $state(false);
   let dropdownRef: HTMLDivElement | undefined = $state();
   let buttonRef: HTMLButtonElement | undefined = $state();
 
@@ -47,15 +45,6 @@
     closeDropdown();
   }
 
-  function openInviteModal() {
-    showInviteModal = true;
-    closeDropdown();
-  }
-
-  function closeInviteModal() {
-    showInviteModal = false;
-  }
-
   function toggleTheme() {
     const currentTheme = settings.theme;
     if (currentTheme === 'light') {
@@ -67,19 +56,18 @@
     }
   }
 
-  // Close dropdown when clicking outside
-  function handleClickOutside(event: MouseEvent) {
-    if (dropdownRef && !dropdownRef.contains(event.target as Node) &&
-        buttonRef && !buttonRef.contains(event.target as Node)) {
-      closeDropdown();
-    }
-  }
-
   $effect(() => {
-    if (showDropdown) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
-    }
+    if (!showDropdown) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef && !dropdownRef.contains(event.target as Node) &&
+          buttonRef && !buttonRef.contains(event.target as Node)) {
+        showDropdown = false;
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   });
 
 </script>
@@ -167,19 +155,6 @@
 
         <div class="h-px bg-border"></div>
 
-        <!-- Create Invitation -->
-        <button
-          onclick={openInviteModal}
-          class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted transition-colors text-left text-popover-foreground"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-          <span>{$t('settings.invite.createInvitation')}</span>
-        </button>
-
-        <div class="h-px bg-border"></div>
-
         <!-- Logout Button -->
         <button
           onclick={handleLogout}
@@ -194,5 +169,3 @@
     </svelte:element>
   {/key}
 {/if}
-
-<CreateInviteModal bind:isOpen={showInviteModal} onClose={closeInviteModal} />
