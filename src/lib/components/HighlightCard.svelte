@@ -8,7 +8,7 @@
 
   interface Props {
     event: NDKEvent;
-    variant?: 'default' | 'compact' | 'feed';
+    variant?: 'default' | 'compact' | 'feed' | 'grid';
   }
 
   let { event, variant = 'default' }: Props = $props();
@@ -29,6 +29,25 @@
 
   // Get context tag if available
   const contextTag = $derived(event.tags.find(t => t[0] === 'context'));
+  const contextText = $derived(contextTag?.[1] || highlightContent);
+
+  // Find the position of the highlight within the context
+  const highlightPosition = $derived.by(() => {
+    if (!contextText || contextText === highlightContent) {
+      return { before: '', highlight: highlightContent, after: '' };
+    }
+
+    const startIndex = contextText.indexOf(highlightContent);
+    if (startIndex === -1) {
+      return { before: '', highlight: highlightContent, after: '' };
+    }
+
+    return {
+      before: contextText.slice(0, startIndex),
+      highlight: highlightContent,
+      after: contextText.slice(startIndex + highlightContent.length)
+    };
+  });
 
   // State for referenced article
   let referencedArticle = $state<NDKArticle | undefined>(undefined);
@@ -152,13 +171,10 @@
 
       <!-- Content -->
       <div class="relative h-full flex flex-col items-center justify-center p-8 sm:p-12">
-        <!-- Yellow highlight bar (like a highlighter mark) -->
-        <div class="absolute left-0 right-0 top-[35%] bottom-[35%] bg-yellow-300/20" />
-
-        <!-- Highlighted text -->
+        <!-- Highlighted text with context -->
         <div class="relative z-10">
           <p class="text-neutral-900 text-2xl sm:text-3xl md:text-4xl font-serif leading-relaxed text-center">
-            {highlightContent}
+            {highlightPosition.before}<mark class="bg-yellow-300/40 text-neutral-900">{highlightPosition.highlight}</mark>{highlightPosition.after}
           </p>
         </div>
       </div>
@@ -196,9 +212,8 @@
       <div class="pl-4">
         <!-- Highlighted text -->
         <div class="mb-3 relative">
-          <div class="absolute -inset-2 bg-yellow-400/10 rounded-lg" />
           <p class="relative text-foreground text-base leading-relaxed font-serif italic">
-            "{highlightContent}"
+            "{highlightPosition.before}<mark class="bg-yellow-300/40 text-foreground not-italic">{highlightPosition.highlight}</mark>{highlightPosition.after}"
           </p>
         </div>
 
@@ -228,6 +243,53 @@
       </div>
     </div>
   </div>
+{:else if variant === 'grid'}
+  <article class="hover:bg-card/30 transition-colors">
+    <!-- Book page style highlight -->
+    <div
+      onclick={(sourceInfo?.type === 'web' || sourceInfo?.type === 'article') ? navigateToSource : undefined}
+      class="relative aspect-square rounded-lg overflow-hidden bg-[#f9f7f4] shadow-lg {(sourceInfo?.type === 'web' || sourceInfo?.type === 'article') ? 'cursor-pointer' : ''}"
+    >
+      <!-- Paper texture overlay -->
+      <div class="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=')]" />
+
+      <!-- Content -->
+      <div class="relative h-full flex flex-col items-center justify-center p-4 sm:p-6">
+        <!-- Highlighted text with context -->
+        <div class="relative z-10">
+          <p class="text-neutral-900 text-sm sm:text-base font-serif leading-relaxed text-center line-clamp-6">
+            {highlightPosition.before}<mark class="bg-yellow-300/40 text-neutral-900">{highlightPosition.highlight}</mark>{highlightPosition.after}
+          </p>
+        </div>
+      </div>
+
+      <!-- Source badge (small, bottom right corner) -->
+      {#if sourceInfo}
+        <div class="absolute bottom-2 right-2 flex items-center gap-1.5 px-2 py-1 bg-white/80 backdrop-blur-sm rounded text-xs text-neutral-600">
+          {#if sourceInfo.type === 'web'}
+            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+          {:else if sourceInfo.type === 'article'}
+            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          {:else}
+            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+            </svg>
+          {/if}
+          <span class="max-w-[100px] truncate text-[10px]">{sourceInfo.displayText}</span>
+        </div>
+      {/if}
+    </div>
+
+    <!-- Author info below -->
+    <div class="flex items-center gap-2 mt-2 px-1">
+      <Avatar {ndk} pubkey={event.pubkey} class="w-5 h-5 rounded-full" />
+      <span class="text-xs text-muted-foreground truncate">{authorName}</span>
+    </div>
+  </article>
 {:else}
   <article class="p-3 sm:p-4 hover:bg-card/30 transition-colors border-b border-border">
     <!-- Author header -->
@@ -261,13 +323,10 @@
 
       <!-- Content -->
       <div class="relative h-full flex flex-col items-center justify-center p-8 sm:p-12">
-        <!-- Yellow highlight bar (like a highlighter mark) -->
-        <div class="absolute left-0 right-0 top-[35%] bottom-[35%] bg-yellow-300/20" />
-
-        <!-- Highlighted text -->
+        <!-- Highlighted text with context -->
         <div class="relative z-10">
           <p class="text-neutral-900 text-2xl sm:text-3xl md:text-4xl font-serif leading-relaxed text-center">
-            {highlightContent}
+            {highlightPosition.before}<mark class="bg-yellow-300/40 text-neutral-900">{highlightPosition.highlight}</mark>{highlightPosition.after}
           </p>
         </div>
       </div>
