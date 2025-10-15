@@ -7,14 +7,13 @@
   import NoteCard from '$lib/components/NoteCard.svelte';
   import ArticlePreviewCard from '$lib/components/ArticlePreviewCard.svelte';
   import FeaturedArticleCard from '$lib/components/FeaturedArticleCard.svelte';
-  import HighlightGridCard from '$lib/components/HighlightGridCard.svelte';
   import HighlightCard from '$lib/components/HighlightCard.svelte';
   import MediaGrid from '$lib/components/MediaGrid.svelte';
   import TikTokVideoFeed from '$lib/components/TikTokVideoFeed.svelte';
   import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
   import { Avatar } from '@nostr-dev-kit/svelte';
-  import RelaySelectorIcon from '$lib/components/RelaySelectorIcon.svelte';
+  import RelaySelector from '$lib/components/RelaySelector.svelte';
   import { getRelaysToUse, isAgorasSelection } from '$lib/utils/relayUtils';
   import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
   import { sub } from 'date-fns';
@@ -174,34 +173,6 @@
     pageSize: 10
   });
 
-  const highlightsFeed = createLazyFeed(ndk, () => {
-    const filter: any = {
-      kinds: [9802],
-      limit: 100
-    };
-
-    // Add hashtag filters if any are selected
-    if (hashtagFilter.hasFilters) {
-      filter['#t'] = hashtagFilter.selectedHashtags;
-    }
-
-    // When in Following mode or Follow Pack mode, filter by authors
-    const isFollowingOrPackMode = !settings.selectedRelay || isFollowPackSelection(settings.selectedRelay);
-    if (isFollowingOrPackMode && authorsArray.length > 0) {
-      filter.authors = authorsArray;
-    }
-    return {
-      filters: [filter],
-      cacheUsage: relaysToUse.length > 0 ? NDKSubscriptionCacheUsage.ONLY_RELAY : NDKSubscriptionCacheUsage.PARALLEL,
-      subId: 'highlights',
-      exclusiveRelay: relaysToUse.length > 0,
-      relayUrls: relaysToUse.length > 0 ? relaysToUse : undefined
-    };
-  }, {
-    initialLimit: 10,
-    pageSize: 10
-  });
-
   const articles = $derived.by(() => articlesFeed.events.map(e => NDKArticle.from(e)));
 
   const filteredArticles = $derived.by(() =>
@@ -216,9 +187,6 @@
     const articlesWithoutImages = filteredArticles.filter(a => !a.image);
     return [...articlesWithImages, ...articlesWithoutImages].slice(0, 10);
   });
-
-  // Highlights for grid (first 10)
-  const gridHighlights = $derived.by(() => highlightsFeed.events.slice(0, 10));
 
   // Regular article feed (skip first 10 featured articles)
   const regularArticles = $derived.by(() => filteredArticles.slice(10));
@@ -305,16 +273,35 @@
     }
   });
 
+  // Measure header height and set CSS variable
+  let headerElement = $state<HTMLDivElement | null>(null);
+
+  $effect(() => {
+    if (!headerElement) return;
+
+    const updateHeaderHeight = () => {
+      const height = headerElement.offsetHeight;
+      document.documentElement.style.setProperty('--header-height', `${height}px`);
+    };
+
+    updateHeaderHeight();
+    window.addEventListener('resize', updateHeaderHeight);
+
+    return () => {
+      window.removeEventListener('resize', updateHeaderHeight);
+    };
+  });
+
 </script>
 
 <div class="max-w-full mx-auto">
   <!-- Header -->
-  <div class="sticky top-0 z-10 bg-background/90 backdrop-blur-xl border-b border-border">
+  <div bind:this={headerElement} class="sticky top-0 z-10 bg-background/90 backdrop-blur-xl border-b border-border">
     <div class="px-4 py-4 max-sm:w-screen">
       <div class="flex items-center gap-2">
         <!-- Relay/Following selector icon (always visible) -->
         <div class="flex-shrink-0 relative z-20">
-          <RelaySelectorIcon />
+          <RelaySelector iconOnly={true} />
         </div>
 
         <!-- Hashtags scroll container OR Title -->
@@ -421,23 +408,6 @@
             </div>
           {/if}
 
-          <!-- Highlights Grid Section -->
-          {#if gridHighlights.length > 0}
-            <div class="px-4 py-6 border-b border-border">
-              <h2 class="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
-                Recent Highlights
-              </h2>
-              <div class="grid grid-cols-2 gap-4">
-                {#each gridHighlights as highlight (highlight.id)}
-                  <HighlightGridCard event={highlight} />
-                {/each}
-              </div>
-            </div>
-          {/if}
-
           <!-- Regular Articles Feed -->
           {#if regularArticles.length > 0}
             <div class="px-4 py-6">
@@ -463,19 +433,17 @@
         isLoading={articlesFeed.isLoading}
       />
     {:else if selectedFilter === 'videos'}
-      <div>
-        {#if mediaEvents.length === 0 && mediaFeed.eosed}
-          <div class="p-8 text-center text-muted-foreground">
-            No videos found
-          </div>
-        {:else if mediaEvents.length === 0}
-          <div class="p-8 text-center text-muted-foreground">
-            Loading videos...
-          </div>
-        {:else}
-          <TikTokVideoFeed events={mediaEvents} />
-        {/if}
-      </div>
+      {#if mediaEvents.length === 0 && mediaFeed.eosed}
+        <div class="p-8 text-center text-muted-foreground">
+          No videos found
+        </div>
+      {:else if mediaEvents.length === 0}
+        <div class="p-8 text-center text-muted-foreground">
+          Loading videos...
+        </div>
+      {:else}
+        <TikTokVideoFeed events={mediaEvents} />
+      {/if}
     {:else if selectedFilter === 'images'}
       <div class="p-4">
         {#if mediaEvents.length === 0 && mediaFeed.eosed}

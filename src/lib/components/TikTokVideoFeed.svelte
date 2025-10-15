@@ -19,6 +19,7 @@
   }
 
   let containerRef = $state<HTMLDivElement | null>(null);
+  let isMuted = $state(true);
 
   function extractMediaUrls(content: string): string[] {
     const urlRegex = /(https?:\/\/[^\s]+\.(mp4|webm|mov|avi|mkv))/gi;
@@ -115,18 +116,19 @@
 {:else}
   <div
     bind:this={containerRef}
-    class="h-[calc(100vh-8rem)] overflow-y-scroll snap-y snap-mandatory scrollbar-hide -mx-4"
+    class="fixed inset-x-0 bottom-0 overflow-y-scroll snap-y snap-mandatory scrollbar-hide bg-black"
+    style="top: var(--header-height, 132px);"
   >
     {#each videoItems as { event, imeta }, index (`${event.id}-${index}`)}
-      <div class="relative h-full w-full snap-start snap-always flex items-center justify-center bg-black">
+      <div class="relative w-screen snap-start snap-always flex items-center justify-center bg-black" style="height: calc(100dvh - var(--header-height, 132px));">
         <video
           use:registerVideoRef
           src={imeta.url}
-          class="max-h-full w-full object-contain"
+          class="w-full h-full object-contain"
           loop
           playsinline
-          preload="metadata"
-          muted={false}
+          preload="auto"
+          muted={isMuted}
         >
           <track kind="captions" />
         </video>
@@ -145,6 +147,27 @@
             </div>
           </div>
 
+          <!-- Mute/Unmute button (right side, middle) -->
+          <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-auto">
+            <button
+              onclick={() => isMuted = !isMuted}
+              class="w-12 h-12 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm flex items-center justify-center transition-colors"
+              type="button"
+              aria-label={isMuted ? 'Unmute' : 'Mute'}
+            >
+              {#if isMuted}
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                </svg>
+              {:else}
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+              {/if}
+            </button>
+          </div>
+
           <!-- Bottom content and actions -->
           <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-4 pointer-events-auto">
             <div class="flex items-end gap-4">
@@ -152,7 +175,7 @@
               <div class="flex-1 min-w-0 mb-2">
                 {#if event.content}
                   <p class="text-white text-sm mb-3 line-clamp-3">
-                    {event.content.replace(imeta.url, '').trim()}
+                    {event.content.replace(imeta.url || '', '').trim()}
                   </p>
                 {/if}
               </div>

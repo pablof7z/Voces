@@ -8,8 +8,16 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Textarea } from '$lib/components/ui/textarea';
-  import RelayPublishSelector from '$lib/components/RelayPublishSelector.svelte';
+  import { Label } from '$lib/components/ui/label';
+  import UserSelector from '$lib/components/UserSelector.svelte';
+  import HashtagSelector from '$lib/components/HashtagSelector.svelte';
+  import RelayPublishDropdownContent from '$lib/components/RelayPublishDropdownContent.svelte';
   import { browser } from '$app/environment';
+  import { settings } from '$lib/stores/settings.svelte';
+  import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
+  import { clickOutside } from '$lib/utils/clickOutside';
+  import { portal } from '$lib/utils/portal.svelte';
+  import { encodeGeohash } from '$lib/utils/geohash';
 
   interface Props {
     open?: boolean;
@@ -20,14 +28,15 @@
 
   let isPublishing = $state(false);
   let currentImageIndex = $state(0);
-  let showAdvanced = $state(false);
+  let isRelayDropdownOpen = $state(false);
+  let isHashtagSelectorOpen = $state(false);
+  let showProtectedInfo = $state(false);
+  let isUserSelectorOpen = $state(false);
 
   // Form fields
   let content = $state('');
   let location = $state('');
-  let newTag = $state('');
   let tags = $state<string[]>([]);
-  let newMention = $state('');
   let mentions = $state<string[]>([]);
   let isNsfw = $state(false);
 
@@ -51,6 +60,7 @@
 
   const currentUser = ndk.$currentUser;
   const isMobile = $derived(browser && window.innerWidth < 768);
+  const allRelays = $derived(settings.relays.filter(r => r.enabled));
 
   // Auto-open file picker on mobile when modal opens
   $effect(() => {
@@ -61,47 +71,16 @@
     }
   });
 
-  function encodeGeohash(lat: number, lon: number, precision = 5): string {
-    const base32 = '0123456789bcdefghjkmnpqrstuvwxyz';
-    let idx = 0;
-    let bit = 0;
-    let evenBit = true;
-    let geohash = '';
-
-    let latRange = [-90.0, 90.0];
-    let lonRange = [-180.0, 180.0];
-
-    while (geohash.length < precision) {
-      if (evenBit) {
-        const mid = (lonRange[0] + lonRange[1]) / 2;
-        if (lon >= mid) {
-          idx |= (1 << (4 - bit));
-          lonRange[0] = mid;
-        } else {
-          lonRange[1] = mid;
-        }
-      } else {
-        const mid = (latRange[0] + latRange[1]) / 2;
-        if (lat >= mid) {
-          idx |= (1 << (4 - bit));
-          latRange[0] = mid;
-        } else {
-          latRange[1] = mid;
-        }
-      }
-
-      evenBit = !evenBit;
-      bit++;
-
-      if (bit === 5) {
-        geohash += base32[idx];
-        bit = 0;
-        idx = 0;
+  // Initialize selected relays when opening
+  $effect(() => {
+    if (open) {
+      if (settings.selectedRelay) {
+        selectedRelayUrls = [settings.selectedRelay];
+      } else if (selectedRelayUrls.length === 0) {
+        selectedRelayUrls = allRelays.filter(r => r.write).map(r => r.url);
       }
     }
-
-    return geohash;
-  }
+  });
 
   async function handleFileSelect(file: File) {
     if (!file.type.startsWith('image/')) {
@@ -177,26 +156,29 @@
     }
   }
 
-  function addTag() {
-    if (newTag && !tags.includes(newTag.toLowerCase())) {
-      tags = [...tags, newTag.toLowerCase()];
-      newTag = '';
-    }
-  }
-
   function removeTag(tag: string) {
     tags = tags.filter(t => t !== tag);
   }
 
-  function addMention() {
-    if (newMention && !mentions.includes(newMention)) {
-      mentions = [...mentions, newMention];
-      newMention = '';
+  function handleTagsChange(newTags: string[]) {
+    tags = newTags;
+  }
+
+  function toggleRelay(url: string) {
+    if (selectedRelayUrls.includes(url)) {
+      selectedRelayUrls = selectedRelayUrls.filter(u => u !== url);
+    } else {
+      selectedRelayUrls = [...selectedRelayUrls, url];
     }
   }
 
-  function removeMention(mention: string) {
-    mentions = mentions.filter(m => m !== mention);
+  function selectOnlyRelay(url: string) {
+    selectedRelayUrls = [url];
+    isRelayDropdownOpen = false;
+  }
+
+  function handleRelayDropdownClickOutside() {
+    isRelayDropdownOpen = false;
   }
 
   function handleLocationRequest() {
@@ -316,12 +298,12 @@
     location = '';
     tags = [];
     mentions = [];
-    newTag = '';
-    newMention = '';
     uploadedImages = [];
     currentImageIndex = 0;
     isNsfw = false;
-    showAdvanced = false;
+    isRelayDropdownOpen = false;
+    isHashtagSelectorOpen = false;
+    isUserSelectorOpen = false;
   }
 
   function handleClose() {
@@ -351,7 +333,9 @@
       <button
         onclick={handleClose}
         disabled={isPublishing}
+        title="Close and discard post"
         class="text-foreground hover:text-muted-foreground transition-colors"
+        aria-label="Close"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -393,7 +377,9 @@
               />
               <button
                 onclick={() => removeImage(currentImageIndex)}
+                title="Remove this image"
                 class="absolute top-2 right-2 p-2 bg-black/60 text-white rounded-full hover:bg-black/80 transition-colors backdrop-blur-sm"
+                aria-label="Remove image"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -404,7 +390,9 @@
                   {#each uploadedImages as _, index}
                     <button
                       onclick={() => currentImageIndex = index}
+                      title="View image {index + 1}"
                       class="w-2 h-2 rounded-full transition-all {currentImageIndex === index ? 'bg-white w-6' : 'bg-white/50'}"
+                      aria-label="View image {index + 1}"
                     ></button>
                   {/each}
                 </div>
@@ -416,7 +404,9 @@
               {#each uploadedImages as img, index}
                 <button
                   onclick={() => currentImageIndex = index}
+                  title="View image {index + 1}"
                   class="w-16 h-16 rounded border-2 transition-all flex-shrink-0 {currentImageIndex === index ? 'border-primary' : 'border-border'}"
+                  aria-label="View image {index + 1}"
                 >
                   <img src={img.url} alt="" class="w-full h-full object-cover rounded" />
                 </button>
@@ -424,7 +414,9 @@
 
               <button
                 onclick={triggerFileInput}
+                title="Add more images"
                 class="w-16 h-16 rounded border-2 border-dashed border-border hover:border-primary hover:bg-muted transition-all flex items-center justify-center flex-shrink-0"
+                aria-label="Add more images"
               >
                 <svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -441,45 +433,172 @@
               placeholder="Write a caption..."
               rows={4}
               autofocus={!isMobile}
-              class="resize-none border-0 focus-visible:ring-0 px-0 text-base placeholder:text-muted-foreground"
+              class="resize-none border-0 focus-visible:ring-0 px-3 text-base placeholder:text-muted-foreground"
             />
 
-            <!-- Quick actions -->
-            <div class="flex items-center gap-3 flex-wrap">
-              <button
+            <!-- Action buttons -->
+            <div class="flex items-center gap-1 border-t border-border pt-3">
+              <!-- Add more images -->
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
                 onclick={triggerFileInput}
-                class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+                disabled={isPublishing}
+                title="Add more images to your post"
+                class="h-8 w-8"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                Add more
-              </button>
+              </Button>
 
-              <button
-                onclick={handleLocationRequest}
-                class="inline-flex items-center gap-1.5 text-sm {location ? 'text-primary' : 'text-muted-foreground hover:text-primary'} transition-colors"
+              <!-- Hashtags -->
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onclick={() => isHashtagSelectorOpen = true}
+                disabled={isPublishing}
+                title="Add hashtags to categorize your post and make it discoverable"
+                class="h-8 w-8 {tags.length > 0 ? 'text-primary' : ''}"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="relative">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                  </svg>
+                  {#if tags.length > 0}
+                    <span class="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-medium rounded-full min-w-[14px] h-[14px] flex items-center justify-center px-0.5">
+                      {tags.length}
+                    </span>
+                  {/if}
+                </div>
+              </Button>
+
+              <!-- Location -->
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onclick={handleLocationRequest}
+                disabled={isPublishing}
+                title="Add location - uses your device's GPS to tag where this was posted"
+                class="h-8 w-8 {location ? 'text-primary' : ''}"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
-                {location || 'Add location'}
-              </button>
+              </Button>
 
-              <button
-                onclick={() => showAdvanced = !showAdvanced}
-                class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors ml-auto"
+              <!-- Mentions -->
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onclick={() => isUserSelectorOpen = true}
+                disabled={isPublishing}
+                title="Tag people in this post - they'll be notified"
+                class="h-8 w-8 {mentions.length > 0 ? 'text-primary' : ''}"
               >
-                <svg class="w-4 h-4 transition-transform {showAdvanced ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                <div class="relative">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  {#if mentions.length > 0}
+                    <span class="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-medium rounded-full min-w-[14px] h-[14px] flex items-center justify-center px-0.5">
+                      {mentions.length}
+                    </span>
+                  {/if}
+                </div>
+              </Button>
+
+              <!-- NSFW Toggle -->
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onclick={() => isNsfw = !isNsfw}
+                disabled={isPublishing}
+                title="Mark as sensitive content (NSFW)"
+                class="h-8 w-8 {isNsfw ? 'text-primary' : ''}"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
-                {showAdvanced ? 'Less' : 'More'}
-              </button>
+              </Button>
+
+              <!-- Relays -->
+              <div class="relative">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onclick={() => isRelayDropdownOpen = !isRelayDropdownOpen}
+                  disabled={isPublishing}
+                  title="Choose which relays to publish this post to"
+                  class="h-8 w-8"
+                >
+                  {#if selectedRelayUrls.length <= 2 && selectedRelayUrls.length > 0}
+                    <div class="flex items-center -space-x-1">
+                      {#each selectedRelayUrls as relayUrl}
+                        {@const relay = allRelays.find(r => r.url === relayUrl)}
+                        {@const relayInfo = relay ? useRelayInfoCached(relay.url) : null}
+                        {#if relayInfo?.info?.icon}
+                          <img src={relayInfo.info.icon} alt="" class="w-5 h-5 rounded border border-background" />
+                        {:else}
+                          <div class="w-5 h-5 rounded bg-muted flex items-center justify-center border border-background">
+                            <svg class="w-3 h-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                            </svg>
+                          </div>
+                        {/if}
+                      {/each}
+                    </div>
+                  {:else}
+                    <div class="relative">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                      </svg>
+                      {#if selectedRelayUrls.length > 2}
+                        <span class="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-medium rounded-full min-w-[14px] h-[14px] flex items-center justify-center px-0.5">
+                          {selectedRelayUrls.length}
+                        </span>
+                      {/if}
+                    </div>
+                  {/if}
+                </Button>
+              </div>
             </div>
 
-            <!-- Tags -->
-            {#if tags.length > 0 || showAdvanced}
+            <!-- Relay Dropdown with backdrop -->
+            {#if isRelayDropdownOpen}
+              <div
+                use:portal
+                role="presentation"
+                onclick={handleRelayDropdownClickOutside}
+                onkeydown={(e) => e.key === 'Escape' && handleRelayDropdownClickOutside()}
+                class="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center transition-opacity {isRelayDropdownOpen ? 'opacity-100' : 'opacity-0'}"
+              >
+                <div
+                  role="dialog"
+                  tabindex="-1"
+                  onclick={(e) => e.stopPropagation()}
+                  onkeydown={(e) => e.stopPropagation()}
+                  class="bg-popover border border-border rounded-lg shadow-xl w-80 max-h-[400px] overflow-y-auto transition-all {isRelayDropdownOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}"
+                >
+                  <RelayPublishDropdownContent
+                    {selectedRelayUrls}
+                    bind:isProtected
+                    onToggleRelay={toggleRelay}
+                    onSelectOnly={selectOnlyRelay}
+                  />
+              </div>
+            </div>
+            {/if}
+
+            <!-- Display sections for selected items -->
+            {#if tags.length > 0}
               <div class="flex flex-wrap gap-2 items-center">
                 {#each tags as tag}
                   <button
@@ -492,89 +611,21 @@
                     </svg>
                   </button>
                 {/each}
-                {#if showAdvanced}
-                  <Input
-                    type="text"
-                    bind:value={newTag}
-                    placeholder="tag"
-                    class="w-24 h-8 text-sm"
-                    onkeydown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        addTag();
-                      }
-                    }}
-                  />
-                {/if}
               </div>
             {/if}
 
-            <!-- Advanced Options -->
-            {#if showAdvanced}
-              <div class="space-y-4 pt-4 border-t border-border">
-                <!-- Manual Location -->
-                {#if !location.startsWith('Near ')}
-                  <div>
-                    <Input
-                      type="text"
-                      bind:value={location}
-                      placeholder="Enter location manually"
-                      class="text-sm"
-                    />
-                  </div>
-                {/if}
-
-                <!-- Tag People -->
-                <div class="space-y-2">
-                  <div class="flex gap-2">
-                    <Input
-                      type="text"
-                      bind:value={newMention}
-                      placeholder="Tag someone (npub or hex)"
-                      class="text-sm flex-1"
-                      onkeydown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          addMention();
-                        }
-                      }}
-                    />
-                    <Button type="button" onclick={addMention} size="sm" variant="outline">
-                      Add
-                    </Button>
-                  </div>
-                  {#if mentions.length > 0}
-                    <div class="flex flex-wrap gap-2">
-                      {#each mentions as mention}
-                        <button
-                          onclick={() => removeMention(mention)}
-                          class="inline-flex items-center gap-1 px-2.5 py-1 bg-muted text-foreground rounded-full text-sm hover:bg-muted/80 transition-colors"
-                        >
-                          <span>@{mention.substring(0, 8)}...</span>
-                          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      {/each}
-                    </div>
-                  {/if}
-                </div>
-
-                <!-- NSFW Toggle -->
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    bind:checked={isNsfw}
-                    class="w-4 h-4 rounded border-border"
-                  />
-                  <span class="text-sm text-muted-foreground">Sensitive content (NSFW)</span>
-                </label>
-
-                <!-- Relay Selector -->
-                <div>
-                  <p class="text-sm text-muted-foreground mb-2">Publish to</p>
-                  <RelayPublishSelector bind:selectedRelayUrls bind:isProtected disabled={isPublishing} />
-                </div>
+            {#if location}
+              <div class="text-sm text-muted-foreground flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span>{location}</span>
+                <button onclick={() => location = ''} class="ml-1 hover:text-foreground transition-colors">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
             {/if}
           </div>
@@ -636,3 +687,18 @@
     </div>
   </Dialog.Content>
 </Dialog.Root>
+
+<!-- Hashtag Selector Modal -->
+<HashtagSelector
+  bind:open={isHashtagSelectorOpen}
+  selectedTags={tags}
+  onTagsChange={handleTagsChange}
+/>
+
+<!-- User Selector Modal -->
+<UserSelector
+  bind:open={isUserSelectorOpen}
+  bind:selectedPubkeys={mentions}
+  buttonClass="hidden"
+  iconOnly={false}
+/>

@@ -103,74 +103,73 @@
 {#if open}
   <div
     use:portal
-    class="fixed inset-0 z-50 bg-black"
+    class="fixed inset-0 z-[9999] bg-black"
     role="dialog"
     aria-modal="true"
   >
     <!-- Desktop Layout (md and up) -->
-    <div class="hidden md:flex items-center justify-center h-full">
+    <div class="hidden md:flex items-center justify-center h-full w-full">
+      <!-- Close button (top-left, outside content) -->
+      <button
+        onclick={onClose}
+        class="absolute top-6 left-6 z-[10000] w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-colors flex items-center justify-center"
+        type="button"
+        aria-label="Close"
+      >
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
       <div
-        class="relative w-full h-full max-w-7xl mx-auto flex"
+        class="relative w-full h-full flex max-w-[1600px] mx-auto"
         onclick={(e) => e.stopPropagation()}
         onkeydown={handleKeydown}
         tabindex="0"
       >
-        <!-- Close button -->
-        <button
-          onclick={onClose}
-          class="absolute top-4 left-4 z-10 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm transition-colors flex items-center justify-center"
-          type="button"
-          aria-label="Close"
-        >
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-
-        <!-- Left side - Media -->
-        <div class="flex-1 flex items-center justify-center p-4 bg-black">
-          <div class="max-w-full max-h-full flex items-center justify-center">
-            {#if mediaType === 'image'}
-              <img
-                src={imeta.url}
-                alt={imeta.alt || event.content || 'Image'}
-                class="max-w-full max-h-[90vh] object-contain"
-              />
-            {:else if mediaType === 'video'}
-              <video
-                src={imeta.url}
-                controls
-                class="max-w-full max-h-[90vh]"
-              >
-                <track kind="captions" />
-              </video>
-            {:else if mediaType === 'audio'}
-              <div class="w-full max-w-md p-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg">
-                <audio src={imeta.url} controls class="w-full"></audio>
-              </div>
-            {/if}
-          </div>
+        <!-- Left side - Media (takes most space) -->
+        <div class="flex-1 flex items-center justify-center p-8 bg-black min-w-0">
+          {#if mediaType === 'image'}
+            <img
+              src={imeta.url}
+              alt={imeta.alt || event.content || 'Image'}
+              class="max-w-full max-h-full object-contain"
+              onclick={onClose}
+            />
+          {:else if mediaType === 'video'}
+            <video
+              src={imeta.url}
+              controls
+              class="max-w-full max-h-full object-contain"
+            >
+              <track kind="captions" />
+            </video>
+          {:else if mediaType === 'audio'}
+            <div class="w-full max-w-md p-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg">
+              <audio src={imeta.url} controls class="w-full"></audio>
+            </div>
+          {/if}
         </div>
 
-        <!-- Right side - Comments -->
-        <div class="w-full max-w-md bg-background border-l border-border flex flex-col">
+        <!-- Right side - Comments (fixed width) -->
+        <div class="w-[400px] bg-[#1a1a1a] border-l border-neutral-800 flex flex-col shrink-0">
           <!-- Header -->
-          <div class="border-b border-border p-4">
+          <div class="border-b border-neutral-800 p-4">
             <div class="flex items-start gap-3">
               <button type="button" onclick={navigateToProfile} class="flex-shrink-0">
                 <Avatar {ndk} pubkey={event.pubkey} class="w-10 h-10 cursor-pointer hover:opacity-80 transition-opacity" />
               </button>
               <div class="flex-1 min-w-0">
                 <button type="button" onclick={navigateToProfile} class="hover:underline">
-                  <p class="font-semibold text-foreground">{displayName}</p>
+                  <p class="font-semibold text-white">{displayName}</p>
                 </button>
                 {#if event.created_at}
-                  <TimeAgo timestamp={event.created_at} class="text-sm text-muted-foreground" />
+                  <TimeAgo timestamp={event.created_at} class="text-sm text-gray-400" />
                 {/if}
               </div>
             </div>
             {#if event.content}
-              <p class="mt-3 text-foreground whitespace-pre-wrap break-words">{event.content}</p>
+              <p class="mt-3 text-gray-200 text-sm whitespace-pre-wrap break-words">{event.content}</p>
             {/if}
           </div>
 
@@ -182,11 +181,11 @@
               </div>
             {:else if comments.length === 0}
               <div class="flex flex-col items-center justify-center p-8 text-center">
-                <svg class="w-12 h-12 text-muted-foreground mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-12 h-12 text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
-                <p class="text-muted-foreground text-sm">No comments yet</p>
-                <p class="text-muted-foreground text-xs mt-1">Be the first to comment!</p>
+                <p class="text-gray-400 text-sm">No comments yet</p>
+                <p class="text-gray-500 text-xs mt-1">Be the first to comment!</p>
               </div>
             {:else}
               <div class="divide-y divide-neutral-800">
@@ -200,7 +199,7 @@
           </div>
 
           <!-- Comment form -->
-          <div class="border-t border-border p-4">
+          <div class="border-t border-neutral-800 p-4 bg-[#1a1a1a]">
             {#if errorMessage}
               <div class="mb-3 p-2 bg-red-500/10 border border-red-500/20 rounded text-red-400 text-sm">
                 {errorMessage}
