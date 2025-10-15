@@ -10,6 +10,7 @@
   import HighlightGridCard from '$lib/components/HighlightGridCard.svelte';
   import HighlightCard from '$lib/components/HighlightCard.svelte';
   import MediaGrid from '$lib/components/MediaGrid.svelte';
+  import TikTokVideoFeed from '$lib/components/TikTokVideoFeed.svelte';
   import LoadMoreTrigger from '$lib/components/LoadMoreTrigger.svelte';
   import { createLazyFeed } from '$lib/utils/lazyFeed.svelte';
   import { Avatar } from '@nostr-dev-kit/svelte';
@@ -18,9 +19,17 @@
   import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
   import { sub } from 'date-fns';
   import MediaTypeFilters from '$lib/components/MediaTypeFilters.svelte';
+  import CreateMediaPostModal from '$lib/components/CreateMediaPostModal.svelte';
+  import { createMediaPostModal } from '$lib/stores/createMediaPostModal.svelte';
+  import { homePageFilter } from '$lib/stores/homePageFilter.svelte';
 
   type MediaFilter = 'conversations' | 'images' | 'videos' | 'articles';
   let selectedFilter = $state<MediaFilter>('conversations');
+
+  // Sync with store
+  $effect(() => {
+    homePageFilter.set(selectedFilter);
+  });
 
   // Get relays to use based on filter
   // If a specific relay is selected, use only that relay
@@ -96,7 +105,7 @@
     return {
       filters: [filter],
       relayUrls: relaysToUse.length > 0 ? relaysToUse : undefined,
-      subId: 'home-notes',
+      subId: 'notes',
       cacheUsage: relaysToUse.length > 0 ? NDKSubscriptionCacheUsage.ONLY_RELAY : NDKSubscriptionCacheUsage.PARALLEL,
       exclusiveRelay: relaysToUse.length > 0,
     };
@@ -108,7 +117,7 @@
 
   const mediaFeed = createLazyFeed(ndk, () => {
     const filter: any = {
-      kinds: [NDKKind.Text, NDKKind.Image, NDKKind.Video, NDKKind.ShortVideo],
+      kinds: [NDKKind.Text, NDKKind.Image, NDKKind.Video, NDKKind.ShortVideo, 22],
       limit: 300
     };
 
@@ -156,7 +165,7 @@
     return {
       filters: [filter],
       cacheUsage: relaysToUse.length > 0 ? NDKSubscriptionCacheUsage.ONLY_RELAY : NDKSubscriptionCacheUsage.PARALLEL,
-      subId: 'home-articles',
+      subId: 'articles',
       exclusiveRelay: relaysToUse.length > 0,
       relayUrls: relaysToUse.length > 0 ? relaysToUse : undefined
     };
@@ -184,7 +193,7 @@
     return {
       filters: [filter],
       cacheUsage: relaysToUse.length > 0 ? NDKSubscriptionCacheUsage.ONLY_RELAY : NDKSubscriptionCacheUsage.PARALLEL,
-      subId: 'home-highlights',
+      subId: 'highlights',
       exclusiveRelay: relaysToUse.length > 0,
       relayUrls: relaysToUse.length > 0 ? relaysToUse : undefined
     };
@@ -231,6 +240,7 @@
       return mediaFeed.events.filter(event =>
         event.kind === NDKKind.Video ||
         event.kind === NDKKind.ShortVideo ||
+        event.kind === 22 ||
         (event.kind === NDKKind.Text && hasMediaUrl(event.content, 'video'))
       );
     }
@@ -452,15 +462,29 @@
         hasMore={articlesFeed.hasMore}
         isLoading={articlesFeed.isLoading}
       />
-    {:else if selectedFilter === 'images' || selectedFilter === 'videos'}
-      <div class="p-4">
+    {:else if selectedFilter === 'videos'}
+      <div>
         {#if mediaEvents.length === 0 && mediaFeed.eosed}
           <div class="p-8 text-center text-muted-foreground">
-            No {selectedFilter} found
+            No videos found
           </div>
         {:else if mediaEvents.length === 0}
           <div class="p-8 text-center text-muted-foreground">
-            Loading {selectedFilter}...
+            Loading videos...
+          </div>
+        {:else}
+          <TikTokVideoFeed events={mediaEvents} />
+        {/if}
+      </div>
+    {:else if selectedFilter === 'images'}
+      <div class="p-4">
+        {#if mediaEvents.length === 0 && mediaFeed.eosed}
+          <div class="p-8 text-center text-muted-foreground">
+            No images found
+          </div>
+        {:else if mediaEvents.length === 0}
+          <div class="p-8 text-center text-muted-foreground">
+            Loading images...
           </div>
         {:else}
           <MediaGrid events={mediaEvents} />
@@ -510,3 +534,6 @@
     {/if}
   </div>
 </div>
+
+<!-- Media Post Modal -->
+<CreateMediaPostModal bind:open={createMediaPostModal.show} onClose={() => createMediaPostModal.close()} />

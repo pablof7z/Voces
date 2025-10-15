@@ -10,7 +10,7 @@
 
   interface Props {
     event: NDKEvent;
-    variant?: 'default' | 'thread-main';
+    variant?: 'default' | 'thread-main' | 'tiktok';
   }
 
   const { event, variant = 'default' }: Props = $props();
@@ -135,16 +135,115 @@
   }
 </script>
 
-<div class="flex items-center gap-3 sm:gap-6 {variant === 'thread-main' ? 'border-t border-border pt-3' : ''} text-muted-foreground">
-  <button
-    onclick={(e) => { e.stopPropagation(); showReplyDialog = true; }}
-    class="flex items-center gap-2 hover:text-primary transition-colors group"
-  >
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-    </svg>
-    <span class="text-sm group-hover:underline">{replyCount}</span>
-  </button>
+{#if variant === 'tiktok'}
+  <div class="flex flex-col items-center gap-6 text-white">
+    <button
+      onclick={(e) => { e.stopPropagation(); showReplyDialog = true; }}
+      class="flex flex-col items-center gap-1 hover:scale-110 transition-transform group"
+    >
+      <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+      </div>
+      <span class="text-xs font-semibold">{replyCount}</span>
+    </button>
+
+    <div class="relative">
+      <button
+        onclick={(e) => { e.stopPropagation(); showRepostMenu = !showRepostMenu; }}
+        class="flex flex-col items-center gap-1 hover:scale-110 transition-transform group"
+      >
+        <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </div>
+        <span class="text-xs font-semibold">{repostCount}</span>
+      </button>
+
+      {#if showRepostMenu}
+        <div
+          use:clickOutside={() => showRepostMenu = false}
+          class="absolute bottom-full mb-2 right-0 bg-popover border border-border rounded-lg shadow-xl z-50 min-w-[180px] overflow-hidden"
+          onclick={(e) => e.stopPropagation()}
+        >
+          <button
+            onclick={(e) => { e.stopPropagation(); showRepostMenu = false; handleRepost(); }}
+            class="w-full px-4 py-3 text-left hover:bg-muted transition-colors flex items-center gap-3"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <div>
+              <div class="font-medium">Repost</div>
+              <div class="text-xs text-muted-foreground">Share instantly</div>
+            </div>
+          </button>
+          <button
+            onclick={(e) => { e.stopPropagation(); showRepostMenu = false; showQuoteDialog = true; }}
+            class="w-full px-4 py-3 text-left hover:bg-muted transition-colors flex items-center gap-3 border-t border-border"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <div>
+              <div class="font-medium">Quote</div>
+              <div class="text-xs text-muted-foreground">Add your thoughts</div>
+            </div>
+          </button>
+        </div>
+      {/if}
+    </div>
+
+    <button
+      onclick={(e) => { e.stopPropagation(); handleReact('❤️'); }}
+      class="flex flex-col items-center gap-1 hover:scale-110 transition-transform group"
+    >
+      <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+        <svg class="w-6 h-6 text-red-400" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      </div>
+      <span class="text-xs font-semibold">{reactionCount}</span>
+    </button>
+
+    <button
+      onmousedown={handleZapLongPressStart}
+      onmouseup={handleZapLongPressEnd}
+      onmouseleave={handleZapLongPressCancel}
+      ontouchstart={handleZapLongPressStart}
+      ontouchend={handleZapLongPressEnd}
+      ontouchcancel={handleZapLongPressCancel}
+      disabled={isZapping}
+      class="flex flex-col items-center gap-1 hover:scale-110 transition-transform group {isZapping ? 'opacity-50 cursor-wait' : ''}"
+      type="button"
+    >
+      <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center {zapSuccess ? 'bg-yellow-400/30' : ''}">
+        {#if isZapping}
+          <svg class="w-6 h-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        {:else}
+          <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        {/if}
+      </div>
+      <span class="text-xs font-semibold">{isZapping ? '...' : 'Zap'}</span>
+    </button>
+  </div>
+{:else}
+  <div class="flex items-center gap-3 sm:gap-6 {variant === 'thread-main' ? 'border-t border-border pt-3' : ''} text-muted-foreground">
+    <button
+      onclick={(e) => { e.stopPropagation(); showReplyDialog = true; }}
+      class="flex items-center gap-2 hover:text-primary transition-colors group"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+      <span class="text-sm group-hover:underline">{replyCount}</span>
+    </button>
 
   <div class="relative">
     <button
@@ -235,7 +334,8 @@
       {/if}
     </span>
   </button>
-</div>
+  </div>
+{/if}
 
 <ComposeDialog bind:open={showReplyDialog} replyTo={event} />
 <ComposeDialog bind:open={showQuoteDialog} quotedEvent={event} />

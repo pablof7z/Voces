@@ -9,6 +9,8 @@
   import { createPackModal } from '$lib/stores/createPackModal.svelte';
   import { createListingModal } from '$lib/stores/createListingModal.svelte';
   import { createInviteModal } from '$lib/stores/createInviteModal.svelte';
+  import { createMediaPostModal } from '$lib/stores/createMediaPostModal.svelte';
+  import { homePageFilter } from '$lib/stores/homePageFilter.svelte';
   import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
   import { AGORA_RELAYS, isAgoraRelay } from '$lib/utils/relayUtils';
   import { NDKKind, NDKArticle } from '@nostr-dev-kit/ndk';
@@ -260,12 +262,14 @@
               createPackModal.open();
             } else if (path === '/agora/invites') {
               createInviteModal.open();
+            } else if (path === '/' && homePageFilter.selected === 'images') {
+              createMediaPostModal.open();
             } else {
               goto('/compose');
             }
           }}
           class="w-full flex items-center justify-center {sidebarCollapsed ? 'p-3' : 'gap-2 px-6 py-3'} bg-primary hover:bg-primary/90 text-foreground font-semibold rounded-full transition-colors mt-4"
-          title={sidebarCollapsed ? (path === '/marketplace' ? $t('classifieds.createListing') : path === '/trades' ? 'Create Trade' : path.startsWith('/packs') ? 'Create Pack' : path === '/agora/invites' ? 'Create Invite' : $t('navigation.compose')) : undefined}
+          title={sidebarCollapsed ? (path === '/marketplace' ? $t('classifieds.createListing') : path === '/trades' ? 'Create Trade' : path.startsWith('/packs') ? 'Create Pack' : path === '/agora/invites' ? 'Create Invite' : path === '/' && homePageFilter.selected === 'images' ? 'Create media post' : $t('navigation.compose')) : undefined}
         >
           {#if path === '/marketplace'}
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -294,6 +298,13 @@
             </svg>
             {#if !sidebarCollapsed}
               <span>Create Invite</span>
+            {/if}
+          {:else if path === '/' && homePageFilter.selected === 'images'}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {#if !sidebarCollapsed}
+              <span>Create media post</span>
             {/if}
           {:else}
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -423,7 +434,7 @@
 
   <!-- Mobile Compose FAB (only on home page and agora invites) -->
   {#if path === '/'}
-    <MobileComposeFAB />
+    <MobileComposeFAB isHomePage={true} />
   {:else if path === '/agora/invites'}
     <MobileComposeFAB onclick={() => createInviteModal.open()} />
   {/if}

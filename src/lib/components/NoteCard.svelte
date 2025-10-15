@@ -168,7 +168,7 @@
 </script>
 
 <article
-  class="p-3 sm:p-4 {bgClass} transition-colors {clickable ? 'cursor-pointer' : ''} border-b border-border relative min-w-0"
+  class="p-3 sm:p-4 max-sm:max-w-screen {bgClass} transition-colors {clickable ? 'cursor-pointer' : ''} border-b border-border relative min-w-0"
   onclick={clickable ? navigateToEvent : undefined}
   role={clickable ? 'button' : undefined}
   tabindex={clickable ? 0 : undefined}
