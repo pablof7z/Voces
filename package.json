@@ -14,6 +14,7 @@
     "@cashu/cashu-ts": "^2.7.2",
     "@nostr-dev-kit/blossom": "file:../NDK-nhlteu/blossom",
     "@nostr-dev-kit/cache-sqlite-wasm": "file:../NDK-nhlteu/cache-sqlite-wasm",
+    "@nostr-dev-kit/messages": "file:../NDK-nhlteu/messages",
     "@nostr-dev-kit/ndk": "file:../NDK-nhlteu/core",
     "@nostr-dev-kit/sessions": "file:../NDK-nhlteu/sessions",
     "@nostr-dev-kit/svelte": "file:../NDK-nhlteu/svelte",

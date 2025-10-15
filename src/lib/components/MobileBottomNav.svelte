@@ -5,6 +5,7 @@
   import { settings } from '$lib/stores/settings.svelte';
   import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
   import { isAgorasSelection } from '$lib/utils/relayUtils';
+  import { messagesStore } from '$lib/stores/messages.svelte';
 
   const currentUser = ndk.$currentUser;
   const currentPath = $derived($page.url.pathname);
@@ -79,12 +80,19 @@
     <!-- Messages -->
     <a
       href="/messages"
-      class="flex items-center justify-center p-3 rounded-lg transition-colors {isActive('/messages') ? 'text-primary' : 'text-muted-foreground'}"
+      class="flex items-center justify-center p-3 rounded-lg transition-colors {isActive('/messages') ? 'text-primary' : 'text-muted-foreground'} relative"
       aria-label="Messages"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
       </svg>
+      {#if messagesStore.totalUnreadCount > 0}
+        <div class="absolute top-1.5 right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-primary flex items-center justify-center">
+          <span class="text-[10px] font-bold text-primary-foreground">
+            {messagesStore.totalUnreadCount > 9 ? '9+' : messagesStore.totalUnreadCount}
+          </span>
+        </div>
+      {/if}
     </a>
 
     <!-- Settings -->
