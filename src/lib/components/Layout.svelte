@@ -13,6 +13,7 @@
   import { homePageFilter } from '$lib/stores/homePageFilter.svelte';
   import { useRelayInfoCached } from '$lib/utils/relayInfo.svelte';
   import { AGORA_RELAYS, isAgoraRelay } from '$lib/utils/relayUtils';
+  import { messagesStore } from '$lib/stores/messages.svelte';
   import { NDKKind, NDKArticle } from '@nostr-dev-kit/ndk';
   import { getArticleUrl } from '$lib/utils/articleUrl';
   import RelaySelector from './RelaySelector.svelte';
@@ -79,6 +80,13 @@
   $effect(() => {
     if (shouldCollapseSidebar) {
       sidebarCollapsed = true;
+    }
+  });
+
+  // Handle messages subscription lifecycle
+  $effect(() => {
+    if (!currentUser) {
+      messagesStore.stop();
     }
   });
 
@@ -169,14 +177,31 @@
 
         <a
           href="/messages"
-          class="flex items-center {sidebarCollapsed ? 'justify-center p-3' : 'gap-3 px-4 py-3'} rounded-lg transition-colors {path.startsWith('/messages') ? 'text-primary bg-primary/10' : 'text-foreground hover:bg-muted'}"
+          class="flex items-center {sidebarCollapsed ? 'justify-center p-3' : 'justify-between px-4 py-3'} rounded-lg transition-colors {path.startsWith('/messages') ? 'text-primary bg-primary/10' : 'text-foreground hover:bg-muted'} relative"
           title={sidebarCollapsed ? $t('navigation.messages') : undefined}
         >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-          </svg>
-          {#if !sidebarCollapsed}
-            <span class="font-medium">{$t('navigation.messages')}</span>
+          <div class="flex items-center {sidebarCollapsed ? '' : 'gap-3'}">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            {#if !sidebarCollapsed}
+              <span class="font-medium">{$t('navigation.messages')}</span>
+            {/if}
+          </div>
+          {#if messagesStore.totalUnreadCount > 0}
+            {#if sidebarCollapsed}
+              <!-- Badge for collapsed sidebar (top-right of icon) -->
+              <div class="absolute top-1.5 right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-primary flex items-center justify-center">
+                <span class="text-[10px] font-bold text-primary-foreground">
+                  {messagesStore.totalUnreadCount > 9 ? '9+' : messagesStore.totalUnreadCount}
+                </span>
+              </div>
+            {:else}
+              <!-- Badge for expanded sidebar -->
+              <span class="text-xs px-2 py-1 rounded-full bg-primary text-primary-foreground font-medium">
+                {messagesStore.totalUnreadCount > 99 ? '99+' : messagesStore.totalUnreadCount}
+              </span>
+            {/if}
           {/if}
         </a>
 
